@@ -25,11 +25,10 @@
   "homepage": "https://github.com/CN-Tower/pxfunc.js#readme",
   "dependencies": {
     "jquery": "^3.3.1"
-<<<<<<< be6676a1eb9060397a72ee1d5f2b14b68ecbc5a6
-=======
   },
   "devDependencies": {
-    "typescript": "^2.8.3"
->>>>>>> Update pxfunc.js
+    "progress": "^2.0.0",
+    "typescript": "^2.8.3",
+    "value-looker": "^2.1.2"
   }
 }
