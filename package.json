@@ -1,0 +1,29 @@
+{
+  "name": "pxfunc",
+  "version": "2.0.1",
+  "description": "A Powerful javascript functions lib!",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./tools/start.js && node ./dist/app.js",
+    "build": "node ./tools/compile-pxfunc.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CN-Tower/pxfunc.js.git"
+  },
+  "keywords": [
+    "pxfunc",
+    "javascript",
+    "functions"
+  ],
+  "author": "CN-Tower",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CN-Tower/pxfunc.js/issues"
+  },
+  "homepage": "https://github.com/CN-Tower/pxfunc.js#readme",
+  "dependencies": {
+    "jquery": "^3.3.1"
+  }
+}
