@@ -84,7 +84,7 @@ function createNewpxfunc() {
                     throw err;
                 } else {
                     fs.close(fd);
-                    updatepxfunc();
+                    // updatepxfunc();
                 }
             });
         }
