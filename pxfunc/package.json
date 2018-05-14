@@ -1,0 +1,20 @@
+{
+  "name": "pxfunc",
+  "version": "1.0.0",
+  "description": "A powerful javascript functions lib!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/pxfunc.js"
+  },
+  "keywords": [
+    "pxfunc",
+    "javascript",
+    "jslib"
+  ],
+  "author": "CN-Tower",
+  "license": "ISC"
+}

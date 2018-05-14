@@ -35,12 +35,16 @@ function getPath(type) {
             return path.join(basePath, pxfuncRoot, 'assets/index.js');
         case 'pxfuncDef':
             return path.join(basePath, pxfuncRoot, 'assets/pxfunc.d.ts');
+        case 'pxfuncPkg':
+            return path.join(basePath, pxfuncRoot, 'assets/package.json');
         case 'pxfuncDistJs':
             return path.join(basePath, pxfuncDist, 'pxfunc.js');
         case 'pxfuncDistIdx':
             return path.join(basePath, pxfuncDist, 'index.js');
         case 'pxfuncDistDef':
             return path.join(basePath, pxfuncDist, 'pxfunc.d.ts');
+        case 'pxfuncDistPkg':
+            return path.join(basePath, pxfuncDist, 'package.json');
         case 'pxfuncTmpTs':
             return path.join(basePath, 'pxfunc.ts');
         case 'pxfuncTmpJs':
@@ -84,7 +88,7 @@ function createNewpxfunc() {
                     throw err;
                 } else {
                     fs.close(fd);
-                    // updatepxfunc();
+                    updatepxfunc();
                 }
             });
         }
@@ -97,16 +101,19 @@ function createNewpxfunc() {
 function updatepxfunc() {
     const pxfuncIdx = getPath('pxfuncIdx');
     const pxfuncDef = getPath('pxfuncDef');
+    const pxfuncPkg = getPath('pxfuncPkg');
     const pxfuncDistJs = getPath('pxfuncDistJs');
     const pxfuncDistIdx = getPath('pxfuncDistIdx');
     const pxfuncDistDef = getPath('pxfuncDistDef');
+    const pxfuncDistPkg = getPath('pxfuncDistPkg');
     exec(`node ${getPath('tsc')} ${pxfuncTmpTs}`, function(e, stdout, stderr) {
-        [pxfuncTmpTs, pxfuncDistJs, pxfuncDistIdx, pxfuncDistDef].forEach(file => {
+        [pxfuncTmpTs, pxfuncDistJs, pxfuncDistIdx, pxfuncDistDef, pxfuncDistPkg].forEach(file => {
             if (fs.existsSync(file)) fs.unlinkSync(file);
         });
         fs.renameSync(pxfuncTmpJs, pxfuncDistJs);
         fs.createReadStream(pxfuncIdx).pipe(fs.createWriteStream(pxfuncDistIdx));
         fs.createReadStream(pxfuncDef).pipe(fs.createWriteStream(pxfuncDistDef));
+        fs.createReadStream(pxfuncPkg).pipe(fs.createWriteStream(pxfuncDistPkg));
         processProgressBar('stop', () => {
             valueLooker('Congratulations, Compile pxfunc succeeded!', {title: 'Msg From pxfunc', theme: 'verbose'});
         });
