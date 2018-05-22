@@ -447,7 +447,47 @@ export /*pxfunc*/class PxFunc {
     return !!isFull;
   }
 
-  pxlog() {
-    
+  /**
+   * [fn.log]
+   * @param value 
+   * @param configs {title: string, theme: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+   */
+  log(value: any, configs: Object) {
+    const styles = {
+      'grey'    : '\x1B[90m%s\x1B[0m',
+      'blue'    : '\x1B[34m%s\x1B[0m',
+      'cyan'    : '\x1B[36m%s\x1B[0m',
+      'green'   : '\x1B[32m%s\x1B[0m',
+      'magenta' : '\x1B[35m%s\x1B[0m',
+      'red'     : '\x1B[31m%s\x1B[0m',
+      'yellow'  : '\x1B[33m%s\x1B[0m'
+    }
+    if (typeof value === 'object') {
+      value = JSON.stringify(value, null, 2);
+    } else {
+      value = String(value);
+    }
+    let title = configs && configs['title'] || `pxfunc ${this.version}`;
+    const theme = configs && configs['theme'] in styles && configs['theme'] || 'grey';
+    const llen = 68;
+    let tlen = 16, sp = '';
+    if (title.length <= tlen) {
+      tlen = title.length;
+    } else {
+      title = this.cutString(title, tlen - 2);
+    }
+    this.array((llen - tlen) / 2, ' ').forEach(x => sp += x);
+    const tt = sp + title;
+    const s = '-', d = '=';
+    let sL = '', dL = '';
+    this.array(llen).forEach(x => {
+      sL += s;
+      dL += d;
+    });
+    console.log('\n' + dL);
+    console.log(styles['green'], tt);
+    console.log(sL);
+    console.log(styles[theme], value);
+    console.log(dL + '\n');
   }
 }
