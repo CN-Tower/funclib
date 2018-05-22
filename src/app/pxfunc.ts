@@ -1,51 +1,52 @@
 /**=======================================================================
-                      通用型逻辑函数封装 PxFunc (V2.0.1)
+                      通用型逻辑函数封装 PxFunc (V1.0.2)
 --------------------------------------------------------------------------
         fn.time                   返回一个当前时间字符串
-        fn.uuid                   返回一个指定长度(最小6位)的随机ID
+        fn.pxid                   返回一个指定长度(最小6位)的随机ID
         fn.array                  返回一个指定长度和默认值的数组
         fn.random                 返回一个指定范围的随机数
         fn.objLen                 获取对象自有属性的个数
-        fn.copy                   深拷贝数组或对象
-        fn.polling                用于轮询控制
-        fn.errors                 表单控件的错误提示控制
-        fn.viewTools              通知和Loading的控制
-        fn.bootstrapTable         渲染Bootstrap表格的通用方式
-        fn.sortData               表格数据根据字段排序
+        fn.deepCopy               深拷贝数组或对象
+        fn.interval               循环定时器
+        fn.timeout                延时定时器
+        fn.sortData               对象数组根据字段排序
         fn.currency               格式化显示货币
         fn.cutString              裁切字符串到指定长度
         fn.findCousin             用jQuery寻找元素的表亲
         fn.matchPattern           与一个或几个通用正则匹配
         fn.getPattern             获取一个通用的正则表达式
-        fn.pollingEl              用jQuery定时寻找一个异步渲染的元素
+        fn.pollingElement         用jQuery定时寻找一个异步渲染的元素
+        fn.noAutoComplete         防止input密码自动填充
+        fn.bootstrapTable         渲染Bootstrap表格的通用方式
 =========================================================================*/
-import {ViewToolsHelper} from './helper/view-tools.class';
 import {BootstrapTableHelper} from './helper/bootstrap-table.class';
 import {Patterns} from './helper/patterns.class';
 import {GridOptions} from './helper/grid-options.class';
 import * as $ from 'jquery';
+import { setTimeout } from 'timers';
 
 export /*pxfunc*/class PxFunc {
+  version: string = 'V1.0.2'
   translate: any;
-  viewToolsCtrl: any;
+  window: any;
+  document: any;
   patterns: Patterns = new Patterns();
   gridOptions: GridOptions = new GridOptions();
-  private _viewsHelper: ViewToolsHelper;
   private _tableHelper: BootstrapTableHelper;
-  private _pollingTimers: any = {};
-  private _pollingElTimers: any = {};
-  private _lintFix: any;
-  constructor() {}
+  private _intervalTimers: any = {};
+  private _timeoutTimers: any = {};
+
+  constructor(window: any, document: any) {
+    this.window = window;
+    this.document = document;
+  }
 
   /**
    * [fn.init] Init PxFunc
    * @param translate
-   * @param viewToolsCtrl
    */
-  init(translate: any, viewToolsCtrl: any) {
+  init(translate: any) {
     this.translate = translate;
-    this.viewToolsCtrl = viewToolsCtrl;
-    this._viewsHelper = new ViewToolsHelper(this.translate, this.viewToolsCtrl);
     this._tableHelper = new BootstrapTableHelper(this.translate);
   }
 
@@ -55,11 +56,11 @@ export /*pxfunc*/class PxFunc {
   time: Function = () => (new Date()).getTime();
 
   /**
-   * fn.uuid: 返回一个指定长度(最小6位)的随机ID。
+   * fn.pxid: 返回一个指定长度(最小6位)的随机ID。
    * @param len [number]
    */
-  uuid(len: number = 12): string {
-    const charSet = '0123456789abcdefghijklmnopqrstuvwxyz'
+  pxid(len: number = 12): string {
+    const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     let eleId = '';
     if (len < 6) {
         len = 6;
@@ -73,11 +74,20 @@ export /*pxfunc*/class PxFunc {
    * @param length [number]
    * @param value  [any, function]
    */
-  array(length: number, value: any = ''): any[] {
+  array(length: number, value?: any): any[] {
     const tmpArr = [];
+    const isUndefied = value === undefined;
+    const isFunction = typeof value === 'function';
+    let tmpVal = 0;
     for (let i = 0; i < length; i ++) {
-        const val = typeof value === 'function' ? value() : value;
-        tmpArr.push(val);
+      if (isUndefied) {
+        tmpArr.push(tmpVal);
+        tmpVal ++;
+      } else if (isFunction) {
+        tmpArr.push(value());
+      } else {
+        tmpArr.push(value);
+      }
     }
     return tmpArr;
   }
@@ -88,9 +98,16 @@ export /*pxfunc*/class PxFunc {
    * @param end [number]
    */
   random(sta: number, end?: number): number {
-    return end && end > sta
-        ? Math.floor(Math.random() * (end - sta) + sta)
-        : Math.floor(Math.random() * sta);
+    if (end === undefined || sta === end) {
+      return Math.floor(Math.random() * sta);
+    } else {
+      if (sta > end) {
+        const tmpSta = sta;
+        sta = end;
+        end = tmpSta;
+      }
+      return Math.floor(Math.random() * (end - sta) + sta)
+    }
   }
 
   /**
@@ -108,80 +125,37 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.polling] Polling process service
-   * @param name
-   * @param interval
-   * @param fn
+   * [fn.interval] 循环定时器
+   * @param timerId
+   * @param duration
+   * @param func
    */
-  polling(name: string, interval: number|boolean, fn?: Function) {
-    if (typeof interval === 'number' && !!fn) {
-      clearInterval(this._pollingTimers[name]);
-      this._pollingTimers[name] = setInterval(() => fn(), interval);
-    } else if (typeof interval === 'boolean' && !interval){
-      clearInterval(this._pollingTimers[name]);
+  interval(timerId: string, duration: number|boolean, func?: Function) {
+    if (typeof duration === 'number' && typeof func === 'function') {
+      clearInterval(this._intervalTimers[timerId]);
+      this._intervalTimers[timerId] = setInterval(() => func(), duration);
+    } else if (typeof duration === 'boolean' && !duration){
+      clearInterval(this._intervalTimers[timerId]);
     }
   }
 
   /**
-   * [fn.errors] Set form control's error
-   * @param model
-   * @param errorMsg
-   * @param isForce
+   * [fn.timeout] 延时定时器
+   * @param timerId 
+   * @param duration 
+   * @param func 
    */
-  errors(model: any, errorMsg: string, isForce: boolean = false) {
-    this._lintFix = true;
-    if (model && model['control'] && (isForce || !model.control.pristine)) {
-      errorMsg
-        ? model.control.errors({validator: errorMsg})
-        : model.control.errors(null);
+  timeout(timerId: string, duration: number|boolean, func?: Function) {
+    if (typeof duration === 'number' && typeof func === 'function') {
+      clearTimeout(this._timeoutTimers[timerId]);
+      this._timeoutTimers[timerId] = setTimeout(() => func(), duration);
+    } else if (typeof duration === 'boolean' && !duration){
+      clearTimeout(this._timeoutTimers[timerId]);
     }
   }
 
   /**
-   * [fn.viewTools] Toggle to show some global View Tools, i.e.: infoMsg, errMsg and loader.
-   * @param options
-      * type {success|error|loader|timer},
-      * isShow
-      * msg
-      * interval
-      * delay
-   */
-  viewTools(options: any) {
-    if (options instanceof Array) {
-      options.forEach(item => this._viewsHelper.viewToolsHandler(item));
-    } else if (typeof options === 'object') {
-      this._viewsHelper.viewToolsHandler(options);
-    }
-  }
-
-  /**
-   * [fn.bootstrapTable] Init a bootstrap table by a special way.
-   * @param $table
-   * @param options
-      * tableConfig {Object Opt.}
-      * gridOptions {Object Opt.},
-      * tableLabel {String Opt.},
-      * showLoading {Boolean Opt.},
-      * tableScope {String Opt.},
-      * onRefreshing {Function Opt.},
-      * onRendered {Function Opt.}
-   */
-  bootstrapTable($table: any, options: any) {
-    if (options.hasOwnProperty('showLoading') && !options.showLoading) {
-      this.viewTools({type: 'loader', isShow: false});
-    }
-    const tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
-    const isAfterInit = $table.parent().hasClass('fixed-table-body');
-    this._tableHelper.setAndClearLoadingTimers(options);
-    if (!isAfterInit) {
-      $table.bootstrapTable(tableConf).bootstrapTable('showLoading');
-      this._tableHelper.tableInitHandler($table, tableConf, options);
-    }
-    this._tableHelper.tableRefreshHandler($table, tableConf, options);
-  }
-
-  /**
-   * [fn.sortData] Sort table data by field
+   * [fn.sortData] 对象数组根据字段排序
    * @param tableData
    * @param field
    * @param isDesc
@@ -199,22 +173,22 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.copy] Deep clone an Array or an Object
+   * [fn.deepCopy] 深拷贝对象或数组
    * @param data
    */
-  copy(data: any) {
+  deepCopy(data: any) {
     if (typeof data !== 'object') { return data; }
     let tmpData;
     if (data instanceof Array) {
       tmpData = [];
       for (let i = 0; i < data.length; i++) {
-        tmpData.push(this.copy(data[i]));
+        tmpData.push(this.deepCopy(data[i]));
       }
     } else {
       tmpData = {};
       for (const key in data){
         if (data.hasOwnProperty(key)) {
-          tmpData[key] = this.copy(data[key]);
+          tmpData[key] = this.deepCopy(data[key]);
         }
       }
     }
@@ -222,14 +196,13 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.currency] Format Currency
+   * [fn.currency] 格式化显示货币
    * @param number
    * @param digit
    * @returns {string}
    */
   currency(number: number, digit: number = 2) {
-    this._lintFix = true;
-    const nbArr = parseFloat(String(number)).toFixed(digit).split('.');
+    let nbArr = String(number.toFixed(digit)).split('.');
     const integer = nbArr[0];
     const decimal = nbArr.length > 1 ? nbArr[1] : '';
     let integerStr, spn, sti, i;
@@ -250,19 +223,19 @@ export /*pxfunc*/class PxFunc {
    * @returns {string}
    */
   cutString(str, len) {
-    this._lintFix = true;
-    const patrn = /[\x00-\xff]/;
-    let
-      strre = '',
-      count = 0,
-      tempStr;
+    let tmpStr = '';
+    let count  = 0;
+    let tmpChar;
     for (let i = 0; i < str.length; i++) {
-      if (count >= len - 1)  { break; }
-      tempStr = str.substr(i, 1);
-      strre += tempStr;
-      count += patrn.test(tempStr) ? 2 : 1;
+      if (count < len)  {
+        tmpChar = str.substr(i, 1);
+        tmpStr += tmpChar;
+        count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
+      } else {
+        break;
+      }
     }
-    return strre + '...';
+    return tmpStr + '...';
   }
 
   /**
@@ -273,7 +246,6 @@ export /*pxfunc*/class PxFunc {
    * @returns {any}
    */
   findCousin($ele: any, selector: string, level: number = 0) {
-    this._lintFix = true;
     if (!level) {
       return selector ? $ele.parents().find(selector) : $ele.parents();
     } else {
@@ -286,34 +258,12 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.matchPattern] Match common RegExp patterns
-   * @param src
-   * @param type
-   * @param isNoLimit
-   * @returns {boolean}
-   */
-  matchPattern(src: string, type: string|string[], isNoLimit?: boolean) {
-    if (!src || !type) {return false; }
-    if (type instanceof Array) {
-      let matchResult = false;
-      type.forEach(item => {
-        const pattern: RegExp = this.getPattern(item, isNoLimit);
-        if (pattern && pattern.test(src)) {matchResult = true; }
-      });
-      return matchResult;
-    } else if (typeof type === 'string') {
-      const pattern: RegExp = this.getPattern(type, isNoLimit);
-      return pattern && pattern.test(src);
-    }
-  }
-
-  /**
-   * [fn.getPattern] Get a common RegExp pattern
+   * [fn.getPattern] 与一个或几个通用正则匹配
    * @param type
    * @param isNoLimit
    * @returns {pattern|undefined}
    */
-  getPattern(type: string, isNoLimit?: boolean) {
+  getPattern(type: string, isNoLimit: boolean = false) {
     if (!type) {return; }
     const patternsObj = {
       cnChar:      this.patterns.cnCharPattern,
@@ -352,34 +302,152 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.pollingEl] Polling until got jQuery element
-   * @param poId
+   * [fn.matchPattern] 获取一个通用的正则表达式
+   * @param src
+   * @param type
+   * @param isNoLimit
+   * @returns {boolean}
+   */
+  matchPattern(src: string, type: string|string[], isNoLimit?: boolean) {
+    if (!src || !type) {return false; }
+    if (type instanceof Array) {
+      let matchResult = false;
+      type.forEach(item => {
+        const pattern: RegExp = this.getPattern(item, isNoLimit);
+        if (pattern && pattern.test(src)) {matchResult = true; }
+      });
+      return matchResult;
+    } else if (typeof type === 'string') {
+      const pattern: RegExp = this.getPattern(type, isNoLimit);
+      return pattern && pattern.test(src);
+    }
+  }
+
+  /**
+   * [fn.pollingElement] 轮询获取异步出现的jQuery元素
+   * @param timerId
    * @param selector
    * @param interval
-   * @param fn {opt.}
+   * @param func [opt.]
    */
-  pollingEl(poId: string, selector: string|any[]|boolean, interval: number, fn?: Function) {
-    if ((typeof selector === 'string' || selector instanceof Array) && !!fn) {
-      clearInterval(this._pollingElTimers[poId]);
+  pollingElement(timerId: string, selector: boolean|string|any[], interval: number, func?: Function) {
+    if ((typeof selector === 'string' || selector instanceof Array) && typeof func === 'function') {
       let count = 0;
-      const int = 250;
-      this._pollingElTimers[poId] = setInterval(() => {
-        count >= parseInt(String(interval / int), 10) ? clearInterval(this._pollingElTimers[poId]) : count ++;
+      const duration = 250;
+      this.interval(timerId, duration, eles => {
+        parseInt(String(interval / duration), 10) <= count ? this.interval(timerId, false) : count ++;
         const tmpArr = [];
-        const selectors: any = typeof selector === 'string' ? [selector] : selector;
-        selectors.forEach(slt => {
+        const slts: any = typeof selector === 'string' ? [selector] : selector;
+        slts.forEach(slt => {
           const $ele = $(slt);
           if ($ele.length > 0) {
             tmpArr.push($ele);
           }
         });
-        if (tmpArr.length === selectors.length) {
-          clearInterval(this._pollingElTimers[poId]);
-          fn(tmpArr);
+        if (tmpArr.length === slts.length) {
+          this.interval(timerId, false);
+          func(tmpArr);
         }
-      }, int);
-    } else if (typeof selector === 'boolean' && !interval) {
-      clearInterval(this._pollingElTimers[poId]);
+      });
+    } else {
+      this.interval(timerId, false);
     }
+  }
+
+  /**
+   * [fn.noAutoComplete] 防止input密码自动填充
+   * @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
+   */
+  noAutoComplete(options: Object|Object[]) {
+    const noAutoCplt: Function = opt => {
+      if (opt['type'] && opt['$input']) {
+        if (['user', 'username'].indexOf(opt.type) > -1) {
+          opt.$input
+          .attr('autocomplete', 'off')
+          .before('<input type="password" style="display: none"/>');
+        } else if (['pwd', 'pass', 'password'].indexOf(opt.type) > -1) {
+          opt.$input
+          .attr({autocomplete: 'new-password', type: 'text'})
+          .on('input propertychange', function() {
+            $(this).val() ? $(this).attr('type', 'password') : $(this).attr('type', 'text');
+          });
+        }
+      }
+    }
+    options instanceof Array
+      ? options.forEach(opt => noAutoCplt(opt))
+      : noAutoCplt(options);
+  }
+
+  /**
+   * [fn.bootstrapTable] 渲染Bootstrap表格的通用方式
+   * @param $table
+   * @param options
+      * tableConfig {Object Opt.}
+      * gridOptions {Object Opt.},
+      * tableLabel {String Opt.},
+      * showLoading {Boolean Opt.},
+      * tableScope {String Opt.},
+      * onRefreshing {Function Opt.},
+      * onRendered {Function Opt.}
+   */
+  bootstrapTable($table: any, options: any) {
+    const tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
+    const isAfterInit = $table.parent().hasClass('fixed-table-body');
+    this._tableHelper.setAndClearLoadingTimers(options);
+    if (!isAfterInit) {
+      $table.bootstrapTable(tableConf).bootstrapTable('showLoading');
+      this._tableHelper.tableInitHandler($table, tableConf, options);
+    }
+    this._tableHelper.tableRefreshHandler($table, tableConf, options);
+  }
+
+  /**
+   * Make some html element a full screen show
+   * @param el
+   * @returns {any}
+   */
+  fullScreen(el: any) {
+    const rfs = el.requestFullScreen || el.webkitRequestFullScreen
+      || el.mozRequestFullScreen || el.msRequestFullScreen;
+    if(typeof rfs != "undefined" && rfs) {
+      return rfs.call(el);
+    }
+    if(typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if(ws) {ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * Exit full screen show
+   * @returns {any}
+   */
+  exitFullScreen() {
+    const el= this.document;
+    const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
+      || el.mozCancelFullScreen || el.exitFullScreen;
+    if (typeof cfs != "undefined" && cfs) {
+      return cfs.call(el);
+    }
+    if (typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if (ws != null) {ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * Check full screen
+   * @returns {boolean}
+   */
+  checkIsFullScreen() {
+    const el = this.document;
+    const isFull = el.fullscreenEnabled || el.fullScreen
+      || el.webkitIsFullScreen || el.msFullscreenEnabled;
+    return !!isFull;
+  }
+
+  pxlog() {
+    
   }
 }
