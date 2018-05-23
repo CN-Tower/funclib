@@ -1,76 +1,91 @@
-/**=======================================================================
-                      通用型逻辑函数封装 PxFunc (V1.0.2)
---------------------------------------------------------------------------
-        fn.time                   返回一个当前时间字符串
-        fn.pxid                   返回一个指定长度(最小6位)的随机ID
-        fn.array                  返回一个指定长度和默认值的数组
-        fn.random                 返回一个指定范围的随机数
-        fn.objLen                 获取对象自有属性的个数
-        fn.deepCopy               深拷贝数组或对象
-        fn.interval               循环定时器
-        fn.timeout                延时定时器
-        fn.sortData               对象数组根据字段排序
-        fn.currency               格式化显示货币
-        fn.cutString              裁切字符串到指定长度
-        fn.findCousin             用jQuery寻找元素的表亲
-        fn.matchPattern           与一个或几个通用正则匹配
-        fn.getPattern             获取一个通用的正则表达式
-        fn.pollingElement         用jQuery定时寻找一个异步渲染的元素
-        fn.noAutoComplete         防止input密码自动填充
-        fn.bootstrapTable         渲染Bootstrap表格的通用方式
-=========================================================================*/
-import {BootstrapTableHelper} from './helper/bootstrap-table.class';
-import {Patterns} from './helper/patterns.class';
-import {GridOptions} from './helper/grid-options.class';
+import { Tools } from './modules/tools.class';
+import { Patterns } from './modules/patterns.class';
+import { Progress } from './modules/progress.class';
+import { extendJquery } from './modules/extendJquery.func';
+import { BootstrapTable } from './modules/bootstrapTable.class';
 import * as $ from 'jquery';
 import { setTimeout } from 'timers';
+import { win32 } from 'path';
 
-export /*pxfunc*/class PxFunc {
+export /*pxfunc*/ class PxFunc {
+
   version: string = 'V1.0.2'
-  translate: any;
-  window: any;
-  document: any;
-  patterns: Patterns = new Patterns();
-  gridOptions: GridOptions = new GridOptions();
-  private _tableHelper: BootstrapTableHelper;
-  private _intervalTimers: any = {};
-  private _timeoutTimers: any = {};
+  tools: any;
+  progress: any;
+  bootstrapTable: any;
 
-  constructor(window: any, document: any) {
-    this.window = window;
-    this.document = document;
+  private jquery: any;
+  private window: any;
+  private document: any;
+  private patterns: Patterns = new Patterns();
+  private intervalTimers: any = {};
+  private timeoutTimers: any = {};
+
+  constructor(options: Object) {
+    this.overlay(this, options, ['jquery', 'window', 'document'])
+    if (!this.window || !this.document) {
+      delete this.window;
+      delete this.document;
+      delete this.fullScreen;
+      delete this.exitFullScreen;
+      delete this.checkIsFullScreen;
+    }
+    if (this.jquery) {
+      extendJquery($, this.interval);
+    } else {
+      delete this.jquery;
+    }
   }
 
   /**
-   * [fn.init] Init PxFunc
-   * @param translate
+   * [fn.initProgress] 初始化进度条对象
+   * @param ProgressBar [class]
    */
-  init(translate: any) {
-    this.translate = translate;
-    this._tableHelper = new BootstrapTableHelper(this.translate);
+  initProgress(ProgressBar: any) {
+    if (ProgressBar) {
+      this.progress = new Progress(ProgressBar);
+    }
   }
 
   /**
-   * fn.time: 返回一个当前时间字符串。
+   * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
+   * @param translate [Object]
+   */
+  initBootstrapTable(translate?: Object) {
+    this.bootstrapTable = new BootstrapTable(translate)
+  }
+
+  /**
+   * [fn.initTools] 初始化一个NodeJs工具包对象
+   * @param options [Object]
+   */
+  initTools(options: Object) {
+    if (options) {
+      this.tools = new Tools(options['fs'], options['path']);
+    }
+  }
+
+  /**
+   * [fn.time] 返回一个当前时间字符串。
    */
   time: Function = () => (new Date()).getTime();
 
   /**
-   * fn.pxid: 返回一个指定长度(最小6位)的随机ID。
+   * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
    * @param len [number]
    */
-  pxid(len: number = 12): string {
+  gnid(len: number = 12): string {
     const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     let eleId = '';
     if (len < 6) {
-        len = 6;
+      len = 6;
     };
     this.array(len).forEach(x => eleId += charSet[this.random(charSet.length)]);
     return eleId;
   };
 
   /**
-   * fn.array: 返回一个指定长度和默认值的数组
+   * [fn.array] 返回一个指定长度和默认值的数组
    * @param length [number]
    * @param value  [any, function]
    */
@@ -79,10 +94,10 @@ export /*pxfunc*/class PxFunc {
     const isUndefied = value === undefined;
     const isFunction = typeof value === 'function';
     let tmpVal = 0;
-    for (let i = 0; i < length; i ++) {
+    for (let i = 0; i < length; i++) {
       if (isUndefied) {
         tmpArr.push(tmpVal);
-        tmpVal ++;
+        tmpVal++;
       } else if (isFunction) {
         tmpArr.push(value());
       } else {
@@ -93,7 +108,7 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * fn.random: 返回一个指定范围的随机数
+   * [fn.random] 返回一个指定范围的随机数
    * @param sta [number]
    * @param end [number]
    */
@@ -111,15 +126,15 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * fn.objLen: 获取对象自有属性的个数
+   * [fn.objLen] 获取对象自有属性的个数
    * @arg obj [object]
    * */
   objLen(obj: any): number {
     let objLength = 0;
     for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            objLength ++;
-        }
+      if (obj.hasOwnProperty(key)) {
+        objLength++;
+      }
     }
     return objLength;
   }
@@ -130,12 +145,12 @@ export /*pxfunc*/class PxFunc {
    * @param duration
    * @param func
    */
-  interval(timerId: string, duration: number|boolean, func?: Function) {
+  interval(timerId: string, duration: number | boolean, func?: Function) {
     if (typeof duration === 'number' && typeof func === 'function') {
-      clearInterval(this._intervalTimers[timerId]);
-      this._intervalTimers[timerId] = setInterval(() => func(), duration);
-    } else if (typeof duration === 'boolean' && !duration){
-      clearInterval(this._intervalTimers[timerId]);
+      clearInterval(this.intervalTimers[timerId]);
+      this.intervalTimers[timerId] = setInterval(() => func(), duration);
+    } else if (typeof duration === 'boolean' && !duration) {
+      clearInterval(this.intervalTimers[timerId]);
     }
   }
 
@@ -145,12 +160,12 @@ export /*pxfunc*/class PxFunc {
    * @param duration 
    * @param func 
    */
-  timeout(timerId: string, duration: number|boolean, func?: Function) {
+  timeout(timerId: string, duration: number | boolean, func?: Function) {
     if (typeof duration === 'number' && typeof func === 'function') {
-      clearTimeout(this._timeoutTimers[timerId]);
-      this._timeoutTimers[timerId] = setTimeout(() => func(), duration);
-    } else if (typeof duration === 'boolean' && !duration){
-      clearTimeout(this._timeoutTimers[timerId]);
+      clearTimeout(this.timeoutTimers[timerId]);
+      this.timeoutTimers[timerId] = setTimeout(() => func(), duration);
+    } else if (typeof duration === 'boolean' && !duration) {
+      clearTimeout(this.timeoutTimers[timerId]);
     }
   }
 
@@ -186,7 +201,7 @@ export /*pxfunc*/class PxFunc {
       }
     } else {
       tmpData = {};
-      for (const key in data){
+      for (const key in data) {
         if (data.hasOwnProperty(key)) {
           tmpData[key] = this.deepCopy(data[key]);
         }
@@ -209,7 +224,7 @@ export /*pxfunc*/class PxFunc {
     spn = Math.floor(integer.length / 3);
     sti = integer.length % 3;
     integerStr = integer.substr(0, sti);
-    for (i = 0; i < spn; i ++) {
+    for (i = 0; i < spn; i++) {
       integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
       sti += 3;
     }
@@ -224,10 +239,10 @@ export /*pxfunc*/class PxFunc {
    */
   cutString(str, len) {
     let tmpStr = '';
-    let count  = 0;
+    let count = 0;
     let tmpChar;
     for (let i = 0; i < str.length; i++) {
-      if (count < len)  {
+      if (count < len) {
         tmpChar = str.substr(i, 1);
         tmpStr += tmpChar;
         count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
@@ -239,21 +254,24 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.findCousin] Find the cousin(s) of jQuery element
-   * @param $ele
-   * @param selector
-   * @param level
-   * @returns {any}
+   * [fn.overlay] 给对象赋值
+   * @param target 
+   * @param source 
+   * @param propList 
    */
-  findCousin($ele: any, selector: string, level: number = 0) {
-    if (!level) {
-      return selector ? $ele.parents().find(selector) : $ele.parents();
-    } else {
-      let $parent = $ele;
-      for (let i = 0; i < level; i ++) {
-        $parent = $parent.parent();
+  overlay(target: Object, source: Object, propList?: string[]) {
+    if (source) {
+      if (propList && propList.length > 0) {
+        propList.forEach(prop => {
+          if (source.hasOwnProperty(prop)) {
+            target[prop] = source[prop];
+          }
+        });
+      } else {
+        Object.keys(source).forEach(key => {
+          target[key] = source[key];
+        });
       }
-      return selector ? $parent.find(selector) : $parent;
     }
   }
 
@@ -264,32 +282,32 @@ export /*pxfunc*/class PxFunc {
    * @returns {pattern|undefined}
    */
   getPattern(type: string, isNoLimit: boolean = false) {
-    if (!type) {return; }
+    if (!type) { return; }
     const patternsObj = {
-      cnChar:      this.patterns.cnCharPattern,
-      dblBitChar:  this.patterns.dblBitCharPattern,
-      mobPhone:    this.patterns.mobPhonePattern,
-      telPhone:    this.patterns.telPhonePattern,
-      email:       this.patterns.emailPattern,
-      base64Code:  this.patterns.base64CodePattern,
-      mac:         this.patterns.macPattern,
-      domain:      this.patterns.domainPattern,
-      port:        this.patterns.portPattern,
-      ip:          this.patterns.ipPattern,
-      ipv4:        this.patterns.ipv4Pattern,
-      ipv6:        this.patterns.ipv6Pattern,
+      cnChar: this.patterns.cnCharPattern,
+      dblBitChar: this.patterns.dblBitCharPattern,
+      mobPhone: this.patterns.mobPhonePattern,
+      telPhone: this.patterns.telPhonePattern,
+      email: this.patterns.emailPattern,
+      base64Code: this.patterns.base64CodePattern,
+      mac: this.patterns.macPattern,
+      domain: this.patterns.domainPattern,
+      port: this.patterns.portPattern,
+      ip: this.patterns.ipPattern,
+      ipv4: this.patterns.ipv4Pattern,
+      ipv6: this.patterns.ipv6Pattern,
       ipv4IpRange: this.patterns.ipv4IpRangePattern,
       ipv6IpRange: this.patterns.ipv6IpRangePattern,
-      ipv4Cidr:    this.patterns.ipv4CidrPattern,
-      ipv6Cidr:    this.patterns.ipv6CidrPattern,
-      ipv4Url:     this.patterns.ipv4UrlPattern,
-      ipv6Url:     this.patterns.ipv6UrlPattern,
-      domainUrl:   this.patterns.domainUrlPattern,
-      url:         this.patterns.urlPattern,
-      ipWithPortUrl:      this.patterns.ipWithPortUrlPattern,
-      ipv6WithPortUrl:    this.patterns.ipv6WithPortUrlPattern,
-      domainWithPortUrl:  this.patterns.domainWithPortUrlPattern,
-      withPortUrl:        this.patterns.withPortUrlPattern
+      ipv4Cidr: this.patterns.ipv4CidrPattern,
+      ipv6Cidr: this.patterns.ipv6CidrPattern,
+      ipv4Url: this.patterns.ipv4UrlPattern,
+      ipv6Url: this.patterns.ipv6UrlPattern,
+      domainUrl: this.patterns.domainUrlPattern,
+      url: this.patterns.urlPattern,
+      ipWithPortUrl: this.patterns.ipWithPortUrlPattern,
+      ipv6WithPortUrl: this.patterns.ipv6WithPortUrlPattern,
+      domainWithPortUrl: this.patterns.domainWithPortUrlPattern,
+      withPortUrl: this.patterns.withPortUrlPattern
     };
     patternsObj['patternList'] = Object.keys(patternsObj);
     return patternsObj.hasOwnProperty(type) && patternsObj[type]
@@ -308,13 +326,13 @@ export /*pxfunc*/class PxFunc {
    * @param isNoLimit
    * @returns {boolean}
    */
-  matchPattern(src: string, type: string|string[], isNoLimit?: boolean) {
-    if (!src || !type) {return false; }
+  matchPattern(src: string, type: string | string[], isNoLimit?: boolean) {
+    if (!src || !type) { return false; }
     if (type instanceof Array) {
       let matchResult = false;
       type.forEach(item => {
         const pattern: RegExp = this.getPattern(item, isNoLimit);
-        if (pattern && pattern.test(src)) {matchResult = true; }
+        if (pattern && pattern.test(src)) { matchResult = true; }
       });
       return matchResult;
     } else if (typeof type === 'string') {
@@ -324,143 +342,19 @@ export /*pxfunc*/class PxFunc {
   }
 
   /**
-   * [fn.pollingElement] 轮询获取异步出现的jQuery元素
-   * @param timerId
-   * @param selector
-   * @param interval
-   * @param func [opt.]
-   */
-  pollingElement(timerId: string, selector: boolean|string|any[], interval: number, func?: Function) {
-    if ((typeof selector === 'string' || selector instanceof Array) && typeof func === 'function') {
-      let count = 0;
-      const duration = 250;
-      this.interval(timerId, duration, eles => {
-        parseInt(String(interval / duration), 10) <= count ? this.interval(timerId, false) : count ++;
-        const tmpArr = [];
-        const slts: any = typeof selector === 'string' ? [selector] : selector;
-        slts.forEach(slt => {
-          const $ele = $(slt);
-          if ($ele.length > 0) {
-            tmpArr.push($ele);
-          }
-        });
-        if (tmpArr.length === slts.length) {
-          this.interval(timerId, false);
-          func(tmpArr);
-        }
-      });
-    } else {
-      this.interval(timerId, false);
-    }
-  }
-
-  /**
-   * [fn.noAutoComplete] 防止input密码自动填充
-   * @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
-   */
-  noAutoComplete(options: Object|Object[]) {
-    const noAutoCplt: Function = opt => {
-      if (opt['type'] && opt['$input']) {
-        if (['user', 'username'].indexOf(opt.type) > -1) {
-          opt.$input
-          .attr('autocomplete', 'off')
-          .before('<input type="password" style="display: none"/>');
-        } else if (['pwd', 'pass', 'password'].indexOf(opt.type) > -1) {
-          opt.$input
-          .attr({autocomplete: 'new-password', type: 'text'})
-          .on('input propertychange', function() {
-            $(this).val() ? $(this).attr('type', 'password') : $(this).attr('type', 'text');
-          });
-        }
-      }
-    }
-    options instanceof Array
-      ? options.forEach(opt => noAutoCplt(opt))
-      : noAutoCplt(options);
-  }
-
-  /**
-   * [fn.bootstrapTable] 渲染Bootstrap表格的通用方式
-   * @param $table
-   * @param options
-      * tableConfig {Object Opt.}
-      * gridOptions {Object Opt.},
-      * tableLabel {String Opt.},
-      * showLoading {Boolean Opt.},
-      * tableScope {String Opt.},
-      * onRefreshing {Function Opt.},
-      * onRendered {Function Opt.}
-   */
-  bootstrapTable($table: any, options: any) {
-    const tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
-    const isAfterInit = $table.parent().hasClass('fixed-table-body');
-    this._tableHelper.setAndClearLoadingTimers(options);
-    if (!isAfterInit) {
-      $table.bootstrapTable(tableConf).bootstrapTable('showLoading');
-      this._tableHelper.tableInitHandler($table, tableConf, options);
-    }
-    this._tableHelper.tableRefreshHandler($table, tableConf, options);
-  }
-
-  /**
-   * Make some html element a full screen show
-   * @param el
-   * @returns {any}
-   */
-  fullScreen(el: any) {
-    const rfs = el.requestFullScreen || el.webkitRequestFullScreen
-      || el.mozRequestFullScreen || el.msRequestFullScreen;
-    if(typeof rfs != "undefined" && rfs) {
-      return rfs.call(el);
-    }
-    if(typeof this.window.ActiveXObject != "undefined") {
-      const ws = new this.window.ActiveXObject("WScript.Shell");
-      if(ws) {ws.SendKeys("{F11}"); }
-    }
-  }
-
-  /**
-   * Exit full screen show
-   * @returns {any}
-   */
-  exitFullScreen() {
-    const el= this.document;
-    const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
-      || el.mozCancelFullScreen || el.exitFullScreen;
-    if (typeof cfs != "undefined" && cfs) {
-      return cfs.call(el);
-    }
-    if (typeof this.window.ActiveXObject != "undefined") {
-      const ws = new this.window.ActiveXObject("WScript.Shell");
-      if (ws != null) {ws.SendKeys("{F11}"); }
-    }
-  }
-
-  /**
-   * Check full screen
-   * @returns {boolean}
-   */
-  checkIsFullScreen() {
-    const el = this.document;
-    const isFull = el.fullscreenEnabled || el.fullScreen
-      || el.webkitIsFullScreen || el.msFullscreenEnabled;
-    return !!isFull;
-  }
-
-  /**
-   * [fn.log]
+   * [fn.log] 控制台打印
    * @param value 
-   * @param configs {title: string, theme: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+   * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
    */
   log(value: any, configs: Object) {
-    const styles = {
-      'grey'    : '\x1B[90m%s\x1B[0m',
-      'blue'    : '\x1B[34m%s\x1B[0m',
-      'cyan'    : '\x1B[36m%s\x1B[0m',
-      'green'   : '\x1B[32m%s\x1B[0m',
-      'magenta' : '\x1B[35m%s\x1B[0m',
-      'red'     : '\x1B[31m%s\x1B[0m',
-      'yellow'  : '\x1B[33m%s\x1B[0m'
+    const colors = {
+      'grey': '\x1B[90m%s\x1B[0m',
+      'blue': '\x1B[34m%s\x1B[0m',
+      'cyan': '\x1B[36m%s\x1B[0m',
+      'green': '\x1B[32m%s\x1B[0m',
+      'magenta': '\x1B[35m%s\x1B[0m',
+      'red': '\x1B[31m%s\x1B[0m',
+      'yellow': '\x1B[33m%s\x1B[0m'
     }
     if (typeof value === 'object') {
       value = JSON.stringify(value, null, 2);
@@ -468,7 +362,7 @@ export /*pxfunc*/class PxFunc {
       value = String(value);
     }
     let title = configs && configs['title'] || `pxfunc ${this.version}`;
-    const theme = configs && configs['theme'] in styles && configs['theme'] || 'grey';
+    const color = configs && configs['color'] in colors && configs['color'] || 'grey';
     const llen = 68;
     let tlen = 16, sp = '';
     if (title.length <= tlen) {
@@ -485,9 +379,54 @@ export /*pxfunc*/class PxFunc {
       dL += d;
     });
     console.log('\n' + dL);
-    console.log(styles['green'], tt);
+    console.log(colors['green'], tt);
     console.log(sL);
-    console.log(styles[theme], value);
+    console.log(colors[color], value);
     console.log(dL + '\n');
+  }
+
+  /**
+   * [fn.fullScreen] 全屏显示HTML元素
+   * @param el
+   * @returns {any}
+   */
+  fullScreen(el: any) {
+    const rfs = el.requestFullScreen || el.webkitRequestFullScreen
+      || el.mozRequestFullScreen || el.msRequestFullScreen;
+    if (typeof rfs != "undefined" && rfs) {
+      return rfs.call(el);
+    }
+    if (typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if (ws) { ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * [fn.exitFullScreen] 退出全屏显示
+   * @returns {any}
+   */
+  exitFullScreen() {
+    const el = this.document;
+    const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
+      || el.mozCancelFullScreen || el.exitFullScreen;
+    if (typeof cfs != "undefined" && cfs) {
+      return cfs.call(el);
+    }
+    if (typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if (ws != null) { ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * [fn.checkIsFullScreen] 检测是否全屏状态
+   * @returns {boolean}
+   */
+  checkIsFullScreen() {
+    const el = this.document;
+    const isFull = el.fullscreenEnabled || el.fullScreen
+      || el.webkitIsFullScreen || el.msFullscreenEnabled;
+    return !!isFull;
   }
 }
