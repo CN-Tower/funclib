@@ -33,7 +33,7 @@ export /*pxfunc*/ class Progress {
         this.tickFun('-', onStopped);
     }
 
-    private tickFun = (type, onStopped?) => {
+    private tickFun(type, onStopped?) {
         this.timer = setTimeout(() => {
             this.progress.tick();
             switch (type) {
