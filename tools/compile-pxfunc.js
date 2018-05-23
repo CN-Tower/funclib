@@ -27,8 +27,8 @@ function getPath(type) {
             return path.join(basePath, pxfuncRoot);
         case 'pxfuncMain':
             return path.join(basePath, pxfuncRoot, 'app/pxfunc.ts');
-        case 'pxfuncHelper':
-            return path.join(basePath, pxfuncRoot, `app/helper/*.ts`);
+        case 'pxfuncModule':
+            return path.join(basePath, pxfuncRoot, `app/modules/*.ts`);
         case 'pxfuncBase':
             return path.join(basePath, pxfuncRoot, 'assets/pxfunc.ts');
         case 'pxfuncIdx':
@@ -65,9 +65,9 @@ function startCompilepxfunc() {
     let classesStr = '';
     const classes = [];
     const getClassStr = file => fs.readFileSync(file, 'utf8').split('/*pxfunc*/');
-    const helpers = glob.sync(getPath('pxfuncHelper'));
+    const modules = glob.sync(getPath('pxfuncModule'));
     const pxfuncStrArr = getClassStr(getPath('pxfuncBase'));
-    helpers.forEach(helper => classes.push(getClassStr(helper)[1]));
+    modules.forEach(modules => classes.push(getClassStr(modules)[1]));
     classes.push(getClassStr(getPath('pxfuncMain'))[1]);
     classes.forEach(classStr => classesStr += classStr);
     newpxfuncStr = pxfuncStrArr[0] + classesStr + pxfuncStrArr[1];
@@ -83,7 +83,7 @@ function createNewpxfunc() {
             throw err;
         } else {
             var buffer = new Buffer(newpxfuncStr);
-            fs.write(fd, buffer, 0, newpxfuncStr.length + 395, 0, function(err, bytesWritten, buffer) {
+            fs.write(fd, buffer, 0, buffer.length, 0, function(err, bytesWritten, buffer) {
                 if (err) {
                     throw err;
                 } else {
