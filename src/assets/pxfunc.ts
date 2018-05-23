@@ -5,9 +5,8 @@
 
   /*pxfunc*/
 
-  const fn = new PxFunc();
+  const fn = new PxFunc({jquery: $, window: root, document: root.document});
 
-  fn['version'] = '1.0.1';
   fn['noConflict'] = function() {
     root.fn = previousfn;
     return this;
@@ -28,8 +27,3 @@
     });
   }
 }.call(this));
-
-
-
-
-
