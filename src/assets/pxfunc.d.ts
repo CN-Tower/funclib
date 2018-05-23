@@ -1,152 +1,197 @@
-/**=======================================================================
-                      通用型逻辑函数封装 PxFunc (V2.0.1)
---------------------------------------------------------------------------
-        fn.time                   返回一个当前时间字符串
-        fn.uuid                   返回一个指定长度(最小6位)的随机ID
-        fn.array                  返回一个指定长度和默认值的数组
-        fn.random                 返回一个指定范围的随机数
-        fn.objLen                 获取对象自有属性的个数
-        fn.copy                   深拷贝数组或对象
-        fn.polling                用于轮询控制
-        fn.errors                 表单控件的错误提示控制
-        fn.viewTools              通知和Loading的控制
-        fn.bootstrapTable         渲染Bootstrap表格的通用方式
-        fn.sortData               表格数据根据字段排序
-        fn.currency               格式化显示货币
-        fn.currency               裁切字符串到指定长度
-        fn.findCousin             用jQuery寻找元素的表亲
-        fn.matchPattern           与一个或几个通用正则匹配
-        fn.getPattern             获取一个通用的正则表达式
-        fn.pollingEl              用jQuery定时寻找一个异步渲染的元素
-=========================================================================*/
+/**==============================================================
+  通用型逻辑函数封装 FuncLib (V1.0.2)
+  ---------------------------------------------------------------
+  fn.version           返回当前函数库版本
+  fn.tools             NodeJs工具包
+  fn.progress          控件台进度条工具
+  fn.bootstrapTable    渲染Bootstrap表格
+  fn.time              返回当前时间字符串
+  fn.gnid              返回指定长度(最小6位)的随机ID
+  fn.array             返回指定长度和默认值的数组
+  fn.random            返回指定范围的随机数
+  fn.objLen            获取对象自有属性的个数
+  fn.deepCopy          深拷贝数组或对象
+  fn.interval          循环定时器
+  fn.timeout           延时定时器
+  fn.sortData          对象数组根据字段排序
+  fn.currency          格式化显示货币
+  fn.cutString         裁切字符串到指定长度
+  fn.overlay           给对象赋值，可指定字段
+  fn.getPattern        获取一个通用的正则表达式
+  fn.matchPattern      与一个或几个通用正则匹配
+  fn.fullScreen        全屏显示一个HTML元素
+  fn.exitFullScreen    退出全屏显示
+  fn.checkIsFullScreen 检测是否处理全屏状态
+  $.pollingElement     jQuery获取异步出现的元素
+  $.noAutoComplete     jQuery禁止input密码自动填充
+  $ele.findCousin      jQuery获取元素表亲
+  ===============================================================*/
 declare var fn: fn.PxFunc;
 export = fn;
 export as namespace fn;
 
+interface Tools {
+    /**
+     * [fn.tools.writeFile] 写文件
+     * @param dir
+     * @param dist
+     */
+    writeFile(file: string, text: string, onEnd?: Function): void;
+    /**
+     * [fn.tools.deleteDirectory] 删除文件夹和文件
+     * @param dir
+     * @param dist
+     */
+    deleteDirectory(dir: string): void;
+    /**
+     * [fn.tools.copyFile] 复制文件
+     * @param dir
+     * @param dist
+     */
+    copyFile(filePath: string, distPath: string): void;
+    /**
+     * [fn.tools.copyDirectory] 复制文件夹和文件
+     * @param dir
+     * @param dist
+     */
+    copyDirectory(dir: string, dist: string): void;
+}
+
+interface Progress {
+    /**
+     * [fn.progress.start] 开启进度条，并传入参数
+     * @param options 
+     */
+    start(options: any): void;
+    /**
+     * [fn.progress.stop] 结束进度条，结束后触发回调
+     * @param options 
+     */
+    stop(onStopped: Function): void;
+}
+
+interface BootstrapTable {
+    /**
+     * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+     * @param $table
+     * @param options
+        * tableConfig {Object Opt.}
+        * gridOptions {Object Opt.},
+        * tableLabel {String Opt.},
+        * showLoading {Boolean Opt.},
+        * tableScope {String Opt.},
+        * onRefreshing {Function Opt.},
+        * onRendered {Function Opt.}
+     */
+    rendered($table: any, options: any): void;
+}
+
 declare module fn {
     interface PxFunc {
-        translate: any;
-        viewToolsCtrl: any;
-        patterns: any;
-        gridOptions: any;
         /**
-         * [fn.init] Init PxFunc
-         * @param translate
-         * @param viewToolsCtrl
+         * [fn.version] 返回当前库的版本信息
          */
-        init(translate: any, viewToolsCtrl: any): any;
-
+        version: string;
         /**
-         * fn.time: 返回一个当前时间字符串。
+         * [fn.tools] NodeJs工具包
+         */
+        tools: Tools;
+        /**
+         * [fn.progress] 返回当前库的版本信息
+         */
+        progress: Progress;
+        /**
+         * [fn.bootstrapTable] 返回当前库的版本信息
+         */
+        bootstrapTable: BootstrapTable;
+        /**
+         * [fn.initProgress] 初始化进度条对象
+         * @param ProgressBar [class]
+         */
+        initProgress(ProgressBar: any): void;
+        /**
+         * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
+         * @param translate [Object]
+         */
+        initBootstrapTable(translate?: Object): void;
+        /**
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param options [Object]
+         */
+        initTools(options: Object): void;
+        /**
+         * [fn.time] 返回一个当前时间字符串。
          */
         time(): Function;
-
         /**
-         * fn.uuid: 返回一个指定长度(最小6位，默认12位)的随机ID。
+         * [fn.pxid] 返回一个指定长度(最小6位，默认12位)的随机ID。
          * @param len [number]
          */
-        uuid(len?: number): string;
-
+        gnid(len?: number): string;
         /**
-         * fn.array: 返回一个指定长度和默认值的数组
+         * [fn.array] 返回一个指定长度和默认值的数组
          * @param length [number]
-         * @param value  [any, function, default='']
+         * @param value  [any, function]
          */
         array(length: number, value?: any): any[];
-
         /**
-         * fn.random: 返回一个指定范围的随机数
+         * [fn.random] 返回一个指定范围的随机数
          * @param sta [number]
          * @param end [number]
          */
         random(sta: number, end?: number): number;
-
         /**
-         * fn.objLen: 获取对象自有属性的个数
+         * [fn.objLen] 获取对象自有属性的个数
          * @arg obj [object]
          * */
         objLen(obj: any): number;
-
         /**
-         * [fn.polling] Polling process service
-         * @param name
-         * @param interval
-         * @param fn
+         * [fn.interval] 循环定时器
+         * @param timerId
+         * @param duration
+         * @param func
          */
-        polling(name: string, interval: number | boolean, fn?: Function): void;
-
+        interval(timerId: string, duration: number | boolean, func: Function): void;
         /**
-         * [fn.errors] Set form control's error
-         * @param model
-         * @param errorMsg
-         * @param isForce
+         * [fn.timeout] 延时定时器
+         * @param timerId
+         * @param duration
+         * @param func
          */
-        setErrors(model: any, errorMsg: string, isForce?: boolean): void;
-
+        timeout(timerId: string, duration: number | boolean, func: Function): void;
         /**
-         * [fn.viewTools] Toggle to show some global View Tools, i.e.: infoMsg, errMsg and loader.
-         * @param options
-            * type {success|error|loader|timer},
-            * isShow
-            * msg
-            * interval
-            * delay
-         */
-        viewTools(options: any): void;
-
-        /**
-         * [fn.bootstrapTable] Init a bootstrap table by a special way.
-         * @param $table
-         * @param options
-            * tableConfig {Object Opt.}
-            * gridOptions {Object Opt.},
-            * tableLabel {String Opt.},
-            * showLoading {Boolean Opt.},
-            * tableScope {String Opt.},
-            * onRefreshing {Function Opt.},
-            * onRendered {Function Opt.}
-         */
-        bootstrapTable($table: any, options: any): void;
-
-        /**
-         * [fn.sortData] Sort table data by field
+         * [fn.sortData] 对象数组根据字段排序
          * @param tableData
          * @param field
          * @param isDesc
          */
         sortData(tableData: any, field: string, isDesc?: boolean): any;
-
         /**
-         * [fn.copy] Deep clone an Array or an Object
+         * [fn.deepCopy] 深拷贝对象或数组
          * @param data
          */
-        copy(data: any): any;
-
+        deepCopy(data: any): any;
         /**
-         * [fn.currency] Format Currency
+         * [fn.currency] 格式化显示货币
          * @param number
          * @param digit
          * @returns {string}
          */
-        fmtCurrency(number: number, digit?: number): any;
-
+        currency(number: number, digit?: number): any;
         /**
-         * [fn.currency] Format string width length
+         * [fn.cutString] Format string width length
          * @param str
          * @param len
          * @returns {string}
          */
-        currency(str: string, len: number): string;
-
+        cutString(str: number, len: number): string;
         /**
-         * [fn.findCousin] Find the cousin(s) of jQuery element
-         * @param $ele
-         * @param selector
-         * @param level
-         * @returns {any}
+         * [fn.overlay] 给对象赋值
+         * @param target 
+         * @param source 
+         * @param propList 
          */
-        findCousin($ele: any, selector: string, level?: number): any;
-
+        overlay(target: Object, source: Object, propList?: string[]): void;
         /**
          * [fn.matchPattern] Match common RegExp patterns
          * @param src
@@ -155,22 +200,34 @@ declare module fn {
          * @returns {boolean}
          */
         matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
-
         /**
          * [fn.getPattern] Get a common RegExp pattern
          * @param type
          * @param isNoLimit
          * @returns {pattern|undefined}
          */
-        getPattern(type: string, isNoLimit?: boolean): any;
-
+        getPattern(type: string, isNoLimit?: boolean): RegExp;
         /**
-         * [fn.pollingEl] Polling until got jQuery element
-         * @param poId
-         * @param selector
-         * @param interval
-         * @param fn {opt.}
+         * [fn.log] 控制台打印
+         * @param value 
+         * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
          */
-        pollingEl(poId: string, selector: string | any[] | boolean, interval: number, fn?: Function): void;
+        log(value: any, configs: Object): void;
+        /**
+         * [fn.fullScreen] 全屏显示HTML元素
+         * @param el
+         * @returns {any}
+         */
+        fullScreen(el: any): void;
+        /**
+         * [fn.exitFullScreen] 退出全屏显示
+         * @returns {any}
+         */
+        exitFullScreen(): void;
+        /**
+         * [fn.checkIsFullScreen] 检测是否全屏状态
+         * @returns {boolean}
+         */
+        checkIsFullScreen(): boolean;
     }
 }
