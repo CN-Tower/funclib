@@ -2,12 +2,46 @@
     var root = this;
     var $ = root.$ || root.jquery;
     var previousfn = root.fn;
-    var BootstrapTableHelper = /** @class */ (function () {
-        function BootstrapTableHelper(translate) {
+    var BootstrapTable = /** @class */ (function () {
+        function BootstrapTable(translate) {
             this.loadingTimers = { singleTableTimer: null };
+            this.gridOptions = {
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
+                search: true,
+                strictSearch: false,
+                searchText: '',
+                pagination: true,
+                paginationHAlign: 'left',
+                paginationDetailHAlign: 'left',
+                clickToSelect: false,
+                showRefresh: true
+            };
             this.translate = translate;
         }
-        BootstrapTableHelper.prototype.tableInitHandler = function ($table, tableConf, options) {
+        /**
+         * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+         * @param $table
+         * @param options
+            * tableConfig {Object Opt.}
+            * gridOptions {Object Opt.},
+            * tableLabel {String Opt.},
+            * showLoading {Boolean Opt.},
+            * tableScope {String Opt.},
+            * onRefreshing {Function Opt.},
+            * onRendered {Function Opt.}
+         */
+        BootstrapTable.prototype.rendered = function ($table, options) {
+            var tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
+            var isAfterInit = $table.parent().hasClass('fixed-table-body');
+            this.setAndClearLoadingTimers(options);
+            if (!isAfterInit) {
+                $table.bootstrapTable(tableConf).bootstrapTable('showLoading');
+                this.tableInitHandler($table, tableConf, options);
+            }
+            this.tableRefreshHandler($table, tableConf, options);
+        };
+        BootstrapTable.prototype.tableInitHandler = function ($table, tableConf, options) {
             var _this = this;
             setTimeout(function () {
                 if ($table.parent().hasClass('fixed-table-body')) {
@@ -26,13 +60,13 @@
                     }
                     $refreshBtn.addClass('btn-sm').css('marginLeft', '10px')
                         .mouseleave(function () { $(this).blur(); });
-                    $('.bootstrap-table .search input')
-                        .attr('placeholder', _this.translate.instant('WordForFilter'))
-                        .parent().append("<span></span>");
+                    // $('.bootstrap-table .search input')
+                    //   .attr('placeholder', this.translate.instant('WordForFilter'))
+                    //   .parent().append(`<span></span>`);
                 }
             });
         };
-        BootstrapTableHelper.prototype.tableRefreshHandler = function ($table, tableConf, options) {
+        BootstrapTable.prototype.tableRefreshHandler = function ($table, tableConf, options) {
             var isShowLoading = options['showLoading'] === true;
             if (tableConf.hasOwnProperty('url') || tableConf.hasOwnProperty('ajax')) {
                 if (isShowLoading) {
@@ -56,34 +90,100 @@
                 }
             }
         };
-        BootstrapTableHelper.prototype.setAndClearLoadingTimers = function (options) {
+        BootstrapTable.prototype.setAndClearLoadingTimers = function (options) {
             var loadingTimers = options.hasOwnProperty('tableLabel') && options.tableLabel
                 ? this.loadingTimers[options.tableLabel]
                 : this.loadingTimers.singleTableTimer;
             clearTimeout(loadingTimers);
         };
-        BootstrapTableHelper.prototype.setLoadingTimer = function ($table, options) {
+        BootstrapTable.prototype.setLoadingTimer = function ($table, options) {
             options.hasOwnProperty('tableLabel') && options.tableLabel
                 ? this.loadingTimers[options.tableLabel] = setTimeout(function () { return $table.bootstrapTable('hideLoading'); }, 20000)
                 : this.loadingTimers.singleTableTimer = setTimeout(function () { return $table.bootstrapTable('hideLoading'); }, 20000);
         };
-        return BootstrapTableHelper;
+        return BootstrapTable;
     }());
-    var GridOptions = /** @class */ (function () {
-        function GridOptions() {
-            this.pageSize = 10;
-            this.pageList = [10, 25, 50, 100];
-            this.search = true;
-            this.strictSearch = false;
-            this.searchText = '';
-            this.pagination = true;
-            this.paginationHAlign = 'left';
-            this.paginationDetailHAlign = 'left';
-            this.clickToSelect = false;
-            this.showRefresh = true;
-        }
-        return GridOptions;
-    }());
+    function extendJquery($, interval) {
+        var intervalTimers = {};
+        var timeoutTimers = {};
+        $.extend({
+            /**
+             * [$.pollingElement] 轮询获取异步出现的jQuery元素
+             * @param timerId
+             * @param selector
+             * @param interval
+             * @param func [opt.]
+             */
+            pollingElement: function (timerId, selector, interval, func) {
+                var _this = this;
+                if ((typeof selector === 'string' || selector instanceof Array) && typeof func === 'function') {
+                    var count_1 = 0;
+                    var duration_1 = 250;
+                    this.interval(timerId, duration_1, function (eles) {
+                        parseInt(String(interval / duration_1), 10) <= count_1 ? _this.interval(timerId, false) : count_1++;
+                        var tmpArr = [];
+                        var slts = typeof selector === 'string' ? [selector] : selector;
+                        slts.forEach(function (slt) {
+                            var $ele = $(slt);
+                            if ($ele.length > 0) {
+                                tmpArr.push($ele);
+                            }
+                        });
+                        if (tmpArr.length === slts.length) {
+                            _this.interval(timerId, false);
+                            func(tmpArr);
+                        }
+                    });
+                }
+                else {
+                    this.interval(timerId, false);
+                }
+            },
+            /**
+             * [$.noAutoComplete] 防止input密码自动填充
+             * @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
+             */
+            noAutoComplete: function (options) {
+                var noAutoCplt = function (opt) {
+                    if (opt['type'] && opt['$input']) {
+                        if (['user', 'username'].indexOf(opt.type) > -1) {
+                            opt.$input
+                                .attr('autocomplete', 'off')
+                                .before('<input type="password" style="display: none"/>');
+                        }
+                        else if (['pwd', 'pass', 'password'].indexOf(opt.type) > -1) {
+                            opt.$input
+                                .attr({ autocomplete: 'new-password', type: 'text' })
+                                .on('input propertychange', function () {
+                                $(this).val() ? $(this).attr('type', 'password') : $(this).attr('type', 'text');
+                            });
+                        }
+                    }
+                };
+                options instanceof Array
+                    ? options.forEach(function (opt) { return noAutoCplt(opt); })
+                    : noAutoCplt(options);
+            }
+        });
+        /**
+         * [$ele.findCousin] 寻找元素的表亲
+         * @param selector [string]
+         * @param level    [number]
+         */
+        $.fn.findCousin = function (selector, level) {
+            if (level === void 0) { level = 0; }
+            if (!level) {
+                return selector ? this.parents().find(selector) : this.parents();
+            }
+            else {
+                var $parent = this;
+                for (var i = 0; i < level; i++) {
+                    $parent = $parent.parent();
+                }
+                return selector ? $parent.find(selector) : $parent;
+            }
+        };
+    }
     var Patterns = /** @class */ (function () {
         function Patterns() {
             /* tslint:disable */
@@ -162,76 +262,195 @@
         }
         return Patterns;
     }());
-    var ViewToolsHelper = /** @class */ (function () {
-        function ViewToolsHelper(translate, viewToolsCtrl) {
-            this.translate = translate;
-            this.viewToolsCtrl = viewToolsCtrl;
+    var Progress = /** @class */ (function () {
+        function Progress(Bar) {
+            this.Bar = Bar;
         }
-        ViewToolsHelper.prototype.viewToolsHandler = function (options) {
+        /**
+         * [fn.progress.start] 开启进度条，并传入参数
+         * @param options
+         */
+        Progress.prototype.start = function (options) {
+            var prog = (options && options.title || 'Progress Bar') + " [:bar] :percent";
+            this.progress = new this.Bar(prog, {
+                complete: '=', incomplete: ' ',
+                width: options && options['width'] || 40,
+                total: options && options['total'] || 20
+            });
+            clearTimeout(this.timer);
+            this.duration = 250;
+            this.tickFun('+');
+        };
+        /**
+         * [fn.progress.stop] 结束进度条，结束后触发回调
+         * @param options
+         */
+        Progress.prototype.stop = function (onStopped) {
+            clearTimeout(this.timer);
+            this.duration = 600;
+            this.tickFun('-', onStopped);
+        };
+        Progress.prototype.tickFun = function (type, onStopped) {
             var _this = this;
-            if (options.type === 'timer') {
-                if (options.hasOwnProperty('fn') && options.fn instanceof Function) {
-                    setTimeout(function () { return options.fn(); }, options.delay || 2000);
+            this.timer = setTimeout(function () {
+                _this.progress.tick();
+                switch (type) {
+                    case '+':
+                        _this.duration += 300;
+                        break;
+                    case '-':
+                        _this.duration -= _this.duration * 0.2;
+                        break;
                 }
-            }
-            else {
-                if (options.hasOwnProperty('delay')) {
-                    setTimeout(function () {
-                        if (options.hasOwnProperty('fn') && options.fn instanceof Function) {
-                            options.fn();
+                _this.progress.complete && status === 'stop' ? onStopped() : _this.tickFun(type);
+            }, this.duration);
+        };
+        return Progress;
+    }());
+    var Tools = /** @class */ (function () {
+        function Tools(fs, path) {
+            var _this = this;
+            if (fs) {
+                /**
+                 * [fn.tools.writeFile] 写文件
+                 * @param dir
+                 * @param dist
+                 */
+                this.writeFile = function (file, text, onEnd) {
+                    fs.open(file, 'w', function (err, fd) {
+                        if (err) {
+                            throw err;
                         }
-                        _this.viewToolsCtrl.next(_this._optionsHandler(options));
-                    }, options.delay);
-                }
-                else {
-                    this.viewToolsCtrl.next(this._optionsHandler(options));
-                }
+                        else {
+                            var buffer = new Buffer(text);
+                            fs.write(fd, buffer, 0, buffer.length, 0, function (err, bytesWritten, buffer) {
+                                if (err) {
+                                    throw err;
+                                }
+                                else {
+                                    fs.close(fd);
+                                    if (typeof onEnd === 'function') {
+                                        onEnd();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                };
+                /**
+                 * [fn.tools.copyFile] 复制文件
+                 * @param dir
+                 * @param dist
+                 */
+                this.copyFile = function (filePath, distPath) {
+                    fs.createReadStream(filePath).pipe(fs.createWriteStream(distPath));
+                };
             }
-        };
-        ViewToolsHelper.prototype._optionsHandler = function (option) {
-            if (!option.hasOwnProperty('isShow')) {
-                option.isShow = true;
+            if (fs && path) {
+                /**
+                 * [fn.tools.deleteDirectory] 删除文件夹和文件
+                 * @param dir
+                 * @param dist
+                 */
+                this.deleteDirectory = function (dir) {
+                    if (fs.existsSync(dir)) {
+                        var files = fs.readdirSync(dir);
+                        files.forEach(function (file) {
+                            var subFile = path.join(dir, file);
+                            if (fs.statSync(subFile).isDirectory()) {
+                                _this.deleteDirectory(subFile);
+                            }
+                            else {
+                                fs.unlinkSync(subFile);
+                            }
+                        });
+                        fs.rmdirSync(dir);
+                    }
+                };
+                /**
+                 * [fn.tools.copyDirectory] 复制文件夹和文件
+                 * @param dir
+                 * @param dist
+                 */
+                this.copyDirectory = function (dir, dist) {
+                    if (fs.existsSync(dir)) {
+                        var distDir_1 = path.join(dist, path.basename(dir));
+                        fs.mkdirSync(distDir_1);
+                        var files = fs.readdirSync(dir);
+                        files.forEach(function (file) {
+                            var subFile = path.join(dir, file);
+                            var subDist = path.join(distDir_1, file);
+                            if (fs.statSync(subFile).isDirectory()) {
+                                _this.copyDirectory(subFile, subDist);
+                            }
+                            else {
+                                _this.copyFile(subFile, subDist);
+                            }
+                        });
+                    }
+                };
             }
-            if (option.isShow && option.type === 'success' && !option.hasOwnProperty('msg')) {
-                option.msg = this.translate.instant('vm.opOkMsg');
-            }
-            if (option.isShow && !option.hasOwnProperty('interval')) {
-                option.interval = option.type === 'loader' ? 20000 : 2000;
-            }
-            return option;
-        };
-        return ViewToolsHelper;
+        }
+        return Tools;
     }());
     var PxFunc = /** @class */ (function () {
-        function PxFunc() {
+        function PxFunc(options) {
+            this.version = 'V1.0.2';
             this.patterns = new Patterns();
-            this.gridOptions = new GridOptions();
-            this._pollingTimers = {};
-            this._pollingElTimers = {};
+            this.intervalTimers = {};
+            this.timeoutTimers = {};
             /**
-             * fn.time: 返回一个当前时间字符串。
+             * [fn.time] 返回一个当前时间字符串。
              */
             this.time = function () { return (new Date()).getTime(); };
+            this.overlay(this, options, ['jquery', 'window', 'document']);
+            if (!this.window || !this.document) {
+                delete this.window;
+                delete this.document;
+                delete this.fullScreen;
+                delete this.exitFullScreen;
+                delete this.checkIsFullScreen;
+            }
+            if (this.jquery) {
+                extendJquery($, this.interval);
+            }
+            else {
+                delete this.jquery;
+            }
         }
         /**
-         * [fn.init] Init PxFunc
-         * @param translate
-         * @param viewToolsCtrl
+         * [fn.initProgress] 初始化进度条对象
+         * @param ProgressBar [class]
          */
-        PxFunc.prototype.init = function (translate, viewToolsCtrl) {
-            this.translate = translate;
-            this.viewToolsCtrl = viewToolsCtrl;
-            this._viewsHelper = new ViewToolsHelper(this.translate, this.viewToolsCtrl);
-            this._tableHelper = new BootstrapTableHelper(this.translate);
+        PxFunc.prototype.initProgress = function (ProgressBar) {
+            if (ProgressBar) {
+                this.progress = new Progress(ProgressBar);
+            }
         };
         /**
-         * fn.uuid: 返回一个指定长度(最小6位)的随机ID。
+         * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
+         * @param translate [Object]
+         */
+        PxFunc.prototype.initBootstrapTable = function (translate) {
+            this.bootstrapTable = new BootstrapTable(translate);
+        };
+        /**
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param options [Object]
+         */
+        PxFunc.prototype.initTools = function (options) {
+            if (options) {
+                this.tools = new Tools(options['fs'], options['path']);
+            }
+        };
+        /**
+         * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
          * @param len [number]
          */
-        PxFunc.prototype.uuid = function (len) {
+        PxFunc.prototype.gnid = function (len) {
             var _this = this;
             if (len === void 0) { len = 12; }
-            var charSet = '0123456789abcdefghijklmnopqrstuvwxyz';
+            var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             var eleId = '';
             if (len < 6) {
                 len = 6;
@@ -242,31 +461,49 @@
         };
         ;
         /**
-         * fn.array: 返回一个指定长度和默认值的数组
+         * [fn.array] 返回一个指定长度和默认值的数组
          * @param length [number]
          * @param value  [any, function]
          */
         PxFunc.prototype.array = function (length, value) {
-            if (value === void 0) { value = ''; }
             var tmpArr = [];
+            var isUndefied = value === undefined;
+            var isFunction = typeof value === 'function';
+            var tmpVal = 0;
             for (var i = 0; i < length; i++) {
-                var val = typeof value === 'function' ? value() : value;
-                tmpArr.push(val);
+                if (isUndefied) {
+                    tmpArr.push(tmpVal);
+                    tmpVal++;
+                }
+                else if (isFunction) {
+                    tmpArr.push(value());
+                }
+                else {
+                    tmpArr.push(value);
+                }
             }
             return tmpArr;
         };
         /**
-         * fn.random: 返回一个指定范围的随机数
+         * [fn.random] 返回一个指定范围的随机数
          * @param sta [number]
          * @param end [number]
          */
         PxFunc.prototype.random = function (sta, end) {
-            return end && end > sta
-                ? Math.floor(Math.random() * (end - sta) + sta)
-                : Math.floor(Math.random() * sta);
+            if (end === undefined || sta === end) {
+                return Math.floor(Math.random() * sta);
+            }
+            else {
+                if (sta > end) {
+                    var tmpSta = sta;
+                    sta = end;
+                    end = tmpSta;
+                }
+                return Math.floor(Math.random() * (end - sta) + sta);
+            }
         };
         /**
-         * fn.objLen: 获取对象自有属性的个数
+         * [fn.objLen] 获取对象自有属性的个数
          * @arg obj [object]
          * */
         PxFunc.prototype.objLen = function (obj) {
@@ -279,80 +516,37 @@
             return objLength;
         };
         /**
-         * [fn.polling] Polling process service
-         * @param name
-         * @param interval
-         * @param fn
+         * [fn.interval] 循环定时器
+         * @param timerId
+         * @param duration
+         * @param func
          */
-        PxFunc.prototype.polling = function (name, interval, fn) {
-            if (typeof interval === 'number' && !!fn) {
-                clearInterval(this._pollingTimers[name]);
-                this._pollingTimers[name] = setInterval(function () { return fn(); }, interval);
+        PxFunc.prototype.interval = function (timerId, duration, func) {
+            if (typeof duration === 'number' && typeof func === 'function') {
+                clearInterval(this.intervalTimers[timerId]);
+                this.intervalTimers[timerId] = setInterval(function () { return func(); }, duration);
             }
-            else if (typeof interval === 'boolean' && !interval) {
-                clearInterval(this._pollingTimers[name]);
+            else if (typeof duration === 'boolean' && !duration) {
+                clearInterval(this.intervalTimers[timerId]);
             }
         };
         /**
-         * [fn.errors] Set form control's error
-         * @param model
-         * @param errorMsg
-         * @param isForce
+         * [fn.timeout] 延时定时器
+         * @param timerId
+         * @param duration
+         * @param func
          */
-        PxFunc.prototype.errors = function (model, errorMsg, isForce) {
-            if (isForce === void 0) { isForce = false; }
-            this._lintFix = true;
-            if (model && model['control'] && (isForce || !model.control.pristine)) {
-                errorMsg
-                    ? model.control.errors({ validator: errorMsg })
-                    : model.control.errors(null);
+        PxFunc.prototype.timeout = function (timerId, duration, func) {
+            if (typeof duration === 'number' && typeof func === 'function') {
+                clearTimeout(this.timeoutTimers[timerId]);
+                this.timeoutTimers[timerId] = setTimeout(function () { return func(); }, duration);
+            }
+            else if (typeof duration === 'boolean' && !duration) {
+                clearTimeout(this.timeoutTimers[timerId]);
             }
         };
         /**
-         * [fn.viewTools] Toggle to show some global View Tools, i.e.: infoMsg, errMsg and loader.
-         * @param options
-            * type {success|error|loader|timer},
-            * isShow
-            * msg
-            * interval
-            * delay
-         */
-        PxFunc.prototype.viewTools = function (options) {
-            var _this = this;
-            if (options instanceof Array) {
-                options.forEach(function (item) { return _this._viewsHelper.viewToolsHandler(item); });
-            }
-            else if (typeof options === 'object') {
-                this._viewsHelper.viewToolsHandler(options);
-            }
-        };
-        /**
-         * [fn.bootstrapTable] Init a bootstrap table by a special way.
-         * @param $table
-         * @param options
-            * tableConfig {Object Opt.}
-            * gridOptions {Object Opt.},
-            * tableLabel {String Opt.},
-            * showLoading {Boolean Opt.},
-            * tableScope {String Opt.},
-            * onRefreshing {Function Opt.},
-            * onRendered {Function Opt.}
-         */
-        PxFunc.prototype.bootstrapTable = function ($table, options) {
-            if (options.hasOwnProperty('showLoading') && !options.showLoading) {
-                this.viewTools({ type: 'loader', isShow: false });
-            }
-            var tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
-            var isAfterInit = $table.parent().hasClass('fixed-table-body');
-            this._tableHelper.setAndClearLoadingTimers(options);
-            if (!isAfterInit) {
-                $table.bootstrapTable(tableConf).bootstrapTable('showLoading');
-                this._tableHelper.tableInitHandler($table, tableConf, options);
-            }
-            this._tableHelper.tableRefreshHandler($table, tableConf, options);
-        };
-        /**
-         * [fn.sortData] Sort table data by field
+         * [fn.sortData] 对象数组根据字段排序
          * @param tableData
          * @param field
          * @param isDesc
@@ -369,10 +563,10 @@
             });
         };
         /**
-         * [fn.copy] Deep clone an Array or an Object
+         * [fn.deepCopy] 深拷贝对象或数组
          * @param data
          */
-        PxFunc.prototype.copy = function (data) {
+        PxFunc.prototype.deepCopy = function (data) {
             if (typeof data !== 'object') {
                 return data;
             }
@@ -380,29 +574,28 @@
             if (data instanceof Array) {
                 tmpData = [];
                 for (var i = 0; i < data.length; i++) {
-                    tmpData.push(this.copy(data[i]));
+                    tmpData.push(this.deepCopy(data[i]));
                 }
             }
             else {
                 tmpData = {};
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
-                        tmpData[key] = this.copy(data[key]);
+                        tmpData[key] = this.deepCopy(data[key]);
                     }
                 }
             }
             return tmpData;
         };
         /**
-         * [fn.currency] Format Currency
+         * [fn.currency] 格式化显示货币
          * @param number
          * @param digit
          * @returns {string}
          */
         PxFunc.prototype.currency = function (number, digit) {
             if (digit === void 0) { digit = 2; }
-            this._lintFix = true;
-            var nbArr = parseFloat(String(number)).toFixed(digit).split('.');
+            var nbArr = String(number.toFixed(digit)).split('.');
             var integer = nbArr[0];
             var decimal = nbArr.length > 1 ? nbArr[1] : '';
             var integerStr, spn, sti, i;
@@ -422,74 +615,51 @@
          * @returns {string}
          */
         PxFunc.prototype.cutString = function (str, len) {
-            this._lintFix = true;
-            var patrn = /[\x00-\xff]/;
-            var strre = '', count = 0, tempStr;
+            var tmpStr = '';
+            var count = 0;
+            var tmpChar;
             for (var i = 0; i < str.length; i++) {
-                if (count >= len - 1) {
+                if (count < len) {
+                    tmpChar = str.substr(i, 1);
+                    tmpStr += tmpChar;
+                    count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
+                }
+                else {
                     break;
                 }
-                tempStr = str.substr(i, 1);
-                strre += tempStr;
-                count += patrn.test(tempStr) ? 2 : 1;
             }
-            return strre + '...';
+            return tmpStr + '...';
         };
         /**
-         * [fn.findCousin] Find the cousin(s) of jQuery element
-         * @param $ele
-         * @param selector
-         * @param level
-         * @returns {any}
+         * [fn.overlay] 给对象赋值
+         * @param target
+         * @param source
+         * @param propList
          */
-        PxFunc.prototype.findCousin = function ($ele, selector, level) {
-            if (level === void 0) { level = 0; }
-            this._lintFix = true;
-            if (!level) {
-                return selector ? $ele.parents().find(selector) : $ele.parents();
-            }
-            else {
-                var $parent = $ele;
-                for (var i = 0; i < level; i++) {
-                    $parent = $parent.parent();
+        PxFunc.prototype.overlay = function (target, source, propList) {
+            if (source) {
+                if (propList && propList.length > 0) {
+                    propList.forEach(function (prop) {
+                        if (source.hasOwnProperty(prop)) {
+                            target[prop] = source[prop];
+                        }
+                    });
                 }
-                return selector ? $parent.find(selector) : $parent;
+                else {
+                    Object.keys(source).forEach(function (key) {
+                        target[key] = source[key];
+                    });
+                }
             }
         };
         /**
-         * [fn.matchPattern] Match common RegExp patterns
-         * @param src
-         * @param type
-         * @param isNoLimit
-         * @returns {boolean}
-         */
-        PxFunc.prototype.matchPattern = function (src, type, isNoLimit) {
-            var _this = this;
-            if (!src || !type) {
-                return false;
-            }
-            if (type instanceof Array) {
-                var matchResult_1 = false;
-                type.forEach(function (item) {
-                    var pattern = _this.getPattern(item, isNoLimit);
-                    if (pattern && pattern.test(src)) {
-                        matchResult_1 = true;
-                    }
-                });
-                return matchResult_1;
-            }
-            else if (typeof type === 'string') {
-                var pattern = this.getPattern(type, isNoLimit);
-                return pattern && pattern.test(src);
-            }
-        };
-        /**
-         * [fn.getPattern] Get a common RegExp pattern
+         * [fn.getPattern] 与一个或几个通用正则匹配
          * @param type
          * @param isNoLimit
          * @returns {pattern|undefined}
          */
         PxFunc.prototype.getPattern = function (type, isNoLimit) {
+            if (isNoLimit === void 0) { isNoLimit = false; }
             if (!type) {
                 return;
             }
@@ -529,42 +699,126 @@
                 : undefined;
         };
         /**
-         * [fn.pollingEl] Polling until got jQuery element
-         * @param poId
-         * @param selector
-         * @param interval
-         * @param fn {opt.}
+         * [fn.matchPattern] 获取一个通用的正则表达式
+         * @param src
+         * @param type
+         * @param isNoLimit
+         * @returns {boolean}
          */
-        PxFunc.prototype.pollingEl = function (poId, selector, interval, fn) {
+        PxFunc.prototype.matchPattern = function (src, type, isNoLimit) {
             var _this = this;
-            if ((typeof selector === 'string' || selector instanceof Array) && !!fn) {
-                clearInterval(this._pollingElTimers[poId]);
-                var count_1 = 0;
-                var int_1 = 250;
-                this._pollingElTimers[poId] = setInterval(function () {
-                    count_1 >= parseInt(String(interval / int_1), 10) ? clearInterval(_this._pollingElTimers[poId]) : count_1++;
-                    var tmpArr = [];
-                    var selectors = typeof selector === 'string' ? [selector] : selector;
-                    selectors.forEach(function (slt) {
-                        var $ele = $(slt);
-                        if ($ele.length > 0) {
-                            tmpArr.push($ele);
-                        }
-                    });
-                    if (tmpArr.length === selectors.length) {
-                        clearInterval(_this._pollingElTimers[poId]);
-                        fn(tmpArr);
+            if (!src || !type) {
+                return false;
+            }
+            if (type instanceof Array) {
+                var matchResult_1 = false;
+                type.forEach(function (item) {
+                    var pattern = _this.getPattern(item, isNoLimit);
+                    if (pattern && pattern.test(src)) {
+                        matchResult_1 = true;
                     }
-                }, int_1);
+                });
+                return matchResult_1;
             }
-            else if (typeof selector === 'boolean' && !interval) {
-                clearInterval(this._pollingElTimers[poId]);
+            else if (typeof type === 'string') {
+                var pattern = this.getPattern(type, isNoLimit);
+                return pattern && pattern.test(src);
             }
+        };
+        /**
+         * [fn.log] 控制台打印
+         * @param value
+         * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+         */
+        PxFunc.prototype.log = function (value, configs) {
+            var colors = {
+                'grey': '\x1B[90m%s\x1B[0m',
+                'blue': '\x1B[34m%s\x1B[0m',
+                'cyan': '\x1B[36m%s\x1B[0m',
+                'green': '\x1B[32m%s\x1B[0m',
+                'magenta': '\x1B[35m%s\x1B[0m',
+                'red': '\x1B[31m%s\x1B[0m',
+                'yellow': '\x1B[33m%s\x1B[0m'
+            };
+            if (typeof value === 'object') {
+                value = JSON.stringify(value, null, 2);
+            }
+            else {
+                value = String(value);
+            }
+            var title = configs && configs['title'] || "pxfunc " + this.version;
+            var color = configs && configs['color'] in colors && configs['color'] || 'grey';
+            var llen = 68;
+            var tlen = 16, sp = '';
+            if (title.length <= tlen) {
+                tlen = title.length;
+            }
+            else {
+                title = this.cutString(title, tlen - 2);
+            }
+            this.array((llen - tlen) / 2, ' ').forEach(function (x) { return sp += x; });
+            var tt = sp + title;
+            var s = '-', d = '=';
+            var sL = '', dL = '';
+            this.array(llen).forEach(function (x) {
+                sL += s;
+                dL += d;
+            });
+            console.log('\n' + dL);
+            console.log(colors['green'], tt);
+            console.log(sL);
+            console.log(colors[color], value);
+            console.log(dL + '\n');
+        };
+        /**
+         * [fn.fullScreen] 全屏显示HTML元素
+         * @param el
+         * @returns {any}
+         */
+        PxFunc.prototype.fullScreen = function (el) {
+            var rfs = el.requestFullScreen || el.webkitRequestFullScreen
+                || el.mozRequestFullScreen || el.msRequestFullScreen;
+            if (typeof rfs != "undefined" && rfs) {
+                return rfs.call(el);
+            }
+            if (typeof this.window.ActiveXObject != "undefined") {
+                var ws = new this.window.ActiveXObject("WScript.Shell");
+                if (ws) {
+                    ws.SendKeys("{F11}");
+                }
+            }
+        };
+        /**
+         * [fn.exitFullScreen] 退出全屏显示
+         * @returns {any}
+         */
+        PxFunc.prototype.exitFullScreen = function () {
+            var el = this.document;
+            var cfs = el.cancelFullScreen || el.webkitCancelFullScreen
+                || el.mozCancelFullScreen || el.exitFullScreen;
+            if (typeof cfs != "undefined" && cfs) {
+                return cfs.call(el);
+            }
+            if (typeof this.window.ActiveXObject != "undefined") {
+                var ws = new this.window.ActiveXObject("WScript.Shell");
+                if (ws != null) {
+                    ws.SendKeys("{F11}");
+                }
+            }
+        };
+        /**
+         * [fn.checkIsFullScreen] 检测是否全屏状态
+         * @returns {boolean}
+         */
+        PxFunc.prototype.checkIsFullScreen = function () {
+            var el = this.document;
+            var isFull = el.fullscreenEnabled || el.fullScreen
+                || el.webkitIsFullScreen || el.msFullscreenEnabled;
+            return !!isFull;
         };
         return PxFunc;
     }());
-    var fn = new PxFunc();
-    fn['version'] = '1.0.1';
+    var fn = new PxFunc({ jquery: $, window: root, document: root.document });
     fn['noConflict'] = function () {
         root.fn = previousfn;
         return this;
