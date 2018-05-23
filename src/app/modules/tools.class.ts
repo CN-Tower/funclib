@@ -1,4 +1,4 @@
-export /*pxfunc*/ class Tools {
+export /*funclib*/ class Tools {
 
     writeFile: Function;
     deleteDirectory: Function;

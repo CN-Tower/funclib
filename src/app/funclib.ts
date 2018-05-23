@@ -7,7 +7,7 @@ import * as $ from 'jquery';
 import { setTimeout } from 'timers';
 import { win32 } from 'path';
 
-export /*pxfunc*/ class PxFunc {
+export /*funclib*/ class Funclib {
 
   version: string = 'V1.0.2'
   tools: any;
@@ -361,7 +361,7 @@ export /*pxfunc*/ class PxFunc {
     } else {
       value = String(value);
     }
-    let title = configs && configs['title'] || `pxfunc ${this.version}`;
+    let title = configs && configs['title'] || `funclib ${this.version}`;
     const color = configs && configs['color'] in colors && configs['color'] || 'grey';
     const llen = 68;
     let tlen = 16, sp = '';

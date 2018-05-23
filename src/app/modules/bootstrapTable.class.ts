@@ -1,4 +1,4 @@
-export /*pxfunc*/ class BootstrapTable {
+export /*funclib*/ class BootstrapTable {
   private translate: any;
   private loadingTimers: any = {singleTableTimer: null};
 

@@ -1,5 +1,5 @@
 /**==============================================================
-  通用型逻辑函数封装 FuncLib (V1.0.2)
+  通用型逻辑函数封装 funclib (V1.0.2)
   ---------------------------------------------------------------
   fn.version           返回当前函数库版本
   fn.tools             NodeJs工具包
@@ -26,7 +26,7 @@
   $.noAutoComplete     jQuery禁止input密码自动填充
   $ele.findCousin      jQuery获取元素表亲
   ===============================================================*/
-declare var fn: fn.PxFunc;
+declare var fn: fn.Funclib;
 export = fn;
 export as namespace fn;
 
@@ -87,7 +87,7 @@ interface BootstrapTable {
 }
 
 declare module fn {
-    interface PxFunc {
+    interface Funclib {
         /**
          * [fn.version] 返回当前库的版本信息
          */

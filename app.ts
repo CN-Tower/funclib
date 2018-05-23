@@ -1,6 +1,6 @@
-import { PxFunc } from './src/app/pxfunc';
+import { Funclib } from './src/app/funclib';
 
-const fn = new PxFunc();
+const fn = new Funclib();
 
 const time = fn.time();
 console.log(time);

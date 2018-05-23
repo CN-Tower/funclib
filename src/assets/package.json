@@ -1,5 +1,5 @@
 {
-  "name": "pxfunc",
+  "name": "funclib",
   "version": "1.0.0",
   "description": "A powerful javascript functions lib!",
   "main": "index.js",
@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/pxfunc.js"
+    "url": "http://github.com/funclib.js"
   },
   "keywords": [
-    "pxfunc",
+    "funclib",
     "javascript",
     "jslib"
   ],

@@ -1,7 +1,6 @@
-var fn = require('./pxfunc');
+var fn = require('./funclib');
 
 // var b = fn.matchPattern('127.0.0.1', 'ip');
 // console.log(b);
 
-fn.log([{name: 'test'}], {title: 'Test', theme: 'red'});
-console.log(fn.time())
+console.log(fn.gnid());

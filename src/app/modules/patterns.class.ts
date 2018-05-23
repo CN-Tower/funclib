@@ -1,4 +1,4 @@
-export /*pxfunc*/ class Patterns {
+export /*funclib*/ class Patterns {
   /* tslint:disable */
   // 匹配汉字
   public cnCharPattern: any = /[\u4e00-\u9fa5]+/;

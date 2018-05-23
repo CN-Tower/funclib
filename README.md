@@ -1,23 +1,23 @@
-# pxfunc
+# funclib
 
 ### Version
-通用型逻辑函数封装 PxFunc (V2.0.1)
+通用型逻辑函数封装 funclib:V2.0.1
 
 ### Quick start
 ```bash
-# Install pxjson
-$ npm install pxfunc
+# Install funclib.js
+$ npm install funclib
 
-# Use pxjson
+# Use funclib
 $ node
-> var fn = require('pxfunc');
-> console.log(fn.uuid()) // => as93ad3dfasx
+> var fn = require('funclib');
+> console.log(fn.gnid()) // => 8GH9IYO60MXQ
 ```
 
 ### Contribute
 ```bash
-# Download pxjson repo
-$ git clone https://github.com/CN-Tower/pxfunc.js.git
+# Download funclib repo
+$ git clone https://github.com/CN-Tower/funclib.js.git
 
 # Install dependency
 $ npm install

@@ -1,4 +1,4 @@
-export /*pxfunc*/ class Progress {
+export /*funclib*/ class Progress {
     private Bar: any;
     private timer: any;
     private progress: any;

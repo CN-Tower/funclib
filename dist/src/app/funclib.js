@@ -7,8 +7,8 @@ var extendJquery_func_1 = require("./modules/extendJquery.func");
 var bootstrapTable_class_1 = require("./modules/bootstrapTable.class");
 var $ = require("jquery");
 var timers_1 = require("timers");
-var PxFunc = /** @class */ (function () {
-    function PxFunc(options) {
+var Funclib = /** @class */ (function () {
+    function Funclib(options) {
         this.version = 'V1.0.2';
         this.patterns = new patterns_class_1.Patterns();
         this.intervalTimers = {};
@@ -36,7 +36,7 @@ var PxFunc = /** @class */ (function () {
      * [fn.initProgress] 初始化进度条对象
      * @param ProgressBar [class]
      */
-    PxFunc.prototype.initProgress = function (ProgressBar) {
+    Funclib.prototype.initProgress = function (ProgressBar) {
         if (ProgressBar) {
             this.progress = new progress_class_1.Progress(ProgressBar);
         }
@@ -45,14 +45,14 @@ var PxFunc = /** @class */ (function () {
      * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
      * @param translate [Object]
      */
-    PxFunc.prototype.initBootstrapTable = function (translate) {
+    Funclib.prototype.initBootstrapTable = function (translate) {
         this.bootstrapTable = new bootstrapTable_class_1.BootstrapTable(translate);
     };
     /**
      * [fn.initTools] 初始化一个NodeJs工具包对象
      * @param options [Object]
      */
-    PxFunc.prototype.initTools = function (options) {
+    Funclib.prototype.initTools = function (options) {
         if (options) {
             this.tools = new tools_class_1.Tools(options['fs'], options['path']);
         }
@@ -61,7 +61,7 @@ var PxFunc = /** @class */ (function () {
      * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
      * @param len [number]
      */
-    PxFunc.prototype.gnid = function (len) {
+    Funclib.prototype.gnid = function (len) {
         var _this = this;
         if (len === void 0) { len = 12; }
         var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -79,7 +79,7 @@ var PxFunc = /** @class */ (function () {
      * @param length [number]
      * @param value  [any, function]
      */
-    PxFunc.prototype.array = function (length, value) {
+    Funclib.prototype.array = function (length, value) {
         var tmpArr = [];
         var isUndefied = value === undefined;
         var isFunction = typeof value === 'function';
@@ -103,7 +103,7 @@ var PxFunc = /** @class */ (function () {
      * @param sta [number]
      * @param end [number]
      */
-    PxFunc.prototype.random = function (sta, end) {
+    Funclib.prototype.random = function (sta, end) {
         if (end === undefined || sta === end) {
             return Math.floor(Math.random() * sta);
         }
@@ -120,7 +120,7 @@ var PxFunc = /** @class */ (function () {
      * [fn.objLen] 获取对象自有属性的个数
      * @arg obj [object]
      * */
-    PxFunc.prototype.objLen = function (obj) {
+    Funclib.prototype.objLen = function (obj) {
         var objLength = 0;
         for (var key in obj) {
             if (obj.hasOwnProperty(key)) {
@@ -135,7 +135,7 @@ var PxFunc = /** @class */ (function () {
      * @param duration
      * @param func
      */
-    PxFunc.prototype.interval = function (timerId, duration, func) {
+    Funclib.prototype.interval = function (timerId, duration, func) {
         if (typeof duration === 'number' && typeof func === 'function') {
             clearInterval(this.intervalTimers[timerId]);
             this.intervalTimers[timerId] = setInterval(function () { return func(); }, duration);
@@ -150,7 +150,7 @@ var PxFunc = /** @class */ (function () {
      * @param duration
      * @param func
      */
-    PxFunc.prototype.timeout = function (timerId, duration, func) {
+    Funclib.prototype.timeout = function (timerId, duration, func) {
         if (typeof duration === 'number' && typeof func === 'function') {
             clearTimeout(this.timeoutTimers[timerId]);
             this.timeoutTimers[timerId] = timers_1.setTimeout(function () { return func(); }, duration);
@@ -165,7 +165,7 @@ var PxFunc = /** @class */ (function () {
      * @param field
      * @param isDesc
      */
-    PxFunc.prototype.sortData = function (tableData, field, isDesc) {
+    Funclib.prototype.sortData = function (tableData, field, isDesc) {
         return tableData.sort(function (row1, row2) {
             return row1.hasOwnProperty(field) && row2.hasOwnProperty(field)
                 ? row1[field] === row2[field]
@@ -180,7 +180,7 @@ var PxFunc = /** @class */ (function () {
      * [fn.deepCopy] 深拷贝对象或数组
      * @param data
      */
-    PxFunc.prototype.deepCopy = function (data) {
+    Funclib.prototype.deepCopy = function (data) {
         if (typeof data !== 'object') {
             return data;
         }
@@ -207,7 +207,7 @@ var PxFunc = /** @class */ (function () {
      * @param digit
      * @returns {string}
      */
-    PxFunc.prototype.currency = function (number, digit) {
+    Funclib.prototype.currency = function (number, digit) {
         if (digit === void 0) { digit = 2; }
         var nbArr = String(number.toFixed(digit)).split('.');
         var integer = nbArr[0];
@@ -228,7 +228,7 @@ var PxFunc = /** @class */ (function () {
      * @param len
      * @returns {string}
      */
-    PxFunc.prototype.cutString = function (str, len) {
+    Funclib.prototype.cutString = function (str, len) {
         var tmpStr = '';
         var count = 0;
         var tmpChar;
@@ -250,7 +250,7 @@ var PxFunc = /** @class */ (function () {
      * @param source
      * @param propList
      */
-    PxFunc.prototype.overlay = function (target, source, propList) {
+    Funclib.prototype.overlay = function (target, source, propList) {
         if (source) {
             if (propList && propList.length > 0) {
                 propList.forEach(function (prop) {
@@ -272,7 +272,7 @@ var PxFunc = /** @class */ (function () {
      * @param isNoLimit
      * @returns {pattern|undefined}
      */
-    PxFunc.prototype.getPattern = function (type, isNoLimit) {
+    Funclib.prototype.getPattern = function (type, isNoLimit) {
         if (isNoLimit === void 0) { isNoLimit = false; }
         if (!type) {
             return;
@@ -319,7 +319,7 @@ var PxFunc = /** @class */ (function () {
      * @param isNoLimit
      * @returns {boolean}
      */
-    PxFunc.prototype.matchPattern = function (src, type, isNoLimit) {
+    Funclib.prototype.matchPattern = function (src, type, isNoLimit) {
         var _this = this;
         if (!src || !type) {
             return false;
@@ -344,7 +344,7 @@ var PxFunc = /** @class */ (function () {
      * @param value
      * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      */
-    PxFunc.prototype.log = function (value, configs) {
+    Funclib.prototype.log = function (value, configs) {
         var colors = {
             'grey': '\x1B[90m%s\x1B[0m',
             'blue': '\x1B[34m%s\x1B[0m',
@@ -360,7 +360,7 @@ var PxFunc = /** @class */ (function () {
         else {
             value = String(value);
         }
-        var title = configs && configs['title'] || "pxfunc " + this.version;
+        var title = configs && configs['title'] || "funclib " + this.version;
         var color = configs && configs['color'] in colors && configs['color'] || 'grey';
         var llen = 68;
         var tlen = 16, sp = '';
@@ -389,7 +389,7 @@ var PxFunc = /** @class */ (function () {
      * @param el
      * @returns {any}
      */
-    PxFunc.prototype.fullScreen = function (el) {
+    Funclib.prototype.fullScreen = function (el) {
         var rfs = el.requestFullScreen || el.webkitRequestFullScreen
             || el.mozRequestFullScreen || el.msRequestFullScreen;
         if (typeof rfs != "undefined" && rfs) {
@@ -406,7 +406,7 @@ var PxFunc = /** @class */ (function () {
      * [fn.exitFullScreen] 退出全屏显示
      * @returns {any}
      */
-    PxFunc.prototype.exitFullScreen = function () {
+    Funclib.prototype.exitFullScreen = function () {
         var el = this.document;
         var cfs = el.cancelFullScreen || el.webkitCancelFullScreen
             || el.mozCancelFullScreen || el.exitFullScreen;
@@ -424,12 +424,12 @@ var PxFunc = /** @class */ (function () {
      * [fn.checkIsFullScreen] 检测是否全屏状态
      * @returns {boolean}
      */
-    PxFunc.prototype.checkIsFullScreen = function () {
+    Funclib.prototype.checkIsFullScreen = function () {
         var el = this.document;
         var isFull = el.fullscreenEnabled || el.fullScreen
             || el.webkitIsFullScreen || el.msFullscreenEnabled;
         return !!isFull;
     };
-    return PxFunc;
+    return Funclib;
 }());
-exports.PxFunc = PxFunc;
+exports.Funclib = Funclib;

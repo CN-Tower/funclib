@@ -3,9 +3,9 @@
   const $ = root.$ || root.jquery;
   const previousfn = root.fn;
 
-  /*pxfunc*/
+  /*funclib*/
 
-  const fn = new PxFunc({jquery: $, window: root, document: root.document});
+  const fn = new Funclib({jquery: $, window: root, document: root.document});
 
   fn['noConflict'] = function() {
     root.fn = previousfn;
@@ -22,7 +22,7 @@
   }
 
   if (typeof define === 'function' && define.amd) {
-    define('pxfunc', [], function() {
+    define('funclib', [], function() {
       return fn;
     });
   }

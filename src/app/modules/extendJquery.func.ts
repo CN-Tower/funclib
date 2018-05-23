@@ -1,4 +1,4 @@
-export /*pxfunc*/ function extendJquery($, interval) {
+export /*funclib*/ function extendJquery($, interval) {
   const intervalTimers: any = {};
   const timeoutTimers: any = {};
   $.extend({
