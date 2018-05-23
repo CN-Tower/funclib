@@ -9,7 +9,7 @@
   fn.gnid              返回指定长度(最小6位)的随机ID
   fn.array             返回指定长度和默认值的数组
   fn.random            返回指定范围的随机数
-  fn.objLen            获取对象自有属性的个数
+  fn.len               获取对象自有属性的个数
   fn.deepCopy          深拷贝数组或对象
   fn.interval          循环定时器
   fn.timeout           延时定时器
@@ -35,8 +35,9 @@ interface Tools {
      * [fn.tools.writeFile] 写文件
      * @param dir
      * @param dist
+     * @param flag ['w'|'a'] default: 'w'
      */
-    writeFile(file: string, text: string, onEnd?: Function): void;
+    writeFile(file: string, text: string, flag?: 'w'|'a'): void;
     /**
      * [fn.tools.deleteDirectory] 删除文件夹和文件
      * @param dir
@@ -60,7 +61,7 @@ interface Tools {
 interface Progress {
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options 
+     * @param options {title: string, width: number (base: 40)}
      */
     start(options: any): void;
     /**
@@ -141,10 +142,10 @@ declare module fn {
          */
         random(sta: number, end?: number): number;
         /**
-         * [fn.objLen] 获取对象自有属性的个数
+         * [fn.len] 获取对象自有属性的个数
          * @arg obj [object]
          * */
-        objLen(obj: any): number;
+        len(obj: any): number;
         /**
          * [fn.interval] 循环定时器
          * @param timerId
@@ -193,7 +194,7 @@ declare module fn {
          */
         overlay(target: Object, source: Object, propList?: string[]): void;
         /**
-         * [fn.matchPattern] Match common RegExp patterns
+         * [fn.matchPattern] 与一个或几个通用正则匹配
          * @param src
          * @param type
          * @param isNoLimit
@@ -201,7 +202,7 @@ declare module fn {
          */
         matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
         /**
-         * [fn.getPattern] Get a common RegExp pattern
+         * [fn.getPattern] 获取一个通用的正则表达式
          * @param type
          * @param isNoLimit
          * @returns {pattern|undefined}
@@ -210,7 +211,11 @@ declare module fn {
         /**
          * [fn.log] 控制台打印
          * @param value 
-         * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+         * @param configs {
+         * title: string,
+         * lineLen: number [20-100]
+         * part: 'pre'|'end' (opt.)
+         * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
          */
         log(value: any, configs: Object): void;
         /**

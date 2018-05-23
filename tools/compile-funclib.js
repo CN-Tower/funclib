@@ -1,14 +1,15 @@
 const fs = require('fs');
+const fn = require('funclib');
 const glob = require('glob');
 const path = require('path');
-const ProgressBar = require('progress');
-const valueLooker = require('value-looker');
+const Progress = require('progress');
 const exec = require('child_process').exec;
 const sep = path.sep;
 const funclibTmpTs = getPath('funclibTmpTs');
 const funclibTmpJs = getPath('funclibTmpJs');
-let progressTimer, progressBar, tickInterval;
 let newfunclibStr = '';
+fn.initProgress(Progress);
+fn.initTools({fs: fs, path: path});
 
 startCompilefunclib();
 
@@ -17,9 +18,7 @@ startCompilefunclib();
  * @param {*} type 
  */
 function getPath(type) {
-    const tmpBase = __dirname.split(sep);
-    tmpBase.pop();
-    const basePath = tmpBase.join(sep);
+    const basePath = path.dirname(__dirname);
     const funclibRoot = 'src/';
     const funclibDist = 'funclib/';
     switch (type) {
@@ -60,8 +59,8 @@ function getPath(type) {
  * 描述: 将库文件的内容读出并合并在一起。
  */
 function startCompilefunclib() {
-    valueLooker('Compiling funclib, please wait!', {title: 'Msg From funclib', theme: 'verbose'});
-    processProgressBar('start');
+    fn.log('Compiling funclib, please wait!', {title: 'Msg From funclib', color: 'cyan'});
+    fn.progress.start({title: 'Compiling funclib', width: 41});
     let classesStr = '';
     const classes = [];
     const getClassStr = file => fs.readFileSync(file, 'utf8').split('/*funclib*/');
@@ -71,28 +70,8 @@ function startCompilefunclib() {
     classes.push(getClassStr(getPath('funclibMain'))[1]);
     classes.forEach(classStr => classesStr += classStr);
     newfunclibStr = funclibStrArr[0] + classesStr + funclibStrArr[1];
-    createNewfunclib();
-}
-
-/**
- * 描述: 将合并在一起的内容放到一个临时的funclib.ts中。
- */
-function createNewfunclib() {
-    fs.open(funclibTmpTs, 'w', function(err, fd) {
-        if (err) {
-            throw err;
-        } else {
-            var buffer = new Buffer(newfunclibStr);
-            fs.write(fd, buffer, 0, buffer.length, 0, function(err, bytesWritten, buffer) {
-                if (err) {
-                    throw err;
-                } else {
-                    fs.close(fd);
-                    updatefunclib();
-                }
-            });
-        }
-    });
+    fn.tools.writeFile(funclibTmpTs, newfunclibStr);
+    updatefunclib();
 }
 
 /**
@@ -111,45 +90,11 @@ function updatefunclib() {
             if (fs.existsSync(file)) fs.unlinkSync(file);
         });
         fs.renameSync(funclibTmpJs, funclibDistJs);
-        fs.createReadStream(funclibIdx).pipe(fs.createWriteStream(funclibDistIdx));
-        fs.createReadStream(funclibDef).pipe(fs.createWriteStream(funclibDistDef));
-        fs.createReadStream(funclibPkg).pipe(fs.createWriteStream(funclibDistPkg));
-        processProgressBar('stop', () => {
-            valueLooker('Congratulations, Compile funclib succeeded!', {title: 'Msg From funclib', theme: 'verbose'});
+        fn.tools.copyFile(funclibIdx, funclibDistIdx);
+        fn.tools.copyFile(funclibDef, funclibDistDef);
+        fn.tools.copyFile(funclibPkg, funclibDistPkg);
+        fn.progress.stop(() => {
+            fn.log('Congratulations, Compile funclib succeeded!', {title: 'Msg From funclib', color: 'cyan'});
         });
     });
-}
-
-/**
- * 描述: 编译过程的进度条
- * @param {*} status 
- * @param {*} onStopped 
- */
-function processProgressBar(status, onStopped) {
-    const tickFun = type => {
-        progressTimer = setTimeout(function () {
-            progressBar.tick();
-            switch (type) {
-                case '+': tickInterval += 300; break;
-                case '-': tickInterval -= tickInterval * 0.2; break;
-            }
-            progressBar.complete && status === 'stop' ? onStopped() : tickFun(type);
-        }, tickInterval);
-    }
-    switch (status) {
-        case 'stop':
-            clearTimeout(progressTimer);
-            tickInterval = 600;
-            tickFun('-');
-            break;
-        case 'start':
-        default: 
-            progressBar = new ProgressBar('Compile progress [:bar] :percent', {
-                complete: '=', incomplete: ' ', width: 40, total: 20
-            });
-            clearTimeout(progressTimer);
-            tickInterval = 250;
-            tickFun('+');
-            break;
-    }
 }

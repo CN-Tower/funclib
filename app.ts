@@ -1,6 +1,8 @@
 import { Funclib } from './src/app/funclib';
+import * as Progress from 'progress';
 
-const fn = new Funclib();
+const fn = new Funclib(null);
 
-const time = fn.time();
-console.log(time);
+
+console.log(fn.gnid());
+

@@ -9,10 +9,10 @@ export /*funclib*/ class Progress {
 
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options 
+     * @param options {title: string, width: number (base: 40)}
      */
     start(options: any) {
-        const prog = `${options && options.title || 'Progress Bar'} [:bar] :percent`;
+        const prog = `${options && options.title || '[fn.progress]'} [:bar] :percent`;
         this.progress = new this.Bar(prog, {
             complete: '=', incomplete: ' ',
             width: options && options['width'] || 40,
@@ -27,7 +27,7 @@ export /*funclib*/ class Progress {
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param options 
      */
-    stop(onStopped: Function) {
+    stop(onStopped?: Function) {
         clearTimeout(this.timer);
         this.duration = 600;
         this.tickFun('-', onStopped);
@@ -37,10 +37,16 @@ export /*funclib*/ class Progress {
         this.timer = setTimeout(() => {
             this.progress.tick();
             switch (type) {
-                case '+': this.duration += 300; break;
+                case '+': this.duration += 320; break;
                 case '-': this.duration -= this.duration * 0.2; break;
             }
-            this.progress.complete && status === 'stop' ? onStopped() : this.tickFun(type);
+            if (this.progress.complete) {
+                if (typeof onStopped === 'function') {
+                    onStopped();
+                }
+            } else {
+                this.tickFun(type, onStopped);
+            }
         }, this.duration);
     }
 }

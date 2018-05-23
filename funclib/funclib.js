@@ -268,10 +268,10 @@
         }
         /**
          * [fn.progress.start] 开启进度条，并传入参数
-         * @param options
+         * @param options {title: string, width: number (base: 40)}
          */
         Progress.prototype.start = function (options) {
-            var prog = (options && options.title || 'Progress Bar') + " [:bar] :percent";
+            var prog = (options && options.title || '[fn.progress]') + " [:bar] :percent";
             this.progress = new this.Bar(prog, {
                 complete: '=', incomplete: ' ',
                 width: options && options['width'] || 40,
@@ -296,13 +296,20 @@
                 _this.progress.tick();
                 switch (type) {
                     case '+':
-                        _this.duration += 300;
+                        _this.duration += 320;
                         break;
                     case '-':
                         _this.duration -= _this.duration * 0.2;
                         break;
                 }
-                _this.progress.complete && status === 'stop' ? onStopped() : _this.tickFun(type);
+                if (_this.progress.complete) {
+                    if (typeof onStopped === 'function') {
+                        onStopped();
+                    }
+                }
+                else {
+                    _this.tickFun(type, onStopped);
+                }
             }, this.duration);
         };
         return Progress;
@@ -315,27 +322,14 @@
                  * [fn.tools.writeFile] 写文件
                  * @param dir
                  * @param dist
+                 * @param flag ['w'|'a'] default: 'w'
                  */
-                this.writeFile = function (file, text, onEnd) {
-                    fs.open(file, 'w', function (err, fd) {
-                        if (err) {
-                            throw err;
-                        }
-                        else {
-                            var buffer = new Buffer(text);
-                            fs.write(fd, buffer, 0, buffer.length, 0, function (err, bytesWritten, buffer) {
-                                if (err) {
-                                    throw err;
-                                }
-                                else {
-                                    fs.close(fd);
-                                    if (typeof onEnd === 'function') {
-                                        onEnd();
-                                    }
-                                }
-                            });
-                        }
-                    });
+                this.writeFile = function (file, text, flag) {
+                    if (flag === void 0) { flag = 'w'; }
+                    var fd = fs.openSync(file, flag);
+                    var buffer = new Buffer(text);
+                    fs.writeSync(fd, buffer, 0, buffer.length, 0);
+                    fs.closeSync(fd);
                 };
                 /**
                  * [fn.tools.copyFile] 复制文件
@@ -503,17 +497,11 @@
             }
         };
         /**
-         * [fn.objLen] 获取对象自有属性的个数
+         * [fn.len] 获取对象自有属性的个数
          * @arg obj [object]
          * */
-        Funclib.prototype.objLen = function (obj) {
-            var objLength = 0;
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    objLength++;
-                }
-            }
-            return objLength;
+        Funclib.prototype.len = function (obj) {
+            return Object.keys(obj).length;
         };
         /**
          * [fn.interval] 循环定时器
@@ -728,7 +716,11 @@
         /**
          * [fn.log] 控制台打印
          * @param value
-         * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+         * @param configs {
+         * title: string,
+         * lineLen: number [20-100]
+         * part: 'pre'|'end' (opt.)
+         * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
          */
         Funclib.prototype.log = function (value, configs) {
             var colors = {
@@ -740,6 +732,9 @@
                 'red': '\x1B[31m%s\x1B[0m',
                 'yellow': '\x1B[33m%s\x1B[0m'
             };
+            if (value === undefined) {
+                value = "Welecome come to use funclib: " + this.version + " !";
+            }
             if (typeof value === 'object') {
                 value = JSON.stringify(value, null, 2);
             }
@@ -748,27 +743,42 @@
             }
             var title = configs && configs['title'] || "funclib " + this.version;
             var color = configs && configs['color'] in colors && configs['color'] || 'grey';
-            var llen = 68;
-            var tlen = 16, sp = '';
-            if (title.length <= tlen) {
-                tlen = title.length;
+            var lineLen = configs && configs['lineLen'];
+            if (!lineLen || lineLen < 20 || lineLen > 100) {
+                lineLen = 66;
+            }
+            var titlelen = 16, sp = '';
+            if (title.length <= titlelen) {
+                titlelen = title.length;
             }
             else {
-                title = this.cutString(title, tlen - 2);
+                title = this.cutString(title, titlelen - 2);
             }
-            this.array((llen - tlen) / 2, ' ').forEach(function (x) { return sp += x; });
+            this.array((lineLen - titlelen) / 2, ' ').forEach(function (x) { return sp += x; });
             var tt = sp + title;
             var s = '-', d = '=';
             var sL = '', dL = '';
-            this.array(llen).forEach(function (x) {
+            this.array(lineLen).forEach(function (x) {
                 sL += s;
                 dL += d;
             });
-            console.log('\n' + dL);
-            console.log(colors['green'], tt);
-            console.log(sL);
-            console.log(colors[color], value);
-            console.log(dL + '\n');
+            if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
+                if (configs['part'] === 'pre') {
+                    console.log('\n' + dL);
+                    console.log(colors['green'], tt);
+                    console.log(sL);
+                }
+                else {
+                    console.log(dL + '\n');
+                }
+            }
+            else {
+                console.log('\n' + dL);
+                console.log(colors['green'], tt);
+                console.log(sL);
+                console.log(colors[color], value);
+                console.log(dL + '\n');
+            }
         };
         /**
          * [fn.fullScreen] 全屏显示HTML元素

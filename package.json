@@ -27,8 +27,8 @@
     "jquery": "^3.3.1"
   },
   "devDependencies": {
+    "funclib": "^1.0.0",
     "progress": "^2.0.0",
-    "typescript": "^2.8.3",
-    "value-looker": "^2.1.2"
+    "typescript": "^2.8.3"
   }
 }

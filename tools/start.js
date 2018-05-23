@@ -1,11 +1,13 @@
 const fs = require('fs');
+const fn = require('funclib');
 const glob = require('glob');
 const path = require('path');
-const ProgressBar = require('progress');
-const valueLooker = require('value-looker');
+const Progress = require('progress');
 const exec = require('child_process').exec;
 const sep = path.sep;
 let progressTimer, progressBar, tickInterval;
+fn.initProgress(Progress);
+fn.initTools({fs: fs, path: path});
 
 start();
 
@@ -38,7 +40,8 @@ function getPath(type) {
  * 描述: 。
  */
 function start() {
-    progress('start');
+    fn.log('Compiling funclib, please wait!', {title: 'Msg From funclib', color: 'cyan'});
+    fn.progress.start({title: 'Compiling', width: 49});
     exec(`node ${getPath('tsc')} ${getPath('appTs')}`, function(e, stdout, stderr) {
         const srcJs = glob.sync(getPath('srcJs'));
         const distJs = glob.sync(getPath('distJs'));
@@ -47,40 +50,8 @@ function start() {
         srcJs.forEach(js => fs.renameSync(js, src2Dist(js)));
         const appDistJs = getPath('appDistJs');
         fs.renameSync(getPath('appJs'), appDistJs);
-        progress('stop', () => console.log('\nCompile success, Result is:'));
+        fn.tools.writeFile(appDistJs, '\n fn.log("", {part: "end"}) \n', 'a');
+        fn.progress.stop(() => fn.log('', {title: 'Result Is:', part: 'pre'}));
     });
 }
 
-/**
- * 描述: 编译过程的进度条
- * @param {*} status 
- * @param {*} onStopped 
- */
-function progress(status, onStopped) {
-    const tickFun = type => {
-        progressTimer = setTimeout(function () {
-            progressBar.tick();
-            switch (type) {
-                case '+': tickInterval += 300; break;
-                case '-': tickInterval -= tickInterval * 0.2; break;
-            }
-            progressBar.complete && status === 'stop' ? onStopped() : tickFun(type);
-        }, tickInterval);
-    }
-    switch (status) {
-        case 'stop':
-            clearTimeout(progressTimer);
-            tickInterval = 600;
-            tickFun('-');
-            break;
-        case 'start':
-        default: 
-            progressBar = new ProgressBar('Compiling [:bar] :percent', {
-                complete: '=', incomplete: ' ', width: 40, total: 20
-            });
-            clearTimeout(progressTimer);
-            tickInterval = 250;
-            tickFun('+');
-            break;
-    }
-}

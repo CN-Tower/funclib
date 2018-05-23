@@ -6,10 +6,10 @@ var Progress = /** @class */ (function () {
     }
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options
+     * @param options {title: string, width: number (base: 40)}
      */
     Progress.prototype.start = function (options) {
-        var prog = (options && options.title || 'Progress Bar') + " [:bar] :percent";
+        var prog = (options && options.title || '[fn.progress]') + " [:bar] :percent";
         this.progress = new this.Bar(prog, {
             complete: '=', incomplete: ' ',
             width: options && options['width'] || 40,
@@ -34,13 +34,20 @@ var Progress = /** @class */ (function () {
             _this.progress.tick();
             switch (type) {
                 case '+':
-                    _this.duration += 300;
+                    _this.duration += 320;
                     break;
                 case '-':
                     _this.duration -= _this.duration * 0.2;
                     break;
             }
-            _this.progress.complete && status === 'stop' ? onStopped() : _this.tickFun(type);
+            if (_this.progress.complete) {
+                if (typeof onStopped === 'function') {
+                    onStopped();
+                }
+            }
+            else {
+                _this.tickFun(type, onStopped);
+            }
         }, this.duration);
     };
     return Progress;

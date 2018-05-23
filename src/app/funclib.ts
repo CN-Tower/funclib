@@ -4,8 +4,6 @@ import { Progress } from './modules/progress.class';
 import { extendJquery } from './modules/extendJquery.func';
 import { BootstrapTable } from './modules/bootstrapTable.class';
 import * as $ from 'jquery';
-import { setTimeout } from 'timers';
-import { win32 } from 'path';
 
 export /*funclib*/ class Funclib {
 
@@ -126,17 +124,11 @@ export /*funclib*/ class Funclib {
   }
 
   /**
-   * [fn.objLen] 获取对象自有属性的个数
+   * [fn.len] 获取对象自有属性的个数
    * @arg obj [object]
    * */
-  objLen(obj: any): number {
-    let objLength = 0;
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        objLength++;
-      }
-    }
-    return objLength;
+  len(obj: any): number {
+    return Object.keys(obj).length;
   }
 
   /**
@@ -344,9 +336,13 @@ export /*funclib*/ class Funclib {
   /**
    * [fn.log] 控制台打印
    * @param value 
-   * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+   * @param configs {
+   * title: string,
+   * lineLen: number [20-100]
+   * part: 'pre'|'end' (opt.)
+   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
    */
-  log(value: any, configs: Object) {
+  log(value?: any, configs?: Object) {
     const colors = {
       'grey': '\x1B[90m%s\x1B[0m',
       'blue': '\x1B[34m%s\x1B[0m',
@@ -356,6 +352,9 @@ export /*funclib*/ class Funclib {
       'red': '\x1B[31m%s\x1B[0m',
       'yellow': '\x1B[33m%s\x1B[0m'
     }
+    if (value === undefined) {
+      value = `Welecome come to use funclib: ${this.version} !`;
+    }
     if (typeof value === 'object') {
       value = JSON.stringify(value, null, 2);
     } else {
@@ -363,26 +362,40 @@ export /*funclib*/ class Funclib {
     }
     let title = configs && configs['title'] || `funclib ${this.version}`;
     const color = configs && configs['color'] in colors && configs['color'] || 'grey';
-    const llen = 68;
-    let tlen = 16, sp = '';
-    if (title.length <= tlen) {
-      tlen = title.length;
-    } else {
-      title = this.cutString(title, tlen - 2);
+    let lineLen = configs && configs['lineLen'];
+    if (!lineLen || lineLen < 20 || lineLen > 100 ) {
+      lineLen = 66;
     }
-    this.array((llen - tlen) / 2, ' ').forEach(x => sp += x);
+    let titlelen = 16, sp = '';
+    if (title.length <= titlelen) {
+      titlelen = title.length;
+    } else {
+      title = this.cutString(title, titlelen - 2);
+    }
+    this.array((lineLen - titlelen) / 2, ' ').forEach(x => sp += x);
     const tt = sp + title;
     const s = '-', d = '=';
     let sL = '', dL = '';
-    this.array(llen).forEach(x => {
+    this.array(lineLen).forEach(x => {
       sL += s;
       dL += d;
     });
-    console.log('\n' + dL);
-    console.log(colors['green'], tt);
-    console.log(sL);
-    console.log(colors[color], value);
-    console.log(dL + '\n');
+
+    if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
+      if (configs['part'] === 'pre') {
+        console.log('\n' + dL);
+        console.log(colors['green'], tt);
+        console.log(sL);
+      } else {
+        console.log(dL + '\n');
+      }
+    } else {
+      console.log('\n' + dL);
+      console.log(colors['green'], tt);
+      console.log(sL);
+      console.log(colors[color], value);
+      console.log(dL + '\n');
+    }
   }
 
   /**

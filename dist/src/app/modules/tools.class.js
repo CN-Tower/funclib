@@ -8,27 +8,14 @@ var Tools = /** @class */ (function () {
              * [fn.tools.writeFile] 写文件
              * @param dir
              * @param dist
+             * @param flag ['w'|'a'] default: 'w'
              */
-            this.writeFile = function (file, text, onEnd) {
-                fs.open(file, 'w', function (err, fd) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        var buffer = new Buffer(text);
-                        fs.write(fd, buffer, 0, buffer.length, 0, function (err, bytesWritten, buffer) {
-                            if (err) {
-                                throw err;
-                            }
-                            else {
-                                fs.close(fd);
-                                if (typeof onEnd === 'function') {
-                                    onEnd();
-                                }
-                            }
-                        });
-                    }
-                });
+            this.writeFile = function (file, text, flag) {
+                if (flag === void 0) { flag = 'w'; }
+                var fd = fs.openSync(file, flag);
+                var buffer = new Buffer(text);
+                fs.writeSync(fd, buffer, 0, buffer.length, 0);
+                fs.closeSync(fd);
             };
             /**
              * [fn.tools.copyFile] 复制文件

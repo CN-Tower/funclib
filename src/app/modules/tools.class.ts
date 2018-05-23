@@ -11,25 +11,13 @@ export /*funclib*/ class Tools {
              * [fn.tools.writeFile] 写文件
              * @param dir
              * @param dist
+             * @param flag ['w'|'a'] default: 'w'
              */
-            this.writeFile = (file: string, text: string, onEnd?: Function) => {
-                fs.open(file, 'w', function(err, fd) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        var buffer = new Buffer(text);
-                        fs.write(fd, buffer, 0, buffer.length, 0, function(err, bytesWritten, buffer) {
-                            if (err) {
-                                throw err;
-                            } else {
-                                fs.close(fd);
-                                if (typeof onEnd === 'function') {
-                                    onEnd();
-                                }
-                            }
-                        });
-                    }
-                });
+            this.writeFile = (file: string, text: string, flag: 'w'|'a' = 'w') => {
+                const fd = fs.openSync(file, flag);
+                var buffer = new Buffer(text);
+                fs.writeSync(fd, buffer, 0, buffer.length, 0);
+                fs.closeSync(fd);
             }
             /**
              * [fn.tools.copyFile] 复制文件

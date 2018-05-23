@@ -6,7 +6,6 @@ var progress_class_1 = require("./modules/progress.class");
 var extendJquery_func_1 = require("./modules/extendJquery.func");
 var bootstrapTable_class_1 = require("./modules/bootstrapTable.class");
 var $ = require("jquery");
-var timers_1 = require("timers");
 var Funclib = /** @class */ (function () {
     function Funclib(options) {
         this.version = 'V1.0.2';
@@ -117,17 +116,11 @@ var Funclib = /** @class */ (function () {
         }
     };
     /**
-     * [fn.objLen] 获取对象自有属性的个数
+     * [fn.len] 获取对象自有属性的个数
      * @arg obj [object]
      * */
-    Funclib.prototype.objLen = function (obj) {
-        var objLength = 0;
-        for (var key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                objLength++;
-            }
-        }
-        return objLength;
+    Funclib.prototype.len = function (obj) {
+        return Object.keys(obj).length;
     };
     /**
      * [fn.interval] 循环定时器
@@ -153,7 +146,7 @@ var Funclib = /** @class */ (function () {
     Funclib.prototype.timeout = function (timerId, duration, func) {
         if (typeof duration === 'number' && typeof func === 'function') {
             clearTimeout(this.timeoutTimers[timerId]);
-            this.timeoutTimers[timerId] = timers_1.setTimeout(function () { return func(); }, duration);
+            this.timeoutTimers[timerId] = setTimeout(function () { return func(); }, duration);
         }
         else if (typeof duration === 'boolean' && !duration) {
             clearTimeout(this.timeoutTimers[timerId]);
@@ -342,7 +335,11 @@ var Funclib = /** @class */ (function () {
     /**
      * [fn.log] 控制台打印
      * @param value
-     * @param configs {title: string, color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+     * @param configs {
+     * title: string,
+     * lineLen: number [20-100]
+     * part: 'pre'|'end' (opt.)
+     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      */
     Funclib.prototype.log = function (value, configs) {
         var colors = {
@@ -354,6 +351,9 @@ var Funclib = /** @class */ (function () {
             'red': '\x1B[31m%s\x1B[0m',
             'yellow': '\x1B[33m%s\x1B[0m'
         };
+        if (value === undefined) {
+            value = "Welecome come to use funclib: " + this.version + " !";
+        }
         if (typeof value === 'object') {
             value = JSON.stringify(value, null, 2);
         }
@@ -362,27 +362,42 @@ var Funclib = /** @class */ (function () {
         }
         var title = configs && configs['title'] || "funclib " + this.version;
         var color = configs && configs['color'] in colors && configs['color'] || 'grey';
-        var llen = 68;
-        var tlen = 16, sp = '';
-        if (title.length <= tlen) {
-            tlen = title.length;
+        var lineLen = configs && configs['lineLen'];
+        if (!lineLen || lineLen < 20 || lineLen > 100) {
+            lineLen = 66;
+        }
+        var titlelen = 16, sp = '';
+        if (title.length <= titlelen) {
+            titlelen = title.length;
         }
         else {
-            title = this.cutString(title, tlen - 2);
+            title = this.cutString(title, titlelen - 2);
         }
-        this.array((llen - tlen) / 2, ' ').forEach(function (x) { return sp += x; });
+        this.array((lineLen - titlelen) / 2, ' ').forEach(function (x) { return sp += x; });
         var tt = sp + title;
         var s = '-', d = '=';
         var sL = '', dL = '';
-        this.array(llen).forEach(function (x) {
+        this.array(lineLen).forEach(function (x) {
             sL += s;
             dL += d;
         });
-        console.log('\n' + dL);
-        console.log(colors['green'], tt);
-        console.log(sL);
-        console.log(colors[color], value);
-        console.log(dL + '\n');
+        if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
+            if (configs['part'] === 'pre') {
+                console.log('\n' + dL);
+                console.log(colors['green'], tt);
+                console.log(sL);
+            }
+            else {
+                console.log(dL + '\n');
+            }
+        }
+        else {
+            console.log('\n' + dL);
+            console.log(colors['green'], tt);
+            console.log(sL);
+            console.log(colors[color], value);
+            console.log(dL + '\n');
+        }
     };
     /**
      * [fn.fullScreen] 全屏显示HTML元素
