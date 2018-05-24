@@ -1,7 +1,7 @@
 # funclib.js (凡客杰斯)
 
 ### Version
-Javascript通用型逻辑函数封装 funclib: V2.0.1
+Javascript通用型逻辑函数封装 funclib: V1.0.2
 
 ### Quick start
 ```bash
