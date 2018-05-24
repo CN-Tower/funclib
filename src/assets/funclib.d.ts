@@ -2,9 +2,6 @@
   通用型逻辑函数封装 funclib (V1.0.2)
   ---------------------------------------------------------------
   fn.version           返回当前函数库版本
-  fn.tools             NodeJs工具包
-  fn.progress          控件台进度条工具
-  fn.bootstrapTable    渲染Bootstrap表格
   fn.time              返回当前时间字符串
   fn.gnid              返回指定长度(最小6位)的随机ID
   fn.array             返回指定长度和默认值的数组
@@ -22,8 +19,16 @@
   fn.fullScreen        全屏显示一个HTML元素
   fn.exitFullScreen    退出全屏显示
   fn.checkIsFullScreen 检测是否处理全屏状态
+  fn.tools.writeFile        NodeJs写文件
+  fn.tools.deleteDirectory  NodeJs删除文件夹和文件
+  fn.tools.copyFile         NodeJs复制文件
+  fn.tools.copyDirectory    NodeJs复制文件夹和文件
+  fn.progress.start         开启进度条，并传入参数
+  fn.progress.stop          停止进度条，结束后触发回调
+  fn.bootstrapTable.render  渲染Bootstrap表格
   $.pollingElement     jQuery获取异步出现的元素
   $.noAutoComplete     jQuery禁止input密码自动填充
+  $.copyText           jQuery复制文本到粘贴板
   $ele.findCousin      jQuery获取元素表亲
   ===============================================================*/
 declare var fn: fn.Funclib;
@@ -37,7 +42,7 @@ interface Tools {
      * @param dist
      * @param flag ['w'|'a'] default: 'w'
      */
-    writeFile(file: string, text: string, flag?: 'w'|'a'): void;
+    writeFile(file: string, text: string, flag?: 'w' | 'a'): void;
     /**
      * [fn.tools.deleteDirectory] 删除文件夹和文件
      * @param dir
@@ -73,7 +78,7 @@ interface Progress {
 
 interface BootstrapTable {
     /**
-     * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+     * [fn.bootstrapTable.render] 渲染Bootstrap表格的通用方式
      * @param $table
      * @param options
         * tableConfig {Object Opt.}
@@ -84,7 +89,7 @@ interface BootstrapTable {
         * onRefreshing {Function Opt.},
         * onRendered {Function Opt.}
      */
-    rendered($table: any, options: any): void;
+    render($table: any, options: any): void;
 }
 
 declare module fn {
