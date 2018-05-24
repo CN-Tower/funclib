@@ -57,6 +57,18 @@ export /*funclib*/ function extendJquery($, interval) {
       options instanceof Array
         ? options.forEach(opt => noAutoCplt(opt))
         : noAutoCplt(options);
+    },
+
+   /**
+     * [$.copyText] 复制文本到粘贴板
+     * @param text [string]
+     */
+    copyText: function (text: string) {
+      const $tmpIpt = $('<textarea></textarea>').css({position: 'fixed', left: '200%'});
+      $('body').append($tmpIpt);
+      $tmpIpt.val(text).select();
+      document.execCommand('Copy');
+      $tmpIpt.remove();
     }
   });
 
