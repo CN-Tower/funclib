@@ -2,6 +2,7 @@ import { Tools } from './modules/tools.class';
 import { Patterns } from './modules/patterns.class';
 import { Progress } from './modules/progress.class';
 import { extendJquery } from './modules/extendJquery.func';
+import { ViewTools } from './modules/viewTools.class';
 import { BootstrapTable } from './modules/bootstrapTable.class';
 import * as $ from 'jquery';
 
@@ -10,7 +11,8 @@ export /*funclib*/ class Funclib {
   version: string = 'V1.0.2'
   tools: any;
   progress: any;
-  bootstrapTable: any;
+  viewTools: any;
+  table: any;
 
   private jquery: any;
   private window: any;
@@ -34,6 +36,16 @@ export /*funclib*/ class Funclib {
       delete this.jquery;
     }
   }
+  
+  /**
+   * [fn.initTools] 初始化一个NodeJs工具包对象
+   * @param options [Object]
+   */
+  initTools(options: Object) {
+    if (options) {
+      this.tools = new Tools(options['fs'], options['path']);
+    }
+  }
 
   /**
    * [fn.initProgress] 初始化进度条对象
@@ -46,21 +58,21 @@ export /*funclib*/ class Funclib {
   }
 
   /**
+   * [fn.initViewTools] 初始化提示和Loader
+   * @param initViewTools [class]
+   */
+  initViewTools(translate: any, viewToolsCtrl: any) {
+    if (translate && viewToolsCtrl) {
+      this.viewTools = new ViewTools(translate, viewToolsCtrl);
+    }
+  }
+
+  /**
    * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
    * @param translate [Object]
    */
   initBootstrapTable(translate?: Object) {
-    this.bootstrapTable = new BootstrapTable(translate)
-  }
-
-  /**
-   * [fn.initTools] 初始化一个NodeJs工具包对象
-   * @param options [Object]
-   */
-  initTools(options: Object) {
-    if (options) {
-      this.tools = new Tools(options['fs'], options['path']);
-    }
+    this.table = new BootstrapTable(translate)
   }
 
   /**
@@ -441,5 +453,19 @@ export /*funclib*/ class Funclib {
     const isFull = el.fullscreenEnabled || el.fullScreen
       || el.webkitIsFullScreen || el.msFullscreenEnabled;
     return !!isFull;
+  }
+
+  /**
+   * [fn.setErrors] 手动设定表单错误
+   * @param model 
+   * @param errorMsg 
+   * @param isForce 
+   */
+  setErrors(model: any, errorMsg: string, isForce: boolean = false) {
+    if (model && model['control'] && (isForce || !model.control.pristine)) {
+      errorMsg
+        ? model.control.setErrors({validator: errorMsg})
+        : model.control.setErrors(null);
+    }
   }
 }
