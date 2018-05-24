@@ -29,7 +29,7 @@ export /*funclib*/ class Funclib {
       delete this.checkIsFullScreen;
     }
     if (this.jquery) {
-      extendJquery($, this.interval);
+      extendJquery(this.jquery, this.interval);
     } else {
       delete this.jquery;
     }
