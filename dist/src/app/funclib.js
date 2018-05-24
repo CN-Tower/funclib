@@ -4,11 +4,11 @@ var tools_class_1 = require("./modules/tools.class");
 var patterns_class_1 = require("./modules/patterns.class");
 var progress_class_1 = require("./modules/progress.class");
 var extendJquery_func_1 = require("./modules/extendJquery.func");
+var viewTools_class_1 = require("./modules/viewTools.class");
 var bootstrapTable_class_1 = require("./modules/bootstrapTable.class");
-var $ = require("jquery");
 var Funclib = /** @class */ (function () {
     function Funclib(options) {
-        this.version = 'V1.0.2';
+        this.version = 'V1.0.3';
         this.patterns = new patterns_class_1.Patterns();
         this.intervalTimers = {};
         this.timeoutTimers = {};
@@ -25,12 +25,21 @@ var Funclib = /** @class */ (function () {
             delete this.checkIsFullScreen;
         }
         if (this.jquery) {
-            extendJquery_func_1.extendJquery($, this.interval);
+            extendJquery_func_1.extendJquery(this.jquery, this.interval);
         }
         else {
             delete this.jquery;
         }
     }
+    /**
+     * [fn.initTools] 初始化一个NodeJs工具包对象
+     * @param options [Object]
+     */
+    Funclib.prototype.initTools = function (options) {
+        if (options) {
+            this.tools = new tools_class_1.Tools(options['fs'], options['path']);
+        }
+    };
     /**
      * [fn.initProgress] 初始化进度条对象
      * @param ProgressBar [class]
@@ -41,20 +50,20 @@ var Funclib = /** @class */ (function () {
         }
     };
     /**
+     * [fn.initViewTools] 初始化提示和Loader
+     * @param initViewTools [class]
+     */
+    Funclib.prototype.initViewTools = function (translate, viewToolsCtrl) {
+        if (translate && viewToolsCtrl) {
+            this.viewTools = new viewTools_class_1.ViewTools(translate, viewToolsCtrl);
+        }
+    };
+    /**
      * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
      * @param translate [Object]
      */
     Funclib.prototype.initBootstrapTable = function (translate) {
-        this.bootstrapTable = new bootstrapTable_class_1.BootstrapTable(translate);
-    };
-    /**
-     * [fn.initTools] 初始化一个NodeJs工具包对象
-     * @param options [Object]
-     */
-    Funclib.prototype.initTools = function (options) {
-        if (options) {
-            this.tools = new tools_class_1.Tools(options['fs'], options['path']);
-        }
+        this.table = new bootstrapTable_class_1.BootstrapTable(translate);
     };
     /**
      * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
@@ -444,6 +453,20 @@ var Funclib = /** @class */ (function () {
         var isFull = el.fullscreenEnabled || el.fullScreen
             || el.webkitIsFullScreen || el.msFullscreenEnabled;
         return !!isFull;
+    };
+    /**
+     * [fn.setErrors] 手动设定表单错误
+     * @param model
+     * @param errorMsg
+     * @param isForce
+     */
+    Funclib.prototype.setErrors = function (model, errorMsg, isForce) {
+        if (isForce === void 0) { isForce = false; }
+        if (model && model['control'] && (isForce || !model.control.pristine)) {
+            errorMsg
+                ? model.control.setErrors({ validator: errorMsg })
+                : model.control.setErrors(null);
+        }
     };
     return Funclib;
 }());

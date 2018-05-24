@@ -20,7 +20,7 @@
             this.translate = translate;
         }
         /**
-         * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+         * [fn.bootstrapTable.render] 渲染Bootstrap表格的通用方式
          * @param $table
          * @param options
             * tableConfig {Object Opt.}
@@ -31,7 +31,7 @@
             * onRefreshing {Function Opt.},
             * onRendered {Function Opt.}
          */
-        BootstrapTable.prototype.rendered = function ($table, options) {
+        BootstrapTable.prototype.render = function ($table, options) {
             var tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
             var isAfterInit = $table.parent().hasClass('fixed-table-body');
             this.setAndClearLoadingTimers(options);
@@ -60,9 +60,9 @@
                     }
                     $refreshBtn.addClass('btn-sm').css('marginLeft', '10px')
                         .mouseleave(function () { $(this).blur(); });
-                    // $('.bootstrap-table .search input')
-                    //   .attr('placeholder', this.translate.instant('WordForFilter'))
-                    //   .parent().append(`<span></span>`);
+                    $('.bootstrap-table .search input')
+                        .attr('placeholder', _this.translate.instant('WordForFilter'))
+                        .parent().append("<span></span>");
                 }
             });
         };
@@ -163,6 +163,17 @@
                 options instanceof Array
                     ? options.forEach(function (opt) { return noAutoCplt(opt); })
                     : noAutoCplt(options);
+            },
+            /**
+              * [$.copyText] 复制文本到粘贴板
+              * @param text [string]
+              */
+            copyText: function (text) {
+                var $tmpIpt = $('<textarea></textarea>').css({ position: 'fixed', left: '200%' });
+                $('body').append($tmpIpt);
+                $tmpIpt.val(text).select();
+                document.execCommand('Copy');
+                $tmpIpt.remove();
             }
         });
         /**
@@ -387,9 +398,67 @@
         }
         return Tools;
     }());
+    var ViewTools = /** @class */ (function () {
+        function ViewTools(translate, viewToolsCtrl) {
+            this.translate = translate;
+            this.viewToolsCtrl = viewToolsCtrl;
+        }
+        /**
+         * [fn.viewTools.show]
+         * @param options
+            * type {success|error|loader|timer},
+            * isShow
+            * msg
+            * interval
+            * delay
+         */
+        ViewTools.prototype.show = function (options) {
+            var _this = this;
+            if (options instanceof Array) {
+                options.forEach(function (item) { return _this.viewToolsHandler(item); });
+            }
+            else if (typeof options === 'object') {
+                this.viewToolsHandler(options);
+            }
+        };
+        ViewTools.prototype.viewToolsHandler = function (options) {
+            var _this = this;
+            if (options.type === 'timer') {
+                if (options.hasOwnProperty('fn') && options.fn instanceof Function) {
+                    setTimeout(function () { return options.fn(); }, options.delay || 2000);
+                }
+            }
+            else {
+                if (options.hasOwnProperty('delay')) {
+                    setTimeout(function () {
+                        if (options.hasOwnProperty('fn') && options.fn instanceof Function) {
+                            options.fn();
+                        }
+                        _this.viewToolsCtrl.next(_this.optionsHandler(options));
+                    }, options.delay);
+                }
+                else {
+                    this.viewToolsCtrl.next(this.optionsHandler(options));
+                }
+            }
+        };
+        ViewTools.prototype.optionsHandler = function (option) {
+            if (!option.hasOwnProperty('isShow')) {
+                option.isShow = true;
+            }
+            if (option.isShow && option.type === 'success' && !option.hasOwnProperty('msg')) {
+                option.msg = this.translate.instant('vm.opOkMsg');
+            }
+            if (option.isShow && !option.hasOwnProperty('interval')) {
+                option.interval = option.type === 'loader' ? 20000 : 2000;
+            }
+            return option;
+        };
+        return ViewTools;
+    }());
     var Funclib = /** @class */ (function () {
         function Funclib(options) {
-            this.version = 'V1.0.2';
+            this.version = 'V1.0.3';
             this.patterns = new Patterns();
             this.intervalTimers = {};
             this.timeoutTimers = {};
@@ -406,12 +475,21 @@
                 delete this.checkIsFullScreen;
             }
             if (this.jquery) {
-                extendJquery($, this.interval);
+                extendJquery(this.jquery, this.interval);
             }
             else {
                 delete this.jquery;
             }
         }
+        /**
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param options [Object]
+         */
+        Funclib.prototype.initTools = function (options) {
+            if (options) {
+                this.tools = new Tools(options['fs'], options['path']);
+            }
+        };
         /**
          * [fn.initProgress] 初始化进度条对象
          * @param ProgressBar [class]
@@ -422,20 +500,20 @@
             }
         };
         /**
+         * [fn.initViewTools] 初始化提示和Loader
+         * @param initViewTools [class]
+         */
+        Funclib.prototype.initViewTools = function (translate, viewToolsCtrl) {
+            if (translate && viewToolsCtrl) {
+                this.viewTools = new ViewTools(translate, viewToolsCtrl);
+            }
+        };
+        /**
          * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
          * @param translate [Object]
          */
         Funclib.prototype.initBootstrapTable = function (translate) {
-            this.bootstrapTable = new BootstrapTable(translate);
-        };
-        /**
-         * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param options [Object]
-         */
-        Funclib.prototype.initTools = function (options) {
-            if (options) {
-                this.tools = new Tools(options['fs'], options['path']);
-            }
+            this.table = new BootstrapTable(translate);
         };
         /**
          * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
@@ -825,6 +903,20 @@
             var isFull = el.fullscreenEnabled || el.fullScreen
                 || el.webkitIsFullScreen || el.msFullscreenEnabled;
             return !!isFull;
+        };
+        /**
+         * [fn.setErrors] 手动设定表单错误
+         * @param model
+         * @param errorMsg
+         * @param isForce
+         */
+        Funclib.prototype.setErrors = function (model, errorMsg, isForce) {
+            if (isForce === void 0) { isForce = false; }
+            if (model && model['control'] && (isForce || !model.control.pristine)) {
+                errorMsg
+                    ? model.control.setErrors({ validator: errorMsg })
+                    : model.control.setErrors(null);
+            }
         };
         return Funclib;
     }());

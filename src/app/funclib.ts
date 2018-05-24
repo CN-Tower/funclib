@@ -8,7 +8,7 @@ import * as $ from 'jquery';
 
 export /*funclib*/ class Funclib {
 
-  version: string = 'V1.0.2'
+  version: string = 'V1.0.3'
   tools: any;
   progress: any;
   viewTools: any;

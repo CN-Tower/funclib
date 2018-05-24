@@ -18,7 +18,7 @@ var BootstrapTable = /** @class */ (function () {
         this.translate = translate;
     }
     /**
-     * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+     * [fn.bootstrapTable.render] 渲染Bootstrap表格的通用方式
      * @param $table
      * @param options
         * tableConfig {Object Opt.}
@@ -29,7 +29,7 @@ var BootstrapTable = /** @class */ (function () {
         * onRefreshing {Function Opt.},
         * onRendered {Function Opt.}
      */
-    BootstrapTable.prototype.rendered = function ($table, options) {
+    BootstrapTable.prototype.render = function ($table, options) {
         var tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
         var isAfterInit = $table.parent().hasClass('fixed-table-body');
         this.setAndClearLoadingTimers(options);
@@ -58,9 +58,9 @@ var BootstrapTable = /** @class */ (function () {
                 }
                 $refreshBtn.addClass('btn-sm').css('marginLeft', '10px')
                     .mouseleave(function () { $(this).blur(); });
-                // $('.bootstrap-table .search input')
-                //   .attr('placeholder', this.translate.instant('WordForFilter'))
-                //   .parent().append(`<span></span>`);
+                $('.bootstrap-table .search input')
+                    .attr('placeholder', _this.translate.instant('WordForFilter'))
+                    .parent().append("<span></span>");
             }
         });
     };

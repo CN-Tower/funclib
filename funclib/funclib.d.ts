@@ -1,10 +1,8 @@
 /**==============================================================
-  通用型逻辑函数封装 funclib (V1.0.2)
+  通用型逻辑函数封装 funclib (V1.0.3)
+  Github: http://github.com/CN-Tower/funclib.js
   ---------------------------------------------------------------
   fn.version           返回当前函数库版本
-  fn.tools             NodeJs工具包
-  fn.progress          控件台进度条工具
-  fn.bootstrapTable    渲染Bootstrap表格
   fn.time              返回当前时间字符串
   fn.gnid              返回指定长度(最小6位)的随机ID
   fn.array             返回指定长度和默认值的数组
@@ -22,8 +20,18 @@
   fn.fullScreen        全屏显示一个HTML元素
   fn.exitFullScreen    退出全屏显示
   fn.checkIsFullScreen 检测是否处理全屏状态
+  fn.setErrors         手动设定表单错误
+  fn.tools.writeFile        NodeJs写文件
+  fn.tools.deleteDirectory  NodeJs删除文件夹和文件
+  fn.tools.copyFile         NodeJs复制文件
+  fn.tools.copyDirectory    NodeJs复制文件夹和文件
+  fn.progress.start         开启进度条，并传入参数
+  fn.progress.stop          停止进度条，结束后触发回调
+  fn.viewTools.show         提示信息和Loader工具
+  fn.bootstrapTable.render  渲染Bootstrap表格
   $.pollingElement     jQuery获取异步出现的元素
   $.noAutoComplete     jQuery禁止input密码自动填充
+  $.copyText           jQuery复制文本到粘贴板
   $ele.findCousin      jQuery获取元素表亲
   ===============================================================*/
 declare var fn: fn.Funclib;
@@ -37,7 +45,7 @@ interface Tools {
      * @param dist
      * @param flag ['w'|'a'] default: 'w'
      */
-    writeFile(file: string, text: string, flag?: 'w'|'a'): void;
+    writeFile(file: string, text: string, flag?: 'w' | 'a'): void;
     /**
      * [fn.tools.deleteDirectory] 删除文件夹和文件
      * @param dir
@@ -71,9 +79,22 @@ interface Progress {
     stop(onStopped: Function): void;
 }
 
+interface ViewTools {
+    /**
+     * [fn.viewTools.show]
+     * @param options 
+        * type {success|error|loader|timer},
+        * isShow
+        * msg
+        * interval
+        * delay
+     */
+    show(options: any): void;
+}
+
 interface BootstrapTable {
     /**
-     * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+     * [fn.table.render] 渲染Bootstrap表格的通用方式
      * @param $table
      * @param options
         * tableConfig {Object Opt.}
@@ -84,7 +105,7 @@ interface BootstrapTable {
         * onRefreshing {Function Opt.},
         * onRendered {Function Opt.}
      */
-    rendered($table: any, options: any): void;
+    render($table: any, options: any): void;
 }
 
 declare module fn {
@@ -98,28 +119,37 @@ declare module fn {
          */
         tools: Tools;
         /**
-         * [fn.progress] 返回当前库的版本信息
+         * [fn.progress] 进度条工具
          */
         progress: Progress;
         /**
-         * [fn.bootstrapTable] 返回当前库的版本信息
+         * [fn.viewTools] 返回小视图观察者对象
          */
-        bootstrapTable: BootstrapTable;
+        viewTools: ViewTools;
+        /**
+         * [fn.table] Bootstrap渲染工具
+         */
+        table: BootstrapTable;
+        /**
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param options [Object]
+         */
+        initTools(options: Object): void;
         /**
          * [fn.initProgress] 初始化进度条对象
          * @param ProgressBar [class]
          */
         initProgress(ProgressBar: any): void;
         /**
+         * [fn.initViewTools] 初始化提示和Loader
+         * @param initViewTools [class]
+         */
+        initViewTools(translate: any, viewToolsCtrl: any): void;
+        /**
          * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
          * @param translate [Object]
          */
         initBootstrapTable(translate?: Object): void;
-        /**
-         * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param options [Object]
-         */
-        initTools(options: Object): void;
         /**
          * [fn.time] 返回一个当前时间字符串。
          */
@@ -152,14 +182,14 @@ declare module fn {
          * @param duration
          * @param func
          */
-        interval(timerId: string, duration: number | boolean, func: Function): void;
+        interval(timerId: string, duration: number | boolean, func?: Function): void;
         /**
          * [fn.timeout] 延时定时器
          * @param timerId
          * @param duration
          * @param func
          */
-        timeout(timerId: string, duration: number | boolean, func: Function): void;
+        timeout(timerId: string, duration: number | boolean, func?: Function): void;
         /**
          * [fn.sortData] 对象数组根据字段排序
          * @param tableData
@@ -207,7 +237,7 @@ declare module fn {
          * @param isNoLimit
          * @returns {pattern|undefined}
          */
-        getPattern(type: string, isNoLimit?: boolean): RegExp;
+        getPattern(type: string, isNoLimit?: boolean): any;
         /**
          * [fn.log] 控制台打印
          * @param value 
@@ -234,5 +264,12 @@ declare module fn {
          * @returns {boolean}
          */
         checkIsFullScreen(): boolean;
+        /**
+         * [fn.setErrors] 手动设定表单错误
+         * @param model 
+         * @param errorMsg 
+         * @param isForce 
+         */
+        setErrors(model: any, errorMsg: string, isForce?: boolean)
     }
 }

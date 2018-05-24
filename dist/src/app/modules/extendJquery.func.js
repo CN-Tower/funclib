@@ -60,6 +60,17 @@ function extendJquery($, interval) {
             options instanceof Array
                 ? options.forEach(function (opt) { return noAutoCplt(opt); })
                 : noAutoCplt(options);
+        },
+        /**
+          * [$.copyText] 复制文本到粘贴板
+          * @param text [string]
+          */
+        copyText: function (text) {
+            var $tmpIpt = $('<textarea></textarea>').css({ position: 'fixed', left: '200%' });
+            $('body').append($tmpIpt);
+            $tmpIpt.val(text).select();
+            document.execCommand('Copy');
+            $tmpIpt.remove();
         }
     });
     /**
