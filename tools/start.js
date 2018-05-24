@@ -9,12 +9,20 @@ let progressTimer, progressBar, tickInterval;
 fn.initProgress(Progress);
 fn.initTools({fs: fs, path: path});
 
-start();
+fn.log('Compiling funclib, please wait!', {title: 'Msg From funclib', color: 'cyan'});
+fn.progress.start({title: 'Compiling', width: 49});
+exec(`node ${getPath('tsc')} ${getPath('appTs')}`, function(e, stdout, stderr) {
+    const srcJs = glob.sync(getPath('srcJs'));
+    const distJs = glob.sync(getPath('distJs'));
+    const src2Dist = ft => path.join(ft.replace(/src/, `dist/src`));
+    distJs.forEach(js => fs.unlinkSync(js));
+    srcJs.forEach(js => fs.renameSync(js, src2Dist(js)));
+    const appDistJs = getPath('appDistJs');
+    fs.renameSync(getPath('appJs'), appDistJs);
+    fn.tools.writeFile(appDistJs, '\n fn.log("", {part: "end"}) \n', 'a');
+    fn.progress.stop(() => fn.log('', {title: 'Result Is:', part: 'pre'}));
+});
 
-/**
- * 描述: 资源和目标路径
- * @param {*} type 
- */
 function getPath(type) {
     const tmpBase = __dirname.split(sep);
     tmpBase.pop();
@@ -35,23 +43,3 @@ function getPath(type) {
         default: return basePath;
     }
 }
-
-/**
- * 描述: 。
- */
-function start() {
-    fn.log('Compiling funclib, please wait!', {title: 'Msg From funclib', color: 'cyan'});
-    fn.progress.start({title: 'Compiling', width: 49});
-    exec(`node ${getPath('tsc')} ${getPath('appTs')}`, function(e, stdout, stderr) {
-        const srcJs = glob.sync(getPath('srcJs'));
-        const distJs = glob.sync(getPath('distJs'));
-        const src2Dist = ft => path.join(ft.replace(/src/, `dist/src`));
-        distJs.forEach(js => fs.unlinkSync(js));
-        srcJs.forEach(js => fs.renameSync(js, src2Dist(js)));
-        const appDistJs = getPath('appDistJs');
-        fs.renameSync(getPath('appJs'), appDistJs);
-        fn.tools.writeFile(appDistJs, '\n fn.log("", {part: "end"}) \n', 'a');
-        fn.progress.stop(() => fn.log('', {title: 'Result Is:', part: 'pre'}));
-    });
-}
-
