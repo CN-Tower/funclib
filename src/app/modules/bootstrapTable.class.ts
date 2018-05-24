@@ -20,7 +20,7 @@ export /*funclib*/ class BootstrapTable {
   }
 
   /**
-   * [fn.bootstrapTable.rendered] 渲染Bootstrap表格的通用方式
+   * [fn.bootstrapTable.render] 渲染Bootstrap表格的通用方式
    * @param $table
    * @param options
       * tableConfig {Object Opt.}
@@ -31,7 +31,7 @@ export /*funclib*/ class BootstrapTable {
       * onRefreshing {Function Opt.},
       * onRendered {Function Opt.}
    */
-  rendered($table: any, options: any) {
+  render($table: any, options: any) {
     const tableConf = $.extend(options.gridOptions || this.gridOptions, options.tableConfig || {});
     const isAfterInit = $table.parent().hasClass('fixed-table-body');
     this.setAndClearLoadingTimers(options);
@@ -60,9 +60,9 @@ export /*funclib*/ class BootstrapTable {
         }
         $refreshBtn.addClass('btn-sm').css('marginLeft', '10px')
           .mouseleave(function () { $(this).blur(); });
-        // $('.bootstrap-table .search input')
-        //   .attr('placeholder', this.translate.instant('WordForFilter'))
-        //   .parent().append(`<span></span>`);
+        $('.bootstrap-table .search input')
+           .attr('placeholder', this.translate.instant('WordForFilter'))
+           .parent().append(`<span></span>`);
       }
     });
   }
