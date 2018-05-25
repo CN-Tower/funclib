@@ -1,9 +1,7 @@
 export /*funclib*/ class ViewTools {
-    translate: any;
     viewToolsCtrl: any;
 
-    constructor(translate: any, viewToolsCtrl: any) {
-        this.translate = translate;
+    constructor(viewToolsCtrl: any) {
         this.viewToolsCtrl = viewToolsCtrl;
     }
 
@@ -44,9 +42,6 @@ export /*funclib*/ class ViewTools {
     private optionsHandler(option: any) {
         if (!option.hasOwnProperty('isShow')) {
             option.isShow = true;
-        }
-        if (option.isShow && option.type === 'success' && !option.hasOwnProperty('msg')) {
-            option.msg = this.translate.instant('vm.opOkMsg');
         }
         if (option.isShow && !option.hasOwnProperty('interval')) {
             option.interval = option.type === 'loader' ? 20000 : 2000;
