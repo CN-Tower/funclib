@@ -260,15 +260,15 @@
             // 匹配Domain Url
             this.domainUrlPattern = new RegExp("http(s)?://" + this.domainPattern.source + "(:" + this.portPattern.source + ")?");
             // 匹配Url
-            this.urlPattern = new RegExp("http(s)?://(" + this.ipv4Pattern.source + "|\\[" + this.ipv6Pattern.source + "\\]|" + this.domainPattern.source + ")(:" + this.portPattern.source + ")?");
+            this.urlPattern = new RegExp("http(s)?://(" + this.ipv4Pattern.source + "|\\[(" + this.ipv6Pattern.source + ")\\]|" + this.domainPattern.source + ")(:" + this.portPattern.source + ")?");
             // 匹配必需带端口的IPv4 Url
-            this.ipWithPortUrlPattern = new RegExp("http(s)?://" + this.ipv4Pattern.source + ":" + this.portPattern.source);
+            this.ipv4WithPortUrlPattern = new RegExp("http(s)?://" + this.ipv4Pattern.source + ":" + this.portPattern.source);
             // 匹配必需带端口的IPv6 Url
             this.ipv6WithPortUrlPattern = new RegExp("http(s)?://\\[(" + this.ipv6Pattern.source + ")\\]:" + this.portPattern.source);
             // 匹配必需带端口的Domain Url
             this.domainWithPortUrlPattern = new RegExp("http(s)?://" + this.domainPattern.source + ":" + this.portPattern.source);
             // 匹配必需带端口的Url
-            this.withPortUrlPattern = new RegExp("http(s)?://(" + this.ipv4Pattern.source + "|\\[" + this.ipv6Pattern.source + "\\]|" + this.domainPattern.source + "):" + this.portPattern.source);
+            this.withPortUrlPattern = new RegExp("http(s)?://(" + this.ipv4Pattern.source + "|\\[(" + this.ipv6Pattern.source + ")\\]|" + this.domainPattern.source + "):" + this.portPattern.source);
             /* tslint:enable */
         }
         return Patterns;
@@ -399,8 +399,7 @@
         return Tools;
     }());
     var ViewTools = /** @class */ (function () {
-        function ViewTools(translate, viewToolsCtrl) {
-            this.translate = translate;
+        function ViewTools(viewToolsCtrl) {
             this.viewToolsCtrl = viewToolsCtrl;
         }
         /**
@@ -446,9 +445,6 @@
             if (!option.hasOwnProperty('isShow')) {
                 option.isShow = true;
             }
-            if (option.isShow && option.type === 'success' && !option.hasOwnProperty('msg')) {
-                option.msg = this.translate.instant('vm.opOkMsg');
-            }
             if (option.isShow && !option.hasOwnProperty('interval')) {
                 option.interval = option.type === 'loader' ? 20000 : 2000;
             }
@@ -458,7 +454,7 @@
     }());
     var Funclib = /** @class */ (function () {
         function Funclib(options) {
-            this.version = 'V1.0.3';
+            this.version = 'V1.0.4';
             this.patterns = new Patterns();
             this.intervalTimers = {};
             this.timeoutTimers = {};
@@ -503,9 +499,9 @@
          * [fn.initViewTools] 初始化提示和Loader
          * @param initViewTools [class]
          */
-        Funclib.prototype.initViewTools = function (translate, viewToolsCtrl) {
-            if (translate && viewToolsCtrl) {
-                this.viewTools = new ViewTools(translate, viewToolsCtrl);
+        Funclib.prototype.initViewTools = function (viewToolsCtrl) {
+            if (viewToolsCtrl) {
+                this.viewTools = new ViewTools(viewToolsCtrl);
             }
         };
         /**
@@ -675,7 +671,7 @@
             return decimal ? integerStr + '.' + decimal : integerStr;
         };
         /**
-         * [fn.cutString] Format string width length
+         * [fn.cutString] 裁切字符串到指定长度
          * @param str
          * @param len
          * @returns {string}
@@ -825,11 +821,12 @@
             if (!lineLen || lineLen < 20 || lineLen > 100) {
                 lineLen = 66;
             }
-            var titlelen = 16, sp = '';
-            if (title.length <= titlelen) {
+            var titlelen, sp = '';
+            if (title.length <= lineLen - 10) {
                 titlelen = title.length;
             }
             else {
+                titlelen = lineLen - 10;
                 title = this.cutString(title, titlelen - 2);
             }
             this.array((lineLen - titlelen) / 2, ' ').forEach(function (x) { return sp += x; });

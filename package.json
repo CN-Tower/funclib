@@ -1,6 +1,6 @@
 {
-  "name": "funclib",
-  "version": "1.0.3",
+  "name": "funclib.js",
+  "version": "1.0.4",
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
@@ -24,11 +24,10 @@
   },
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
-    "jquery": "^3.3.1"
-  },
-  "devDependencies": {
     "funclib": "file:funclib",
+    "jquery": "^3.3.1",
     "progress": "^2.0.0",
     "typescript": "^2.8.3"
-  }
+  },
+  "devDependencies": {}
 }

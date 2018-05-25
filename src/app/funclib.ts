@@ -8,7 +8,7 @@ import * as $ from 'jquery';
 
 export /*funclib*/ class Funclib {
 
-  version: string = 'V1.0.2'
+  version: string = 'V1.0.4'
   tools: any;
   progress: any;
   viewTools: any;
@@ -220,7 +220,7 @@ export /*funclib*/ class Funclib {
    * @param digit
    * @returns {string}
    */
-  currency(number: number, digit: number = 2) {
+  currency(number: number, digit: number = 2): string {
     let nbArr = String(number.toFixed(digit)).split('.');
     const integer = nbArr[0];
     const decimal = nbArr.length > 1 ? nbArr[1] : '';
@@ -236,12 +236,12 @@ export /*funclib*/ class Funclib {
   }
 
   /**
-   * [fn.cutString] Format string width length
+   * [fn.cutString] 裁切字符串到指定长度
    * @param str
    * @param len
    * @returns {string}
    */
-  cutString(str, len) {
+  cutString(str, len): string {
     let tmpStr = '';
     let count = 0;
     let tmpChar;
@@ -285,7 +285,7 @@ export /*funclib*/ class Funclib {
    * @param isNoLimit
    * @returns {pattern|undefined}
    */
-  getPattern(type: string, isNoLimit: boolean = false) {
+  getPattern(type: string, isNoLimit: boolean = false): any {
     if (!type) { return; }
     const patternsObj = {
       cnChar: this.patterns.cnCharPattern,
@@ -330,7 +330,7 @@ export /*funclib*/ class Funclib {
    * @param isNoLimit
    * @returns {boolean}
    */
-  matchPattern(src: string, type: string | string[], isNoLimit?: boolean) {
+  matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean {
     if (!src || !type) { return false; }
     if (type instanceof Array) {
       let matchResult = false;
@@ -378,10 +378,11 @@ export /*funclib*/ class Funclib {
     if (!lineLen || lineLen < 20 || lineLen > 100 ) {
       lineLen = 66;
     }
-    let titlelen = 16, sp = '';
-    if (title.length <= titlelen) {
+    let titlelen, sp = '';
+    if (title.length <= lineLen - 10) {
       titlelen = title.length;
     } else {
+      titlelen = lineLen - 10;
       title = this.cutString(title, titlelen - 2);
     }
     this.array((lineLen - titlelen) / 2, ' ').forEach(x => sp += x);
@@ -415,7 +416,7 @@ export /*funclib*/ class Funclib {
    * @param el
    * @returns {any}
    */
-  fullScreen(el: any) {
+  fullScreen(el: any): any {
     const rfs = el.requestFullScreen || el.webkitRequestFullScreen
       || el.mozRequestFullScreen || el.msRequestFullScreen;
     if (typeof rfs != "undefined" && rfs) {
@@ -431,7 +432,7 @@ export /*funclib*/ class Funclib {
    * [fn.exitFullScreen] 退出全屏显示
    * @returns {any}
    */
-  exitFullScreen() {
+  exitFullScreen(): any {
     const el = this.document;
     const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
       || el.mozCancelFullScreen || el.exitFullScreen;
@@ -448,7 +449,7 @@ export /*funclib*/ class Funclib {
    * [fn.checkIsFullScreen] 检测是否全屏状态
    * @returns {boolean}
    */
-  checkIsFullScreen() {
+  checkIsFullScreen(): boolean {
     const el = this.document;
     const isFull = el.fullscreenEnabled || el.fullScreen
       || el.webkitIsFullScreen || el.msFullscreenEnabled;

@@ -8,7 +8,7 @@ var viewTools_class_1 = require("./modules/viewTools.class");
 var bootstrapTable_class_1 = require("./modules/bootstrapTable.class");
 var Funclib = /** @class */ (function () {
     function Funclib(options) {
-        this.version = 'V1.0.3';
+        this.version = 'V1.0.4';
         this.patterns = new patterns_class_1.Patterns();
         this.intervalTimers = {};
         this.timeoutTimers = {};
@@ -53,9 +53,9 @@ var Funclib = /** @class */ (function () {
      * [fn.initViewTools] 初始化提示和Loader
      * @param initViewTools [class]
      */
-    Funclib.prototype.initViewTools = function (translate, viewToolsCtrl) {
-        if (translate && viewToolsCtrl) {
-            this.viewTools = new viewTools_class_1.ViewTools(translate, viewToolsCtrl);
+    Funclib.prototype.initViewTools = function (viewToolsCtrl) {
+        if (viewToolsCtrl) {
+            this.viewTools = new viewTools_class_1.ViewTools(viewToolsCtrl);
         }
     };
     /**
@@ -225,7 +225,7 @@ var Funclib = /** @class */ (function () {
         return decimal ? integerStr + '.' + decimal : integerStr;
     };
     /**
-     * [fn.cutString] Format string width length
+     * [fn.cutString] 裁切字符串到指定长度
      * @param str
      * @param len
      * @returns {string}
@@ -375,11 +375,12 @@ var Funclib = /** @class */ (function () {
         if (!lineLen || lineLen < 20 || lineLen > 100) {
             lineLen = 66;
         }
-        var titlelen = 16, sp = '';
-        if (title.length <= titlelen) {
+        var titlelen, sp = '';
+        if (title.length <= lineLen - 10) {
             titlelen = title.length;
         }
         else {
+            titlelen = lineLen - 10;
             title = this.cutString(title, titlelen - 2);
         }
         this.array((lineLen - titlelen) / 2, ' ').forEach(function (x) { return sp += x; });

@@ -1,8 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var ViewTools = /** @class */ (function () {
-    function ViewTools(translate, viewToolsCtrl) {
-        this.translate = translate;
+    function ViewTools(viewToolsCtrl) {
         this.viewToolsCtrl = viewToolsCtrl;
     }
     /**
@@ -47,9 +46,6 @@ var ViewTools = /** @class */ (function () {
     ViewTools.prototype.optionsHandler = function (option) {
         if (!option.hasOwnProperty('isShow')) {
             option.isShow = true;
-        }
-        if (option.isShow && option.type === 'success' && !option.hasOwnProperty('msg')) {
-            option.msg = this.translate.instant('vm.opOkMsg');
         }
         if (option.isShow && !option.hasOwnProperty('interval')) {
             option.interval = option.type === 'loader' ? 20000 : 2000;

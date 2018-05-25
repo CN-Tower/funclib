@@ -1,5 +1,5 @@
 /**==============================================================
-  通用型逻辑函数封装 funclib (V1.0.3)
+  通用型逻辑函数封装 funclib (V1.0.4)
   Github: http://github.com/CN-Tower/funclib.js
   ---------------------------------------------------------------
   fn.version                返回当前函数库版本
@@ -211,7 +211,7 @@ declare module fn {
          */
         currency(number: number, digit?: number): any;
         /**
-         * [fn.cutString] Format string width length
+         * [fn.cutString] 裁切字符串到指定长度
          * @param str
          * @param len
          * @returns {string}
