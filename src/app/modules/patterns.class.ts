@@ -62,14 +62,14 @@ export /*funclib*/ class Patterns {
   // 匹配Domain Url
   public domainUrlPattern: any = new RegExp(`http(s)?://${this.domainPattern.source}(:${this.portPattern.source})?`);
   // 匹配Url
-  public urlPattern: any = new RegExp(`http(s)?://(${this.ipv4Pattern.source}|\\[${this.ipv6Pattern.source}\\]|${this.domainPattern.source})(:${this.portPattern.source})?`);
+  public urlPattern: any = new RegExp(`http(s)?://(${this.ipv4Pattern.source}|\\[(${this.ipv6Pattern.source})\\]|${this.domainPattern.source})(:${this.portPattern.source})?`);
   // 匹配必需带端口的IPv4 Url
-  public ipWithPortUrlPattern: any = new RegExp(`http(s)?://${this.ipv4Pattern.source}:${this.portPattern.source}`);
+  public ipv4WithPortUrlPattern: any = new RegExp(`http(s)?://${this.ipv4Pattern.source}:${this.portPattern.source}`);
   // 匹配必需带端口的IPv6 Url
   public ipv6WithPortUrlPattern: any = new RegExp(`http(s)?://\\[(${this.ipv6Pattern.source})\\]:${this.portPattern.source}`);
   // 匹配必需带端口的Domain Url
   public domainWithPortUrlPattern: any = new RegExp(`http(s)?://${this.domainPattern.source}:${this.portPattern.source}`);
   // 匹配必需带端口的Url
-  public withPortUrlPattern: any = new RegExp(`http(s)?://(${this.ipv4Pattern.source}|\\[${this.ipv6Pattern.source}\\]|${this.domainPattern.source}):${this.portPattern.source}`);
+  public withPortUrlPattern: any = new RegExp(`http(s)?://(${this.ipv4Pattern.source}|\\[(${this.ipv6Pattern.source})\\]|${this.domainPattern.source}):${this.portPattern.source}`);
   /* tslint:enable */
 }
