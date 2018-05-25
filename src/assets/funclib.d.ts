@@ -145,7 +145,7 @@ declare module fn {
          * [fn.initViewTools] 初始化提示和Loader
          * @param initViewTools [class]
          */
-        initViewTools(translate: any, viewToolsCtrl: any): void;
+        initViewTools(viewToolsCtrl: any): void;
         /**
          * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
          * @param translate [Object]
