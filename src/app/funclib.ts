@@ -8,7 +8,7 @@ import * as $ from 'jquery';
 
 export /*funclib*/ class Funclib {
 
-  version: string = 'V1.0.3'
+  version: string = 'V1.0.2'
   tools: any;
   progress: any;
   viewTools: any;
@@ -61,9 +61,9 @@ export /*funclib*/ class Funclib {
    * [fn.initViewTools] 初始化提示和Loader
    * @param initViewTools [class]
    */
-  initViewTools(translate: any, viewToolsCtrl: any) {
-    if (translate && viewToolsCtrl) {
-      this.viewTools = new ViewTools(translate, viewToolsCtrl);
+  initViewTools(viewToolsCtrl: any) {
+    if (viewToolsCtrl) {
+      this.viewTools = new ViewTools(viewToolsCtrl);
     }
   }
 
