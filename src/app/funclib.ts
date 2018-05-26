@@ -308,7 +308,7 @@ export /*funclib*/ class Funclib {
       ipv6Url: this.patterns.ipv6UrlPattern,
       domainUrl: this.patterns.domainUrlPattern,
       url: this.patterns.urlPattern,
-      ipWithPortUrl: this.patterns.ipWithPortUrlPattern,
+      ipv4WithPortUrl: this.patterns.ipv4WithPortUrlPattern,
       ipv6WithPortUrl: this.patterns.ipv6WithPortUrlPattern,
       domainWithPortUrl: this.patterns.domainWithPortUrlPattern,
       withPortUrl: this.patterns.withPortUrlPattern
