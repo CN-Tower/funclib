@@ -4,36 +4,46 @@ import { Progress } from './modules/progress.class';
 import { extendJquery } from './modules/extendJquery.func';
 import { ViewTools } from './modules/viewTools.class';
 import { BootstrapTable } from './modules/bootstrapTable.class';
+import { KEY_MAP } from './modules/keyMap.const';
 import * as $ from 'jquery';
 
 export /*funclib*/ class Funclib {
 
-  version: string = 'V1.0.4'
+  version: string = 'V1.0.5'
   tools: any;
   progress: any;
   viewTools: any;
   table: any;
 
-  private jquery: any;
+  private root: any;
   private window: any;
   private document: any;
   private patterns: Patterns = new Patterns();
   private intervalTimers: any = {};
   private timeoutTimers: any = {};
+  private htmlMap: any = {
+    src: ['&', '<', '>', ' ', '\'', '"'],
+    map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
+  }
+  private specialPropertys: any = {
+    client: [
+      'window', 'document', 'fullScreen', 'exitFullScreen', 'checkIsFullScreen',
+      'setCookie', 'getCookie', 'removeCookie', 'setErrors'
+    ],
+    server: ['log']
+  }
 
-  constructor(options: Object) {
-    this.overlay(this, options, ['jquery', 'window', 'document'])
-    if (!this.window || !this.document) {
-      delete this.window;
-      delete this.document;
-      delete this.fullScreen;
-      delete this.exitFullScreen;
-      delete this.checkIsFullScreen;
-    }
-    if (this.jquery) {
-      extendJquery(this.jquery, this.interval);
+  constructor(root: any) {
+    if (this.root && this.root.Window && this.root.Document) {
+      this.window = this.root.window;
+      this.document = this.root.document;
+      this.specialPropertys.server.forEach(prop => delete this[prop]);
     } else {
-      delete this.jquery;
+      this.specialPropertys.client.forEach(prop => delete this[prop]);
+    }
+    const jquery = this.root && (this.root.$ || this.root.jquery);
+    if (jquery) {
+      extendJquery(jquery, this.interval);
     }
   }
   
@@ -76,11 +86,6 @@ export /*funclib*/ class Funclib {
   }
 
   /**
-   * [fn.time] 返回一个当前时间字符串。
-   */
-  time: Function = () => (new Date()).getTime();
-
-  /**
    * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
    * @param len [number]
    */
@@ -118,29 +123,117 @@ export /*funclib*/ class Funclib {
   }
 
   /**
+   * [fn.toArray] 值数组化
+   * @param src 
+   */
+  toArray(src: any) {
+    return src instanceof Array ? src : [src];
+  }
+
+  /**
    * [fn.random] 返回一个指定范围的随机数
    * @param sta [number]
    * @param end [number]
+   * @returns {number|string}
    */
-  random(sta: number, end?: number): number {
-    if (end === undefined || sta === end) {
-      return Math.floor(Math.random() * sta);
+  random(sta: number|'color', end?: number): number|string {
+    if (sta === 'color') {
+      return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).slice(-6);
     } else {
-      if (sta > end) {
-        const tmpSta = sta;
-        sta = end;
-        end = tmpSta;
+      if (end === undefined || sta === end) {
+        return Math.floor(Math.random() * sta);
+      } else {
+        if (sta > end) {
+          const tmpSta = sta;
+          sta = end;
+          end = tmpSta;
+        }
+        return Math.floor(Math.random() * (end - sta) + sta)
       }
-      return Math.floor(Math.random() * (end - sta) + sta)
     }
   }
 
   /**
-   * [fn.len] 获取对象自有属性的个数
+   * [fn.length] 获取对象自有属性的个数
    * @arg obj [object]
    * */
-  len(obj: any): number {
+  length(obj: any): number {
     return Object.keys(obj).length;
+  }
+
+  /**
+   * [fn.isEmpty] 判断对象是否为空对象或数组
+   * @param obj 
+   */
+  isEmpty(obj: Object|any[]): boolean {
+    if (obj && typeof obj === 'object') {
+      return obj instanceof Array ? !obj.length : !Object.keys(obj).length;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * [fn.overlay] 给对象赋值
+   * @param target 
+   * @param source 
+   * @param propList 
+   */
+  overlay(target: Object, source: Object, propList?: string[]) {
+    if (source) {
+      if (propList && propList.length > 0) {
+        propList.forEach(prop => {
+          if (source.hasOwnProperty(prop)) {
+            target[prop] = source[prop];
+          }
+        });
+      } else {
+        Object.keys(source).forEach(key => {
+          target[key] = source[key];
+        });
+      }
+    }
+  }
+
+  /**
+   * [fn.deepCopy] 深拷贝对象或数组
+   * @param data
+   */
+  deepCopy(data: any) {
+    if (typeof data !== 'object') { return data; }
+    let tmpData;
+    if (data instanceof Array) {
+      tmpData = [];
+      for (let i = 0; i < data.length; i++) {
+        tmpData.push(this.deepCopy(data[i]));
+      }
+    } else {
+      tmpData = {};
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          tmpData[key] = this.deepCopy(data[key]);
+        }
+      }
+    }
+    return tmpData;
+  }
+
+  /**
+   * [fn.sortData] 对象数组根据字段排序
+   * @param tableData
+   * @param field
+   * @param isDesc
+   */
+  sortData(tableData: any, field: string, isDesc?: boolean) {
+    return tableData.sort((row1, row2) => {
+      return row1.hasOwnProperty(field) && row2.hasOwnProperty(field)
+        ? row1[field] === row2[field]
+          ? 0
+          : isDesc
+            ? row1[field] > row2[field] ? -1 : 1
+            : row1[field] > row2[field] ? 1 : -1
+        : 0;
+    });
   }
 
   /**
@@ -171,47 +264,6 @@ export /*funclib*/ class Funclib {
     } else if (typeof duration === 'boolean' && !duration) {
       clearTimeout(this.timeoutTimers[timerId]);
     }
-  }
-
-  /**
-   * [fn.sortData] 对象数组根据字段排序
-   * @param tableData
-   * @param field
-   * @param isDesc
-   */
-  sortData(tableData: any, field: string, isDesc?: boolean) {
-    return tableData.sort((row1, row2) => {
-      return row1.hasOwnProperty(field) && row2.hasOwnProperty(field)
-        ? row1[field] === row2[field]
-          ? 0
-          : isDesc
-            ? row1[field] > row2[field] ? -1 : 1
-            : row1[field] > row2[field] ? 1 : -1
-        : 0;
-    });
-  }
-
-  /**
-   * [fn.deepCopy] 深拷贝对象或数组
-   * @param data
-   */
-  deepCopy(data: any) {
-    if (typeof data !== 'object') { return data; }
-    let tmpData;
-    if (data instanceof Array) {
-      tmpData = [];
-      for (let i = 0; i < data.length; i++) {
-        tmpData.push(this.deepCopy(data[i]));
-      }
-    } else {
-      tmpData = {};
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          tmpData[key] = this.deepCopy(data[key]);
-        }
-      }
-    }
-    return tmpData;
   }
 
   /**
@@ -255,28 +307,6 @@ export /*funclib*/ class Funclib {
       }
     }
     return tmpStr + '...';
-  }
-
-  /**
-   * [fn.overlay] 给对象赋值
-   * @param target 
-   * @param source 
-   * @param propList 
-   */
-  overlay(target: Object, source: Object, propList?: string[]) {
-    if (source) {
-      if (propList && propList.length > 0) {
-        propList.forEach(prop => {
-          if (source.hasOwnProperty(prop)) {
-            target[prop] = source[prop];
-          }
-        });
-      } else {
-        Object.keys(source).forEach(key => {
-          target[key] = source[key];
-        });
-      }
-    }
   }
 
   /**
@@ -346,6 +376,181 @@ export /*funclib*/ class Funclib {
   }
 
   /**
+   * [fn.fmtDate] 获取格式化的时间字符串
+   * @param fmtStr 
+   * @param time 
+   */
+  fmtDate(fmtStr: string, time?: number|Date) {
+    const _date = new Date(time);
+    const date = _date.getTime() ? _date : new Date();
+    const obj = {
+      'M+': date.getMonth() + 1,
+      'd+': date.getDate(),
+      'h+': date.getHours(),
+      'm+': date.getMinutes(),
+      's+': date.getSeconds(),
+      'q+': Math.floor((date.getMonth() + 3) / 3),
+      'S': date.getMilliseconds()
+    };
+    if (/(y+)/.test(fmtStr)) {
+      fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (const k in obj) {
+      if (obj.hasOwnProperty(k)) {
+        if (new RegExp(`(${k})`).test(fmtStr)) {
+          fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[k]) : (('00' + obj[k]).substr(('' + obj[k]).length)));
+        }
+      }
+    }
+    return fmtStr;
+  }
+  
+  /**
+   * [fn.timeStamp] 返回一个当前时间戳
+   */
+  timeStamp(date?: Date|string): number {
+    if (date instanceof Date) {
+      return date.getTime();
+    } else {
+      return (new Date(date)).getTime() || (new Date()).getTime();
+    }
+  }
+
+  /**
+   * [fn.encodeHtml] 编码HTML字符串
+   * @param html 
+   */
+  encodeHtml(html: string): string {
+    this.htmlMap.src.forEach((src, i) => html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]));
+    return html;
+  }
+
+  /**
+   * [fn.decodeHtml] 解码HTML字符串
+   * @param html 
+   */
+  decodeHtml(html: string): string {
+    this.htmlMap.map.forEach((map, i) => html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]));
+    return html;
+  }
+  
+  /**
+   * [fn.getKeyCodeByName] 根据键名获取键码
+   * @param keyName 
+   */
+  getKeyCodeByName(keyName: string): number {
+    for (let keyCode in KEY_MAP) {
+      if (KEY_MAP[keyCode] === keyName) {
+        return Number(keyCode);
+      }
+    }
+    return NaN;
+  }
+
+  /**
+   * [fn.getKeyCodeByName] 根据键码获取键名
+   * @param keyName 
+   */
+  getKeyNameByCode(keyCode: number): string {
+    return KEY_MAP[keyCode] || '';
+  }
+
+  /**
+   * [fn.fullScreen] 全屏显示HTML元素
+   * @param el
+   * @returns {any}
+   */
+  fullScreen(el: any): any {
+    const rfs = el.requestFullScreen || el.webkitRequestFullScreen
+      || el.mozRequestFullScreen || el.msRequestFullScreen;
+    if (typeof rfs != "undefined" && rfs) {
+      return rfs.call(el);
+    }
+    if (typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if (ws) { ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * [fn.exitFullScreen] 退出全屏显示
+   * @returns {any}
+   */
+  exitFullScreen(): any {
+    const el = this.document;
+    const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
+      || el.mozCancelFullScreen || el.exitFullScreen;
+    if (typeof cfs != "undefined" && cfs) {
+      return cfs.call(el);
+    }
+    if (typeof this.window.ActiveXObject != "undefined") {
+      const ws = new this.window.ActiveXObject("WScript.Shell");
+      if (ws != null) { ws.SendKeys("{F11}"); }
+    }
+  }
+
+  /**
+   * [fn.checkIsFullScreen] 检测是否全屏状态
+   * @returns {boolean}
+   */
+  checkIsFullScreen(): boolean {
+    const el = this.document;
+    const isFull = el.fullscreenEnabled || el.fullScreen
+      || el.webkitIsFullScreen || el.msFullscreenEnabled;
+    return !!isFull;
+  }
+
+  /**
+   * [fn.setCookie] 设置Cookie
+   * @param name 
+   * @param value 
+   * @param days 
+   */
+  setCookie(name: string, value: string, days: number) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    this.document.cookie = `${name}=${value};expires=${date}`;
+  }
+
+  /**
+   * [fn.getCookie] 根据name读取cookie
+   * @param  name 
+   * @return {String}
+   */
+  getCookie(name: string): string {
+    const cks = this.document.cookie.replace(/\s/g, "").split(';');
+    for (let i = 0; i < cks.length; i++) {
+      const tempArr = cks[i].split('=');
+      if (tempArr[0] == name) {
+        return decodeURIComponent(tempArr[1]);
+      }
+    }
+    return '';
+  }
+
+  /**
+   * [fn.removeCookie] 根据name删除cookie
+   * @param name 
+   */
+  removeCookie(name: string) {
+    this.setCookie(name, '1', -1);
+  }
+
+  /**
+   * [fn.setErrors] 手动设定表单错误
+   * @param model 
+   * @param errorMsg 
+   * @param isForce 
+   */
+  setErrors(model: any, errorMsg: string, isForce: boolean = false) {
+    if (model && model['control'] && (isForce || !model.control.pristine)) {
+      errorMsg
+        ? model.control.setErrors({validator: errorMsg})
+        : model.control.setErrors(null);
+    }
+  }
+  
+  /**
    * [fn.log] 控制台打印
    * @param value 
    * @param configs {
@@ -408,65 +613,6 @@ export /*funclib*/ class Funclib {
       console.log(sL);
       console.log(colors[color], value);
       console.log(dL + '\n');
-    }
-  }
-
-  /**
-   * [fn.fullScreen] 全屏显示HTML元素
-   * @param el
-   * @returns {any}
-   */
-  fullScreen(el: any): any {
-    const rfs = el.requestFullScreen || el.webkitRequestFullScreen
-      || el.mozRequestFullScreen || el.msRequestFullScreen;
-    if (typeof rfs != "undefined" && rfs) {
-      return rfs.call(el);
-    }
-    if (typeof this.window.ActiveXObject != "undefined") {
-      const ws = new this.window.ActiveXObject("WScript.Shell");
-      if (ws) { ws.SendKeys("{F11}"); }
-    }
-  }
-
-  /**
-   * [fn.exitFullScreen] 退出全屏显示
-   * @returns {any}
-   */
-  exitFullScreen(): any {
-    const el = this.document;
-    const cfs = el.cancelFullScreen || el.webkitCancelFullScreen
-      || el.mozCancelFullScreen || el.exitFullScreen;
-    if (typeof cfs != "undefined" && cfs) {
-      return cfs.call(el);
-    }
-    if (typeof this.window.ActiveXObject != "undefined") {
-      const ws = new this.window.ActiveXObject("WScript.Shell");
-      if (ws != null) { ws.SendKeys("{F11}"); }
-    }
-  }
-
-  /**
-   * [fn.checkIsFullScreen] 检测是否全屏状态
-   * @returns {boolean}
-   */
-  checkIsFullScreen(): boolean {
-    const el = this.document;
-    const isFull = el.fullscreenEnabled || el.fullScreen
-      || el.webkitIsFullScreen || el.msFullscreenEnabled;
-    return !!isFull;
-  }
-
-  /**
-   * [fn.setErrors] 手动设定表单错误
-   * @param model 
-   * @param errorMsg 
-   * @param isForce 
-   */
-  setErrors(model: any, errorMsg: string, isForce: boolean = false) {
-    if (model && model['control'] && (isForce || !model.control.pristine)) {
-      errorMsg
-        ? model.control.setErrors({validator: errorMsg})
-        : model.control.setErrors(null);
     }
   }
 }

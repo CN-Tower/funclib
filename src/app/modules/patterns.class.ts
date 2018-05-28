@@ -9,7 +9,7 @@ export /*funclib*/ class Patterns {
   // 匹配大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
   public telPhonePattern: any = /((d{3,4})|d{3,4}-)?d{7,8}/;
   // 匹配Email
-  public emailPattern: any = /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/;
+  public emailPattern: any = /([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+/;
   // 匹配Base64编码格式
   public base64CodePattern: any = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
   // 匹配Mac地址

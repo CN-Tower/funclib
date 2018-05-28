@@ -12,7 +12,7 @@ var Patterns = /** @class */ (function () {
         // 匹配大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
         this.telPhonePattern = /((d{3,4})|d{3,4}-)?d{7,8}/;
         // 匹配Email
-        this.emailPattern = /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/;
+        this.emailPattern = /([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+/;
         // 匹配Base64编码格式
         this.base64CodePattern = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
         // 匹配Mac地址

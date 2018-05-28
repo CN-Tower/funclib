@@ -1,11 +1,12 @@
+import { EPROTONOSUPPORT } from "constants";
+
 (function() {
   const root = this;
-  const $ = root.$ || root.jquery;
   const previousfn = root.fn;
 
   /*funclib*/
 
-  const fn = new Funclib({jquery: $, window: root, document: root.document});
+  const fn = new Funclib(root);
 
   fn['noConflict'] = function() {
     root.fn = previousfn;

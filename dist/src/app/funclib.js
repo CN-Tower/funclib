@@ -6,29 +6,33 @@ var progress_class_1 = require("./modules/progress.class");
 var extendJquery_func_1 = require("./modules/extendJquery.func");
 var viewTools_class_1 = require("./modules/viewTools.class");
 var bootstrapTable_class_1 = require("./modules/bootstrapTable.class");
+var keyMap_const_1 = require("./modules/keyMap.const");
 var Funclib = /** @class */ (function () {
-    function Funclib(options) {
-        this.version = 'V1.0.4';
+    function Funclib(root) {
+        var _this = this;
+        this.version = 'V1.0.5';
         this.patterns = new patterns_class_1.Patterns();
         this.intervalTimers = {};
         this.timeoutTimers = {};
-        /**
-         * [fn.time] 返回一个当前时间字符串。
-         */
-        this.time = function () { return (new Date()).getTime(); };
-        this.overlay(this, options, ['jquery', 'window', 'document']);
-        if (!this.window || !this.document) {
-            delete this.window;
-            delete this.document;
-            delete this.fullScreen;
-            delete this.exitFullScreen;
-            delete this.checkIsFullScreen;
-        }
-        if (this.jquery) {
-            extendJquery_func_1.extendJquery(this.jquery, this.interval);
+        this.htmlMap = {
+            src: ['&', '<', '>', ' ', '\'', '"'],
+            map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
+        };
+        this.specialProps = {
+            client: ['window', 'document', 'fullScreen', 'exitFullScreen', 'checkIsFullScreen'],
+            server: []
+        };
+        if (this.root && this.root.Window && this.root.Document) {
+            this.window = this.root.window;
+            this.document = this.root.document;
+            this.specialProps.server.forEach(function (prop) { return delete _this[prop]; });
         }
         else {
-            delete this.jquery;
+            this.specialProps.client.forEach(function (prop) { return delete _this[prop]; });
+        }
+        var jquery = this.root && (this.root.$ || this.root.jquery);
+        if (jquery) {
+            extendJquery_func_1.extendJquery(jquery, this.interval);
         }
     }
     /**
@@ -64,6 +68,17 @@ var Funclib = /** @class */ (function () {
      */
     Funclib.prototype.initBootstrapTable = function (translate) {
         this.table = new bootstrapTable_class_1.BootstrapTable(translate);
+    };
+    /**
+     * [fn.time] 返回一个当前时间戳。
+     */
+    Funclib.prototype.timeStamp = function (date) {
+        if (date instanceof Date) {
+            return date.getTime();
+        }
+        else {
+            return (new Date(date)).getTime() || (new Date()).getTime();
+        }
     };
     /**
      * [fn.gnid] 返回一个指定长度(最小6位)的随机ID。
@@ -110,18 +125,24 @@ var Funclib = /** @class */ (function () {
      * [fn.random] 返回一个指定范围的随机数
      * @param sta [number]
      * @param end [number]
+     * @returns {number|string}
      */
     Funclib.prototype.random = function (sta, end) {
-        if (end === undefined || sta === end) {
-            return Math.floor(Math.random() * sta);
+        if (sta === 'color') {
+            return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).slice(-6);
         }
         else {
-            if (sta > end) {
-                var tmpSta = sta;
-                sta = end;
-                end = tmpSta;
+            if (end === undefined || sta === end) {
+                return Math.floor(Math.random() * sta);
             }
-            return Math.floor(Math.random() * (end - sta) + sta);
+            else {
+                if (sta > end) {
+                    var tmpSta = sta;
+                    sta = end;
+                    end = tmpSta;
+                }
+                return Math.floor(Math.random() * (end - sta) + sta);
+            }
         }
     };
     /**
@@ -300,7 +321,7 @@ var Funclib = /** @class */ (function () {
             ipv6Url: this.patterns.ipv6UrlPattern,
             domainUrl: this.patterns.domainUrlPattern,
             url: this.patterns.urlPattern,
-            ipWithPortUrl: this.patterns.ipWithPortUrlPattern,
+            ipWithPortUrl: this.patterns.ipv4WithPortUrlPattern,
             ipv6WithPortUrl: this.patterns.ipv6WithPortUrlPattern,
             domainWithPortUrl: this.patterns.domainWithPortUrlPattern,
             withPortUrl: this.patterns.withPortUrlPattern
@@ -454,6 +475,54 @@ var Funclib = /** @class */ (function () {
         var isFull = el.fullscreenEnabled || el.fullScreen
             || el.webkitIsFullScreen || el.msFullscreenEnabled;
         return !!isFull;
+    };
+    Funclib.prototype.getKeyCodeByName = function (keyName) {
+        for (var keyCode in keyMap_const_1.KEY_MAP) {
+            if (keyMap_const_1.KEY_MAP[keyCode] === keyName) {
+                return Number(keyCode);
+            }
+        }
+        return NaN;
+    };
+    Funclib.prototype.getKeyNameByCode = function (keyCode) {
+        return keyMap_const_1.KEY_MAP[keyCode] || '';
+    };
+    Funclib.prototype.encodeHtml = function (html) {
+        var _this = this;
+        this.htmlMap.src.forEach(function (src, i) { return html.replace(new RegExp(src, 'g'), _this.htmlMap.map[i]); });
+        return html;
+    };
+    Funclib.prototype.decodeHtml = function (html) {
+        var _this = this;
+        this.htmlMap.map.forEach(function (map, i) { return html.replace(new RegExp(map, 'g'), _this.htmlMap.src[i]); });
+        return html;
+    };
+    Funclib.prototype.fmtedDate = function (fmtStr, time) {
+        var _date = new Date(time);
+        var date = _date.getTime() ? _date : new Date();
+        var obj = {
+            'M+': date.getMonth() + 1,
+            'd+': date.getDate(),
+            'h+': date.getHours(),
+            'm+': date.getMinutes(),
+            's+': date.getSeconds(),
+            'q+': Math.floor((date.getMonth() + 3) / 3),
+            'S': date.getMilliseconds()
+        };
+        if (/(y+)/.test(fmtStr)) {
+            fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                if (new RegExp("(" + k + ")").test(fmtStr)) {
+                    fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[k]) : (('00' + obj[k]).substr(('' + obj[k]).length)));
+                }
+            }
+        }
+        return fmtStr;
+    };
+    Funclib.prototype.toArray = function (src) {
+        return src instanceof Array ? src : [src];
     };
     /**
      * [fn.setErrors] 手动设定表单错误
