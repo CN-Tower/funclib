@@ -28,9 +28,9 @@ export /*funclib*/ class Funclib {
   private specialPropertys: any = {
     client: [
       'window', 'document', 'fullScreen', 'exitFullScreen', 'checkIsFullScreen',
-      'setCookie', 'getCookie', 'removeCookie', 'setErrors'
+      'setCookie', 'getCookie', 'removeCookie', 'setErrors', 'viewTools', 'table'
     ],
-    server: ['log']
+    server: ['tools', 'progress', 'log']
   }
 
   constructor(root: any) {
