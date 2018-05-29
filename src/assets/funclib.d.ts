@@ -1,6 +1,7 @@
 /**==============================================================
- * 通用型逻辑函数封装 funclib (V1.0.4)
+ * 通用型逻辑函数封装 funclib (V1.0.5)
  * Github: http://github.com/CN-Tower/funclib.js
+ * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
  ----------------------------------------------------------------
  * fn.version                返回当前函数库版本
  * fn.gnid                   返回指定长度(最小6位)的随机ID
@@ -32,13 +33,17 @@
  * fn.removeCookie           根据name删除cookie
  * fn.setErrors              手动设定表单错误
  * fn.log                    控制打印格式化值
+ * fn.initTools              初始化一个NodeJs工具包对象
  * fn.tools.writeFile        NodeJs写文件
  * fn.tools.deleteDirectory  NodeJs删除文件夹和文件
  * fn.tools.copyFile         NodeJs复制文件
  * fn.tools.copyDirectory    NodeJs复制文件夹和文件
+ * fn.initProgress           初始化进度条对象
  * fn.progress.start         开启进度条，并传入参数
  * fn.progress.stop          停止进度条，结束后触发回调
+ * fn.initViewTools          初始化提示和Loader
  * fn.viewTools.show         提示信息和Loader工具
+ * fn.initBootstrapTable     初始化一个BootstrapTable对象
  * fn.bootstrapTable.render  渲染Bootstrap表格
  * $.pollingElement          jQuery获取异步出现的元素
  * $.noAutoComplete          jQuery禁止input密码自动填充
@@ -162,10 +167,6 @@ declare module fn {
          */
         initBootstrapTable(translate?: Object): void;
         /**
-         * [fn.time] 返回一个当前时间字符串。
-         */
-        time(): Function;
-        /**
          * [fn.pxid] 返回一个指定长度(最小6位，默认12位)的随机ID。
          * @param len [number]
          */
@@ -177,16 +178,46 @@ declare module fn {
          */
         array(length: number, value?: any): any[];
         /**
-         * [fn.random] 返回一个指定范围的随机数
+         * [fn.toArray] 值数组化
+         * @param src 
+         */
+        toArray(src: any): any[];
+        /**
+         * [fn.random] 返回一个指定范围的随机数或随机色值
          * @param sta [number]
          * @param end [number]
+         * @returns {number|string}
          */
         random(sta: number, end?: number): number;
         /**
-         * [fn.len] 获取对象自有属性的个数
+         * [fn.length] 获取对象自有属性的个数
          * @arg obj [object]
-         * */
-        len(obj: any): number;
+         */
+        length(obj: any): number;
+        /**
+         * [fn.isEmpty] 判断对象是否为空对象或数组
+         * @param obj 
+         */
+        isEmpty(obj: Object|any[]): boolean;
+        /**
+         * [fn.overlay] 给对象赋值
+         * @param target 
+         * @param source 
+         * @param propList 
+         */
+        overlay(target: Object, source: Object, propList?: string[]): void;
+        /**
+         * [fn.deepCopy] 深拷贝对象或数组
+         * @param data
+         */
+        deepCopy(data: any): any;
+        /**
+         * [fn.sortData] 对象数组根据字段排序
+         * @param tableData
+         * @param field
+         * @param isDesc
+         */
+        sortData(tableData: any, field: string, isDesc?: boolean): any;
         /**
          * [fn.interval] 循环定时器
          * @param timerId
@@ -202,18 +233,6 @@ declare module fn {
          */
         timeout(timerId: string, duration: number | boolean, func?: Function): void;
         /**
-         * [fn.sortData] 对象数组根据字段排序
-         * @param tableData
-         * @param field
-         * @param isDesc
-         */
-        sortData(tableData: any, field: string, isDesc?: boolean): any;
-        /**
-         * [fn.deepCopy] 深拷贝对象或数组
-         * @param data
-         */
-        deepCopy(data: any): any;
-        /**
          * [fn.currency] 格式化显示货币
          * @param number
          * @param digit
@@ -228,12 +247,12 @@ declare module fn {
          */
         cutString(str: number, len: number): string;
         /**
-         * [fn.overlay] 给对象赋值
-         * @param target 
-         * @param source 
-         * @param propList 
+         * [fn.getPattern] 获取一个通用的正则表达式
+         * @param type
+         * @param isNoLimit
+         * @returns {pattern|undefined}
          */
-        overlay(target: Object, source: Object, propList?: string[]): void;
+        getPattern(type: string, isNoLimit?: boolean): any;
         /**
          * [fn.matchPattern] 与一个或几个通用正则匹配
          * @param src
@@ -243,22 +262,35 @@ declare module fn {
          */
         matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
         /**
-         * [fn.getPattern] 获取一个通用的正则表达式
-         * @param type
-         * @param isNoLimit
-         * @returns {pattern|undefined}
+         * [fn.fmtDate] 获取格式化的时间字符串
+         * @param fmtStr 
+         * @param time 
          */
-        getPattern(type: string, isNoLimit?: boolean): any;
+        fmtDate(fmtStr: string, time?: any): string;
         /**
-         * [fn.log] 控制台打印
-         * @param value 
-         * @param configs {
-         * title: string,
-         * lineLen: number [20-100]
-         * part: 'pre'|'end' (opt.)
-         * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+         * [fn.timeStamp] 返回一个当前时间戳
          */
-        log(value: any, configs: Object): void;
+        timeStamp(date?: Date|string): number;
+        /**
+         * [fn.encodeHtml] 编码HTML字符串
+         * @param html 
+         */
+        encodeHtml(html: string): string;
+        /**
+         * [fn.decodeHtml] 解码HTML字符串
+         * @param html 
+         */
+        decodeHtml(html: string): string;
+        /**
+         * [fn.getKeyCodeByName] 根据键名获取键码
+         * @param keyName 
+         */
+        getKeyCodeByName(keyName: string): number;
+        /**
+         * [fn.getKeyCodeByName] 根据键码获取键名
+         * @param keyName 
+         */
+        getKeyNameByCode(keyCode: number): string;
         /**
          * [fn.fullScreen] 全屏显示HTML元素
          * @param el
@@ -276,11 +308,39 @@ declare module fn {
          */
         checkIsFullScreen(): boolean;
         /**
+         * [fn.setCookie] 设置Cookie
+         * @param name 
+         * @param value 
+         * @param days 
+         */
+        setCookie(name: string, value: string, days: number): void;
+        /**
+         * [fn.getCookie] 根据name读取cookie
+         * @param  name 
+         * @return {String}
+         */
+        getCookie(name: string): string;
+        /**
+         * [fn.removeCookie] 根据name删除cookie
+         * @param name 
+         */
+        removeCookie(name: string): void;
+        /**
          * [fn.setErrors] 手动设定表单错误
          * @param model 
          * @param errorMsg 
          * @param isForce 
          */
-        setErrors(model: any, errorMsg: string, isForce?: boolean)
+        setErrors(model: any, errorMsg: string, isForce?: boolean): void;
+        /**
+         * [fn.log] 控制台打印
+         * @param value 
+         * @param configs {
+         * title: string,
+         * lineLen: number [20-100]
+         * part: 'pre'|'end' (opt.)
+         * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+         */
+        log(value: any, configs: Object): void;
     }
 }
