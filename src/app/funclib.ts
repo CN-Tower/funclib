@@ -126,12 +126,12 @@ export /*funclib*/ class Funclib {
    * [fn.toArray] 值数组化
    * @param src 
    */
-  toArray(src: any) {
+  toArray(src: any): any[] {
     return src instanceof Array ? src : [src];
   }
 
   /**
-   * [fn.random] 返回一个指定范围的随机数
+   * [fn.random] 返回一个指定范围的随机数或随机色值
    * @param sta [number]
    * @param end [number]
    * @returns {number|string}
@@ -156,7 +156,7 @@ export /*funclib*/ class Funclib {
   /**
    * [fn.length] 获取对象自有属性的个数
    * @arg obj [object]
-   * */
+   */
   length(obj: any): number {
     return Object.keys(obj).length;
   }
@@ -380,7 +380,7 @@ export /*funclib*/ class Funclib {
    * @param fmtStr 
    * @param time 
    */
-  fmtDate(fmtStr: string, time?: number|Date) {
+  fmtDate(fmtStr: string, time?: any): string {
     const _date = new Date(time);
     const date = _date.getTime() ? _date : new Date();
     const obj = {
