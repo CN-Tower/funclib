@@ -1,7 +1,7 @@
 # funclib.js (凡客杰斯)
 
 ### Version
-Javascript通用型逻辑函数封装 funclib: V1.0.4
+Javascript通用型逻辑函数封装 funclib: V1.0.5
 
 ### Quick start
 ```bash
@@ -30,6 +30,39 @@ $ npm start
 $ npm run build
 ```
 
+### Structure
+```
+funclib.js
+├── dist/                               # You know the drill...
+├── node_modules/                       # You know the drill...
+├── funclib/                            # Release files
+├── src                                 # Source code
+│   ├── app                             # Project Source Code
+│   │   ├── modules                     # 模块
+│   │   │   ├── bootstrapTable.class.ts # Bootstrap表格工具
+│   │   │   ├── extendJquery.func.ts    # Jquery拓展
+│   │   │   ├── keyMap.const.ts         # 键名键码映射表
+│   │   │   ├── patterns.class.ts       # 正则表达式
+│   │   │   ├── progress.class.ts       # 进度条工具
+│   │   │   ├── tools.class.ts          # NodeJs工具
+│   │   │   └── viewTools.class         # 提示和Loader工具
+│   │   └── funclib.ts                  # 主函数
+│   └── assets                          # 编译UMD
+│       ├── funclib.d.ts                # 定义文件
+│       ├── funclib.ts                  # 壳文件
+│       ├── index.js                    # Index
+│       └── package.json                # Release
+├── tools                               # 运行脚本
+│   ├── compile-funclib.js              # npm run update
+│   └── start.js                        # npm run start
+├── .editorconfig                       # Set coding style (indents, charset, etc.)
+├── .gitignore                          # You know the drill...
+├── package.json                        # Slides
+├── README.md                           # Read this FIRST :)
+├── app.ts                              # Start file
+└── test.js                             # Test file
+```
+
 ### Methods (CM: Client side method, SM: Server side method)
 ```
  * fn.version                返回当前函数库版本
@@ -53,7 +86,7 @@ $ npm run build
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
  * fn.getKeyCodeByName       根据键名获取键码
- * fn.getKeyCodeByName       根据键码获取键名
+ * fn.getKeyNameByCode       根据键码获取键名
  * fn.fullScreen             CM 全屏显示一个HTML元素
  * fn.exitFullScreen         CM 退出全屏显示
  * fn.checkIsFullScreen      CM 检测是否处理全屏状态
