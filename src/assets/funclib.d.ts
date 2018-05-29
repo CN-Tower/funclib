@@ -24,7 +24,7 @@
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
  * fn.getKeyCodeByName       根据键名获取键码
- * fn.getKeyCodeByName       根据键码获取键名
+ * fn.getKeyNameByCode       根据键码获取键名
  * fn.fullScreen             全屏显示一个HTML元素
  * fn.exitFullScreen         退出全屏显示
  * fn.checkIsFullScreen      检测是否处理全屏状态
