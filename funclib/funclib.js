@@ -1,6 +1,7 @@
+"use strict";
+exports.__esModule = true;
 (function () {
     var root = this;
-    var $ = root.$ || root.jquery;
     var previousfn = root.fn;
     var BootstrapTable = /** @class */ (function () {
         function BootstrapTable(translate) {
@@ -195,6 +196,109 @@
             }
         };
     }
+    var KEY_MAP = {
+        8: 'Backspace',
+        9: 'Tab',
+        13: 'Enter',
+        16: 'Shift',
+        17: 'Ctrl',
+        18: 'Alt',
+        19: 'Pause',
+        20: 'Caps Lock',
+        27: 'Escape',
+        32: 'Space',
+        33: 'Page Up',
+        34: 'Page Down',
+        35: 'End',
+        36: 'Home',
+        37: 'Left',
+        38: 'Up',
+        39: 'Right',
+        40: 'Down',
+        42: 'Print Screen',
+        45: 'Insert',
+        46: 'Delete',
+        48: '0',
+        49: '1',
+        50: '2',
+        51: '3',
+        52: '4',
+        53: '5',
+        54: '6',
+        55: '7',
+        56: '8',
+        57: '9',
+        65: 'A',
+        66: 'B',
+        67: 'C',
+        68: 'D',
+        69: 'E',
+        70: 'F',
+        71: 'G',
+        72: 'H',
+        73: 'I',
+        74: 'J',
+        75: 'K',
+        76: 'L',
+        77: 'M',
+        78: 'N',
+        79: 'O',
+        80: 'P',
+        81: 'Q',
+        82: 'R',
+        83: 'S',
+        84: 'T',
+        85: 'U',
+        86: 'V',
+        87: 'W',
+        88: 'X',
+        89: 'Y',
+        90: 'Z',
+        91: 'Windows',
+        93: 'Right Click',
+        96: 'Numpad 0',
+        97: 'Numpad 1',
+        98: 'Numpad 2',
+        99: 'Numpad 3',
+        100: 'Numpad 4',
+        101: 'Numpad 5',
+        102: 'Numpad 6',
+        103: 'Numpad 7',
+        104: 'Numpad 8',
+        105: 'Numpad 9',
+        106: 'Numpad *',
+        107: 'Numpad +',
+        109: 'Numpad -',
+        110: 'Numpad .',
+        111: 'Numpad /',
+        112: 'F1',
+        113: 'F2',
+        114: 'F3',
+        115: 'F4',
+        116: 'F5',
+        117: 'F6',
+        118: 'F7',
+        119: 'F8',
+        120: 'F9',
+        121: 'F10',
+        122: 'F11',
+        123: 'F12',
+        144: 'Num Lock',
+        145: 'Scroll Lock',
+        182: 'My Computer',
+        183: 'My Calculator',
+        186: ';',
+        187: '=',
+        188: ',',
+        189: '-',
+        190: '.',
+        191: '/',
+        192: '`',
+        219: '[',
+        220: '\\',
+        221: ']',
+        222: '\''
+    };
     var Patterns = /** @class */ (function () {
         function Patterns() {
             /* tslint:disable */
@@ -207,7 +311,7 @@
             // 匹配大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
             this.telPhonePattern = /((d{3,4})|d{3,4}-)?d{7,8}/;
             // 匹配Email
-            this.emailPattern = /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/;
+            this.emailPattern = /([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+/;
             // 匹配Base64编码格式
             this.base64CodePattern = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
             // 匹配Mac地址
@@ -453,28 +557,34 @@
         return ViewTools;
     }());
     var Funclib = /** @class */ (function () {
-        function Funclib(options) {
-            this.version = 'V1.0.4';
+        function Funclib(root) {
+            var _this = this;
+            this.version = 'V1.0.5';
             this.patterns = new Patterns();
             this.intervalTimers = {};
             this.timeoutTimers = {};
-            /**
-             * [fn.time] 返回一个当前时间字符串。
-             */
-            this.time = function () { return (new Date()).getTime(); };
-            this.overlay(this, options, ['jquery', 'window', 'document']);
-            if (!this.window || !this.document) {
-                delete this.window;
-                delete this.document;
-                delete this.fullScreen;
-                delete this.exitFullScreen;
-                delete this.checkIsFullScreen;
-            }
-            if (this.jquery) {
-                extendJquery(this.jquery, this.interval);
+            this.htmlMap = {
+                src: ['&', '<', '>', ' ', '\'', '"'],
+                map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
+            };
+            this.specialPropertys = {
+                client: [
+                    'window', 'document', 'fullScreen', 'exitFullScreen', 'checkIsFullScreen',
+                    'setCookie', 'getCookie', 'removeCookie', 'setErrors', 'viewTools', 'table'
+                ],
+                server: ['tools', 'progress', 'log']
+            };
+            if (this.root && this.root.Window && this.root.Document) {
+                this.window = this.root.window;
+                this.document = this.root.document;
+                this.specialPropertys.server.forEach(function (prop) { return delete _this[prop]; });
             }
             else {
-                delete this.jquery;
+                this.specialPropertys.client.forEach(function (prop) { return delete _this[prop]; });
+            }
+            var jquery = this.root && (this.root.$ || this.root.jquery);
+            if (jquery) {
+                extendJquery(jquery, this.interval);
             }
         }
         /**
@@ -553,29 +663,118 @@
             return tmpArr;
         };
         /**
-         * [fn.random] 返回一个指定范围的随机数
+         * [fn.toArray] 值数组化
+         * @param src
+         */
+        Funclib.prototype.toArray = function (src) {
+            return src instanceof Array ? src : [src];
+        };
+        /**
+         * [fn.random] 返回一个指定范围的随机数或随机色值
          * @param sta [number]
          * @param end [number]
+         * @returns {number|string}
          */
         Funclib.prototype.random = function (sta, end) {
-            if (end === undefined || sta === end) {
-                return Math.floor(Math.random() * sta);
+            if (sta === 'color') {
+                return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).slice(-6);
             }
             else {
-                if (sta > end) {
-                    var tmpSta = sta;
-                    sta = end;
-                    end = tmpSta;
+                if (end === undefined || sta === end) {
+                    return Math.floor(Math.random() * sta);
                 }
-                return Math.floor(Math.random() * (end - sta) + sta);
+                else {
+                    if (sta > end) {
+                        var tmpSta = sta;
+                        sta = end;
+                        end = tmpSta;
+                    }
+                    return Math.floor(Math.random() * (end - sta) + sta);
+                }
             }
         };
         /**
-         * [fn.len] 获取对象自有属性的个数
+         * [fn.length] 获取对象自有属性的个数
          * @arg obj [object]
-         * */
-        Funclib.prototype.len = function (obj) {
+         */
+        Funclib.prototype.length = function (obj) {
             return Object.keys(obj).length;
+        };
+        /**
+         * [fn.isEmpty] 判断对象是否为空对象或数组
+         * @param obj
+         */
+        Funclib.prototype.isEmpty = function (obj) {
+            if (obj && typeof obj === 'object') {
+                return obj instanceof Array ? !obj.length : !Object.keys(obj).length;
+            }
+            else {
+                return false;
+            }
+        };
+        /**
+         * [fn.overlay] 给对象赋值
+         * @param target
+         * @param source
+         * @param propList
+         */
+        Funclib.prototype.overlay = function (target, source, propList) {
+            if (source) {
+                if (propList && propList.length > 0) {
+                    propList.forEach(function (prop) {
+                        if (source.hasOwnProperty(prop)) {
+                            target[prop] = source[prop];
+                        }
+                    });
+                }
+                else {
+                    Object.keys(source).forEach(function (key) {
+                        target[key] = source[key];
+                    });
+                }
+            }
+        };
+        /**
+         * [fn.deepCopy] 深拷贝对象或数组
+         * @param data
+         */
+        Funclib.prototype.deepCopy = function (data) {
+            if (typeof data !== 'object') {
+                return data;
+            }
+            var tmpData;
+            if (data instanceof Array) {
+                tmpData = [];
+                for (var i = 0; i < data.length; i++) {
+                    tmpData.push(this.deepCopy(data[i]));
+                }
+            }
+            else {
+                tmpData = {};
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        tmpData[key] = this.deepCopy(data[key]);
+                    }
+                }
+            }
+            return tmpData;
+        };
+        /**
+         * [fn.sortData] 对象数组根据字段排序
+         * @param tableData
+         * @param field
+         * @param isDesc
+         */
+        Funclib.prototype.sortData = function (tableData, field, isDesc) {
+            return tableData.sort(function (row1, row2) {
+                return row1.hasOwnProperty(field) && row2.hasOwnProperty(field)
+                    ? row1[field] === row2[field]
+                        ? 0
+                        : isDesc
+                            ? row1[field] > row2[field] ? -1 : 1
+                            : row1[field] > row2[field] ? 1 : -1
+                    : 0;
+            });
         };
         /**
          * [fn.interval] 循环定时器
@@ -606,48 +805,6 @@
             else if (typeof duration === 'boolean' && !duration) {
                 clearTimeout(this.timeoutTimers[timerId]);
             }
-        };
-        /**
-         * [fn.sortData] 对象数组根据字段排序
-         * @param tableData
-         * @param field
-         * @param isDesc
-         */
-        Funclib.prototype.sortData = function (tableData, field, isDesc) {
-            return tableData.sort(function (row1, row2) {
-                return row1.hasOwnProperty(field) && row2.hasOwnProperty(field)
-                    ? row1[field] === row2[field]
-                        ? 0
-                        : isDesc
-                            ? row1[field] > row2[field] ? -1 : 1
-                            : row1[field] > row2[field] ? 1 : -1
-                    : 0;
-            });
-        };
-        /**
-         * [fn.deepCopy] 深拷贝对象或数组
-         * @param data
-         */
-        Funclib.prototype.deepCopy = function (data) {
-            if (typeof data !== 'object') {
-                return data;
-            }
-            var tmpData;
-            if (data instanceof Array) {
-                tmpData = [];
-                for (var i = 0; i < data.length; i++) {
-                    tmpData.push(this.deepCopy(data[i]));
-                }
-            }
-            else {
-                tmpData = {};
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        tmpData[key] = this.deepCopy(data[key]);
-                    }
-                }
-            }
-            return tmpData;
         };
         /**
          * [fn.currency] 格式化显示货币
@@ -693,28 +850,6 @@
             return tmpStr + '...';
         };
         /**
-         * [fn.overlay] 给对象赋值
-         * @param target
-         * @param source
-         * @param propList
-         */
-        Funclib.prototype.overlay = function (target, source, propList) {
-            if (source) {
-                if (propList && propList.length > 0) {
-                    propList.forEach(function (prop) {
-                        if (source.hasOwnProperty(prop)) {
-                            target[prop] = source[prop];
-                        }
-                    });
-                }
-                else {
-                    Object.keys(source).forEach(function (key) {
-                        target[key] = source[key];
-                    });
-                }
-            }
-        };
-        /**
          * [fn.getPattern] 与一个或几个通用正则匹配
          * @param type
          * @param isNoLimit
@@ -746,7 +881,7 @@
                 ipv6Url: this.patterns.ipv6UrlPattern,
                 domainUrl: this.patterns.domainUrlPattern,
                 url: this.patterns.urlPattern,
-                ipWithPortUrl: this.patterns.ipv4WithPortUrlPattern,
+                ipv4WithPortUrl: this.patterns.ipv4WithPortUrlPattern,
                 ipv6WithPortUrl: this.patterns.ipv6WithPortUrlPattern,
                 domainWithPortUrl: this.patterns.domainWithPortUrlPattern,
                 withPortUrl: this.patterns.withPortUrlPattern
@@ -785,6 +920,176 @@
             else if (typeof type === 'string') {
                 var pattern = this.getPattern(type, isNoLimit);
                 return pattern && pattern.test(src);
+            }
+        };
+        /**
+         * [fn.fmtDate] 获取格式化的时间字符串
+         * @param fmtStr
+         * @param time
+         */
+        Funclib.prototype.fmtDate = function (fmtStr, time) {
+            var _date = new Date(time);
+            var date = _date.getTime() ? _date : new Date();
+            var obj = {
+                'M+': date.getMonth() + 1,
+                'd+': date.getDate(),
+                'h+': date.getHours(),
+                'm+': date.getMinutes(),
+                's+': date.getSeconds(),
+                'q+': Math.floor((date.getMonth() + 3) / 3),
+                'S': date.getMilliseconds()
+            };
+            if (/(y+)/.test(fmtStr)) {
+                fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+            }
+            for (var k in obj) {
+                if (obj.hasOwnProperty(k)) {
+                    if (new RegExp("(" + k + ")").test(fmtStr)) {
+                        fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[k]) : (('00' + obj[k]).substr(('' + obj[k]).length)));
+                    }
+                }
+            }
+            return fmtStr;
+        };
+        /**
+         * [fn.timeStamp] 返回一个当前时间戳
+         */
+        Funclib.prototype.timeStamp = function (date) {
+            if (date instanceof Date) {
+                return date.getTime();
+            }
+            else {
+                return (new Date(date)).getTime() || (new Date()).getTime();
+            }
+        };
+        /**
+         * [fn.encodeHtml] 编码HTML字符串
+         * @param html
+         */
+        Funclib.prototype.encodeHtml = function (html) {
+            var _this = this;
+            this.htmlMap.src.forEach(function (src, i) { return html.replace(new RegExp(src, 'g'), _this.htmlMap.map[i]); });
+            return html;
+        };
+        /**
+         * [fn.decodeHtml] 解码HTML字符串
+         * @param html
+         */
+        Funclib.prototype.decodeHtml = function (html) {
+            var _this = this;
+            this.htmlMap.map.forEach(function (map, i) { return html.replace(new RegExp(map, 'g'), _this.htmlMap.src[i]); });
+            return html;
+        };
+        /**
+         * [fn.getKeyCodeByName] 根据键名获取键码
+         * @param keyName
+         */
+        Funclib.prototype.getKeyCodeByName = function (keyName) {
+            for (var keyCode in KEY_MAP) {
+                if (KEY_MAP[keyCode] === keyName) {
+                    return Number(keyCode);
+                }
+            }
+            return NaN;
+        };
+        /**
+         * [fn.getKeyCodeByName] 根据键码获取键名
+         * @param keyName
+         */
+        Funclib.prototype.getKeyNameByCode = function (keyCode) {
+            return KEY_MAP[keyCode] || '';
+        };
+        /**
+         * [fn.fullScreen] 全屏显示HTML元素
+         * @param el
+         * @returns {any}
+         */
+        Funclib.prototype.fullScreen = function (el) {
+            var rfs = el.requestFullScreen || el.webkitRequestFullScreen
+                || el.mozRequestFullScreen || el.msRequestFullScreen;
+            if (typeof rfs != "undefined" && rfs) {
+                return rfs.call(el);
+            }
+            if (typeof this.window.ActiveXObject != "undefined") {
+                var ws = new this.window.ActiveXObject("WScript.Shell");
+                if (ws) {
+                    ws.SendKeys("{F11}");
+                }
+            }
+        };
+        /**
+         * [fn.exitFullScreen] 退出全屏显示
+         * @returns {any}
+         */
+        Funclib.prototype.exitFullScreen = function () {
+            var el = this.document;
+            var cfs = el.cancelFullScreen || el.webkitCancelFullScreen
+                || el.mozCancelFullScreen || el.exitFullScreen;
+            if (typeof cfs != "undefined" && cfs) {
+                return cfs.call(el);
+            }
+            if (typeof this.window.ActiveXObject != "undefined") {
+                var ws = new this.window.ActiveXObject("WScript.Shell");
+                if (ws != null) {
+                    ws.SendKeys("{F11}");
+                }
+            }
+        };
+        /**
+         * [fn.checkIsFullScreen] 检测是否全屏状态
+         * @returns {boolean}
+         */
+        Funclib.prototype.checkIsFullScreen = function () {
+            var el = this.document;
+            var isFull = el.fullscreenEnabled || el.fullScreen
+                || el.webkitIsFullScreen || el.msFullscreenEnabled;
+            return !!isFull;
+        };
+        /**
+         * [fn.setCookie] 设置Cookie
+         * @param name
+         * @param value
+         * @param days
+         */
+        Funclib.prototype.setCookie = function (name, value, days) {
+            var date = new Date();
+            date.setDate(date.getDate() + days);
+            this.document.cookie = name + "=" + value + ";expires=" + date;
+        };
+        /**
+         * [fn.getCookie] 根据name读取cookie
+         * @param  name
+         * @return {String}
+         */
+        Funclib.prototype.getCookie = function (name) {
+            var cks = this.document.cookie.replace(/\s/g, "").split(';');
+            for (var i = 0; i < cks.length; i++) {
+                var tempArr = cks[i].split('=');
+                if (tempArr[0] == name) {
+                    return decodeURIComponent(tempArr[1]);
+                }
+            }
+            return '';
+        };
+        /**
+         * [fn.removeCookie] 根据name删除cookie
+         * @param name
+         */
+        Funclib.prototype.removeCookie = function (name) {
+            this.setCookie(name, '1', -1);
+        };
+        /**
+         * [fn.setErrors] 手动设定表单错误
+         * @param model
+         * @param errorMsg
+         * @param isForce
+         */
+        Funclib.prototype.setErrors = function (model, errorMsg, isForce) {
+            if (isForce === void 0) { isForce = false; }
+            if (model && model['control'] && (isForce || !model.control.pristine)) {
+                errorMsg
+                    ? model.control.setErrors({ validator: errorMsg })
+                    : model.control.setErrors(null);
             }
         };
         /**
@@ -855,69 +1160,9 @@
                 console.log(dL + '\n');
             }
         };
-        /**
-         * [fn.fullScreen] 全屏显示HTML元素
-         * @param el
-         * @returns {any}
-         */
-        Funclib.prototype.fullScreen = function (el) {
-            var rfs = el.requestFullScreen || el.webkitRequestFullScreen
-                || el.mozRequestFullScreen || el.msRequestFullScreen;
-            if (typeof rfs != "undefined" && rfs) {
-                return rfs.call(el);
-            }
-            if (typeof this.window.ActiveXObject != "undefined") {
-                var ws = new this.window.ActiveXObject("WScript.Shell");
-                if (ws) {
-                    ws.SendKeys("{F11}");
-                }
-            }
-        };
-        /**
-         * [fn.exitFullScreen] 退出全屏显示
-         * @returns {any}
-         */
-        Funclib.prototype.exitFullScreen = function () {
-            var el = this.document;
-            var cfs = el.cancelFullScreen || el.webkitCancelFullScreen
-                || el.mozCancelFullScreen || el.exitFullScreen;
-            if (typeof cfs != "undefined" && cfs) {
-                return cfs.call(el);
-            }
-            if (typeof this.window.ActiveXObject != "undefined") {
-                var ws = new this.window.ActiveXObject("WScript.Shell");
-                if (ws != null) {
-                    ws.SendKeys("{F11}");
-                }
-            }
-        };
-        /**
-         * [fn.checkIsFullScreen] 检测是否全屏状态
-         * @returns {boolean}
-         */
-        Funclib.prototype.checkIsFullScreen = function () {
-            var el = this.document;
-            var isFull = el.fullscreenEnabled || el.fullScreen
-                || el.webkitIsFullScreen || el.msFullscreenEnabled;
-            return !!isFull;
-        };
-        /**
-         * [fn.setErrors] 手动设定表单错误
-         * @param model
-         * @param errorMsg
-         * @param isForce
-         */
-        Funclib.prototype.setErrors = function (model, errorMsg, isForce) {
-            if (isForce === void 0) { isForce = false; }
-            if (model && model['control'] && (isForce || !model.control.pristine)) {
-                errorMsg
-                    ? model.control.setErrors({ validator: errorMsg })
-                    : model.control.setErrors(null);
-            }
-        };
         return Funclib;
     }());
-    var fn = new Funclib({ jquery: $, window: root, document: root.document });
+    var fn = new Funclib(root);
     fn['noConflict'] = function () {
         root.fn = previousfn;
         return this;
