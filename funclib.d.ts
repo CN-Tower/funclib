@@ -45,15 +45,15 @@
  * fn.log                    控制打印格式化值
  Tools      _____________________________________________________
  * fn.initTools              初始化一个NodeJs工具包对象
- * fn.writeFile              NodeJs写文件
- * fn.deleteDirectory        NodeJs删除文件夹和文件
- * fn.copyFile               NodeJs复制文件
- * fn.copyDirectory          NodeJs复制文件夹和文件
- Tools      _____________________________________________________
+ * fn.cp                     NodeJs写文件
+ * fn.mv                     NodeJs删除文件夹和文件
+ * fn.rm                     NodeJs复制文件
+ * fn.mkdir                  NodeJs复制文件夹和文件
+ Prigress      __________________________________________________
  * fn.initProgress           初始化进度条对象
  * fn.progress.start         开启进度条，并传入参数
  * fn.progress.stop          停止进度条，结束后触发回调
- Tools      _____________________________________________________
+ ExtendJq      __________________________________________________
  * $.pollingElement          jQuery获取异步出现的元素
  * $.noAutoComplete          jQuery禁止input密码自动填充
  * $.copyText                jQuery复制文本到粘贴板
@@ -104,21 +104,6 @@ interface Progress {
 declare module fn {
     interface Funclib {
         /**
-         * [fn.version] 返回当前库的版本信息
-         */
-        version: string;
-        initViewTools(viewToolsCtrl: any): void;
-        /**
-         * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
-         * @param translate [Object]
-         */
-        initBootstrapTable(translate?: Object): void;
-        /**
-         * [fn.pxid] 返回一个指定长度(最小6位，默认12位)的随机ID。
-         * @param len [number]
-         */
-        gnid(len?: number): string;
-        /**
          * [fn.array] 返回一个指定长度和默认值的数组
          * @param length [number]
          * @param value  [any, function]
@@ -130,22 +115,22 @@ declare module fn {
          */
         toArray(src: any): any[];
         /**
-         * [fn.random] 返回一个指定范围的随机数或随机色值
-         * @param sta [number]
-         * @param end [number]
-         * @returns {number|string}
+         * [fn.sortByField] 对象数组根据字段排序
+         * @param tableData
+         * @param field
+         * @param isDesc
          */
-        random(sta: number, end?: number): number;
+        sortByField(tableData: any, field: string, isDesc?: boolean): any;
         /**
-         * [fn.length] 获取对象自有属性的个数
+         * [fn.len] 获取对象自有属性的个数
          * @arg obj [object]
          */
-        length(obj: any): number;
+        len(obj: any): number;
         /**
          * [fn.isEmpty] 判断对象是否为空对象或数组
          * @param obj 
          */
-        isEmpty(obj: Object|any[]): boolean;
+        isEmpty(obj: Object | any[]): boolean;
         /**
          * [fn.overlay] 给对象赋值
          * @param target 
@@ -159,12 +144,22 @@ declare module fn {
          */
         deepCopy(data: any): any;
         /**
-         * [fn.sortData] 对象数组根据字段排序
-         * @param tableData
-         * @param field
-         * @param isDesc
+         * [fn.randomId] 返回一个指定长度(最小6位，默认12位)的随机ID。
+         * @param len [number]
          */
-        sortData(tableData: any, field: string, isDesc?: boolean): any;
+        randomId(len?: number): string;
+        /**
+         * [fn.random] 返回一个指定范围的随机数
+         * @param sta [number]
+         * @param end [number]
+         */
+        randomNum(sta: number, end?: number): number;
+        /**
+         * [fn.randomStr] 返回一个随机色值
+         * @param sta [number]
+         * @param end [number]
+         */
+        randomStr(sta: number, end?: number): number;
         /**
          * [fn.interval] 循环定时器
          * @param timerId
@@ -179,6 +174,26 @@ declare module fn {
          * @param func
          */
         timeout(timerId: string, duration: number | boolean, func?: Function): void;
+        /**
+         * [fn.timeStamp] 返回一个当前时间戳
+         */
+        timeStamp(date?: Date | string): number;
+        /**
+         * [fn.fmtDate] 获取格式化的时间字符串
+         * @param fmtStr 
+         * @param time 
+         */
+        fmtDate(fmtStr: string, time?: any): string;
+        /**
+         * [fn.encodeHtml] 编码HTML字符串
+         * @param html 
+         */
+        encodeHtml(html: string): string;
+        /**
+         * [fn.decodeHtml] 解码HTML字符串
+         * @param html 
+         */
+        decodeHtml(html: string): string;
         /**
          * [fn.currency] 格式化显示货币
          * @param number
@@ -208,26 +223,6 @@ declare module fn {
          * @returns {boolean}
          */
         matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
-        /**
-         * [fn.fmtDate] 获取格式化的时间字符串
-         * @param fmtStr 
-         * @param time 
-         */
-        fmtDate(fmtStr: string, time?: any): string;
-        /**
-         * [fn.timeStamp] 返回一个当前时间戳
-         */
-        timeStamp(date?: Date|string): number;
-        /**
-         * [fn.encodeHtml] 编码HTML字符串
-         * @param html 
-         */
-        encodeHtml(html: string): string;
-        /**
-         * [fn.decodeHtml] 解码HTML字符串
-         * @param html 
-         */
-        decodeHtml(html: string): string;
         /**
          * [fn.getKeyCodeByName] 根据键名获取键码
          * @param keyName 
@@ -282,20 +277,18 @@ declare module fn {
          * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
          */
         log(value: any, configs: Object): void;
-
         /**
-         * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param options [Object]
-         */
-        initTools(options: Object): void;
-        /**
-         * [fn.initProgress] 初始化进度条对象
-         * @param ProgressBar [class]
+         * [fn.initProgress] 初始化进度条工具
+         * @param progress 
          */
         initProgress(ProgressBar: any): void;
         /**
-         * [fn.initViewTools] 初始化提示和Loader
-         * @param initViewTools [class]
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param fs 
+         * @param path 
+         * @param child_process 
+         * @param process 
          */
+        initTools(fs: any, path: any, child_process: any, process: any): void;
     }
 }

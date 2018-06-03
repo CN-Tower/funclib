@@ -319,7 +319,7 @@ export class Funclib {
   }
 
   /**
-   * 初始化NodeJs工具
+   * [fn.initTools] 初始化NodeJs工具
    * @param fs 
    * @param path 
    * @param child_process 
