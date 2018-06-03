@@ -67,10 +67,10 @@ export class Funclib {
   }
 
   /**
-   * [fn.length] 获取对象自有属性的个数
+   * [fn.len] 获取对象自有属性的个数
    * @arg obj [object]
    */
-  length(obj: any): number {
+  len(obj: any): number {
     return Obj.len(obj);
   }
 
@@ -328,29 +328,29 @@ export class Funclib {
   initTools(fs: any, path: any, child_process: any, process: any) {
     const tools = new Tools(fs, path, child_process, process);
     /**
-     * [fn.cpSync] 复制文件或文件夹
-     * @param file
+     * [fn.cp] 复制文件或文件夹
+     * @param src
      * @param dist
      */
-    this['cpSync'] = (filePath: string, distPath: string) => tools.cpSync(filePath, distPath);
+    this['cp'] = (src: string, dist: string) => tools.cp(src, dist);
 
     /**
-     * [fn.mvSync] 移动文件或文件夹
-     * @param dir
+     * [fn.mv] 移动文件或文件夹
+     * @param src
      * @param dist
      */
-    this['mvSync'] = (dir: string, dist: string) => tools.mvSync(dir, dist);
+    this['mv'] = (src: string, dist: string) => tools.mv(src, dist);
 
     /**
-     * [fn.rmSync] 删除文件或文件夹
-     * @param dir
+     * [fn.rm] 删除文件或文件夹
+     * @param src
      */
-    this['rmSync'] = (dir: string) => tools.rmSync(dir);
+    this['rm'] = (src: string) => tools.rm(src);
 
     /**
-     * [fn.mkdirSync] 创建文件夹
+     * [fn.mkdir] 创建文件夹
      * @param dist
      */
-    this['mkdirSync'] = (dist: string) => tools.mkdirSync(dist);
+    this['mkdir'] = (dist: string) => tools.mkdir(dist);
   }
 }

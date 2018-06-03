@@ -12,45 +12,45 @@ export class Tools {
     }
 
     /**
-     * [fn.cpSync] 复制文件或文件夹
+     * [fn.cp] 复制文件或文件夹
      * @param src
      * @param dist
      */
-    public cpSync(src: string, dist: string) {
+    public cp(src: string, dist: string) {
         if (this.fs.existsSync(src)) {
             if (this.fs.statSync(src).isFile()) {
                 this.fs.createReadStream(src).pipe(this.fs.createWriteStream(dist));
             } else if (this.fs.statSync(src).isDirectory()) {
-                this.mkdirSync(dist);
+                this.mkdir(dist);
                 const subSrcs = this.fs.readdirSync(src);
                 subSrcs.forEach(file => {
                     const subSrc = this.path.join(src, file);
                     const subDist = this.path.join(dist, file);
-                    this.cpSync(subSrc, subDist);
+                    this.cp(subSrc, subDist);
                 });
             }
         }
     }
     
     /**
-     * [fn.mvSync] 移动文件或文件夹
+     * [fn.mv] 移动文件或文件夹
      * @param src 
      * @param dist 
      */
-    public mvSync(src: string, dist: string) {
+    public mv(src: string, dist: string) {
         try {
             this.fs.renameSync(src, dist);
         } catch (e) {
-            this.cpSync(src, dist);
-            this.rmSync(src);
+            this.cp(src, dist);
+            this.rm(src);
         }
     }
 
     /**
-     * [fn.rmSync] 删除文件或文件夹
+     * [fn.rm] 删除文件或文件夹
      * @param src
      */
-    public rmSync(src: string) {
+    public rm(src: string) {
         if (this.fs.existsSync(src)) {
             if (this.fs.statSync(src).isFile()) {
                 this.fs.unlinkSync(src);
@@ -58,7 +58,7 @@ export class Tools {
                 const subSrcs = this.fs.readdirSync(src);
                 subSrcs.forEach(file => {
                     const subSrc = this.path.join(src, file);
-                    this.rmSync(subSrc);
+                    this.rm(subSrc);
                 });
                 try {
                     this.fs.rmdirSync(src);
@@ -77,16 +77,16 @@ export class Tools {
     }
 
     /**
-     * [fn.mkdirSync] 创建文件夹
+     * [fn.mkdir] 创建文件夹
      * @param dist
      */
-    public mkdirSync(dist) {
+    public mkdir(dist) {
         const absDist = this.path.resolve(dist);
         if (!this.fs.existsSync(absDist)) {
             try {
                 this.fs.mkdirSync(absDist);
             } catch (e) {
-                this.mkdirSync(this.path.dirname(absDist));
+                this.mkdir(this.path.dirname(absDist));
                 this.fs.mkdirSync(absDist);
             }
         };

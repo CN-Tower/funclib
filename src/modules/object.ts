@@ -1,6 +1,6 @@
 export class Obj {
     /**
-     * [fn.length] 获取对象自有属性的个数
+     * [fn.len] 获取对象自有属性的个数
      * @arg obj [object]
      */
     public static len(obj: any): number {

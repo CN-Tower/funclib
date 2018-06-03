@@ -1,6 +1,7 @@
-const webpack = require('webpack')
-const path = require('path')
-const rootPath = path.resolve(__dirname, '../')
+const fs = require('fs');
+const webpack = require('webpack');
+const path = require('path');
+const rootPath = path.resolve(__dirname, '../');
 
 module.exports = {
     entry: path.resolve(rootPath, 'src', 'funclib.ts'),
@@ -11,15 +12,15 @@ module.exports = {
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [".ts",".js"]
+        extensions: [".ts", ".js"]
     },
     module: {
         loaders: [{
-            test: /\.ts$/,  
-            loader:'ts-loader'  
+            test: /\.ts$/,
+            loader: 'ts-loader'
         }]
     },
     plugins: [
-        // new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin()
     ]
 }

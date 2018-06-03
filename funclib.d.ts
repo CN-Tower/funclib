@@ -4,47 +4,56 @@
  * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
  ----------------------------------------------------------------
  * fn.version                返回当前函数库版本
- * fn.gnid                   返回指定长度(最小6位)的随机ID
+ Array      _____________________________________________________
  * fn.array                  返回指定长度和默认值的数组
  * fn.toArray                值数组化
- * fn.random                 返回指定范围的随机数或返回一个随机色值
- * fn.length                 获取对象自有属性的个数
+ * fn.sortByField            对象数组根据字段排序
+ Object     _____________________________________________________
+ * fn.len                    获取对象自有属性的个数
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
- * fn.sortData               对象数组根据字段排序
+ Mathematic _____________________________________________________
+ * fn.randomId               返回指定长度(最小6位)的随机ID
+ * fn.randomNum              返回指定范围的随机数
+ * fn.randomColor            返回一个随机色值
+ Time       _____________________________________________________
  * fn.interval               循环定时器
  * fn.timeout                延时定时器
- * fn.currency               格式化显示货币
- * fn.cutString              裁切字符串到指定长度
- * fn.getPattern             获取一个通用的正则表达式
- * fn.matchPattern           与一个或几个通用正则匹配
- * fn.fmtDate                获取格式化的时间字符串
  * fn.timeStamp              返回一个当前时间戳
+ * fn.fmtDate                获取格式化的时间字符串
+ String     _____________________________________________________
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
+ * fn.currency               格式化显示货币
+ * fn.cutString              裁切字符串到指定长度
+ RegExp     _____________________________________________________
+ * fn.getPattern             获取一个通用的正则表达式
+ * fn.matchPattern           与一个或几个通用正则匹配
+ Events     _____________________________________________________
  * fn.getKeyCodeByName       根据键名获取键码
  * fn.getKeyNameByCode       根据键码获取键名
+ Dom        _____________________________________________________
  * fn.fullScreen             全屏显示一个HTML元素
  * fn.exitFullScreen         退出全屏显示
  * fn.checkIsFullScreen      检测是否处理全屏状态
+ Cookie     _____________________________________________________
  * fn.setCookie              设置Cookie
  * fn.getCookie              根据name读取cookie
  * fn.removeCookie           根据name删除cookie
- * fn.setErrors              手动设定表单错误
+ Loger      _____________________________________________________
  * fn.log                    控制打印格式化值
+ Tools      _____________________________________________________
  * fn.initTools              初始化一个NodeJs工具包对象
- * fn.tools.writeFile        NodeJs写文件
- * fn.tools.deleteDirectory  NodeJs删除文件夹和文件
- * fn.tools.copyFile         NodeJs复制文件
- * fn.tools.copyDirectory    NodeJs复制文件夹和文件
+ * fn.writeFile              NodeJs写文件
+ * fn.deleteDirectory        NodeJs删除文件夹和文件
+ * fn.copyFile               NodeJs复制文件
+ * fn.copyDirectory          NodeJs复制文件夹和文件
+ Tools      _____________________________________________________
  * fn.initProgress           初始化进度条对象
  * fn.progress.start         开启进度条，并传入参数
  * fn.progress.stop          停止进度条，结束后触发回调
- * fn.initViewTools          初始化提示和Loader
- * fn.viewTools.show         提示信息和Loader工具
- * fn.initBootstrapTable     初始化一个BootstrapTable对象
- * fn.bootstrapTable.render  渲染Bootstrap表格
+ Tools      _____________________________________________________
  * $.pollingElement          jQuery获取异步出现的元素
  * $.noAutoComplete          jQuery禁止input密码自动填充
  * $.copyText                jQuery复制文本到粘贴板
@@ -56,30 +65,27 @@ export as namespace fn;
 
 interface Tools {
     /**
-     * [fn.tools.writeFile] 写文件
-     * @param dir
+     * [fn.cp] 复制文件或文件夹
+     * @param src
      * @param dist
-     * @param flag ['w'|'a'] default: 'w'
      */
-    writeFile(file: string, text: string, flag?: 'w' | 'a'): void;
+    cp(src: string, dist: string): void;
     /**
-     * [fn.tools.deleteDirectory] 删除文件夹和文件
-     * @param dir
+     * [fn.mv] 移动文件或文件夹
+     * @param src
      * @param dist
      */
-    deleteDirectory(dir: string): void;
+    mv(src: string, dist: string): void;
     /**
-     * [fn.tools.copyFile] 复制文件
-     * @param dir
-     * @param dist
+     * [fn.rm] 删除文件或文件夹
+     * @param src
      */
-    copyFile(filePath: string, distPath: string): void;
+    rm(src: string): void;
     /**
-     * [fn.tools.copyDirectory] 复制文件夹和文件
-     * @param dir
+     * [fn.mkdir] 复制文件夹和文件
      * @param dist
      */
-    copyDirectory(dir: string, dist: string): void;
+    mkdir(dist: string): void;
 }
 
 interface Progress {
@@ -95,71 +101,12 @@ interface Progress {
     stop(onStopped: Function): void;
 }
 
-interface ViewTools {
-    /**
-     * [fn.viewTools.show]
-     * @param options 
-        * type {success|error|loader|timer},
-        * isShow
-        * msg
-        * interval
-        * delay
-     */
-    show(options: any): void;
-}
-
-interface BootstrapTable {
-    /**
-     * [fn.table.render] 渲染Bootstrap表格的通用方式
-     * @param $table
-     * @param options
-        * tableConfig {Object Opt.}
-        * gridOptions {Object Opt.},
-        * tableLabel {String Opt.},
-        * showLoading {Boolean Opt.},
-        * tableScope {String Opt.},
-        * onRefreshing {Function Opt.},
-        * onRendered {Function Opt.}
-     */
-    render($table: any, options: any): void;
-}
-
 declare module fn {
     interface Funclib {
         /**
          * [fn.version] 返回当前库的版本信息
          */
         version: string;
-        /**
-         * [fn.tools] NodeJs工具包
-         */
-        tools: Tools;
-        /**
-         * [fn.progress] 进度条工具
-         */
-        progress: Progress;
-        /**
-         * [fn.viewTools] 返回小视图观察者对象
-         */
-        viewTools: ViewTools;
-        /**
-         * [fn.table] Bootstrap渲染工具
-         */
-        table: BootstrapTable;
-        /**
-         * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param options [Object]
-         */
-        initTools(options: Object): void;
-        /**
-         * [fn.initProgress] 初始化进度条对象
-         * @param ProgressBar [class]
-         */
-        initProgress(ProgressBar: any): void;
-        /**
-         * [fn.initViewTools] 初始化提示和Loader
-         * @param initViewTools [class]
-         */
         initViewTools(viewToolsCtrl: any): void;
         /**
          * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
@@ -326,13 +273,6 @@ declare module fn {
          */
         removeCookie(name: string): void;
         /**
-         * [fn.setErrors] 手动设定表单错误
-         * @param model 
-         * @param errorMsg 
-         * @param isForce 
-         */
-        setErrors(model: any, errorMsg: string, isForce?: boolean): void;
-        /**
          * [fn.log] 控制台打印
          * @param value 
          * @param configs {
@@ -342,5 +282,20 @@ declare module fn {
          * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
          */
         log(value: any, configs: Object): void;
+
+        /**
+         * [fn.initTools] 初始化一个NodeJs工具包对象
+         * @param options [Object]
+         */
+        initTools(options: Object): void;
+        /**
+         * [fn.initProgress] 初始化进度条对象
+         * @param ProgressBar [class]
+         */
+        initProgress(ProgressBar: any): void;
+        /**
+         * [fn.initViewTools] 初始化提示和Loader
+         * @param initViewTools [class]
+         */
     }
 }
