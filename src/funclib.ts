@@ -12,7 +12,7 @@ import { Cookie } from './modules/cookie';
 import { Tools } from './modules/tools';
 import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
-import { FunclibConf } from './funclib.conf'
+import { FN_CONF } from './configs/FnConf'
 
 export class Funclib {
   
@@ -27,11 +27,11 @@ export class Funclib {
       }
     }
     if (root && root.window && root.document) {
-      FunclibConf.isClient = true;
-      FunclibConf.serverMethods.forEach(prop => deleteProp(prop));
+      FN_CONF.isClient = true;
+      FN_CONF.serverMethods.forEach(prop => deleteProp(prop));
     } else {
-      FunclibConf.isClient = false;
-      FunclibConf.clientMethods.forEach(prop =>  deleteProp(prop));
+      FN_CONF.isClient = false;
+      FN_CONF.clientMethods.forEach(prop =>  deleteProp(prop));
     }
     const jquery = root && (root.$ || root.jquery);
     if (jquery) {
@@ -49,11 +49,11 @@ export class Funclib {
   }
 
   /**
-   * [fn.toArray] 值数组化
+   * [fn.toArr] 值数组化
    * @param src 
    */
-  toArray(src: any): any[] {
-    return Arr.toArray(src);
+  toArr(src: any): any[] {
+    return Arr.toArr(src);
   }
 
   /**
@@ -101,27 +101,27 @@ export class Funclib {
   }
 
   /**
-   * [fn.randomId] 返回一个指定长度（最小4位）的随机ID
+   * [fn.rdId] 返回一个指定长度（最小4位）的随机ID
    * @param len 
    */
-  randomId(len: number = 12): string {
-    return Mathematic.randomId.call(this, len);
+  rdId(len: number = 12): string {
+    return Mathematic.rdId.call(this, len);
   }
 
   /**
-   * 返回一个指定范围内的随机数
+   * [fn.rdNum] 返回一个指定范围内的随机数
    * @param sta 
    * @param end 
    */
-  randomNum(sta: number, end?: number): number {
-    return Mathematic.randomNum(sta, end);
+  rdNum(sta: number, end?: number): number {
+    return Mathematic.rdNum(sta, end);
   }
 
   /**
-   * 返回一个随机颜色色值
+   * [fn.rdColor] 返回一个随机颜色色值
    */
-  randomColor() {
-    return Mathematic.randomColor();
+  rdColor() {
+    return Mathematic.rdColor();
   }
 
   /**
@@ -295,7 +295,7 @@ export class Funclib {
    * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S]
    */
   log(value?: any, configs?: Object) {
-    return loger.call(this, value, configs, FunclibConf.isClient);
+    return loger.call(this, value, configs, FN_CONF.isClient);
   }
 
   /**
