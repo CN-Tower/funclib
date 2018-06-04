@@ -1,5 +1,5 @@
 /**
- * 控制台格式化打印值
+ * [fn.log] 控制台格式化打印值
  * @param value 
  * @param configs {
  * title: string,
