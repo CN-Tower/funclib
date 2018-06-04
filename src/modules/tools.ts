@@ -1,12 +1,12 @@
 let fs, path, Buffer, execSync, process;
 
 export class Tools {
-    constructor (root: any) {
-        fs = root.require('fs');
-        path = root.require('path');
-        execSync = root.require('child_process').execSync;
-        process = root.process;
-        Buffer = root.Buffer;
+    constructor (require: any, global: any) {
+        fs = require('fs');
+        path = require('path');
+        execSync = require('child_process').execSync;
+        process = global.process;
+        Buffer = global.Buffer;
     }
     /**
      * [fn.wt] 写文件

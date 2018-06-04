@@ -101,20 +101,20 @@ export class Funclib {
   }
 
   /**
+   * [fn.random] 返回一个指定范围内的随机数
+   * @param sta 
+   * @param end 
+   */
+  random(sta: number, end?: number): number {
+    return Mathematic.random(sta, end);
+  }
+
+  /**
    * [fn.rdId] 返回一个指定长度（最小4位）的随机ID
    * @param len 
    */
   rdId(len: number = 12): string {
     return Mathematic.rdId.call(this, len);
-  }
-
-  /**
-   * [fn.rdNum] 返回一个指定范围内的随机数
-   * @param sta 
-   * @param end 
-   */
-  rdNum(sta: number, end?: number): number {
-    return Mathematic.rdNum(sta, end);
   }
 
   /**
@@ -300,10 +300,11 @@ export class Funclib {
 
   /**
    * [fn.initTools] 初始化NodeJs工具
-   * @param root
+   * @param require
+   * @param global
    */
-  initTools(root: any) {
-    const tools = new Tools(root);
+  initTools(require: any, global: any) {
+    const tools = new Tools(require, global);
 
     /**
      * [fn.wt] 写文件
@@ -342,10 +343,10 @@ export class Funclib {
 
   /**
    * [fn.initProgress] 初始化进度条工具
-   * @param root 
+   * @param require
    */
-  initProgress(root: any) {
-    const pg = new Progress(root);
+  initProgress(require: any) {
+    const pg = new Progress(require);
     this['progress'] = {};
     /**
      * [fn.progress.start] 开启进度条，并传入参数

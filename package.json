@@ -20,7 +20,7 @@
     "functions"
   ],
   "author": "CN-Tower",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/CN-Tower/funclib.js/issues"
   },

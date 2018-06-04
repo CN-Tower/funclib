@@ -15,8 +15,8 @@
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
  ## Mathematic 
- * fn.rdId                   返回指定长度(最小6位)的随机ID
- * fn.rdNum                  返回指定范围的随机数
+ * fn.random                 返回指定范围的随机数
+ * fn.rdId                   返回指定长度(最小4位，默认12位)的随机ID
  * fn.rdColor                返回一个随机色值
  ## Time       
  * fn.interval               循环定时器
@@ -121,16 +121,16 @@ declare module fn {
          */
         deepCopy(data: any): any;
         /**
-         * [fn.rdId] 返回一个指定长度(最小6位，默认12位)的随机ID。
-         * @param len [number]
-         */
-        rdId(len?: number): string;
-        /**
-         * [fn.rdNum] 返回一个指定范围的随机数
+         * [fn.random] 返回一个指定范围的随机数
          * @param sta [number]
          * @param end [number]
          */
-        rdNum(sta: number, end?: number): number;
+        random(sta: number, end?: number): number;
+        /**
+         * [fn.rdId] 返回一个指定长度(最小4位，默认12位)的随机ID。
+         * @param len [number]
+         */
+        rdId(len?: number): string;
         /**
          * [fn.rdColor] 返回一个随机色值
          */
@@ -254,9 +254,10 @@ declare module fn {
         log(value: any, configs: Object): void;
         /**
          * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param root 
+         * @param require 
+         * @param global 
          */
-        initTools(root: any): void;
+        initTools(require: any, global: any): void;
         /**
          * [fn.wt] 写文件
          * @param file
@@ -288,9 +289,9 @@ declare module fn {
         mk(dist: string): void;
         /**
          * [fn.initProgress] 初始化进度条工具
-         * @param root 
+         * @param require 
          */
-        initProgress(root: any): void;
+        initProgress(require: any): void;
         /**
          * [fn.progress] 进度条工具
          */

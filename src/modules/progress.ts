@@ -4,8 +4,8 @@ export class Progress {
     private this: any;
     private duration: number;
 
-    constructor(root: any) {
-        this.PgBar = root.require('progress');
+    constructor(require: any) {
+        this.PgBar = require('progress');
     }
     /**
      * [fn.progress.start] 开启进度条，并传入参数
