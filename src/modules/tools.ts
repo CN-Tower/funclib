@@ -1,14 +1,24 @@
-export class Tools {
-    private fs: any;
-    private path: any;
-    private child_process: any;
-    private process;
+let fs, path, Buffer, execSync, process;
 
-    constructor (fs, path, child_process, process) {
-        this.fs = fs;
-        this.path = path;
-        this.child_process = child_process;
-        this.process = process;
+export class Tools {
+    constructor (root: any) {
+        fs = root.require('fs');
+        path = root.require('path');
+        execSync = root.require('child_process').execSync;
+        process = root.process;
+        Buffer = root.Buffer;
+    }
+    /**
+     * [fn.wt] 写文件
+     * @param file
+     * @param text
+     * @param flag ['w'|'a'] default: 'w'
+     */
+    public wt = (file: string, text: string, flag: 'w'|'a') => {
+        const fd = fs.openSync(file, flag);
+        var buffer = new Buffer(text);
+        fs.writeSync(fd, buffer, 0, buffer.length, 0);
+        fs.closeSync(fd);
     }
 
     /**
@@ -17,15 +27,15 @@ export class Tools {
      * @param dist
      */
     public cp(src: string, dist: string) {
-        if (this.fs.existsSync(src)) {
-            if (this.fs.statSync(src).isFile()) {
-                this.fs.createReadStream(src).pipe(this.fs.createWriteStream(dist));
-            } else if (this.fs.statSync(src).isDirectory()) {
-                this.mkdir(dist);
-                const subSrcs = this.fs.readdirSync(src);
+        if (fs.existsSync(src)) {
+            if (fs.statSync(src).isFile()) {
+                fs.createReadStream(src).pipe(fs.createWriteStream(dist));
+            } else if (fs.statSync(src).isDirectory()) {
+                this.mk(dist);
+                const subSrcs = fs.readdirSync(src);
                 subSrcs.forEach(file => {
-                    const subSrc = this.path.join(src, file);
-                    const subDist = this.path.join(dist, file);
+                    const subSrc = path.join(src, file);
+                    const subDist = path.join(dist, file);
                     this.cp(subSrc, subDist);
                 });
             }
@@ -39,7 +49,7 @@ export class Tools {
      */
     public mv(src: string, dist: string) {
         try {
-            this.fs.renameSync(src, dist);
+            fs.renameSync(src, dist);
         } catch (e) {
             this.cp(src, dist);
             this.rm(src);
@@ -51,24 +61,24 @@ export class Tools {
      * @param src
      */
     public rm(src: string) {
-        if (this.fs.existsSync(src)) {
-            if (this.fs.statSync(src).isFile()) {
-                this.fs.unlinkSync(src);
-            } else if (this.fs.statSync(src).isDirectory()) {
-                const subSrcs = this.fs.readdirSync(src);
+        if (fs.existsSync(src)) {
+            if (fs.statSync(src).isFile()) {
+                fs.unlinkSync(src);
+            } else if (fs.statSync(src).isDirectory()) {
+                const subSrcs = fs.readdirSync(src);
                 subSrcs.forEach(file => {
-                    const subSrc = this.path.join(src, file);
+                    const subSrc = path.join(src, file);
                     this.rm(subSrc);
                 });
                 try {
-                    this.fs.rmdirSync(src);
+                    fs.rmdirSync(src);
                 } catch (e) {
                     setTimeout(() => {
-                        if (/win/.test(this.process.platform)) {
-                            const absSrc = this.path.resolve(src);
-                            this.child_process.execSync(`rd /s /q ${absSrc}`);
+                        if (/win/.test(process.platform)) {
+                            const absSrc = path.resolve(src);
+                            execSync(`rd /s /q ${absSrc}`);
                         } else {
-                            this.child_process.execSync(`rm -rf ${src}`)
+                            execSync(`rm -rf ${src}`)
                         }
                     }, 500);
                 }
@@ -77,17 +87,17 @@ export class Tools {
     }
 
     /**
-     * [fn.mkdir] 创建文件夹
+     * [fn.mk] 创建文件夹
      * @param dist
      */
-    public mkdir(dist) {
-        const absDist = this.path.resolve(dist);
-        if (!this.fs.existsSync(absDist)) {
+    public mk(dist) {
+        const absDist = path.resolve(dist);
+        if (!fs.existsSync(absDist)) {
             try {
-                this.fs.mkdirSync(absDist);
+                fs.mkdirSync(absDist);
             } catch (e) {
-                this.mkdir(this.path.dirname(absDist));
-                this.fs.mkdirSync(absDist);
+                this.mk(path.dirname(absDist));
+                fs.mkdirSync(absDist);
             }
         };
     }
