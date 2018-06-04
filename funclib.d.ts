@@ -46,10 +46,11 @@
  * fn.log                    控制打印格式化值
  ## Tools      
  * fn.initTools              初始化一个NodeJs工具包对象
- * fn.cp                     NodeJs写文件
- * fn.mv                     NodeJs删除文件夹和文件
- * fn.rm                     NodeJs复制文件
- * fn.mkdir                  NodeJs复制文件夹和文件
+ * fn.wt                     NodeJs写文件
+ * fn.cp                     NodeJs复制文件夹和文件
+ * fn.mv                     NodeJs移动文件夹和文件
+ * fn.rm                     NodeJs删除文件夹和文件
+ * fn.mk                     NodeJs创建文件夹
  ## Prigress      
  * fn.initProgress           初始化进度条对象
  * fn.progress.start         开启进度条，并传入参数
@@ -63,31 +64,6 @@
 declare var fn: fn.Funclib;
 export = fn;
 export as namespace fn;
-
-interface Tools {
-    /**
-     * [fn.cp] 复制文件或文件夹
-     * @param src
-     * @param dist
-     */
-    cp(src: string, dist: string): void;
-    /**
-     * [fn.mv] 移动文件或文件夹
-     * @param src
-     * @param dist
-     */
-    mv(src: string, dist: string): void;
-    /**
-     * [fn.rm] 删除文件或文件夹
-     * @param src
-     */
-    rm(src: string): void;
-    /**
-     * [fn.mkdir] 复制文件夹和文件
-     * @param dist
-     */
-    mkdir(dist: string): void;
-}
 
 interface Progress {
     /**
@@ -277,17 +253,47 @@ declare module fn {
          */
         log(value: any, configs: Object): void;
         /**
-         * [fn.initProgress] 初始化进度条工具
-         * @param progress 
-         */
-        initProgress(ProgressBar: any): void;
-        /**
          * [fn.initTools] 初始化一个NodeJs工具包对象
-         * @param fs 
-         * @param path 
-         * @param child_process 
-         * @param process 
+         * @param root 
          */
-        initTools(fs: any, path: any, child_process: any, process: any): void;
+        initTools(root: any): void;
+        /**
+         * [fn.wt] 写文件
+         * @param file
+         * @param text
+         * @param flag ['w'|'a'] default: 'w'
+         */
+        wt(file: string, text: string, flag?: 'w' | 'a'): void;
+        /**
+         * [fn.cp] 复制文件或文件夹
+         * @param src
+         * @param dist
+         */
+        cp(src: string, dist: string): void;
+        /**
+         * [fn.mv] 移动文件或文件夹
+         * @param src
+         * @param dist
+         */
+        mv(src: string, dist: string): void;
+        /**
+         * [fn.rm] 删除文件或文件夹
+         * @param src
+         */
+        rm(src: string): void;
+        /**
+         * [fn.mk] 创建文件夹
+         * @param dist
+         */
+        mk(dist: string): void;
+        /**
+         * [fn.initProgress] 初始化进度条工具
+         * @param root 
+         */
+        initProgress(root: any): void;
+        /**
+         * [fn.progress] 进度条工具
+         */
+        progress: Progress;
     }
 }
