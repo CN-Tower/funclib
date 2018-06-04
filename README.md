@@ -120,10 +120,11 @@ funclib.js
  [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
  #### Tools      
  [fn.initTools](#fninittools)&nbsp;&nbsp;初始化一个NodeJs工具包对象<br/>
- [fn.cp](#fncp)&nbsp;&nbsp;NodeJs写文件<br/>
- [fn.mv](#fnmv)&nbsp;&nbsp;NodeJs删除文件夹和文件<br/>
- [fn.rm](#fnrm)&nbsp;&nbsp;NodeJs复制文件<br/>
- [fn.mkdir](#fnmkdir)&nbsp;&nbsp;NodeJs复制文件夹和文件
+ [fn.wt](#fnwt)&nbsp;&nbsp;NodeJs写文件<br/> 
+ [fn.cp](#fncp)&nbsp;&nbsp;NodeJs复制文件夹和文件<br/>
+ [fn.mv](#fnmv)&nbsp;&nbsp;NodeJs移动文件夹和文件<br/>
+ [fn.rm](#fnrm)&nbsp;&nbsp;NodeJs删除文件夹和文件<br/>
+ [fn.mk](#fnmk)&nbsp;&nbsp;NodeJs创建文件夹
  #### Prigress      
  [fn.initProgress](#fninitprogress)&nbsp;&nbsp;初始化进度条对象<br/>
  [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
@@ -207,14 +208,16 @@ funclib.js
 ### Tools      
 #### fn.initTools
 初始化一个NodeJs工具包对象
-#### fn.cp
+#### fn.wt
 NodeJs写文件
-#### fn.mv
-NodeJs删除文件夹和文件
-#### fn.rm
-NodeJs复制文件
-#### fn.mkdir
+#### fn.cp
 NodeJs复制文件夹和文件
+#### fn.mv
+NodeJs移动文件夹和文件
+#### fn.rm
+NodeJs删除文件夹和文件
+#### fn.mk
+NodeJs创建文件夹
 ### Prigress      
 #### fn.initProgress
 初始化进度条对象
