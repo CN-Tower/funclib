@@ -74,106 +74,103 @@ funclib.js
 ├── README.md               # Read this FIRST :)
 └── tsconfig.json           # Typescript配置
 ```
+
 ### Document (CM: Client side method, SM: Server side method)
- ## Content
- #### [fn.version]fn.version&nbsp;&nbsp;[fn.array]fn.array
  ## Version
- #### [fn.version][fn.version]
+ #### fn.version[Version]
  返回当前函数库版本
  ## Array      
- ### fn.array
+ #### fn.array
 返回指定长度和默认值的数组
- ### fn.
+ #### fn.
  值数组化
- ### fn.sortByField
+ #### fn.sortByField
  对象数组根据字段排序
  ## Object     
- ### fn.len
+ #### fn.len
  获取对象自有属性的个数
- ### fn.isEmpty
+ #### fn.isEmpty
  判断对象是否为空对象或数组
- ### fn.overlay
+ #### fn.overlay
  给对象赋值，可指定字段
- ### fn.deepCopy
+ #### fn.deepCopy
  深拷贝数组或对象
  ## Mathematic 
- ### fn.rdId
+ #### fn.rdId
  返回指定长度(最小6位)的随机ID
- ### fn.rdNum
+ #### fn.rdNum
  返回指定范围的随机数
- ### fn.rdColor
+ #### fn.rdColor
  返回一个随机色值
  ## Time       
- ### fn.interval
+ #### fn.interval
  循环定时器
- ### fn.timeout
+ #### fn.timeout
  延时定时器
- ### fn.timeStamp
+ #### fn.timeStamp
  返回一个当前时间戳
- ### fn.fmtDate
+ #### fn.fmtDate
  获取格式化的时间字符串
  ## String     
- ### fn.encodeHtml
+ #### fn.encodeHtml
  编码HTML字符串
- ### fn.decodeHtml
+ #### fn.decodeHtml
  解码HTML字符串
- ### fn.currency
+ #### fn.currency
  格式化显示货币
- ### fn.cutString
+ #### fn.cutString
  裁切字符串到指定长度
  ## RegExp     
- ### fn.getPattern
+ #### fn.getPattern
  获取一个通用的正则表达式
- ### fn.matchPattern
+ #### fn.matchPattern
  与一个或几个通用正则匹配
  ## Events     
- ### fn.getKeyCodeByName
+ #### fn.getKeyCodeByName
  根据键名获取键码
- ### fn.getKeyNameByCode
+ #### fn.getKeyNameByCode
  根据键码获取键名
  ## DOM        
- ### fn.fullScreen
+ #### fn.fullScreen
  全屏显示一个HTML元素
- ### fn.exitFullScreen
+ #### fn.exitFullScreen
  退出全屏显示
- ### fn.checkIsFullScreen
+ #### fn.checkIsFullScreen
  检测是否处理全屏状态
  ## Cookie     
- ### fn.setCookie
+ #### fn.setCookie
  设置Cookie
- ### fn.getCookie
+ #### fn.getCookie
  根据name读取cookie
- ### fn.removeCookie
+ #### fn.removeCookie
  根据name删除cookie
  ## Loger      
- ### fn.log
+ #### fn.log
  控制打印格式化值
  ## Tools      
- ### fn.initTools
+ #### fn.initTools
  初始化一个NodeJs工具包对象
- ### fn.cp
+ #### fn.cp
  NodeJs写文件
- ### fn.mv
+ #### fn.mv
  NodeJs删除文件夹和文件
- ### fn.rm
+ #### fn.rm
  NodeJs复制文件
- ### fn.mkdir
+ #### fn.mkdir
  NodeJs复制文件夹和文件
  ## Prigress      
- ### fn.initProgress
+ #### fn.initProgress
  初始化进度条对象
- ### fn.progress.start
+ #### fn.progress.start
  开启进度条，并传入参数
- ### fn.progress.stop
+ #### fn.progress.stop
  停止进度条，结束后触发回调
  ## ExtendJq      
- ### $.pollingElement
+ #### $.pollingElement
  jQuery获取异步出现的元素
- ### $.noAutoComplete
+ #### $.noAutoComplete
  jQuery禁止input密码自动填充
- ### $.copyText
+ #### $.copyText
  jQuery复制文本到粘贴板
- ### $ele.findCousin
+ #### $ele.findCousin
  jQuery获取元素表亲
-
-[fn.version]: https://github.com/proYang/outils/blob/master/src/array/arrayEqual.js
