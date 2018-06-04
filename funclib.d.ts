@@ -3,57 +3,58 @@
  * Github: http://github.com/CN-Tower/funclib.js
  * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
  ----------------------------------------------------------------
+ ## Version
  * fn.version                返回当前函数库版本
- Array      _____________________________________________________
+ ## Array      
  * fn.array                  返回指定长度和默认值的数组
- * fn.toArray                值数组化
+ * fn.toArr                  值数组化
  * fn.sortByField            对象数组根据字段排序
- Object     _____________________________________________________
+ ## Object     
  * fn.len                    获取对象自有属性的个数
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
- Mathematic _____________________________________________________
- * fn.randomId               返回指定长度(最小6位)的随机ID
- * fn.randomNum              返回指定范围的随机数
- * fn.randomColor            返回一个随机色值
- Time       _____________________________________________________
+ ## Mathematic 
+ * fn.rdId                   返回指定长度(最小6位)的随机ID
+ * fn.rdNum                  返回指定范围的随机数
+ * fn.rdColor                返回一个随机色值
+ ## Time       
  * fn.interval               循环定时器
  * fn.timeout                延时定时器
  * fn.timeStamp              返回一个当前时间戳
  * fn.fmtDate                获取格式化的时间字符串
- String     _____________________________________________________
+ ## String     
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
  * fn.currency               格式化显示货币
  * fn.cutString              裁切字符串到指定长度
- RegExp     _____________________________________________________
+ ## RegExp     
  * fn.getPattern             获取一个通用的正则表达式
  * fn.matchPattern           与一个或几个通用正则匹配
- Events     _____________________________________________________
+ ## Events     
  * fn.getKeyCodeByName       根据键名获取键码
  * fn.getKeyNameByCode       根据键码获取键名
- Dom        _____________________________________________________
+ ## Dom        
  * fn.fullScreen             全屏显示一个HTML元素
  * fn.exitFullScreen         退出全屏显示
  * fn.checkIsFullScreen      检测是否处理全屏状态
- Cookie     _____________________________________________________
+ ## Cookie     
  * fn.setCookie              设置Cookie
  * fn.getCookie              根据name读取cookie
  * fn.removeCookie           根据name删除cookie
- Loger      _____________________________________________________
+ ## Loger      
  * fn.log                    控制打印格式化值
- Tools      _____________________________________________________
+ ## Tools      
  * fn.initTools              初始化一个NodeJs工具包对象
  * fn.cp                     NodeJs写文件
  * fn.mv                     NodeJs删除文件夹和文件
  * fn.rm                     NodeJs复制文件
  * fn.mkdir                  NodeJs复制文件夹和文件
- Prigress      __________________________________________________
+ ## Prigress      
  * fn.initProgress           初始化进度条对象
  * fn.progress.start         开启进度条，并传入参数
  * fn.progress.stop          停止进度条，结束后触发回调
- ExtendJq      __________________________________________________
+ ## ExtendJq      
  * $.pollingElement          jQuery获取异步出现的元素
  * $.noAutoComplete          jQuery禁止input密码自动填充
  * $.copyText                jQuery复制文本到粘贴板
@@ -110,10 +111,10 @@ declare module fn {
          */
         array(length: number, value?: any): any[];
         /**
-         * [fn.toArray] 值数组化
+         * [fn.toArr] 值数组化
          * @param src 
          */
-        toArray(src: any): any[];
+        toArr(src: any): any[];
         /**
          * [fn.sortByField] 对象数组根据字段排序
          * @param tableData
@@ -144,22 +145,20 @@ declare module fn {
          */
         deepCopy(data: any): any;
         /**
-         * [fn.randomId] 返回一个指定长度(最小6位，默认12位)的随机ID。
+         * [fn.rdId] 返回一个指定长度(最小6位，默认12位)的随机ID。
          * @param len [number]
          */
-        randomId(len?: number): string;
+        rdId(len?: number): string;
         /**
-         * [fn.random] 返回一个指定范围的随机数
+         * [fn.rdNum] 返回一个指定范围的随机数
          * @param sta [number]
          * @param end [number]
          */
-        randomNum(sta: number, end?: number): number;
+        rdNum(sta: number, end?: number): number;
         /**
-         * [fn.randomStr] 返回一个随机色值
-         * @param sta [number]
-         * @param end [number]
+         * [fn.rdColor] 返回一个随机色值
          */
-        randomStr(sta: number, end?: number): number;
+        rdColor(): string;
         /**
          * [fn.interval] 循环定时器
          * @param timerId
