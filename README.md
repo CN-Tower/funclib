@@ -129,10 +129,10 @@ funclib.js
  [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
  [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
  #### ExtendJq      
- [$.pollingElement](#$pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
- [$.noAutoComplete](#$noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
- [$.copyText](#$copytext)&nbsp;&nbsp;jQuery复制文本到粘贴板<br/>
- [$ele.findCousin](#$elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
+ [$.pollingElement](#pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
+ [$.noAutoComplete](#noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
+ [$.copyText](#copytext)&nbsp;&nbsp;jQuery复制文本到粘贴板<br/>
+ [$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
 ### Version
 #### fn.version
 返回当前函数库版本
