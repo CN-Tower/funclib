@@ -23,10 +23,10 @@ export class Arr {
     }
 
     /**
-     * [fn.toArray] 值数组化
+     * [fn.toArr] 值数组化
      * @param src 
      */
-    public static toArray(src: any): any[] {
+    public static toArr(src: any): any[] {
         return src instanceof Array ? src : [src];
     }
 
