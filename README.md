@@ -76,13 +76,15 @@ funclib.js
 ```
 
 ## Document (CM: Client side method, SM: Server side method)
+ ### CONTENT
+ #### [fn.version](#fnversion)
  ### Version
  #### fn.version
  返回当前函数库版本
  ### Array      
  #### fn.array
 返回指定长度和默认值的数组
- #### fn.
+ #### fn.toArr
  值数组化
  #### fn.sortByField
  对象数组根据字段排序
