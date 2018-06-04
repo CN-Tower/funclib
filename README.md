@@ -74,8 +74,9 @@ funclib.js
 ├── README.md               # Read this FIRST :)
 └── tsconfig.json           # Typescript配置
 ```
-
 ### Document (CM: Client side method, SM: Server side method)
+ ## Content
+ #### [fn.version]fn.version&nbsp;&nbsp;[fn.array]fn.array
  ## Version
  #### [fn.version][fn.version]
  返回当前函数库版本
