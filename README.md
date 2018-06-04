@@ -77,7 +77,7 @@ funclib.js
 
 ## Document (CM: Client side method, SM: Server side method)
  ### CONTENT
- #### [fn.version](#fnversion)
+ #### [fn.version](#fnversion)&nbsp;&nbsp;[fn.array](#fnarray)
  ### Version
  #### fn.version
  返回当前函数库版本
