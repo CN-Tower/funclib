@@ -1,7 +1,7 @@
 export class Progress {
     private PgBar: any;
     private timer: any;
-    private this: any;
+    private progress: any;
     private duration: number;
 
     constructor(require: any) {
@@ -13,7 +13,7 @@ export class Progress {
      */
     public start(options: any) {
         const prog = `${options && options.title || '[fn.progress]'} [:bar] :percent`;
-        this.this = new this.PgBar(prog, {
+        this.progress = new this.PgBar(prog, {
             complete: '=', incomplete: ' ',
             width: options && options['width'] || 40,
             total: options && options['total'] || 20
@@ -35,12 +35,12 @@ export class Progress {
 
     private tickFun(type, onStopped?) {
         this.timer = setTimeout(() => {
-            this.this.tick();
+            this.progress.tick();
             switch (type) {
                 case '+': this.duration += 320; break;
                 case '-': this.duration -= this.duration * 0.2; break;
             }
-            if (this.this.complete) {
+            if (this.progress.complete) {
                 if (typeof onStopped === 'function') {
                     onStopped();
                 }

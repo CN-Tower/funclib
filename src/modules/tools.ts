@@ -8,6 +8,15 @@ export class Tools {
         process = global.process;
         Buffer = global.Buffer;
     }
+
+    /**
+     * [fn.rd] 读文件
+     * @param file
+     */
+    public rd = (file: string) => {
+        return fs.existsSync(file) ? fs.readFileSync(file, {encoding: 'utf8'}) : '';
+    }
+
     /**
      * [fn.wt] 写文件
      * @param file

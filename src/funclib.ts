@@ -16,7 +16,7 @@ import { FN_CONF } from './configs/FnConf'
 
 export class Funclib {
   
-  public version: string = 'V2.0.1'
+  public version: string = 'V2.0.2'
 
   constructor(root: any) {
     const deleteProp = prop => {
@@ -305,6 +305,12 @@ export class Funclib {
    */
   initTools(require: any, global: any) {
     const tools = new Tools(require, global);
+    
+    /**
+     * [fn.rd] 读文件
+     * @param file
+     */
+    this['rd'] = (file: string) => tools.rd(file);
 
     /**
      * [fn.wt] 写文件

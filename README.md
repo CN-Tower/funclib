@@ -120,6 +120,7 @@ funclib.js
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
 #### Tools      
 [fn.initTools](#fninittools)&nbsp;&nbsp;初始化一个NodeJs工具包对象<br/>
+[fn.rd](#fnrd)&nbsp;&nbsp;NodeJs读文件<br/> 
 [fn.wt](#fnwt)&nbsp;&nbsp;NodeJs写文件<br/> 
 [fn.cp](#fncp)&nbsp;&nbsp;NodeJs复制文件夹和文件<br/>
 [fn.mv](#fnmv)&nbsp;&nbsp;NodeJs移动文件夹和文件<br/>
@@ -208,6 +209,8 @@ funclib.js
 ### Tools      
 #### fn.initTools
 初始化一个NodeJs工具包对象
+#### fn.rd
+NodeJs读文件
 #### fn.wt
 NodeJs写文件
 #### fn.cp

@@ -1,5 +1,5 @@
 /**==============================================================
- * 通用型逻辑函数封装 funclib (V1.0.5)
+ * Methods of funclib.js
  * Github: http://github.com/CN-Tower/funclib.js
  * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
  ----------------------------------------------------------------
@@ -46,6 +46,7 @@
  * fn.log                    控制打印格式化值
  ## Tools      
  * fn.initTools              初始化一个NodeJs工具包对象
+ * fn.rd                     NodeJs读文件
  * fn.wt                     NodeJs写文件
  * fn.cp                     NodeJs复制文件夹和文件
  * fn.mv                     NodeJs移动文件夹和文件
@@ -258,6 +259,11 @@ declare module fn {
          * @param global 
          */
         initTools(require: any, global: any): void;
+        /**
+         * [fn.rd] 读文件
+         * @param file
+         */
+        rd(file: string): string;
         /**
          * [fn.wt] 写文件
          * @param file
