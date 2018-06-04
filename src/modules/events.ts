@@ -1,4 +1,4 @@
-import { KEY_MAP } from './helper/keyMap'
+import { KEY_MAP } from '../configs/keyMap'
 
 export class Events {
     /**
