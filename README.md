@@ -77,7 +77,7 @@ funclib.js
 
 ### Document (CM: Client side method, SM: Server side method)
  ## Version
- #### fn.version[Version]
+ #### [fn.version][fn.version]
  返回当前函数库版本
  ## Array      
  ### fn.array
@@ -174,3 +174,5 @@ funclib.js
  jQuery复制文本到粘贴板
  ### $ele.findCousin
  jQuery获取元素表亲
+
+[fn.version]: https://github.com/proYang/outils/blob/master/src/array/arrayEqual.js
