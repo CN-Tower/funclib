@@ -299,34 +299,20 @@ export class Funclib {
   }
 
   /**
-   * [fn.initProgress] 初始化进度条工具
-   * @param progress 
-   */
-  initProgress(progress: any) {
-    const pg = new Progress(progress);
-    this['progress'] = {};
-    /**
-     * [fn.progress.start] 开启进度条，并传入参数
-     * @param options {title: string, width: number (base: 40)}
-     */
-    this['progress']['start'] = (options: Object) => pg.start(options);
-    
-    /**
-     * [fn.progress.stop] 结束进度条，结束后触发回调
-     * @param onStopped 
-     */
-    this['progress']['stop'] = (onStopped: Function) => pg.stop(onStopped);
-  }
-
-  /**
    * [fn.initTools] 初始化NodeJs工具
-   * @param fs 
-   * @param path 
-   * @param child_process 
-   * @param process 
+   * @param root
    */
-  initTools(fs: any, path: any, child_process: any, process: any) {
-    const tools = new Tools(fs, path, child_process, process);
+  initTools(root: any) {
+    const tools = new Tools(root);
+
+    /**
+     * [fn.wt] 写文件
+     * @param file
+     * @param text
+     * @param flag ['w'|'a'] default: 'w'
+     */
+    this['wt'] = (file: string, text: string, flag: 'w'|'a' = 'w') => tools.wt(file, text, flag);
+
     /**
      * [fn.cp] 复制文件或文件夹
      * @param src
@@ -348,9 +334,29 @@ export class Funclib {
     this['rm'] = (src: string) => tools.rm(src);
 
     /**
-     * [fn.mkdir] 创建文件夹
+     * [fn.mk] 创建文件夹
      * @param dist
      */
-    this['mkdir'] = (dist: string) => tools.mkdir(dist);
+    this['mk'] = (dist: string) => tools.mk(dist);
+  }
+
+  /**
+   * [fn.initProgress] 初始化进度条工具
+   * @param root 
+   */
+  initProgress(root: any) {
+    const pg = new Progress(root);
+    this['progress'] = {};
+    /**
+     * [fn.progress.start] 开启进度条，并传入参数
+     * @param options {title: string, width: number (base: 40)}
+     */
+    this['progress']['start'] = (options: Object) => pg.start(options);
+    
+    /**
+     * [fn.progress.stop] 结束进度条，结束后触发回调
+     * @param onStopped 
+     */
+    this['progress']['stop'] = (onStopped: Function) => pg.stop(onStopped);
   }
 }
