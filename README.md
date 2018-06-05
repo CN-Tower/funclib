@@ -121,7 +121,6 @@ funclib.js
 #### Loger      
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
 #### Tools      
-[fn.initTools](#fninittools)&nbsp;&nbsp;初始化一个NodeJs工具包对象<br/>
 [fn.rd](#fnrd)&nbsp;&nbsp;NodeJs读文件<br/> 
 [fn.wt](#fnwt)&nbsp;&nbsp;NodeJs写文件<br/> 
 [fn.cp](#fncp)&nbsp;&nbsp;NodeJs复制文件夹和文件<br/>
@@ -129,7 +128,6 @@ funclib.js
 [fn.rm](#fnrm)&nbsp;&nbsp;NodeJs删除文件夹和文件<br/>
 [fn.mk](#fnmk)&nbsp;&nbsp;NodeJs创建文件夹
 #### Prigress      
-[fn.initProgress](#fninitprogress)&nbsp;&nbsp;初始化进度条对象<br/>
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
 #### ViewTools 
@@ -215,8 +213,6 @@ funclib.js
 #### fn.log
 控制打印格式化值
 ### Tools      
-#### fn.initTools
-初始化一个NodeJs工具包对象
 #### fn.rd
 NodeJs读文件
 #### fn.wt
@@ -230,8 +226,6 @@ NodeJs删除文件夹和文件
 #### fn.mk
 NodeJs创建文件夹
 ### Prigress      
-#### fn.initProgress
-初始化进度条对象
 #### fn.progress.start
 开启进度条，并传入参数
 #### fn.progress.stop
