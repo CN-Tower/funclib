@@ -15,30 +15,31 @@ import { ViewTools } from './modules/views';
 import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
 import { FN_CONF } from './configs/FnConf'
-let $;
+
+let jquery;
 
 export class Funclib {
-  
   public version: string = 'V2.0.3'
 
   constructor(root: any) {
     const deleteProp = prop => {
-      const proto = this['__proto__'];
       delete this[prop];
-      if (proto) {
-        delete proto[prop];
+      if (this['__proto__']) {
+        delete this['__proto__'][prop];
       }
     }
     if (root && root.window && root.document) {
       FN_CONF.isClient = true;
       FN_CONF.serverMethods.forEach(prop => deleteProp(prop));
+      jquery = root.$ || root.jquery;
+      if (jquery) {
+        extendJquery(jquery, this.interval);
+      }
     } else {
       FN_CONF.isClient = false;
+      this.initTools();
+      this.initProgress();
       FN_CONF.clientMethods.forEach(prop =>  deleteProp(prop));
-    }
-    $ = root && (root.$ || root.jquery);
-    if ($) {
-      extendJquery($, this.interval);
     }
   }
 
@@ -302,13 +303,10 @@ export class Funclib {
   }
 
   /**
-   * [fn.initTools] 初始化NodeJs工具
-   * @param require
-   * @param global
+   * 初始化NodeJs工具
    */
-  initTools(require: any, global: any) {
-    const tools = new Tools(require, global);
-    
+  private initTools() {
+    const tools = new Tools(eval('require'));
     /**
      * [fn.rd] 读文件
      * @param file
@@ -351,23 +349,22 @@ export class Funclib {
   }
 
   /**
-   * [fn.initProgress] 初始化进度条工具
-   * @param require
+   * 初始化进度条工具
    */
-  initProgress(require: any) {
-    const pg = new Progress(require);
+  private initProgress() {
+    const progress = new Progress(eval('require'));
     this['progress'] = {};
     /**
      * [fn.progress.start] 开启进度条，并传入参数
      * @param options {title: string, width: number (base: 40)}
      */
-    this['progress']['start'] = (options: Object) => pg.start(options);
+    this['progress']['start'] = (options: Object) => progress.start(options);
     
     /**
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped 
      */
-    this['progress']['stop'] = (onStopped: Function) => pg.stop(onStopped);
+    this['progress']['stop'] = (onStopped: Function) => progress.stop(onStopped);
   }
 
   /**
@@ -383,6 +380,10 @@ export class Funclib {
    * @param translate [Object]
    */
   initBootstrapTable(translate?: Object) {
-    this['table'] = new Table($, translate);
+    if (jquery) {
+      this['table'] = new Table(jquery, translate);
+    } {
+      throw new Error('jQuery not found!');
+    }
   }
 }
