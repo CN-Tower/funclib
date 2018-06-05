@@ -39,14 +39,16 @@ funclib.js
 │   ├── funclib.d.ts        # 定义文件
 │   ├── funclib.min.js      # 生成的UMD文件
 │   ├── index.js            # Index
-│   ├── package.json        # 模块定义
+│   ├── package.json        # 库模块定义
 │   └── README.md           # Read this FIRST :)
 ├── script                  # 脚本
 │   ├── build.js            # 编译脚本
 │   └── webpack.conf.js     # Webpack配置
 ├── src                     # Source code
 │   ├── asstes              # 静态文件
-│   │   └── index.js        # Index
+│   │   ├── funclib.d.ts    # 定义文件
+│   │   ├── index.js        # Index
+│   │   └── package.json    # 库模块定义
 │   ├── configs             # 配置
 │   │   ├── fnConf.ts       # 特殊方法
 │   │   └── keyMap.ts       # 键映射表
@@ -73,9 +75,7 @@ funclib.js
 ├── .gitignore              # You know the drill...
 ├── .travis.yml             # CI配置
 ├── app.js                  # 服务端试验
-├── funclib.d.ts            # 定义文件
 ├── funclib.html            # 客户端试验
-├── index.js                # Index
 ├── LICENSE                 # 授权说明
 ├── package-lock.json       # NPM Lock
 ├── package.json            # 库配置
