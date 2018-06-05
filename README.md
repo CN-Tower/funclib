@@ -35,14 +35,19 @@ $ npm run build
 ```
 funclib.js
 ├── node_modules/           # You know the drill...
-├── dist/                   # 构建目录
-│   └── funclib.min.js      # 最终生成
+├── dist                    # 构建目录
+│   ├── funclib.d.ts        # 定义文件
+│   ├── funclib.min.js      # 生成的UMD文件
+│   ├── index.js            # Index
+│   ├── package.json        # 模块定义
+│   └── README.md           # Read this FIRST :)
 ├── script                  # 脚本
-│   ├── build.js            # 构建脚本
-│   ├── buildFix.js         # 修改脚本
+│   ├── build.js            # 编译脚本
 │   └── webpack.conf.js     # Webpack配置
 ├── src                     # Source code
-│   ├── configs             # 模块
+│   ├── asstes              # 静态文件
+│   │   └── index.js        # Index
+│   ├── configs             # 配置
 │   │   ├── fnConf.ts       # 特殊方法
 │   │   └── keyMap.ts       # 键映射表
 │   ├── modules             # 模块
@@ -61,8 +66,9 @@ funclib.js
 │   │   ├── time.ts         # Time
 │   │   ├── tools.ts        # NodeJs工具
 │   │   └── views.ts        # 视图工具
-│   ├── funclib.spec.ts     # 测试用例
 │   └── funclib.ts          # Main函数
+├── test                    # 测试
+│   └── funclib.spec.js     # funclib测试用例
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
 ├── .gitignore              # You know the drill...
 ├── .travis.yml             # CI配置
