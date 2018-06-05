@@ -6,10 +6,9 @@ export const FN_CONF = {
         'fullScreen',
         'exitFullScreen',
         'checkIsFullScreen',
+        'initViewTools',
+        'initBootstrapTable'
     ],
-    serverMethods: [
-        'initProgress',
-        'initTools'
-    ],
+    serverMethods: [],
     isClient: true
 }
