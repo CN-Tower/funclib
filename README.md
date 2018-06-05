@@ -2,7 +2,7 @@
 
 ## Brief Intro
 Javascript通用型UMD函数库，采用Typescript开发，Webpack打包编译!
-> 通用、实用、易用、好用！
+> 目的：高效率完成前端业务代码！
 
 ## Quick start
 ```bash
@@ -57,8 +57,10 @@ funclib.js
 │   │   ├── patterns.ts     # RegExp
 │   │   ├── progress.ts     # 进度条工具
 │   │   ├── string.ts       # String
+│   │   ├── table.ts        # Bootstrap表格
 │   │   ├── time.ts         # Time
-│   │   └── tools.ts        # NodeJs工具
+│   │   ├── tools.ts        # NodeJs工具
+│   │   └── views.ts        # 视图工具
 │   ├── funclib.spec.ts     # 测试用例
 │   └── funclib.ts          # Main函数
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
@@ -90,7 +92,7 @@ funclib.js
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象
 #### Mathematic 
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
-[fn.rdId](#fnrdid)&nbsp;&nbsp;返回指定长度(最小4位，默认12位)的随机ID<br/>
+[fn.rdId](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
 [fn.rdColor](#fnrdcolor)&nbsp;&nbsp;返回一个随机色值
 #### Time       
 [fn.interval](#fninterval)&nbsp;&nbsp;循环定时器<br/>
@@ -130,6 +132,12 @@ funclib.js
 [fn.initProgress](#fninitprogress)&nbsp;&nbsp;初始化进度条对象<br/>
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
+#### ViewTools 
+[fn.initViewTools](#fninitviewtools)&nbsp;&nbsp;初始化视图工具
+[fn.viewTools.show](#fnviewtoolsshow)&nbsp;&nbsp;显示视图工具
+#### Table 
+[fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具
+[fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
 #### ExtendJq      
 [$.pollingElement](#pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
 [$.noAutoComplete](#noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
@@ -158,7 +166,7 @@ funclib.js
 #### fn.random
 返回指定范围的随机数
 #### fn.rdId
-返回指定长度(最小4位，默认12位)的随机ID
+返回指定长度(最小6位)的随机ID
 #### fn.rdColor
 返回一个随机色值
 ### Time       
@@ -228,6 +236,16 @@ NodeJs创建文件夹
 开启进度条，并传入参数
 #### fn.progress.stop
 停止进度条，结束后触发回调
+### ViewTools 
+#### fn.initViewTools
+初始化视图工具
+#### fn.viewTools.show
+显示视图工具
+### Table 
+#### fn.initBootstrapTable
+初始化Bootstrap表格工具
+#### fn.table.render
+渲染Bootstrap表格
 ### ExtendJq      
 #### $.pollingElement
 jQuery获取异步出现的元素
