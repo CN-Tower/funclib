@@ -19,7 +19,7 @@ import { FN_CONF } from './configs/FnConf'
 let jquery, isClient;
 
 export class Funclib {
-  public version: string = 'V2.0.4'
+  public version: string = 'V2.0.5'
 
   constructor(root: any) {
     const deleteProp = prop => {

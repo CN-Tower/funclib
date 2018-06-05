@@ -134,7 +134,7 @@ funclib.js
 [fn.mv](#fnmv)&nbsp;&nbsp;NodeJs移动文件夹和文件<br/>
 [fn.rm](#fnrm)&nbsp;&nbsp;NodeJs删除文件夹和文件<br/>
 [fn.mk](#fnmk)&nbsp;&nbsp;NodeJs创建文件夹
-#### Prigress      
+#### Progress      
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
 #### ViewTools 
@@ -234,7 +234,7 @@ NodeJs移动文件夹和文件
 NodeJs删除文件夹和文件
 #### fn.mk
 NodeJs创建文件夹
-### Prigress      
+### Progress      
 #### fn.progress.start
 开启进度条，并传入参数
 #### fn.progress.stop
