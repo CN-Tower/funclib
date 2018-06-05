@@ -10,13 +10,16 @@ import { loger } from './modules/loger';
 import { Dom } from './modules/dom';
 import { Cookie } from './modules/cookie';
 import { Tools } from './modules/tools';
+import { Table } from './modules/table';
+import { ViewTools } from './modules/views';
 import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
 import { FN_CONF } from './configs/FnConf'
+let $;
 
 export class Funclib {
   
-  public version: string = 'V2.0.2'
+  public version: string = 'V2.0.1'
 
   constructor(root: any) {
     const deleteProp = prop => {
@@ -33,9 +36,9 @@ export class Funclib {
       FN_CONF.isClient = false;
       FN_CONF.clientMethods.forEach(prop =>  deleteProp(prop));
     }
-    const jquery = root && (root.$ || root.jquery);
-    if (jquery) {
-      extendJquery(jquery, this.interval);
+    $ = root && (root.$ || root.jquery);
+    if ($) {
+      extendJquery($, this.interval);
     }
   }
 
@@ -365,5 +368,21 @@ export class Funclib {
      * @param onStopped 
      */
     this['progress']['stop'] = (onStopped: Function) => pg.stop(onStopped);
+  }
+
+  /**
+   * [fn.initViewTools] 初始化提示和Loader
+   * @param initViewTools [class]
+   */
+  initViewTools(viewToolsCtrl: any) {
+    this['viewTools'] = new ViewTools(viewToolsCtrl);
+  }
+
+  /**
+   * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
+   * @param translate [Object]
+   */
+  initBootstrapTable(translate?: Object) {
+    this['table'] = new Table($, translate);
   }
 }
