@@ -19,7 +19,7 @@ let $;
 
 export class Funclib {
   
-  public version: string = 'V2.0.1'
+  public version: string = 'V2.0.3'
 
   constructor(root: any) {
     const deleteProp = prop => {
