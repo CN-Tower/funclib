@@ -289,9 +289,10 @@ interface Funclib {
     log(value: any, configs: Object): void;
     /**
      * [fn.initTools] 初始化一个NodeJs工具包对象
-     * @param root 
+     * @param require 
+     * @param global 
      */
-    initTools(root: any): void;
+    initTools(require: any, global: any): void;
     /**
      * [fn.rd] 读文件
      * @param file
@@ -328,9 +329,9 @@ interface Funclib {
     mk(dist: string): void;
     /**
      * [fn.initProgress] 初始化进度条工具
-     * @param root 
+     * @param require 
      */
-    initProgress(root: any): void;
+    initProgress(require: any): void;
     /**
      * [fn.progress] 进度条工具
      */
