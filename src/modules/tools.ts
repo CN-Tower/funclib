@@ -1,7 +1,7 @@
 let fs, path, Buffer, execSync, process;
 
 export class Tools {
-    constructor (require: any, global: any) {
+    constructor (require: any) {
         fs = require('fs');
         path = require('path');
         execSync = require('child_process').execSync;
