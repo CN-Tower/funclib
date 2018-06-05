@@ -42,8 +42,9 @@
  * fn.setCookie              设置Cookie
  * fn.getCookie              根据name读取cookie
  * fn.removeCookie           根据name删除cookie
- ## Loger      
+ ## Loger
  * fn.log                    控制打印格式化值
+ * fn.chalk                  控制打印有颜色的值
  ## Tools      
  * fn.rd                     NodeJs读文件
  * fn.wt                     NodeJs写文件
@@ -52,8 +53,8 @@
  * fn.rm                     NodeJs删除文件夹和文件
  * fn.mk                     NodeJs创建文件夹
  ## Prigress      
- * fn.progress.start         开启进度条，并传入参数
- * fn.progress.stop          停止进度条，结束后触发回调
+ * fn.progress.start         开启进度，并传入参数
+ * fn.progress.stop          停止进度，结束后触发回调
  ## ViewTools 
  * fn.initViewTools          初始化视图工具
  * fn.viewTools.show         显示视图工具
@@ -72,12 +73,12 @@ export as namespace fn;
 
 interface Progress {
     /**
-     * [fn.progress.start] 开启进度条，并传入参数
+     * [fn.progress.start] 开启进度，并传入参数
      * @param options {title: string, width: number (base: 40)}
      */
     start(options: any): void;
     /**
-     * [fn.progress.stop] 结束进度条，结束后触发回调
+     * [fn.progress.stop] 结束进度，结束后触发回调
      * @param options 
      */
     stop(onStopped: Function): void;
@@ -286,6 +287,12 @@ interface Funclib {
      */
     log(value: any, configs: Object): void;
     /**
+     * [fn.chalk] 在控制台打印有颜色的字符串
+     * @param value 
+     * @param color 
+     */
+    chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow')
+    /**
      * [fn.rd] 读文件
      * @param file
      */
@@ -320,7 +327,7 @@ interface Funclib {
      */
     mk(dist: string): void;
     /**
-     * [fn.progress] 进度条工具
+     * [fn.progress] 进度工具
      */
     progress: Progress;
     /**

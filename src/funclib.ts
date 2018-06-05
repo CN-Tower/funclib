@@ -6,7 +6,7 @@ import { Time } from './modules/time';
 import { Patterns } from './modules/patterns';
 import { Events } from './modules/events';
 import { Mathematic } from './modules/math';
-import { loger } from './modules/loger';
+import { Loger } from './modules/loger';
 import { Dom } from './modules/dom';
 import { Cookie } from './modules/cookie';
 import { Tools } from './modules/tools';
@@ -16,10 +16,10 @@ import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
 import { FN_CONF } from './configs/FnConf'
 
-let jquery;
+let jquery, isClient;
 
 export class Funclib {
-  public version: string = 'V2.0.3'
+  public version: string = 'V2.0.4'
 
   constructor(root: any) {
     const deleteProp = prop => {
@@ -29,14 +29,14 @@ export class Funclib {
       }
     }
     if (root && root.window && root.document) {
-      FN_CONF.isClient = true;
+      isClient = true;
       FN_CONF.serverMethods.forEach(prop => deleteProp(prop));
       jquery = root.$ || root.jquery;
       if (jquery) {
         extendJquery(jquery, this.interval);
       }
     } else {
-      FN_CONF.isClient = false;
+      isClient = false;
       this.initTools();
       this.initProgress();
       FN_CONF.clientMethods.forEach(prop =>  deleteProp(prop));
@@ -296,17 +296,26 @@ export class Funclib {
    * title: string,
    * lineLen: number [20-100]
    * part: 'pre'|'end' [S]
-   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S]
+   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S] }
    */
   log(value?: any, configs?: Object) {
-    return loger.call(this, value, configs, FN_CONF.isClient);
+    return Loger.log.call(this, value, configs, isClient);
+  }
+
+  /**
+   * [fn.chalk] 在控制台打印有颜色的字符串
+   * @param value 
+   * @param color 
+   */
+  chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow') {
+    return Loger.chalk(value, color);
   }
 
   /**
    * 初始化NodeJs工具
    */
   private initTools() {
-    const tools = new Tools(eval('require'));
+    const tools = new Tools();
     /**
      * [fn.rd] 读文件
      * @param file
@@ -352,7 +361,7 @@ export class Funclib {
    * 初始化进度条工具
    */
   private initProgress() {
-    const progress = new Progress(eval('require'));
+    const progress = new Progress();
     this['progress'] = {};
     /**
      * [fn.progress.start] 开启进度条，并传入参数

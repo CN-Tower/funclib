@@ -1,4 +1,5 @@
 const fn = require('funclib');
+const ora = require('ora');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.conf');
@@ -14,12 +15,13 @@ const indexSrc = path.join(root, 'src/assets/index.js');
 const pkgSrc = path.join(root, 'src/assets/package.json');
 const rdmeSrc = path.join(root, 'README.md');
 
+fn.progress.start({title: 'Compiling Funclib', width: 41});
+
 const srcs = [DtsSrc, indexSrc, pkgSrc, rdmeSrc];
 const dists = [DtsDist, indexDist, pkgDist, rdmeDist, fnMinJs];
 dists.forEach(f => fn.rm(f));
 srcs.forEach((f, i) => fn.cp(f, dists[i]));
 
-fn.progress.start({title: 'Compiling Funclib', width: 41});
 webpack(config, function (err, stats) {
   if (err) throw (err);
   fn.progress.stop(() => {

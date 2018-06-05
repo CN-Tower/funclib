@@ -9,6 +9,5 @@ export const FN_CONF = {
         'initViewTools',
         'initBootstrapTable'
     ],
-    serverMethods: [],
-    isClient: true
+    serverMethods: ['chalk']
 }

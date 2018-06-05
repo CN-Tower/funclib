@@ -1,0 +1,31 @@
+{
+  "name": "funclib",
+  "version": "2.0.4",
+  "description": "A Powerful javascript functions lib!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CN-Tower/funclib.js.git"
+  },
+  "keywords": [
+    "funclib.js",
+    "typescript",
+    "javascript",
+    "webpack",
+    "UMD"
+  ],
+  "author": "CN-Tower",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CN-Tower/funclib.js/issues"
+  },
+  "homepage": "https://github.com/CN-Tower/funclib.js#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "ora": "^2.1.0",
+    "progress": "^2.0.0"
+  }
+}

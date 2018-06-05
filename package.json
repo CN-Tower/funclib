@@ -1,6 +1,6 @@
 {
   "name": "funclib",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,6 @@
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
     "@types/node": "^10.3.0",
-    "funclib": "^2.0.2",
     "jquery": "^3.3.1",
     "typescript": "^2.8.3"
   },
@@ -35,7 +34,9 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "chalk": "^2.4.1",
     "coveralls": "^3.0.0",
+    "funclib": "^2.0.4",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
@@ -43,6 +44,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-power-assert": "^1.0.0",
     "mocha": "^4.0.1",
+    "ora": "^2.1.0",
     "power-assert": "^1.4.4",
     "progress": "^2.0.0",
     "ts-loader": "^3.1.1",
