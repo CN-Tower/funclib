@@ -1,8 +1,8 @@
+const fn = require('funclib');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.conf');
 const funclibMinJs = path.resolve(__dirname, '../', 'dist', 'funclib.min.js');
-const fn = require('funclib');
 
 fn.initTools(require, global);
 fn.initProgress(require);
