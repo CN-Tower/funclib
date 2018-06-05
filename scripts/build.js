@@ -1,14 +1,10 @@
-const fn = require('./funclib.min');
-// const fn = require('funclib');
+const fn = require('funclib');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.conf');
 const funclibMinJs = path.resolve(__dirname, '../', 'dist', 'funclib.min.js');
 
-fn.initTools();
-fn.initProgress();
 fn.rm(funclibMinJs);
-
 fn.progress.start({title: 'Compiling Funclib', width: 41});
 webpack(config, function (err, stats) {
   if (err) throw (err);
