@@ -1,11 +1,12 @@
-const fn = require('funclib');
+const fn = require('./funclib.min');
+// const fn = require('funclib');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.conf');
 const funclibMinJs = path.resolve(__dirname, '../', 'dist', 'funclib.min.js');
 
-fn.initTools(require, global);
-fn.initProgress(require);
+fn.initTools();
+fn.initProgress();
 fn.rm(funclibMinJs);
 
 fn.progress.start({title: 'Compiling Funclib', width: 41});
@@ -26,9 +27,14 @@ webpack(config, function (err, stats) {
 });
 
 function buildFix() {
-  const funclibMin = fn.rd(funclibMinJs)
-    .replace(/module\.exports=e\(\)/, 'module.exports=new (e().Funclib)(t)')
-    .replace(/define\(\[\],e\)/, 'define([t], function(t) {new (e().Funclib)(t)})')
-    .replace(/\.fn=e\(\)/mg, '\.fn=new (e().Funclib)(t)');
-  fn.wt(funclibMinJs, funclibMin);
+  const funclibMin = fn.rd(funclibMinJs);
+  const idx = '!function('.length;
+  const rt = funclibMin.substr(idx, 1);
+  const ft = funclibMin.substr(idx + 2, 1);
+  const it = `new (${ft}().Funclib)(${rt})`;
+  const newFunclibMin = funclibMin
+    .replace(new RegExp(`module\.exports=${ft}\\(\\)`), `module.exports=${it}`)
+    .replace(new RegExp(`define\\(\\[\\],${ft}\\)`), `define([${rt}], function(${rt}) {${it}})`)
+    .replace(new RegExp(`\.fn=${ft}\\(\\)`, 'mg'), `.fn=${it}`);
+  fn.wt(funclibMinJs, newFunclibMin);
 }
