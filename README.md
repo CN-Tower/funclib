@@ -139,10 +139,10 @@ funclib.js
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
 #### ViewTools 
-[fn.initViewTools](#fninitviewtools)&nbsp;&nbsp;初始化视图工具
+[fn.initViewTools](#fninitviewtools)&nbsp;&nbsp;初始化视图工具<br/>
 [fn.viewTools.show](#fnviewtoolsshow)&nbsp;&nbsp;显示视图工具
 #### Table 
-[fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具
+[fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具<br/>
 [fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
 #### ExtendJq      
 [$.pollingElement](#pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
