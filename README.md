@@ -226,7 +226,7 @@ fn.isEmpty(obj: Object | any[]): boolean;
 
 // examples:
 fn.isEmpty({});            // true
-fn.isEmpty({name: 'Tom'}); // true
+fn.isEmpty({name: 'Tom'}); // false
 ```
 #### fn.overlay
 ```
