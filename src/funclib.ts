@@ -10,7 +10,6 @@ import { Dom } from './modules/dom';
 import { Cookie } from './modules/cookie';
 import { Tools } from './modules/tools';
 import { Table } from './modules/table';
-import { ViewTools } from './modules/views';
 import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
 import { FN_CONF } from './configs/FnConf'
@@ -376,14 +375,6 @@ export class Funclib {
     this['progress']['stop'] = (onStopped: Function) => {
       return Progress.stop(onStopped);
     }
-  }
-
-  /**
-   * [fn.initViewTools] 初始化提示和Loader
-   * @param initViewTools [class]
-   */
-  initViewTools(viewToolsCtrl: any) {
-    this['viewTools'] = new ViewTools(viewToolsCtrl);
   }
 
   /**
