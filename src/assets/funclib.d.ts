@@ -55,9 +55,6 @@
  ## Progress      
  * fn.progress.start         开启进度，并传入参数
  * fn.progress.stop          停止进度，结束后触发回调
- ## ViewTools 
- * fn.initViewTools          初始化视图工具
- * fn.viewTools.show         显示视图工具
  ## Table 
  * fn.initBootstrapTable     初始化Bootstrap表格工具
  * fn.table.render           渲染Bootstrap表格
@@ -98,19 +95,6 @@
          * onRendered {Function Opt.}
      */
      render($table: any, options: any): void;
- }
- 
- interface ViewTools {
-     /**
-      * [fn.viewTools.show] 显示视图工具
-      * @param options 
-         * type {success|error|loader|timer},
-         * isShow
-         * msg
-         * interval
-         * delay
-      */
-     show(options: any): void;
  }
  
  interface Funclib {
@@ -281,7 +265,7 @@
       * @param value 
       * @param color 
       */
-      chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow')
+      chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'): string;
      /**
       * [fn.log] 控制台打印
       * @param value 
@@ -330,15 +314,6 @@
       * [fn.progress] 进度工具
       */
      progress: Progress;
-     /**
-      * [fn.initViewTools] 初始化提示和Loader
-      * @param initViewTools [class]
-      */
-     initViewTools(viewToolsCtrl: any): void;
-     /**
-      * [fn.viewTools] 提示和Loader工具
-      */
-     viewTools: ViewTools;
      /**
       * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
       * @param translate [Object]
