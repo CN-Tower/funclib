@@ -393,7 +393,7 @@ export class Funclib {
   initBootstrapTable(translate?: Object) {
     if (jquery) {
       this['table'] = new Table(jquery, translate);
-    } {
+    } else {
       throw new Error('jQuery not found!');
     }
   }
