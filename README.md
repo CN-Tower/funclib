@@ -154,20 +154,23 @@ funclib.js
 返回当前函数库版本
 ```
 /**
- * [fn.version] 返回一个指定长度和默认值的数组
- */
+* [fn.version] 返回一个指定长度和默认值的数组
+*/
+
+// examples:
 fn.version;  // V2.0.5
 ```
 ### Array      
 #### fn.array
 ```
 /**
- * [fn.array] 返回一个指定长度和默认值的数组
- * @param length [number]
- * @param value  [any, function]
- */
+* [fn.array] 返回一个指定长度和默认值的数组
+* @param length [number]
+* @param value  [any, function]
+*/
 fn.array(length: number, value?: any): any[];
 
+// examples:
 fn.array(5);    // [0, 1, 2, 3, 4, 5]
 fn.array(5, 0); // [0, 0, 0, 0, 0]
 let x = 0;
@@ -176,24 +179,26 @@ fn.array(5, () => x += 2); // [2, 4, 6, 8, 10]
 #### fn.toArr
 ```
 /**
- * [fn.toArr] 值数组化
- * @param src 
- */
+* [fn.toArr] 值数组化
+* @param src 
+*/
 fn.toArr(src: any): any[];
 
+// examples:
 fn.toArr('str');   // ['str']
 fn.toArr(['str']); // ['str']
 ```
 #### fn.sortByField
 ```
 /**
- * [fn.sortByField] 对象数组根据字段排序
- * @param tableData
- * @param field
- * @param isDesc
- */
+* [fn.sortByField] 对象数组根据字段排序
+* @param tableData
+* @param field
+* @param isDesc
+*/
 fn.sortByField(tableData: any, field: string, isDesc?: boolean): any;
 
+// examples:
 const person = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
 fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
 ```
@@ -201,104 +206,466 @@ fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
 #### fn.len
 ```
 /**
- * [fn.len] 获取对象自有属性的个数
- * @arg obj [object]
- */
+* [fn.len] 获取对象自有属性的个数
+* @arg obj [object]
+*/
 fn.len(obj: any): number;
 
+// examples:
 fn.len({name: 'Tom'});       // 1
 fn.len(['x']);               // 1
 fn.len(x => console.log(s)); // 1
 ```
 #### fn.isEmpty
-判断对象是否为空对象或数组
+```
+/**
+* [fn.isEmpty] 判断对象是否为空对象或数组
+* @param obj 
+*/
+fn.isEmpty(obj: Object | any[]): boolean;
+
+// examples:
+```
 #### fn.overlay
-给对象赋值，可指定字段
+```
+/**
+* [fn.overlay] 给对象赋值
+* @param target 
+* @param source 
+* @param propList 
+*/
+fn.overlay(target: Object, source: Object, propList?: string[]): void;
+
+// examples:
+```
 #### fn.deepCopy
-深拷贝数组或对象
+```
+/**
+* [fn.deepCopy] 深拷贝对象或数组
+* @param data
+*/
+fn.deepCopy(data: any): any;
+
+// examples:
+```
 ### Mathematic 
 #### fn.random
-返回指定范围的随机数
+```
+/**
+* [fn.random] 返回一个指定范围的随机数
+* @param sta [number]
+* @param end [number]
+*/
+fn.random(sta: number, end?: number): number;
+
+// examples:
+```
 #### fn.rdId
-返回指定长度(最小6位)的随机ID
+```
+/**
+* [fn.rdId] 返回一个指定长度(最小4位，默认12位)的随机ID。
+* @param len [number]
+*/
+fn.rdId(len?: number): string;
+
+// examples:
+```
 #### fn.rdColor
-返回一个随机色值
+```
+/**
+* [fn.rdColor] 返回一个随机色值
+*/
+fn.rdColor(): string;
+
+// examples:
+```
 ### Time       
 #### fn.interval
-循环定时器
+```
+/**
+* [fn.interval] 循环定时器
+* @param timerId
+* @param duration
+* @param func
+*/
+fn.interval(timerId: string, duration: number | boolean, func?: Function): void;
+
+// examples:
+```
 #### fn.timeout
-延时定时器
+```
+/**
+* [fn.timeout] 延时定时器
+* @param timerId
+* @param duration
+* @param func
+*/
+fn.timeout(timerId: string, duration: number | boolean, func?: Function): void;
+
+// examples:
+```
 #### fn.timeStamp
-返回一个当前时间戳
+```
+/**
+* [fn.timeStamp] 返回一个当前时间戳
+*/
+fn.timeStamp(date?: Date | string): number;
+
+// examples:
+```
 #### fn.fmtDate
-获取格式化的时间字符串
+```
+/**
+* [fn.fmtDate] 获取格式化的时间字符串
+* @param fmtStr 
+* @param time 
+*/
+fn.fmtDate(fmtStr: string, time?: any): string;
+
+// examples:
+```
 ### String     
 #### fn.encodeHtml
-编码HTML字符串
+```
+/**
+* [fn.encodeHtml] 编码HTML字符串
+* @param html 
+*/
+fn.encodeHtml(html: string): string;
+
+// examples:
+```
 #### fn.decodeHtml
-解码HTML字符串
+```
+/**
+* [fn.decodeHtml] 解码HTML字符串
+* @param html 
+*/
+fn.decodeHtml(html: string): string;
+
+// examples:
+```
 #### fn.currency
-格式化显示货币
+```
+/**
+* [fn.currency] 格式化显示货币
+* @param number
+* @param digit
+* @returns {string}
+*/
+fn.currency(number: number, digit?: number): any;
+
+// examples:
+```
 #### fn.cutString
-裁切字符串到指定长度
+```
+/**
+* [fn.cutString] 裁切字符串到指定长度
+* @param str
+* @param len
+* @returns {string}
+*/
+fn.cutString(str: number, len: number): string;
+
+// examples:
+```
 ### RegExp     
 #### fn.getPattern
-获取一个通用的正则表达式
+```
+/**
+* [fn.getPattern] 获取一个通用的正则表达式
+* @param type
+* @param isNoLimit
+* @returns {pattern|undefined}
+*/
+fn.getPattern(type: string, isNoLimit?: boolean): any;
+
+// examples:
+```
 #### fn.matchPattern
-与一个或几个通用正则匹配
+```
+/**
+* [fn.matchPattern] 与一个或几个通用正则匹配
+* @param src
+* @param type
+* @param isNoLimit
+* @returns {boolean}
+*/
+fn.matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
+
+// examples:
+```
 ### Events     
 #### fn.getKeyCodeByName
-根据键名获取键码
+```
+/**
+* [fn.getKeyCodeByName] 根据键名获取键码
+* @param keyName 
+*/
+fn.getKeyCodeByName(keyName: string): number;
+
+// examples:
+```
 #### fn.getKeyNameByCode
-根据键码获取键名
+```
+/**
+* [fn.getKeyCodeByName] 根据键码获取键名
+* @param keyName 
+*/
+fn.getKeyNameByCode(keyCode: number): string;
+
+// examples:
+```
 ### DOM        
 #### fn.fullScreen
-全屏显示一个HTML元素
+```
+/**
+* [fn.fullScreen] 全屏显示HTML元素
+* @param el
+* @returns {any}
+*/
+fn.fullScreen(el: any): void;
+
+// examples:
+```
 #### fn.exitFullScreen
-退出全屏显示
+```
+/**
+* [fn.exitFullScreen] 退出全屏显示
+* @returns {any}
+*/
+fn.exitFullScreen(): void;
+
+// examples:
+```
 #### fn.checkIsFullScreen
-检测是否处理全屏状态
+```
+/**
+* [fn.checkIsFullScreen] 检测是否全屏状态
+* @returns {boolean}
+*/
+fn.checkIsFullScreen(): boolean;
+
+// examples:
+```
 ### Cookie     
 #### fn.setCookie
-设置Cookie
+```
+/**
+* [fn.setCookie] 设置Cookie
+* @param name 
+* @param value 
+* @param days 
+*/
+fn.setCookie(name: string, value: string, days?: number): void;
+
+// examples:
+```
 #### fn.getCookie
-根据name读取cookie
+```
+/**
+* [fn.getCookie] 根据name读取cookie
+* @param  name 
+* @return {String}
+*/
+fn.getCookie(name: string): string;
+
+// examples:
+```
 #### fn.removeCookie
-根据name删除cookie
+```
+/**
+* [fn.removeCookie] 根据name删除cookie
+* @param name 
+*/
+fn.removeCookie(name: string): void;
+
+// examples:
+```
 ### Loger
 #### fn.chalk
-返回带颜色的字符串
+```
+/**
+* [fn.chalk] 返回带颜色的字符串
+* @param value 
+* @param color 
+*/
+fn.chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'): string;
+
+// examples:
+```
 #### fn.log
-控制打印格式化值
+```
+/**
+* [fn.log] 控制台打印
+* @param value 
+* @param configs {
+* title: string,
+* lineLen: number [20-100]
+* part: 'pre'|'end' (opt.)
+* color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+*/
+fn.log(value: any, configs?: Object|string): void;
+
+// examples:
+```
 ### Tools      
 #### fn.rd
-NodeJs读文件
+```
+/**
+* [fn.rd] 读文件
+* @param file
+*/
+fn.rd(file: string): string;
+
+// examples:
+```
 #### fn.wt
-NodeJs写文件
+```
+/**
+* [fn.wt] 写文件
+* @param file
+* @param text
+* @param flag ['w'|'a'] default: 'w'
+*/
+fn.wt(file: string, text: string, flag?: 'w' | 'a'): void;
+
+// examples:
+```
 #### fn.cp
-NodeJs复制文件夹和文件
+```
+/**
+* [fn.cp] 复制文件或文件夹
+* @param src
+* @param dist
+*/
+fn.cp(src: string, dist: string): void;
+
+// examples:
+```
 #### fn.mv
-NodeJs移动文件夹和文件
+```
+/**
+* [fn.mv] 移动文件或文件夹
+* @param src
+* @param dist
+*/
+fn.mv(src: string, dist: string): void;
+
+// examples:
+```
 #### fn.rm
-NodeJs删除文件夹和文件
+```
+/**
+* [fn.rm] 删除文件或文件夹
+* @param src
+*/
+fn.rm(src: string): void;
+
+// examples:
+```
 #### fn.mk
-NodeJs创建文件夹
+```
+/**
+* [fn.mk] 创建文件夹
+* @param dist
+*/
+fn.mk(dist: string): void;
+
+// examples:
+```
 ### Progress      
 #### fn.progress.start
-开启进度条，并传入参数
+```
+/**
+* [fn.progress.start] 开启进度，并传入参数
+* @param options {title: string, width: number (base: 40)} | 'message'
+*/
+fn.start(options: any): void;
+
+// examples:
+```
 #### fn.progress.stop
-停止进度条，结束后触发回调
+```
+/**
+* [fn.progress.stop] 结束进度，结束后触发回调
+* @param options 
+*/
+fn.stop(onStopped?: Function): void;
+
+// examples:
+```
 ### Table 
 #### fn.initBootstrapTable
-初始化Bootstrap表格工具
+```
+/**
+* [fn.initBootstrapTable] 初始化一个BootstrapTable对象
+* @param translate [Object]
+*/
+fn.initBootstrapTable(translate?: Object): void;
+
+// examples:
+```
 #### fn.table.render
-渲染Bootstrap表格
+```
+/**
+* [fn.table.render] 渲染Bootstrap表格
+* @param $table
+* @param options
+    * tableConfig {Object Opt.}
+    * gridOptions {Object Opt.},
+    * tableLabel {String Opt.},
+    * showLoading {Boolean Opt.},
+    * tableScope {String Opt.},
+    * onRefreshing {Function Opt.},
+    * onRendered {Function Opt.}
+*/
+fn.render($table: any, options: any): void;
+
+// examples:
+```
 ### ExtendJq      
 #### $.pollingElement
-jQuery获取异步出现的元素
+```
+/**
+* [$.pollingElement] 轮询获取异步出现的jQuery元素
+* @param timerId
+* @param selector
+* @param interval
+* @param func [opt.]
+*/
+$.pollingElement(timerId: string, selector: boolean | string | any[], interval: number, func?: Function): void;
+
+// examples:
+```
 #### $.noAutoComplete
-jQuery禁止input密码自动填充
+```
+/**
+* [$.noAutoComplete] 防止input密码自动填充
+* @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
+*/
+$.noAutoComplete(options: Object | Object[]): void;
+
+// examples:
+```
 #### $.copyText
-jQuery复制文本到粘贴板
+```
+/**
+* [$.copyText] 复制文本到粘贴板
+* @param text [string]
+*/
+$.copyText(text: string): void;
+
+// examples:
+```
 #### $ele.findCousin
-jQuery获取元素表亲
+```
+/**
+* [$ele.findCousin] 寻找元素的表亲
+* @param selector [string]
+* @param level    [number]
+*/
+$.fn.findCousin(selector: string, level: number = 0): any;
+
+// examples:
+```

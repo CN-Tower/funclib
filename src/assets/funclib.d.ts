@@ -145,7 +145,7 @@
       */
      random(sta: number, end?: number): number;
      /**
-      * [fn.rdId] 返回一个指定长度(最小6位，默认12位)的随机ID。
+      * [fn.rdId] 返回一个指定长度(最小4位，默认12位)的随机ID。
       * @param len [number]
       */
      rdId(len?: number): string;
