@@ -66,8 +66,7 @@ funclib.js
 │   │   ├── string.ts       # String
 │   │   ├── table.ts        # Bootstrap表格
 │   │   ├── time.ts         # Time
-│   │   ├── tools.ts        # NodeJs工具
-│   │   └── views.ts        # 视图工具
+│   │   └── tools.ts        # NodeJs工具
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
 │   └── funclib.spec.js     # funclib测试用例
@@ -137,9 +136,6 @@ funclib.js
 #### Progress      
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
-#### ViewTools 
-[fn.initViewTools](#fninitviewtools)&nbsp;&nbsp;初始化视图工具<br/>
-[fn.viewTools.show](#fnviewtoolsshow)&nbsp;&nbsp;显示视图工具
 #### Table 
 [fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具<br/>
 [fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
@@ -239,11 +235,6 @@ NodeJs创建文件夹
 开启进度条，并传入参数
 #### fn.progress.stop
 停止进度条，结束后触发回调
-### ViewTools 
-#### fn.initViewTools
-初始化视图工具
-#### fn.viewTools.show
-显示视图工具
 ### Table 
 #### fn.initBootstrapTable
 初始化Bootstrap表格工具
