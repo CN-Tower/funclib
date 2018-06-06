@@ -124,9 +124,9 @@ funclib.js
 [fn.setCookie](#fnsetcookie)&nbsp;&nbsp;设置Cookie<br/>
 [fn.getCookie](#fngetcookie)&nbsp;&nbsp;根据name读取cookie<br/>
 [fn.removeCookie](#fnremovecookie)&nbsp;&nbsp;根据name删除cookie
-#### Loger      
+#### Loger
+[fn.chalk](#fnchalk)&nbsp;&nbsp;返回带颜色的字符串
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
-[fn.chalk](#fnchalk)&nbsp;&nbsp;在控制台打印有颜色的字符串
 #### Tools      
 [fn.rd](#fnrd)&nbsp;&nbsp;NodeJs读文件<br/> 
 [fn.wt](#fnwt)&nbsp;&nbsp;NodeJs写文件<br/> 
@@ -216,11 +216,11 @@ funclib.js
 根据name读取cookie
 #### fn.removeCookie
 根据name删除cookie
-### Loger      
+### Loger
+#### fn.chalk
+返回带颜色的字符串
 #### fn.log
 控制打印格式化值
-#### fn.chalk
-在控制台打印有颜色的字符串
 ### Tools      
 #### fn.rd
 NodeJs读文件
