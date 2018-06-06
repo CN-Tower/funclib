@@ -1,4 +1,3 @@
-
 import { Str } from './modules/string';
 import { Arr } from './modules/array';
 import { Obj } from './modules/object';
@@ -288,6 +287,15 @@ export class Funclib {
   removeCookie(name: string) {
     return Cookie.removeCookie(name);
   }
+  
+  /**
+   * [fn.chalk] 在控制台打印有颜色的字符串
+   * @param value 
+   * @param color 
+   */
+  chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow') {
+    return Loger.chalk(value, color);
+  }
 
   /**
    * [fn.log] 控制台格式化打印值
@@ -300,15 +308,6 @@ export class Funclib {
    */
   log(value?: any, configs?: Object) {
     return Loger.log.call(this, value, configs, isClient);
-  }
-
-  /**
-   * [fn.chalk] 在控制台打印有颜色的字符串
-   * @param value 
-   * @param color 
-   */
-  chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow') {
-    return Loger.chalk(value, color);
   }
 
   /**
@@ -361,19 +360,22 @@ export class Funclib {
    * 初始化进度条工具
    */
   private initProgress() {
-    const progress = new Progress();
     this['progress'] = {};
     /**
      * [fn.progress.start] 开启进度条，并传入参数
      * @param options {title: string, width: number (base: 40)}
      */
-    this['progress']['start'] = (options: Object) => progress.start(options);
-    
+    this['progress']['start'] = (options: Object) => {
+      return Progress.start.call(this, options);
+    }
+
     /**
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped 
      */
-    this['progress']['stop'] = (onStopped: Function) => progress.stop(onStopped);
+    this['progress']['stop'] = (onStopped: Function) => {
+      return Progress.stop(onStopped);
+    }
   }
 
   /**
