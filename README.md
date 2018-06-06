@@ -129,7 +129,7 @@ funclib.js
 [fn.getCookie](#fngetcookie)&nbsp;&nbsp;根据name读取cookie<br/>
 [fn.removeCookie](#fnremovecookie)&nbsp;&nbsp;根据name删除cookie
 #### Loger
-[fn.chalk](#fnchalk)&nbsp;&nbsp;返回带颜色的字符串
+[fn.chalk](#fnchalk)&nbsp;&nbsp;返回带颜色的字符串<br/>
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
 #### Tools      
 [fn.rd](#fnrd)&nbsp;&nbsp;NodeJs读文件<br/> 
