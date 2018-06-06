@@ -266,7 +266,7 @@ export class Funclib {
    * @param value 
    * @param days 
    */
-  setCookie(name: string, value: string, days: number) {
+  setCookie(name: string, value: string, days: number = 0) {
     return Cookie.setCookie(name, value, days);
   }
 

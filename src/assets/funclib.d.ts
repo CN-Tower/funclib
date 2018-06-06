@@ -248,7 +248,7 @@
       * @param value 
       * @param days 
       */
-     setCookie(name: string, value: string, days: number): void;
+     setCookie(name: string, value: string, days?: number): void;
      /**
       * [fn.getCookie] 根据name读取cookie
       * @param  name 

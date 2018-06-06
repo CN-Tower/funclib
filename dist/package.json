@@ -24,8 +24,6 @@
   },
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
-    "chalk": "^2.4.1",
-    "ora": "^2.1.0",
     "progress": "^2.0.0"
   }
 }

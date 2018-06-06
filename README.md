@@ -1,4 +1,9 @@
 # funclib.js (凡客杰斯)
+[![npm](https://img.shields.io/npm/v/funclib.svg)
+![Build Status](https://travis-ci.org/CN-Tower/funclib.svg?branch=master) 
+![Coverage](https://coveralls.io/repos/github/CN-Tower/funclib/badge.svg?branch=master) 
+![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
+](https://www.npmjs.com/package/funclib) 
 
 ## Brief Intro
 Javascript通用型UMD函数库，采用Typescript开发，Webpack打包编译!
@@ -147,9 +152,19 @@ funclib.js
 ### Version
 #### fn.version
 返回当前函数库版本
+```
+fn.version;  // V2.0.5
+```
 ### Array      
 #### fn.array
 返回指定长度和默认值的数组
+```
+fn.array(5);    // [0, 1, 2, 3, 4, 5]
+fn.array(5, 0); // [0, 0, 0, 0, 0]
+
+let x = 0;
+fn.array(5, () => x += 2); //[2, 4, 6, 8, 10]
+```
 #### fn.toArr
 值数组化
 #### fn.sortByField

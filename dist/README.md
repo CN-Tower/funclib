@@ -66,8 +66,7 @@ funclib.js
 │   │   ├── string.ts       # String
 │   │   ├── table.ts        # Bootstrap表格
 │   │   ├── time.ts         # Time
-│   │   ├── tools.ts        # NodeJs工具
-│   │   └── views.ts        # 视图工具
+│   │   └── tools.ts        # NodeJs工具
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
 │   └── funclib.spec.js     # funclib测试用例
@@ -124,9 +123,9 @@ funclib.js
 [fn.setCookie](#fnsetcookie)&nbsp;&nbsp;设置Cookie<br/>
 [fn.getCookie](#fngetcookie)&nbsp;&nbsp;根据name读取cookie<br/>
 [fn.removeCookie](#fnremovecookie)&nbsp;&nbsp;根据name删除cookie
-#### Loger      
+#### Loger
+[fn.chalk](#fnchalk)&nbsp;&nbsp;返回带颜色的字符串
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
-[fn.chalk](#fnchalk)&nbsp;&nbsp;在控制台打印有颜色的字符串
 #### Tools      
 [fn.rd](#fnrd)&nbsp;&nbsp;NodeJs读文件<br/> 
 [fn.wt](#fnwt)&nbsp;&nbsp;NodeJs写文件<br/> 
@@ -137,9 +136,6 @@ funclib.js
 #### Progress      
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
-#### ViewTools 
-[fn.initViewTools](#fninitviewtools)&nbsp;&nbsp;初始化视图工具<br/>
-[fn.viewTools.show](#fnviewtoolsshow)&nbsp;&nbsp;显示视图工具
 #### Table 
 [fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具<br/>
 [fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
@@ -216,11 +212,11 @@ funclib.js
 根据name读取cookie
 #### fn.removeCookie
 根据name删除cookie
-### Loger      
+### Loger
+#### fn.chalk
+返回带颜色的字符串
 #### fn.log
 控制打印格式化值
-#### fn.chalk
-在控制台打印有颜色的字符串
 ### Tools      
 #### fn.rd
 NodeJs读文件
@@ -239,11 +235,6 @@ NodeJs创建文件夹
 开启进度条，并传入参数
 #### fn.progress.stop
 停止进度条，结束后触发回调
-### ViewTools 
-#### fn.initViewTools
-初始化视图工具
-#### fn.viewTools.show
-显示视图工具
 ### Table 
 #### fn.initBootstrapTable
 初始化Bootstrap表格工具
