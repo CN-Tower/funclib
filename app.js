@@ -6,14 +6,19 @@ const child_process = require('child_process');
 /**
  * Loger
  */
-fn.log({name: 'Tom', age: 28}, {title: 'tom', color: 'cyan'});
-fn.chalk('Hello world!', 'green');
+// fn.log({name: 'Tom', age: 28}, {title: 'tom', color: 'cyan'});
+// fn.log('Hello world!', 'green');
 
 /**
  * Progress
  */
 // fn.progress.start({title: 'Loading'});
-// fn.timeout('pg', 5000, () => fn.progress.stop());
 
 // fn.progress.start('Loading...');
-// fn.timeout('pg', 5000, () => fn.progress.stop())
+// setTimeout(() => {
+//     fn.progress.start('Copying...');
+// }, 2000);
+
+// setTimeout(() => {
+//     fn.progress.stop()
+// }, 5000);
