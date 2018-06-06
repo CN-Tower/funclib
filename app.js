@@ -1,7 +1,4 @@
 const fn = require('./dist/');
-const fs = require('fs');
-const path = require('path');
-const child_process = require('child_process');
 
 /**
  * Loger
@@ -12,7 +9,7 @@ const child_process = require('child_process');
 /**
  * Progress
  */
-// fn.progress.start({title: 'Loading'});
+fn.progress.start({title: 'Loading'});
 
 // fn.progress.start('Loading...');
 // setTimeout(() => {
