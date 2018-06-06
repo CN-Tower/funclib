@@ -6,7 +6,6 @@ export const FN_CONF = {
         'fullScreen',
         'exitFullScreen',
         'checkIsFullScreen',
-        'initViewTools',
         'initBootstrapTable'
     ],
     serverMethods: ['chalk']
