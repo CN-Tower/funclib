@@ -160,7 +160,7 @@ funclib.js
 // examples:
 fn.version;  // V2.0.5
 ```
-### Array      
+### Array
 #### fn.array
 ```
 /**
@@ -225,6 +225,8 @@ fn.len(x => console.log(s)); // 1
 fn.isEmpty(obj: Object | any[]): boolean;
 
 // examples:
+fn.isEmpty({});            // true
+fn.isEmpty({name: 'Tom'}); // true
 ```
 #### fn.overlay
 ```
@@ -237,6 +239,10 @@ fn.isEmpty(obj: Object | any[]): boolean;
 fn.overlay(target: Object, source: Object, propList?: string[]): void;
 
 // examples:
+const tom = {name: 'Tom'};
+const jerry = {name: 'Jerry', age: 28, sex: 'm'};
+fn.overlay(tom, jerry, ['age', 'sex']);
+console.log(tom); // {name: 'Tom', age: 28, sex: 'm'}
 ```
 #### fn.deepCopy
 ```
@@ -247,6 +253,7 @@ fn.overlay(target: Object, source: Object, propList?: string[]): void;
 fn.deepCopy(data: any): any;
 
 // examples:
+You know the drill...
 ```
 ### Mathematic 
 #### fn.random
@@ -259,6 +266,10 @@ fn.deepCopy(data: any): any;
 fn.random(sta: number, end?: number): number;
 
 // examples:
+fn.random(5);     // 2
+fn.random(5);     // 3
+fn.random(5, 10); // 6
+fn.random(5, 10); // 9
 ```
 #### fn.rdId
 ```
@@ -269,6 +280,8 @@ fn.random(sta: number, end?: number): number;
 fn.rdId(len?: number): string;
 
 // examples:
+fn.rdId();  // 8GH9IYO60MXQ
+fn.rdId(6); // 9Y0MQZ
 ```
 #### fn.rdColor
 ```
@@ -278,6 +291,7 @@ fn.rdId(len?: number): string;
 fn.rdColor(): string;
 
 // examples:
+fn.rdColor(); // #2913ba
 ```
 ### Time       
 #### fn.interval
@@ -291,6 +305,10 @@ fn.rdColor(): string;
 fn.interval(timerId: string, duration: number | boolean, func?: Function): void;
 
 // examples:
+// 设置Id为test的循环定时器
+fn.interval('test', 1000, () => console.log(111));
+// 清除Id为test的循环定时器
+fn.interval('test', false);
 ```
 #### fn.timeout
 ```
@@ -303,6 +321,10 @@ fn.interval(timerId: string, duration: number | boolean, func?: Function): void;
 fn.timeout(timerId: string, duration: number | boolean, func?: Function): void;
 
 // examples:
+// 设置Id为test的延时定时器
+fn.timeout('test', 1000, () => console.log(111));
+// 清除Id为test的延时定时器
+fn.timeout('test', false);
 ```
 #### fn.timeStamp
 ```
@@ -312,6 +334,8 @@ fn.timeout(timerId: string, duration: number | boolean, func?: Function): void;
 fn.timeStamp(date?: Date | string): number;
 
 // examples:
+fn.timeStamp();                             // 1528295152832
+fn.timeStamp(new Date('2018-06-06 12:30')); // 1528259400000
 ```
 #### fn.fmtDate
 ```
@@ -323,6 +347,9 @@ fn.timeStamp(date?: Date | string): number;
 fn.fmtDate(fmtStr: string, time?: any): string;
 
 // examples:
+fn.fmtDate('yy-MM-dd hh:mm:ss');                // 18-06-06 22:31:16
+fn.fmtDate('yyyy-MM-dd hh:mm', 1528259400000);  // 2018-06-06 12:30
+fn.fmtDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30')); // 18-06-06 12:30
 ```
 ### String     
 #### fn.encodeHtml
@@ -334,6 +361,7 @@ fn.fmtDate(fmtStr: string, time?: any): string;
 fn.encodeHtml(html: string): string;
 
 // examples:
+fn.encodeHtml('<div></div>');             // &lt;div&gt;&lt;/div&gt;
 ```
 #### fn.decodeHtml
 ```
@@ -344,6 +372,7 @@ fn.encodeHtml(html: string): string;
 fn.decodeHtml(html: string): string;
 
 // examples:
+fn.decodeHtml('&lt;div&gt;&lt;/div&gt;'); // <div></div>
 ```
 #### fn.currency
 ```
@@ -356,6 +385,8 @@ fn.decodeHtml(html: string): string;
 fn.currency(number: number, digit?: number): any;
 
 // examples:
+'￥' + fn.currency(199999999);    // ￥199,999,999.00
+'￥' + fn.currency(199999999, 4); // ￥199,999,999.0000
 ```
 #### fn.cutString
 ```
@@ -368,6 +399,8 @@ fn.currency(number: number, digit?: number): any;
 fn.cutString(str: number, len: number): string;
 
 // examples:
+fn.cutString('test测试！', 6); // test测...
+fn.cutString('test测试！', 4); // test...
 ```
 ### RegExp     
 #### fn.getPattern
@@ -381,6 +414,7 @@ fn.cutString(str: number, len: number): string;
 fn.getPattern(type: string, isNoLimit?: boolean): any;
 
 // examples:
+fn.getPattern('email'); // /^(([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+)$/
 ```
 #### fn.matchPattern
 ```
@@ -394,6 +428,7 @@ fn.getPattern(type: string, isNoLimit?: boolean): any;
 fn.matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
 
 // examples:
+fn.matchPattern('cntower@yahoo.com', 'email'); // true
 ```
 ### Events     
 #### fn.getKeyCodeByName
@@ -405,6 +440,7 @@ fn.matchPattern(src: string, type: string | string[], isNoLimit?: boolean): bool
 fn.getKeyCodeByName(keyName: string): number;
 
 // examples:
+fn.getKeyCodeByName('Ctrl'); // 17
 ```
 #### fn.getKeyNameByCode
 ```
@@ -415,6 +451,7 @@ fn.getKeyCodeByName(keyName: string): number;
 fn.getKeyNameByCode(keyCode: number): string;
 
 // examples:
+fn.getKeyNameByCode(38); // Up
 ```
 ### DOM        
 #### fn.fullScreen
@@ -427,6 +464,7 @@ fn.getKeyNameByCode(keyCode: number): string;
 fn.fullScreen(el: any): void;
 
 // examples:
+fn.fullScreen($('html')[0]);
 ```
 #### fn.exitFullScreen
 ```
@@ -437,6 +475,7 @@ fn.fullScreen(el: any): void;
 fn.exitFullScreen(): void;
 
 // examples:
+fn.exitFullScreen();
 ```
 #### fn.checkIsFullScreen
 ```
@@ -447,6 +486,7 @@ fn.exitFullScreen(): void;
 fn.checkIsFullScreen(): boolean;
 
 // examples:
+fn.checkIsFullScreen(); // false
 ```
 ### Cookie     
 #### fn.setCookie
@@ -460,6 +500,7 @@ fn.checkIsFullScreen(): boolean;
 fn.setCookie(name: string, value: string, days?: number): void;
 
 // examples:
+fn.setCookie('name', 'Tom');
 ```
 #### fn.getCookie
 ```
@@ -471,6 +512,7 @@ fn.setCookie(name: string, value: string, days?: number): void;
 fn.getCookie(name: string): string;
 
 // examples:
+fn.getCookie('name'); // 'Tom'
 ```
 #### fn.removeCookie
 ```
@@ -481,6 +523,7 @@ fn.getCookie(name: string): string;
 fn.removeCookie(name: string): void;
 
 // examples:
+fn.removeCookie('name'); // 'Tom'
 ```
 ### Loger
 #### fn.chalk
@@ -493,6 +536,7 @@ fn.removeCookie(name: string): void;
 fn.chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'): string;
 
 // examples:
+console.log(fn.chalk('test', 'cyan'));
 ```
 #### fn.log
 ```
@@ -508,6 +552,16 @@ fn.chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'ye
 fn.log(value: any, configs?: Object|string): void;
 
 // examples:
+fn.log({name: 'Tom', age: 28});
+/*
+==================================================================
+                          funclib V2.0.5
+------------------------------------------------------------------
+{
+  "name": "Tom",
+  "age": 28
+}
+==================================================================*/
 ```
 ### Tools      
 #### fn.rd
@@ -517,8 +571,6 @@ fn.log(value: any, configs?: Object|string): void;
 * @param file
 */
 fn.rd(file: string): string;
-
-// examples:
 ```
 #### fn.wt
 ```
@@ -529,8 +581,6 @@ fn.rd(file: string): string;
 * @param flag ['w'|'a'] default: 'w'
 */
 fn.wt(file: string, text: string, flag?: 'w' | 'a'): void;
-
-// examples:
 ```
 #### fn.cp
 ```
@@ -540,8 +590,6 @@ fn.wt(file: string, text: string, flag?: 'w' | 'a'): void;
 * @param dist
 */
 fn.cp(src: string, dist: string): void;
-
-// examples:
 ```
 #### fn.mv
 ```
@@ -551,8 +599,6 @@ fn.cp(src: string, dist: string): void;
 * @param dist
 */
 fn.mv(src: string, dist: string): void;
-
-// examples:
 ```
 #### fn.rm
 ```
@@ -561,8 +607,6 @@ fn.mv(src: string, dist: string): void;
 * @param src
 */
 fn.rm(src: string): void;
-
-// examples:
 ```
 #### fn.mk
 ```
@@ -571,8 +615,6 @@ fn.rm(src: string): void;
 * @param dist
 */
 fn.mk(dist: string): void;
-
-// examples:
 ```
 ### Progress      
 #### fn.progress.start
@@ -582,8 +624,6 @@ fn.mk(dist: string): void;
 * @param options {title: string, width: number (base: 40)} | 'message'
 */
 fn.start(options: any): void;
-
-// examples:
 ```
 #### fn.progress.stop
 ```
@@ -592,8 +632,6 @@ fn.start(options: any): void;
 * @param options 
 */
 fn.stop(onStopped?: Function): void;
-
-// examples:
 ```
 ### Table 
 #### fn.initBootstrapTable
@@ -603,8 +641,6 @@ fn.stop(onStopped?: Function): void;
 * @param translate [Object]
 */
 fn.initBootstrapTable(translate?: Object): void;
-
-// examples:
 ```
 #### fn.table.render
 ```
@@ -621,8 +657,6 @@ fn.initBootstrapTable(translate?: Object): void;
     * onRendered {Function Opt.}
 */
 fn.render($table: any, options: any): void;
-
-// examples:
 ```
 ### ExtendJq      
 #### $.pollingElement
@@ -635,8 +669,6 @@ fn.render($table: any, options: any): void;
 * @param func [opt.]
 */
 $.pollingElement(timerId: string, selector: boolean | string | any[], interval: number, func?: Function): void;
-
-// examples:
 ```
 #### $.noAutoComplete
 ```
@@ -645,8 +677,6 @@ $.pollingElement(timerId: string, selector: boolean | string | any[], interval: 
 * @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
 */
 $.noAutoComplete(options: Object | Object[]): void;
-
-// examples:
 ```
 #### $.copyText
 ```
@@ -655,8 +685,6 @@ $.noAutoComplete(options: Object | Object[]): void;
 * @param text [string]
 */
 $.copyText(text: string): void;
-
-// examples:
 ```
 #### $ele.findCousin
 ```
@@ -666,6 +694,4 @@ $.copyText(text: string): void;
 * @param level    [number]
 */
 $.fn.findCousin(selector: string, level: number = 0): any;
-
-// examples:
 ```

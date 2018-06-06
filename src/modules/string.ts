@@ -11,7 +11,7 @@ export class Str {
      * @param html 
      */
     public static encodeHtml(html: string): string {
-        this.htmlMap.src.forEach((src, i) => html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]));
+        this.htmlMap.src.forEach((src, i) => html = html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]));
         return html;
     }
 
@@ -20,7 +20,7 @@ export class Str {
      * @param html 
      */
     public static decodeHtml(html: string): string {
-        this.htmlMap.map.forEach((map, i) => html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]));
+        this.htmlMap.map.forEach((map, i) => html = html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]));
         return html;
     }
 

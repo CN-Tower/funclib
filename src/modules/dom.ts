@@ -38,6 +38,6 @@ export class Dom {
      */
     public static checkIsFullScreen(): boolean {
         return !! document['fullscreenEnabled'] || document['fullScreen']
-            || document['webkitIsFullScreen'] || document['msFullscreenEnabled'];
+            || document['webkitIsFullScreen'] || document['msFullscreenEnabled'] || false;
     }
 }
