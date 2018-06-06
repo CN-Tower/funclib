@@ -1,37 +1,30 @@
-let ora, Bar;
-export class Progress {
-    private ora;
-    private pgType: 'ora'|'pg'|undefined;
-    private timer: any;
-    private progress: any;
-    private duration: number;
+let progress: any;
+let duration: number;
+let pgType: 'sp'|'pg'|null;
+const process: any = global.process;
 
-    constructor() {
-        ora = eval('require("ora")');
-        Bar = eval('require("progress")');
-    }
+export class Progress {
+    private static overlay;
+    private static chalk;
+    private static interval;
+    private static timeout;
+    
     /**
      * [fn.progress.start] 开启进度条，并传入参数
      * @param options {title: string, width: number (base: 40)}
      */
-    public start(options: string|any) {
-        if (!this.pgType) {
-            if (typeof options === 'string') {
-                this.pgType = 'ora';
-                this.ora = ora(options);
-                this.ora.start();
-            } else {
-                this.pgType = 'pg';
-                const prog = `${options && options.title || '[fn.progress]'} [:bar] :percent`;
-                this.progress = new Bar(prog, {
-                    complete: '=', incomplete: ' ',
-                    width: options && options['width'] || 40,
-                    total: options && options['total'] || 20
-                });
-                clearTimeout(this.timer);
-                this.duration = 250;
-                this.tickFun('+');
-            }
+    public static start(options: string|any) {
+        Progress.chalk = this.chalk;
+        Progress.interval = this.interval;
+        Progress.timeout = this.timeout;
+        this.interval('pg_sping', false);
+        this.timeout('pg_Bar', false);
+        if (typeof options === 'string') {
+            pgType = 'sp';
+            Progress.startSping(options);
+        } else {
+            pgType = 'pg';
+            Progress.startPgbar(options);
         }
     }
 
@@ -39,15 +32,13 @@ export class Progress {
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped 
      */
-    public stop(onStopped?: Function) {
-        if (this.pgType === 'ora') {
-            this.ora.stop();
-            this.pgType = undefined;
+    public static stop(onStopped?: Function) {
+        if (pgType === 'sp') {
+            pgType = null;
+            Progress.stopSping();
         } else {
-            clearTimeout(this.timer);
-            this.duration = 600;
-            this.tickFun('-', () => {
-                this.pgType = undefined;
+            Progress.stopPgbar(() => {
+                pgType = null;
                 if (typeof onStopped === 'function') {
                     onStopped();
                 }
@@ -56,14 +47,71 @@ export class Progress {
 
     }
 
-    private tickFun(type, onStopped?) {
-        this.timer = setTimeout(() => {
-            this.progress.tick();
-            switch (type) {
-                case '+': this.duration += 300; break;
-                case '-': this.duration -= this.duration * 0.2; break;
+    /**
+     * 翻转
+     */
+    private static startSping(message: string) {
+        this.interval('pg_sping', false);
+        this.spingFun(message);
+    }
+
+    private static stopSping() {
+        this.interval('pg_sping', false);
+    }
+
+    private static spingFun(msg: string) {
+        const stream = process.stderr;
+        const interrupt: Function = frame => {
+            stream.clearLine();
+            stream.cursorTo(0);
+            stream.write(frame);
+        };
+        let s = '/'
+        this.interval('pg_sping', 180, () => {
+            interrupt(`${this.chalk(s, 'cyan')} ${msg}`);
+            switch (s) {
+                case '/':  s = '-';  break;
+                case '-':  s = '\\'; break;
+                case '\\': s = '|';  break;
+                case '|':  s = '/';  break;
+                default:   s = '-';  break;
             }
-            this.progress.complete ? onStopped() : this.tickFun(type, onStopped);
-        }, this.duration);
+        });
+    }
+
+    /**
+     * 进度条
+     */
+    private static startPgbar(options: any) {
+        this.timeout('pg_Bar', false);
+        const Pgbar = eval('require("progress")');
+        const prog = `${options && options.title || '[fn.progress]'} [:bar] :percent`;
+        progress = new Pgbar(prog, {
+            complete: '=', incomplete: ' ',
+            width: options && options['width'] || 40,
+            total: options && options['total'] || 20
+        });
+        duration = 250;
+        this.tickFun('+');
+    }
+
+    private static stopPgbar(onStopped: Function) {
+        duration = 600;
+        this.tickFun('-', onStopped);
+    }
+
+    private static tickFun(type, onStopped?) {
+        this.timeout('pg_Bar', duration, () => {
+            progress.tick();
+            switch (type) {
+                case '+': duration += 300; break;
+                case '-': duration -= duration * 0.2; break;
+            }
+            if (!progress.complete) {
+                this.tickFun(type, onStopped);
+            } else if (onStopped) {
+                onStopped();
+            }
+        });
     }
 }
