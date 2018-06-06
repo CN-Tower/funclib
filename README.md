@@ -1,8 +1,8 @@
 # funclib.js (凡客杰斯)
 [![npm](https://img.shields.io/npm/v/funclib.svg)
+![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
 ![Build Status](https://travis-ci.org/CN-Tower/funclib.svg?branch=master) 
 ![Coverage](https://coveralls.io/repos/github/CN-Tower/funclib/badge.svg?branch=master) 
-![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
 ](https://www.npmjs.com/package/funclib) 
 
 ## Brief Intro
@@ -153,25 +153,63 @@ funclib.js
 #### fn.version
 返回当前函数库版本
 ```
+/**
+ * [fn.version] 返回一个指定长度和默认值的数组
+ */
 fn.version;  // V2.0.5
 ```
 ### Array      
 #### fn.array
-返回指定长度和默认值的数组
 ```
+/**
+ * [fn.array] 返回一个指定长度和默认值的数组
+ * @param length [number]
+ * @param value  [any, function]
+ */
+fn.array(length: number, value?: any): any[];
+
 fn.array(5);    // [0, 1, 2, 3, 4, 5]
 fn.array(5, 0); // [0, 0, 0, 0, 0]
-
 let x = 0;
-fn.array(5, () => x += 2); //[2, 4, 6, 8, 10]
+fn.array(5, () => x += 2); // [2, 4, 6, 8, 10]
 ```
 #### fn.toArr
-值数组化
+```
+/**
+ * [fn.toArr] 值数组化
+ * @param src 
+ */
+fn.toArr(src: any): any[];
+
+fn.toArr('str');   // ['str']
+fn.toArr(['str']); // ['str']
+```
 #### fn.sortByField
-对象数组根据字段排序
+```
+/**
+ * [fn.sortByField] 对象数组根据字段排序
+ * @param tableData
+ * @param field
+ * @param isDesc
+ */
+fn.sortByField(tableData: any, field: string, isDesc?: boolean): any;
+
+const person = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
+```
 ### Object     
 #### fn.len
-获取对象自有属性的个数
+```
+/**
+ * [fn.len] 获取对象自有属性的个数
+ * @arg obj [object]
+ */
+fn.len(obj: any): number;
+
+fn.len({name: 'Tom'});       // 1
+fn.len(['x']);               // 1
+fn.len(x => console.log(s)); // 1
+```
 #### fn.isEmpty
 判断对象是否为空对象或数组
 #### fn.overlay
