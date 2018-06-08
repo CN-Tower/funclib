@@ -2,8 +2,8 @@
 [![npm](https://img.shields.io/npm/v/funclib.svg)
 ![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
 ![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master) 
-![Coverage](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg?branch=master) 
 ](https://www.npmjs.com/package/funclib) 
+[![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
 ## Brief Intro
 Javascript通用型UMD函数库，采用Typescript开发，Webpack打包编译!

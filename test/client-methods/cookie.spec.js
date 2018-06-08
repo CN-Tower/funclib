@@ -1,20 +1,20 @@
 describe('Cookie Methods:', function () {
-    describe('#fn.setCookie()', function () {
-        before(function() {
-            fn.setCookie('user', 'Tom');
-        });
-        it(`fn.setCookie() should set a cookie.`, function () {
-            assert(fn.getCookie('user') === 'Tom');
-        });
-    });
-    describe('#fn.getCookie()', function () {
-        before(function() {
-            fn.setCookie('pwd', 'Tom_123');
-        });
-        it(`fn.getCookie() should got a cookie.`, function () {
-            assert(fn.getCookie('pwd') === 'Tom_123');
-        });
-    });
+    // describe('#fn.setCookie()', function () {
+    //     before(function() {
+    //         fn.setCookie('user', 'Tom');
+    //     });
+    //     it(`fn.setCookie() should set a cookie.`, function () {
+    //         assert(fn.getCookie('user') === 'Tom');
+    //     });
+    // });
+    // describe('#fn.getCookie()', function () {
+    //     before(function() {
+    //         fn.setCookie('pwd', 'Tom_123');
+    //     });
+    //     it(`fn.getCookie() should got a cookie.`, function () {
+    //         assert(fn.getCookie('pwd') === 'Tom_123');
+    //     });
+    // });
     describe('#fn.removeCookie()', function () {
         before(function() {
             fn.removeCookie('user');
