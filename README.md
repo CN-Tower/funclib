@@ -1,8 +1,8 @@
 # funclib.js (凡客杰斯)
 [![npm](https://img.shields.io/npm/v/funclib.svg)
 ![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
-![Build Status](https://travis-ci.org/CN-Tower/funclib.svg?branch=master) 
-![Coverage](https://coveralls.io/repos/github/CN-Tower/funclib/badge.svg?branch=master) 
+![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master) 
+![Coverage](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg?branch=master) 
 ](https://www.npmjs.com/package/funclib) 
 
 ## Brief Intro
@@ -24,7 +24,7 @@ $ node
 ```bash
 # Download funclib repo
 $ git clone https://github.com/CN-Tower/funclib.js.git
-$ git clone http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
+# $ git clone http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
 
 # Install dependency
 $ npm install
@@ -32,8 +32,14 @@ $ npm install
 # Start
 $ npm start
 
+# DoTry
+$ npm run dist
+
 # Build
 $ npm run build
+
+# Test
+$ npm run test
 ```
 
 ## Structure
@@ -74,7 +80,10 @@ funclib.js
 │   │   └── tools.ts        # NodeJs工具
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
-│   └── funclib.spec.js     # funclib测试用例
+│   ├── client-methods      # 客户端方法测试用例
+│   ├── server-methods      # 服务端方法测试用例
+│   └── *.spec.js           # 通用方法测试用例
+├── .coveralls.yml          # 测试覆盖率
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
 ├── .gitignore              # You know the drill...
 ├── .travis.yml             # CI配置
