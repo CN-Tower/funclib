@@ -11,11 +11,11 @@
     "url": "git+https://github.com/CN-Tower/funclib.js.git"
   },
   "keywords": [
-    "funclib.js",
-    "typescript",
+    "UMD",
+    "funclib",
     "javascript",
-    "webpack",
-    "UMD"
+    "typescript",
+    "functions"
   ],
   "author": "CN-Tower",
   "license": "MIT",

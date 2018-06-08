@@ -4,19 +4,20 @@
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node app.js",
-    "dist": "node app.js",
+    "start": "npm run build && npm run dist",
     "build": "node ./scripts/build.js",
-    "test": "",
-    "update": "npm publish"
+    "dist": "node app.js",
+    "test": "karma start scripts/karma.conf.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CN-Tower/funclib.js.git"
   },
   "keywords": [
+    "UMD",
     "funclib",
     "javascript",
+    "typescript",
     "functions"
   ],
   "author": "CN-Tower",
@@ -31,10 +32,6 @@
     "typescript": "^2.8.3"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "chalk": "^2.4.1",
     "coveralls": "^3.0.0",
     "funclib": "^2.0.5",
     "karma": "^1.7.1",
@@ -44,7 +41,6 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-power-assert": "^1.0.0",
     "mocha": "^4.0.1",
-    "ora": "^2.1.0",
     "power-assert": "^1.4.4",
     "progress": "^2.0.0",
     "ts-loader": "^3.1.1",
