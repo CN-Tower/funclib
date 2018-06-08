@@ -12,7 +12,7 @@ import { Tools } from './modules/tools';
 import { Table } from './modules/table';
 import { Progress } from './modules/progress';
 import { extendJquery } from './modules/$.extends';
-import { FN_CONF } from './configs/FnConf'
+import { FN_CONF } from './configs/fnConf'
 
 let jquery, isClient;
 
