@@ -113,7 +113,7 @@ funclib.js
 [fn.len](#fnlen)&nbsp;&nbsp;获取对象自有属性的个数<br/>
 [fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
-[fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象
+[fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
 [fn.getChainProperty](#fngetchainproperty)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
 #### Mathematic 
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
@@ -139,13 +139,13 @@ funclib.js
 [fn.getKeyCodeByName](#fngetkeycodebyname)&nbsp;&nbsp;根据键名获取键码<br/>
 [fn.getKeyNameByCode](#fngetkeynamebycode)&nbsp;&nbsp;根据键码获取键名
 #### Url
-[fn.parseQueryString](#fnparsequerystring)&nbsp;&nbsp;解析Url参数成对象
+[fn.parseQueryString](#fnparsequerystring)&nbsp;&nbsp;解析Url参数成对象<br/>
 [fn.stringfyQueryString](#fnstringfyquerystring)&nbsp;&nbsp;把对象编译成Url参数
 #### Element        
 [fn.fullScreen](#fnfullscreen)&nbsp;&nbsp;全屏显示一个HTML元素<br/>
 [fn.exitFullScreen](#fnexitfullscreen)&nbsp;&nbsp;退出全屏显示<br/>
-[fn.checkIsFullScreen](#fncheckisfullscreen)&nbsp;&nbsp;检测是否处理全屏状态
-[fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素
+[fn.checkIsFullScreen](#fncheckisfullscreen)&nbsp;&nbsp;检测是否处理全屏状态<br/>
+[fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素<br/><br/>
 [fn.noAutoComplete](#fnnoautocomplete)&nbsp;&nbsp;防止input密码自动填充
 [fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
 #### Cookie     
@@ -173,7 +173,7 @@ funclib.js
 [$.noAutoComplete](#noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
 [$.copyText](#copytext)&nbsp;&nbsp;jQuery复制文本到粘贴板<br/>
 #### Tricks
-[fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]
+[fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]<br/>
 [$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
 ### Version
 #### fn.version
