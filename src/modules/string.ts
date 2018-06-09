@@ -1,4 +1,4 @@
-export class Str {
+export class String_ {
     private static matchPattern: any;
 
     private static htmlMap = {

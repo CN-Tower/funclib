@@ -5,8 +5,10 @@ export const FN_CONF = {
         'removeCookie',
         'fullScreen',
         'exitFullScreen',
-        'checkIsFullScreen',
-        'initBootstrapTable'
+        'isFullScreen',
+        'pollingEl',
+        'noAutoComplete',
+        'copyText'
     ],
     serverMethods: ['chalk']
 }

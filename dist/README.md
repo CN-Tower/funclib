@@ -64,20 +64,22 @@ funclib.js
 │   │   ├── fnConf.ts       # 特殊方法
 │   │   └── keyMap.ts       # 键映射表
 │   ├── modules             # 模块
-│   │   ├── $.extends.ts    # jQuery拓展
 │   │   ├── array.ts        # Array
 │   │   ├── cookie.ts       # Cookie
-│   │   ├── dom.ts          # DOM
-│   │   ├── events.ts       # Events
+│   │   ├── element.ts      # Element
+│   │   ├── event.ts        # Event
+│   │   ├── fs.ts           # FileSystem
+│   │   ├── function.ts     # Function
 │   │   ├── loger.ts        # Loger
 │   │   ├── math.ts         # Mathematic
 │   │   ├── object.ts       # Object
-│   │   ├── patterns.ts     # RegExp
+│   │   ├── pattern.ts      # RegExp
 │   │   ├── progress.ts     # 进度条工具
 │   │   ├── string.ts       # String
-│   │   ├── table.ts        # Bootstrap表格
 │   │   ├── time.ts         # Time
-│   │   └── tools.ts        # NodeJs工具
+│   │   ├── tricks.ts       # Tricks
+│   │   ├── type.ts         # Type
+│   │   └── url.ts          # Url
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
 │   ├── client-methods      # 客户端方法测试用例
@@ -100,6 +102,9 @@ funclib.js
 ### CONTENT
 #### Version
 [fn.version](#fnversion)&nbsp;&nbsp;返回当前函数库版本
+#### Type      
+[fn.isTypeOf](#fnistypeof)&nbsp;&nbsp;检查值的类型，返回布尔值<br/>
+[fn.typeValue](#fntypevalue)&nbsp;&nbsp;检查值的类型，是则返回该值，否则返回false
 #### Array      
 [fn.array](#fnarray)&nbsp;&nbsp;返回指定长度和默认值的数组<br/>
 [fn.toArr](#fntoarr)&nbsp;&nbsp;值数组化<br/>
@@ -109,6 +114,7 @@ funclib.js
 [fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象
+[fn.getChainProperty](#fngetchainproperty)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
 #### Mathematic 
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
 [fn.rdId](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
@@ -126,13 +132,22 @@ funclib.js
 #### RegExp     
 [fn.getPattern](#fngetpattern)&nbsp;&nbsp;获取一个通用的正则表达式<br/>
 [fn.matchPattern](#fnmatchpattern)&nbsp;&nbsp;与一个或几个通用正则匹配
+#### Function
+[fn.throttle](#fnthrottle)&nbsp;&nbsp;节流函数，适用于限制resize和scroll等函数的调用频率<br/>
+[fn.debounce](#fndebounce)&nbsp;&nbsp;防抖函数, 适用于获取用户输入
 #### Events     
 [fn.getKeyCodeByName](#fngetkeycodebyname)&nbsp;&nbsp;根据键名获取键码<br/>
 [fn.getKeyNameByCode](#fngetkeynamebycode)&nbsp;&nbsp;根据键码获取键名
-#### Dom        
+#### Url
+[fn.parseQueryString](#fnparsequerystring)&nbsp;&nbsp;解析Url参数成对象
+[fn.stringfyQueryString](#fnstringfyquerystring)&nbsp;&nbsp;把对象编译成Url参数
+#### Element        
 [fn.fullScreen](#fnfullscreen)&nbsp;&nbsp;全屏显示一个HTML元素<br/>
 [fn.exitFullScreen](#fnexitfullscreen)&nbsp;&nbsp;退出全屏显示<br/>
 [fn.checkIsFullScreen](#fncheckisfullscreen)&nbsp;&nbsp;检测是否处理全屏状态
+[fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素
+[fn.noAutoComplete](#fnnoautocomplete)&nbsp;&nbsp;防止input密码自动填充
+[fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
 #### Cookie     
 [fn.setCookie](#fnsetcookie)&nbsp;&nbsp;设置Cookie<br/>
 [fn.getCookie](#fngetcookie)&nbsp;&nbsp;根据name读取cookie<br/>
@@ -153,10 +168,12 @@ funclib.js
 #### Table 
 [fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具<br/>
 [fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
-#### ExtendJq      
+#### ExtendJq 
 [$.pollingElement](#pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
 [$.noAutoComplete](#noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
 [$.copyText](#copytext)&nbsp;&nbsp;jQuery复制文本到粘贴板<br/>
+#### Tricks
+[fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]
 [$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
 ### Version
 #### fn.version
@@ -168,6 +185,41 @@ funclib.js
 
 // examples:
 fn.version;  // V2.0.5
+```
+### Type  
+#### fn.isTypeOf
+```
+/**
+* [fn.isTypeOf] 检查值的类型，返回布尔值
+* @param value 
+* @param type ['arr'|'obj'|'fun'|string|string[]]
+*/
+isTypeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
+
+// examples:
+const a = fn.isTypeOf(true, 'bol');
+const b = fn.isTypeOf([], ['arr, 'str']);
+const c = fn.typeValue([], ['obj']);
+console.log(a); // true
+console.log(b); // true
+console.log(c); // false
+```
+#### fn.typeValue
+```
+/**
+* [fn.typeValue] 检查值的类型，true则返回该值，否则返回false
+* @param value 
+* @param type ['arr'|'obj'|'fun'|string|string[]]
+*/
+typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
+
+// examples:
+const a = fn.typeValue(true, 'bol');
+const b = fn.typeValue([], 'obj');
+const c = fn.typeValue([], ['arr']);
+console.log(a); // true
+console.log(b); // false
+console.log(c); // []
 ```
 ### Array
 #### fn.array
@@ -263,6 +315,24 @@ fn.deepCopy(data: any): any;
 
 // examples:
 You know the drill...
+```
+#### fn.getChainProperty
+```
+/**
+* [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+* @param obj [Object]
+* @param chain [string]
+* @param type ['arr'|'obj'|'fun'|string|string[]]
+*/
+getChainProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
+
+// examples:
+const obj1 = {name: 'Obj', metadata: {subObj: {name: 'Tom'}}}
+const obj2 = {name: 'Obj', metadata: null}
+const val1 = fn.getChainProperty(obj1, 'metadata/subObj/name');
+const val2 = fn.getChainProperty(obj2, 'metadata/subObj/name');
+fn.log(val1); // Tom
+fn.log(val2); // undefined
 ```
 ### Mathematic 
 #### fn.random
@@ -439,6 +509,28 @@ fn.matchPattern(src: string, type: string | string[], isNoLimit?: boolean): bool
 // examples:
 fn.matchPattern('cntower@yahoo.com', 'email'); // true
 ```
+### Function
+#### fn.throttle
+```
+/**
+* [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
+* @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+* @param  noTrailing   默认为false，为true相当于debunce
+* @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+* @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+*/
+throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function;
+```
+#### fn.debounce
+```
+/**
+* [fn.debounce] 防抖函数, 适用于获取用户输入
+* @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+* @param atBegin  是否不需要延迟调用
+* @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+*/
+debounce(delay: number, atBegin: boolean, callback?: Function): Function;
+```
 ### Events     
 #### fn.getKeyCodeByName
 ```
@@ -462,7 +554,32 @@ fn.getKeyNameByCode(keyCode: number): string;
 // examples:
 fn.getKeyNameByCode(38); // Up
 ```
-### DOM        
+### Url
+#### fn.parseQueryString
+```
+/**
+* [fn.parseQueryString] 解析Url参数成对象
+* @param url [string]  default: window.location.href
+*/
+parseQueryString(url?: string): Object;
+
+// examples:
+const url = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10';
+fn.log(fn.parseQueryString(url));       // {"wd": "百度", "rsv_spt": "10"}
+```
+#### fn.stringfyQueryString
+```
+/**
+* [fn.stringfyQueryString] 把对象编译成Url参数
+* @param obj [string]  default: window.location.href
+*/
+stringfyQueryString(obj: Object): string;
+
+// examples:
+const params = {name: 'Tom', age: 28};
+fn.log(fn.stringfyQueryString(params)); // ?name=Tom&age=28
+```
+### Element        
 #### fn.fullScreen
 ```
 /**
@@ -486,16 +603,44 @@ fn.exitFullScreen(): void;
 // examples:
 fn.exitFullScreen();
 ```
-#### fn.checkIsFullScreen
+#### fn.isFullScreen
 ```
 /**
-* [fn.checkIsFullScreen] 检测是否全屏状态
+* [fn.isFullScreen] 检测是否全屏状态
 * @returns {boolean}
 */
-fn.checkIsFullScreen(): boolean;
+fn.isFullScreen(): boolean;
 
 // examples:
-fn.checkIsFullScreen(); // false
+fn.isFullScreen(); // false
+```
+#### fn.pollingEl
+```
+/**
+* [fn.pollingEl] 轮询获取异步出现的HTML元素
+* @param selector 选择器
+* @param timeout 超时时间
+* @param options {duration: number = 250; isSelectAll: boolean = false}
+* @param callback
+*/
+pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void;
+```
+#### fn.noAutoComplete
+```
+/**
+* [fn.noAutoComplete] 防止input密码自动填充
+* @param input [HTMLInputElement]
+* @param type ['username'|'password']
+*/
+noAutoComplete(input: any, type: 'username'|'password'): void;
+```
+#### fn.copyText
+```
+/**
+* [fn.copyText] 复制文本到粘贴板
+* @param text [string]
+*/
+copyText(text: string): void;
 ```
 ### Cookie     
 #### fn.setCookie
@@ -642,58 +787,14 @@ fn.start(options: any): void;
 */
 fn.stop(onStopped?: Function): void;
 ```
-### Table 
-#### fn.initBootstrapTable
+### Tricks      
+#### fn.extendJquery
 ```
 /**
-* [fn.initBootstrapTable] 初始化一个BootstrapTable对象
-* @param translate [Object]
+* [fn.extendJquery] jQuery拓展
+* @param jquery
 */
-fn.initBootstrapTable(translate?: Object): void;
-```
-#### fn.table.render
-```
-/**
-* [fn.table.render] 渲染Bootstrap表格
-* @param $table
-* @param options
-    * tableConfig {Object Opt.}
-    * gridOptions {Object Opt.},
-    * tableLabel {String Opt.},
-    * showLoading {Boolean Opt.},
-    * tableScope {String Opt.},
-    * onRefreshing {Function Opt.},
-    * onRendered {Function Opt.}
-*/
-fn.render($table: any, options: any): void;
-```
-### ExtendJq      
-#### $.pollingElement
-```
-/**
-* [$.pollingElement] 轮询获取异步出现的jQuery元素
-* @param timerId
-* @param selector
-* @param interval
-* @param func [opt.]
-*/
-$.pollingElement(timerId: string, selector: boolean | string | any[], interval: number, func?: Function): void;
-```
-#### $.noAutoComplete
-```
-/**
-* [$.noAutoComplete] 防止input密码自动填充
-* @param options [{type: 'username'|'password', $input: $(input)} | [{}]]
-*/
-$.noAutoComplete(options: Object | Object[]): void;
-```
-#### $.copyText
-```
-/**
-* [$.copyText] 复制文本到粘贴板
-* @param text [string]
-*/
-$.copyText(text: string): void;
+fn.extendJquery(jquery: any): void;
 ```
 #### $ele.findCousin
 ```

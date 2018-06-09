@@ -1,4 +1,8 @@
-export class Obj {
+export class Object_ {
+    private static isTypeOf: Function;
+    private static typeValue: Function;
+    private static log: Function;
+
     /**
      * [fn.len] 获取对象自有属性的个数
      * @arg obj [object]
@@ -16,7 +20,7 @@ export class Obj {
      * @param obj 
      */
     public static isEmpty(obj: Object | any[]): boolean {
-        return obj && !Obj.len(obj) || false;
+        return obj && !this.len(obj) || false;
     }
 
     /**
@@ -62,5 +66,32 @@ export class Obj {
             }
         }
         return tmpData;
+    }
+
+    /**
+     * [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+     * @param obj [Object]
+     * @param chain [string]
+     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     */
+    public static getChainProperty(obj: Object, chain: string, type: string|string[]): any {
+        if (!obj || !chain || !chain.trim()) {
+            return undefined;
+        }
+        const csp = chain.trim().split('/');
+        const prop = csp[0] || csp[1];
+        if (csp.length === csp.indexOf(prop) + 1) {
+            return type ? this.typeValue(obj[prop], type) : obj[prop];
+        } else {
+            if (this.isTypeOf(obj[prop], ['obj', 'arr'])) {
+                if (csp.indexOf(prop)) {
+                    csp.shift();
+                }
+                csp.shift();
+                return this.getChainProperty(obj[prop], csp.join('/'), type);
+            } else {
+                return undefined;
+            }
+        }
     }
 }

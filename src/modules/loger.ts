@@ -1,7 +1,7 @@
 export class Loger {
-    private static array;
-    private static version;
-    private static cutString;
+    private static array: Function;
+    private static cutString: Function;
+    private static version: string;
     
     private static colors = {
         'grey': '\x1B[90m%s\x1B[0m',

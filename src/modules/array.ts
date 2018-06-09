@@ -1,4 +1,4 @@
-export class Arr {
+export class Array_ {
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length [number]
@@ -23,10 +23,10 @@ export class Arr {
     }
 
     /**
-     * [fn.toArr] 值数组化
+     * [fn.toArray] 值数组化
      * @param src 
      */
-    public static toArr(src: any): any[] {
+    public static toArray(src: any): any[] {
         return src instanceof Array ? src : [src];
     }
 

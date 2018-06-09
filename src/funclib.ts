@@ -1,44 +1,67 @@
-import { Str } from './modules/string';
-import { Arr } from './modules/array';
-import { Obj } from './modules/object';
+import { Type } from './modules/type';
+import { Array_ } from './modules/array';
+import { Object_ } from './modules/object';
+import { String_ } from './modules/string';
 import { Time } from './modules/time';
-import { Patterns } from './modules/patterns';
-import { Events } from './modules/events';
+import { Pattern } from './modules/pattern';
 import { Mathematic } from './modules/math';
-import { Loger } from './modules/loger';
-import { Dom } from './modules/dom';
+import { Function_ } from './modules/function';
+import { Event_ } from './modules/event';
 import { Cookie } from './modules/cookie';
-import { Tools } from './modules/tools';
-import { Table } from './modules/table';
+import { Element_ } from './modules/element';
+import { Loger } from './modules/loger';
+import { FileSystem } from './modules/fs';
 import { Progress } from './modules/progress';
-import { extendJquery } from './modules/$.extends';
+import { Tricks } from './modules/tricks';
 import { FN_CONF } from './configs/fnConf'
+import { Url } from './modules/url';
 
-let jquery, isClient;
+let root, isClient;
 
 export class Funclib {
-  public version: string = 'V2.0.5'
 
-  constructor(root: any) {
-    const deleteProp = prop => {
-      delete this[prop];
-      if (this['__proto__']) {
-        delete this['__proto__'][prop];
-      }
+  public version: string = 'V2.0.6'
+  
+  private deleteProp = prop => {
+    delete this[prop];
+    if (this['__proto__']) {
+      delete this['__proto__'][prop];
     }
-    if (root && root.window && root.document) {
+  }
+
+  constructor() {
+    if (typeof (window) !== 'undefined' && typeof (document) !== 'undefined') {
       isClient = true;
-      FN_CONF.serverMethods.forEach(prop => deleteProp(prop));
-      jquery = root.$ || root.jquery;
-      if (jquery) {
-        extendJquery(jquery, this.interval);
-      }
-    } else {
+      root = window;
+      FN_CONF.serverMethods.forEach(prop => this.deleteProp(prop));
+    } else if (typeof (global) !== 'undefined') {
       isClient = false;
-      this.initTools();
+      root = global;
+      this.initFileSystem();
       this.initProgress();
-      FN_CONF.clientMethods.forEach(prop =>  deleteProp(prop));
+      FN_CONF.clientMethods.forEach(prop => this.deleteProp(prop));
     }
+    this.initTricks();
+  }
+
+
+
+  /**
+   * [fn.isTypeOf] 检查值的类型，返回布尔值
+   * @param value 
+   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   */
+  isTypeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
+    return Type.isTypeOf.call(this, value, type);
+  }
+
+  /**
+   * [fn.typeValue] 检查值的类型，true则返回该值，否则返回false
+   * @param value 
+   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   */
+  typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
+    return Type.typeValue.call(this, value, type);
   }
 
   /**
@@ -47,15 +70,15 @@ export class Funclib {
    * @param value  [any, function]
    */
   array(length: number, value?: any): any[] {
-    return Arr.array(length, value);
+    return Array_.array(length, value);
   }
 
   /**
-   * [fn.toArr] 值数组化
+   * [fn.toArray] 值数组化
    * @param src 
    */
-  toArr(src: any): any[] {
-    return Arr.toArr(src);
+  toArray(src: any): any[] {
+    return Array_.toArray(src);
   }
 
   /**
@@ -64,8 +87,8 @@ export class Funclib {
    * @param field
    * @param isDesc
    */
-  sortByField(data: any, field: string, isDesc?: boolean) {
-    return Arr.sortByField(data, field, isDesc);
+  sortByField(data: any, field: string, isDesc?: boolean): any {
+    return Array_.sortByField(data, field, isDesc);
   }
 
   /**
@@ -73,7 +96,7 @@ export class Funclib {
    * @arg obj [object]
    */
   len(obj: any): number {
-    return Obj.len(obj);
+    return Object_.len(obj);
   }
 
   /**
@@ -81,7 +104,7 @@ export class Funclib {
    * @param obj 
    */
   isEmpty(obj: Object | any[]): boolean {
-    return Obj.isEmpty(obj);
+    return Object_.isEmpty(obj);
   }
 
   /**
@@ -90,8 +113,8 @@ export class Funclib {
    * @param source 
    * @param propList 
    */
-  overlay(target: Object, source: Object, propList?: string[]) {
-    return Obj.overlay(target, source, propList);
+  overlay(target: Object, source: Object, propList?: string[]): void {
+    return Object_.overlay(target, source, propList);
   }
 
   /**
@@ -99,7 +122,17 @@ export class Funclib {
    * @param data
    */
   deepCopy(data: any) {
-    return Obj.deepCopy(data);
+    return Object_.deepCopy(data);
+  }
+
+  /**
+   * [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+   * @param obj [Object]
+   * @param chain [string]
+   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   */
+  getChainProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
+    return Object_.getChainProperty.call(this, obj, chain, type);
   }
 
   /**
@@ -167,7 +200,7 @@ export class Funclib {
    * @param html 
    */
   encodeHtml(html: string): string {
-    return Str.encodeHtml(html);
+    return String_.encodeHtml(html);
   }
 
   /**
@@ -175,7 +208,7 @@ export class Funclib {
    * @param html 
    */
   decodeHtml(html: string): string {
-    return Str.decodeHtml(html);
+    return String_.decodeHtml(html);
   }
 
   /**
@@ -185,7 +218,7 @@ export class Funclib {
    * @returns {string}
    */
   currency(number: number, digit: number = 2): string {
-    return Str.currency(number, digit);
+    return String_.currency(number, digit);
   }
 
   /**
@@ -195,7 +228,7 @@ export class Funclib {
    * @returns {string}
    */
   cutString(str: string, len: number): string {
-    return Str.cutString.call(this, str, len);
+    return String_.cutString.call(this, str, len);
   }
 
   /**
@@ -205,7 +238,7 @@ export class Funclib {
    * @returns {pattern|undefined}
    */
   getPattern(type: string, isNoLimit: boolean = false): any {
-    return Patterns.getPattern(type, isNoLimit);
+    return Pattern.getPattern(type, isNoLimit);
   }
 
   /**
@@ -216,7 +249,28 @@ export class Funclib {
    * @returns {boolean}
    */
   matchPattern(src: string, type: string | string[], isNoLimit: boolean = false): boolean {
-    return Patterns.matchPattern(src, type, isNoLimit);
+    return Pattern.matchPattern(src, type, isNoLimit);
+  }
+
+  /**
+   * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
+   * @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+   * @param  noTrailing   默认为false，为true相当于debunce
+   * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+   * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+   */
+  throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function {
+    return Function_.throttle(delay, noTrailing, callback, debounceMode);
+  }
+
+  /**
+   * [fn.debounce] 防抖函数, 适用于获取用户输入
+   * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+   * @param atBegin  是否不需要延迟调用
+   * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+   */
+  debounce(delay: number, atBegin: boolean, callback?: Function): Function {
+    return Function_.debounce(delay, atBegin, callback);
   }
 
   /**
@@ -224,7 +278,7 @@ export class Funclib {
    * @param keyName 
    */
   getKeyCodeByName(keyName: string): number {
-    return Events.getKeyCodeByName(keyName);
+    return Event_.getKeyCodeByName(keyName);
   }
 
   /**
@@ -232,7 +286,23 @@ export class Funclib {
    * @param keyName 
    */
   getKeyNameByCode(keyCode: number): string {
-    return Events.getKeyNameByCode(keyCode);
+    return Event_.getKeyNameByCode(keyCode);
+  }
+
+  /**
+   * [fn.parseQueryString] 解析Url参数成对象
+   * @param url [string]  default: window.location.href
+   */
+  parseQueryString(url?: string): Object {
+    return Url.parseQueryString(url);
+  }
+
+  /**
+   * [fn.stringfyQueryString] 把对象编译成Url参数
+   * @param obj [string]  default: window.location.href
+   */
+  stringfyQueryString(obj: Object): string {
+    return Url.stringfyQueryString.call(this, obj);
   }
 
   /**
@@ -241,7 +311,7 @@ export class Funclib {
    * @returns {any}
    */
   fullScreen(el: any): any {
-    return Dom.fullScreen(el);
+    return Element_.fullScreen(el);
   }
 
   /**
@@ -249,15 +319,43 @@ export class Funclib {
    * @returns {any}
    */
   exitFullScreen(): any {
-    return Dom.exitFullScreen();
+    return Element_.exitFullScreen();
   }
 
   /**
-   * [fn.checkIsFullScreen] 检测是否全屏状态
+   * [fn.isFullScreen] 检测是否全屏状态
    * @returns {boolean}
    */
-  checkIsFullScreen(): boolean {
-    return Dom.checkIsFullScreen();
+  isFullScreen(): boolean {
+    return Element_.isFullScreen();
+  }
+
+  /**
+   * [fn.pollingEl] 轮询获取异步出现的HTML元素
+   * @param selector 选择器
+   * @param timeout 超时时间
+   * @param options {duration: number = 250; isSelectAll: boolean = false}
+   * @param callback
+   */
+  pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void {
+    return Element_.pollingEl.call(this, selector, timeout, options, callback);
+  }
+
+  /**
+   * [fn.noAutoComplete] 防止input密码自动填充
+   * @param input [HTMLInputElement]
+   * @param type ['username'|'password']
+   */
+  noAutoComplete(input: any, type: 'username'|'password'): void {
+    return Element_.noAutoComplete(input, type);
+  }
+
+  /**
+   * [fn.copyText] 复制文本到粘贴板
+   * @param text [string]
+   */
+  copyText(text: string): void {
+    return Element_.copyText(text);
   }
 
   /**
@@ -286,13 +384,13 @@ export class Funclib {
   removeCookie(name: string) {
     return Cookie.removeCookie(name);
   }
-  
+
   /**
    * [fn.chalk] 在控制台打印有颜色的字符串
    * @param value 
    * @param color 
    */
-  chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow') {
+  chalk(value: string, color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow') {
     return Loger.chalk(value, color);
   }
 
@@ -312,8 +410,8 @@ export class Funclib {
   /**
    * 初始化NodeJs工具
    */
-  private initTools() {
-    const tools = new Tools();
+  private initFileSystem() {
+    const tools = new FileSystem();
     /**
      * [fn.rd] 读文件
      * @param file
@@ -326,7 +424,7 @@ export class Funclib {
      * @param text
      * @param flag ['w'|'a'] default: 'w'
      */
-    this['wt'] = (file: string, text: string, flag: 'w'|'a' = 'w') => tools.wt(file, text, flag);
+    this['wt'] = (file: string, text: string, flag: 'w' | 'a' = 'w') => tools.wt(file, text, flag);
 
     /**
      * [fn.cp] 复制文件或文件夹
@@ -377,15 +475,11 @@ export class Funclib {
     }
   }
 
-  /**
-   * [fn.initBootstrapTable] 初始化一个BootstrapTable对象
-   * @param translate [Object]
-   */
-  initBootstrapTable(translate?: Object) {
-    if (jquery) {
-      this['table'] = new Table(jquery, translate);
-    } else {
-      throw new Error('jQuery not found!');
+  private initTricks() {
+    if (isClient) {
+      if (!Tricks.extendJquery()) {
+        this['extendJquery'] = jquery => Tricks.extendJquery(jquery);
+      }
     }
   }
 }

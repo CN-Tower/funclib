@@ -1,5 +1,5 @@
 export class Mathematic {
-    private static array: any;
+    private static array: Function;
     
     /**
      * [fn.random] 返回一个指定范围内的随机数
