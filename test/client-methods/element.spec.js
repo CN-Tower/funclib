@@ -5,7 +5,7 @@ describe('DOM Methods:', function () {
         });
         it(`fn.fullScreen() should make the element full screen.`, function () {
             setTimeout(function() {
-                assert(fn.checkIsFullScreen($('html')[0]) === true);
+                assert(fn.isFullScreen($('html')[0]) === true);
             });
         });
     });
@@ -15,13 +15,13 @@ describe('DOM Methods:', function () {
         });
         it(`fn.exitFullScreen() should make the element exit full screen.`, function () {
             setTimeout(function() {
-                assert(fn.checkIsFullScreen($('html')[0]) === false);
+                assert(fn.isFullScreen($('html')[0]) === false);
             });
         });
     });
-    describe('#fn.checkIsFullScreen()', function () {
-        it(`fn.checkIsFullScreen() check is the element full screen.`, function () {
-            assert(fn.checkIsFullScreen($('html')[0]) === false);
+    describe('#fn.isFullScreen()', function () {
+        it(`fn.isFullScreen() check is the element full screen.`, function () {
+            assert(fn.isFullScreen($('html')[0]) === false);
         });
     });
 });

@@ -5,9 +5,9 @@ describe('Array Methods:', function () {
             assert(tmpArr.length === 5 && tmpArr.join('' === '01234'));
         });
     });
-    describe('#fn.toArr()', function () {
+    describe('#fn.toArray()', function () {
         it(`fn.toArr('funclib') should return an Array.`, function () {
-            assert(fn.toArr('funclib')[0] === fn.toArr(['funclib'])[0]);
+            assert(fn.toArray('funclib')[0] === fn.toArray(['funclib'])[0]);
         });
     });
     describe('#fn.sortByField()', function () {
