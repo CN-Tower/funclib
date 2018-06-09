@@ -144,7 +144,7 @@ funclib.js
 #### Element        
 [fn.fullScreen](#fnfullscreen)&nbsp;&nbsp;全屏显示一个HTML元素<br/>
 [fn.exitFullScreen](#fnexitfullscreen)&nbsp;&nbsp;退出全屏显示<br/>
-[fn.checkIsFullScreen](#fncheckisfullscreen)&nbsp;&nbsp;检测是否处理全屏状态<br/>
+[fn.isFullScreen](#fnisFullScreen)&nbsp;&nbsp;检测是否处理全屏状态<br/>
 [fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素<br/>
 [fn.noAutoComplete](#fnnoautocomplete)&nbsp;&nbsp;防止input密码自动填充<br/>
 [fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
