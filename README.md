@@ -165,13 +165,6 @@ funclib.js
 #### Progress      
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
-#### Table 
-[fn.initBootstrapTable](#fninitbootstraptable)&nbsp;&nbsp;初始化Bootstrap表格工具<br/>
-[fn.table.render](#fntablerender)&nbsp;&nbsp;渲染Bootstrap表格
-#### ExtendJq 
-[$.pollingElement](#pollingelement)&nbsp;&nbsp;jQuery获取异步出现的元素<br/>
-[$.noAutoComplete](#noautocomplete)&nbsp;&nbsp;jQuery禁止input密码自动填充<br/>
-[$.copyText](#copytext)&nbsp;&nbsp;jQuery复制文本到粘贴板<br/>
 #### Tricks
 [fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]<br/>
 [$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
