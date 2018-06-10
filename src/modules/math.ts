@@ -7,7 +7,9 @@ export class Mathematic {
      * @param end 
      */
     public static random(sta: number, end?: number): number {
-        if (end === undefined || sta === end) {
+        if (sta === undefined && end === undefined) {
+            return Math.random();
+        } else if (end === undefined || sta === end) {
             return Math.floor(Math.random() * sta);
         } else {
             if (sta > end) {
@@ -20,10 +22,10 @@ export class Mathematic {
     }
     
     /**
-     * [fn.rdId] 返回一个指定长度（最小4位）的随机ID
+     * [fn.rdid] 返回一个指定长度（最小4位）的随机ID
      * @param len 
      */
-    public static rdId(len: number): string {
+    public static rdid(len: number): string {
         const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         let eleId = '';
         if (len < 4) {
@@ -36,7 +38,7 @@ export class Mathematic {
     /**
      * [fn.rdColor] 返回一个随机颜色色值
      */
-    public static rdColor() {
+    public static rdcolor() {
         return '#' + ('00000' + (this.random(0x1000000) << 0).toString(16)).slice(-6);
     }
 }

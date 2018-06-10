@@ -69,26 +69,26 @@ export class Object_ {
     }
 
     /**
-     * [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+     * [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]
-     * @param chain [string]
+     * @param layers [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static getChainProperty(obj: Object, chain: string, type: string|string[]): any {
-        if (!obj || !chain || !chain.trim()) {
+    public static pickProperty(obj: Object, layers: string, type: string|string[]): any {
+        if (!obj || !layers || !layers.trim()) {
             return undefined;
         }
-        const csp = chain.trim().split('/');
-        const prop = csp[0] || csp[1];
-        if (csp.length === csp.indexOf(prop) + 1) {
+        const lys = layers.trim().split('/');
+        const prop = lys[0] || lys[1];
+        if (lys.length === lys.indexOf(prop) + 1) {
             return type ? this.typeValue(obj[prop], type) : obj[prop];
         } else {
             if (this.isTypeOf(obj[prop], ['obj', 'arr'])) {
-                if (csp.indexOf(prop)) {
-                    csp.shift();
+                if (lys.indexOf(prop)) {
+                    lys.shift();
                 }
-                csp.shift();
-                return this.getChainProperty(obj[prop], csp.join('/'), type);
+                lys.shift();
+                return this.pickProperty(obj[prop], lys.join('/'), type);
             } else {
                 return undefined;
             }

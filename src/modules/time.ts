@@ -6,13 +6,13 @@ export class Time {
      * [fn.interval] 循环定时器
      * @param timerId
      * @param duration
-     * @param func
+     * @param callback
      */
-    public static interval(timerId: string, duration: number | boolean, func: Function) {
-        if (typeof duration === 'number' && typeof func === 'function') {
+    public static interval(timerId: string, duration: number | boolean, callback: Function) {
+        if (typeof duration === 'number' && typeof callback === 'function') {
             clearInterval(Time.intervalTimers[timerId]);
-            Time.intervalTimers[timerId] = setInterval(() => func(), duration);
-        } else if (typeof duration === 'boolean' && !duration) {
+            Time.intervalTimers[timerId] = setInterval(() => callback(), duration);
+        } else if (duration === false) {
             clearInterval(Time.intervalTimers[timerId]);
         }
     }
@@ -21,14 +21,21 @@ export class Time {
      * [fn.timeout] 延时定时器
      * @param timerId 
      * @param duration 
-     * @param func 
+     * @param callback 
      */
-    public static timeout(timerId: string, duration: number | boolean, func: Function) {
-        if (typeof duration === 'number' && typeof func === 'function') {
+    public static timeout(timerId: string, duration: number | boolean, callback: Function) {
+        if (typeof duration === 'number' && typeof callback === 'function') {
             clearTimeout(Time.timeoutTimers[timerId]);
-            Time.timeoutTimers[timerId] = setTimeout(() => func(), duration);
-        } else if (typeof duration === 'boolean' && !duration) {
+            Time.timeoutTimers[timerId] = setTimeout(() => callback(), duration);
+        } else if (duration === false) {
             clearTimeout(Time.timeoutTimers[timerId]);
+        } else if (typeof timerId === 'number' && typeof duration === 'function') {
+            callback = duration;
+            duration = timerId;
+            setTimeout(() => callback(), duration)
+        } else if (typeof timerId === 'function') {
+            callback = timerId;
+            setTimeout(() => callback())
         }
     }
 

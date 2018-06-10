@@ -17,11 +17,11 @@
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
- * fn.getChainProperty       返回对象或子孙对象的属性，可判断类型
+ * fn.pickProperty           返回对象或子孙对象的属性，可判断类型
  ## Mathematic 
  * fn.random                 返回指定范围的随机数
- * fn.rdId                   返回指定长度(最小6位)的随机ID
- * fn.rdColor                返回一个随机色值
+ * fn.rdid                   返回指定长度(最小6位)的随机ID
+ * fn.rdcolor                返回一个随机色值
  ## Time       
  * fn.interval               循环定时器
  * fn.timeout                延时定时器
@@ -143,12 +143,12 @@ interface Funclib {
      */
     deepCopy(data: any): any;
     /**
-     * [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+     * [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]
      * @param chain [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    getChainProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
+    pickProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
     /**
      * [fn.random] 返回一个指定范围的随机数
      * @param sta [number]
@@ -156,28 +156,28 @@ interface Funclib {
      */
     random(sta: number, end?: number): number;
     /**
-     * [fn.rdId] 返回一个指定长度(最小4位，默认12位)的随机ID。
+     * [fn.rdid] 返回一个指定长度(最小4位，默认12位)的随机ID。
      * @param len [number]
      */
-    rdId(len?: number): string;
+    rdid(len?: number): string;
     /**
-     * [fn.rdColor] 返回一个随机色值
+     * [fn.rdcolor] 返回一个随机色值
      */
-    rdColor(): string;
+    rdcolor(): string;
     /**
      * [fn.interval] 循环定时器
      * @param timerId
      * @param duration
-     * @param func
+     * @param callback
      */
-    interval(timerId: string, duration: number | boolean, func?: Function): void;
+    interval(timerId: string, duration: number | boolean, callback?: Function): void;
     /**
      * [fn.timeout] 延时定时器
      * @param timerId
      * @param duration
-     * @param func
+     * @param callback
      */
-    timeout(timerId: string, duration: number | boolean, func?: Function): void;
+    timeout(timerId: string, duration: number | boolean, callback?: Function): void;
     /**
      * [fn.timeStamp] 返回一个当前时间戳
      */
@@ -248,7 +248,7 @@ interface Funclib {
      */
     getKeyCodeByName(keyName: string): number;
     /**
-     * [fn.getKeyCodeByName] 根据键码获取键名
+     * [fn.getKeyNameByCode] 根据键码获取键名
      * @param keyName 
      */
     getKeyNameByCode(keyCode: number): string;

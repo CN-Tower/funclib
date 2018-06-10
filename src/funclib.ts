@@ -20,7 +20,7 @@ let root, isClient;
 
 export class Funclib {
 
-  public version: string = 'V2.0.9'
+  public version: string = 'V2.1.0'
   
   private deleteProp = prop => {
     delete this[prop];
@@ -126,13 +126,13 @@ export class Funclib {
   }
 
   /**
-   * [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+   * [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
    * @param obj [Object]
-   * @param chain [string]
+   * @param layers [string]
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  getChainProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
-    return Object_.getChainProperty.call(this, obj, chain, type);
+  pickProperty(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
+    return Object_.pickProperty.call(this, obj, layers, type);
   }
 
   /**
@@ -145,38 +145,38 @@ export class Funclib {
   }
 
   /**
-   * [fn.rdId] 返回一个指定长度（最小4位）的随机ID
+   * [fn.rdid] 返回一个指定长度（最小4位）的随机ID
    * @param len 
    */
-  rdId(len: number = 12): string {
-    return Mathematic.rdId.call(this, len);
+  rdid(len: number = 12): string {
+    return Mathematic.rdid.call(this, len);
   }
 
   /**
-   * [fn.rdColor] 返回一个随机颜色色值
+   * [fn.rdcolor] 返回一个随机颜色色值
    */
-  rdColor() {
-    return Mathematic.rdColor();
+  rdcolor() {
+    return Mathematic.rdcolor();
   }
 
   /**
    * [fn.interval] 循环定时器
    * @param timerId
    * @param duration
-   * @param func
+   * @param callback
    */
-  interval(timerId: string, duration: number | boolean, func?: Function) {
-    return Time.interval(timerId, duration, func);
+  interval(timerId: string, duration: number | boolean, callback?: Function) {
+    return Time.interval(timerId, duration, callback);
   }
 
   /**
    * [fn.timeout] 延时定时器
    * @param timerId 
    * @param duration 
-   * @param func 
+   * @param callback 
    */
-  timeout(timerId: string, duration: number | boolean, func?: Function) {
-    return Time.timeout(timerId, duration, func);
+  timeout(timerId: string, duration?: number | boolean, callback?: Function) {
+    return Time.timeout(timerId, duration, callback);
   }
 
   /**
@@ -282,7 +282,7 @@ export class Funclib {
   }
 
   /**
-   * [fn.getKeyCodeByName] 根据键码获取键名
+   * [fn.getKeyNameByCode] 根据键码获取键名
    * @param keyName 
    */
   getKeyNameByCode(keyCode: number): string {

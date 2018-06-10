@@ -15,7 +15,7 @@ export class Event_ {
     }
 
     /**
-     * [fn.getKeyCodeByName] 根据键码获取键名
+     * [fn.getKeyNameByCode] 根据键码获取键名
      * @param keyName 
      */
     public static getKeyNameByCode(keyCode: number): string {

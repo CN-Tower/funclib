@@ -1,8 +1,7 @@
 # funclib.js (凡客杰斯)
 [![npm](https://img.shields.io/npm/v/funclib.svg)
-![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)
-![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master) 
-](https://www.npmjs.com/package/funclib) 
+![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)](https://www.npmjs.com/package/funclib) 
+[![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
 ## Brief Intro
@@ -17,7 +16,7 @@ $ npm install funclib
 # Use funclib
 $ node
 > var fn = require('funclib');
-> console.log(fn.rdId()) // => 8GH9IYO60MXQ
+> console.log(fn.rdid()) // => 8GH9IYO60MXQ
 ```
 
 ## Clone Repo
@@ -114,11 +113,11 @@ funclib.js
 [fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
-[fn.getChainProperty](#fngetchainproperty)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
+[fn.pickProperty](#fnpickproperty)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
 #### Mathematic 
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
-[fn.rdId](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
-[fn.rdColor](#fnrdcolor)&nbsp;&nbsp;返回一个随机色值
+[fn.rdid](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
+[fn.rdcolor](#fnrdcolor)&nbsp;&nbsp;返回一个随机色值
 #### Time       
 [fn.interval](#fninterval)&nbsp;&nbsp;循环定时器<br/>
 [fn.timeout](#fntimeout)&nbsp;&nbsp;延时定时器<br/>
@@ -309,21 +308,21 @@ fn.deepCopy(data: any): any;
 // examples:
 You know the drill...
 ```
-#### fn.getChainProperty
+#### fn.pickProperty
 ```
 /**
-* [fn.getChainProperty] 返回对象或子孙对象的属性，可判断类型
+* [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
 * @param obj [Object]
 * @param chain [string]
 * @param type ['arr'|'obj'|'fun'|string|string[]]
 */
-getChainProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
+pickProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
 
 // examples:
 const obj1 = {name: 'Obj', metadata: {subObj: {name: 'Tom'}}}
 const obj2 = {name: 'Obj', metadata: null}
-const val1 = fn.getChainProperty(obj1, 'metadata/subObj/name');
-const val2 = fn.getChainProperty(obj2, 'metadata/subObj/name');
+const val1 = fn.pickProperty(obj1, 'metadata/subObj/name');
+const val2 = fn.pickProperty(obj2, 'metadata/subObj/name');
 fn.log(val1); // Tom
 fn.log(val2); // undefined
 ```
@@ -343,27 +342,27 @@ fn.random(5);     // 3
 fn.random(5, 10); // 6
 fn.random(5, 10); // 9
 ```
-#### fn.rdId
+#### fn.rdid
 ```
 /**
-* [fn.rdId] 返回一个指定长度(最小4位，默认12位)的随机ID。
+* [fn.rdid] 返回一个指定长度(最小4位，默认12位)的随机ID。
 * @param len [number]
 */
-fn.rdId(len?: number): string;
+fn.rdid(len?: number): string;
 
 // examples:
-fn.rdId();  // 8GH9IYO60MXQ
-fn.rdId(6); // 9Y0MQZ
+fn.rdid();  // 8GH9IYO60MXQ
+fn.rdid(6); // 9Y0MQZ
 ```
-#### fn.rdColor
+#### fn.rdcolor
 ```
 /**
-* [fn.rdColor] 返回一个随机色值
+* [fn.rdcolor] 返回一个随机色值
 */
-fn.rdColor(): string;
+fn.rdcolor(): string;
 
 // examples:
-fn.rdColor(); // #2913ba
+fn.rdcolor(); // #2913ba
 ```
 ### Time       
 #### fn.interval
@@ -372,9 +371,9 @@ fn.rdColor(); // #2913ba
 * [fn.interval] 循环定时器
 * @param timerId
 * @param duration
-* @param func
+* @param callback
 */
-fn.interval(timerId: string, duration: number | boolean, func?: Function): void;
+fn.interval(timerId: string, duration: number | boolean, callback?: Function): void;
 
 // examples:
 // 设置Id为test的循环定时器
@@ -388,9 +387,9 @@ fn.interval('test', false);
 * [fn.timeout] 延时定时器
 * @param timerId
 * @param duration
-* @param func
+* @param callback
 */
-fn.timeout(timerId: string, duration: number | boolean, func?: Function): void;
+fn.timeout(timerId: string, duration: number | boolean, callback?: Function): void;
 
 // examples:
 // 设置Id为test的延时定时器
