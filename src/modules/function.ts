@@ -45,7 +45,7 @@ export class Function_ {
      * @param atBegin  是否不需要延迟调用
      * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      */
-    public static debounce(delay: number, atBegin: boolean, callback?: Function) {
+    public static debounce(delay: number, atBegin: any, callback?: Function) {
         if (typeof atBegin !== 'boolean') {
             callback = atBegin;
             atBegin = undefined;
