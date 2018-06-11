@@ -30,11 +30,11 @@ export class Funclib {
   }
 
   constructor() {
-    if (typeof (window) !== 'undefined' && typeof (document) !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       isClient = true;
       root = window;
       FN_CONF.serverMethods.forEach(prop => this.deleteProp(prop));
-    } else if (typeof (global) !== 'undefined') {
+    } else if (typeof global !== 'undefined') {
       isClient = false;
       root = global;
       this.initFileSystem();
