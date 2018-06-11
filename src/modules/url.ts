@@ -6,7 +6,7 @@ export class Url {
      * @param url [string]  default: window.location.href
      */
     public static parseQueryString(url: string) {
-        url = url || window.location.href;
+        url = url || typeof window !== 'undefined' && window.location.href || '';
         if(url.indexOf('?') === -1) {
             return {};
         }
