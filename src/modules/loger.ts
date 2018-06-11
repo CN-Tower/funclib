@@ -40,33 +40,30 @@ export class Loger {
         value = typeof value === 'object'
             ? JSON.stringify(value, null, 2)
             : String(value);
-        if (configs && typeof configs === 'string') {
-            isClient ? console.log(value) : console.log(this.chalk(value, configs));
-        } else {
-            let title = configs && configs['title'] || `funclib ${this.version}`;
-            let lineLen = configs && configs['lineLen'];
-            if (!lineLen || lineLen < 20 || lineLen > 100) {
-                lineLen = 66;
-            }
-            let titlelen, sp = '';
-            if (title.length <= lineLen - 10) {
-                titlelen = title.length;
-            } else {
-                titlelen = lineLen - 10;
-                title = this.cutString(title, titlelen - 2);
-            }
-            this.array((lineLen - titlelen) / 2, ' ').forEach(x => sp += x);
-            const tt = sp + title;
-            const s = '-', d = '=';
-            let sL = '', dL = '';
-            this.array(lineLen).forEach(x => {
-                sL += s;
-                dL += d;
-            });
-            isClient
-                ? Loger.clientLog(dL, tt, sL, value)
-                : Loger.serverLog(dL, tt, sL, value, configs);    
+        let title = (typeof configs === 'string' && configs)
+            || (configs && configs['title']) || `funclib ${this.version}`;
+        let lineLen = configs && configs['lineLen'];
+        if (!lineLen || lineLen < 20 || lineLen > 100) {
+            lineLen = 66;
         }
+        let titlelen, sp = '';
+        if (title.length <= lineLen - 10) {
+            titlelen = title.length;
+        } else {
+            titlelen = lineLen - 10;
+            title = this.cutString(title, titlelen - 2);
+        }
+        this.array((lineLen - titlelen) / 2, ' ').forEach(x => sp += x);
+        const tt = sp + title;
+        const s = '-', d = '=';
+        let sL = '', dL = '';
+        this.array(lineLen).forEach(x => {
+            sL += s;
+            dL += d;
+        });
+        isClient
+            ? Loger.clientLog(dL, tt, sL, value)
+            : Loger.serverLog(dL, tt, sL, value, configs);    
     }
 
     /**
