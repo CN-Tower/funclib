@@ -165,7 +165,7 @@ export class Funclib {
    * @param duration
    * @param callback
    */
-  interval(timerId: string, duration: number | boolean, callback?: Function) {
+  interval(timerId: any, duration: any, callback?: Function) {
     return Time.interval(timerId, duration, callback);
   }
 
@@ -175,7 +175,7 @@ export class Funclib {
    * @param duration 
    * @param callback 
    */
-  timeout(timerId: string, duration?: number | boolean, callback?: Function) {
+  timeout(timerId: any, duration?: any, callback?: Function) {
     return Time.timeout(timerId, duration, callback);
   }
 
