@@ -177,7 +177,7 @@ interface Funclib {
      * @param duration
      * @param callback
      */
-    timeout(timerId: any, duration: any, callback?: Function): void;
+    timeout(timerId: any, duration?: any, callback?: Function): void;
     /**
      * [fn.timeStamp] 返回一个当前时间戳
      */
