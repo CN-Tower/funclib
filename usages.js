@@ -28,7 +28,7 @@ const fn = require('./dist/');
 // const htmlStr = '&lt;div&gt;&lt;/div&gt;';
 // fn.log(fn.encodeHtml(html));
 // fn.log(fn.decodeHtml(htmlStr));
-// fn.log(fn.currency(8888888)) // 8,888,888.00;
+// fn.log(fn.fmtCurrency(8888888)) // 8,888,888.00;
 // const str = 'Hello, 世界';
 // fn.log(fn.cutString(str, 5));
 // fn.log(fn.cutString(str, 9));
