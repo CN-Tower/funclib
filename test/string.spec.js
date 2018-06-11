@@ -11,9 +11,9 @@ describe('String Methods:', function () {
             assert(fn.decodeHtml(htmlStr) === html);
         });
     });
-    describe('#fn.currency()', function () {
-        it(`fn.currency(8888888) should return '8,888,888.00'.`, function () {
-            assert(fn.currency(8888888) === '8,888,888.00');
+    describe('#fn.fmtCurrency()', function () {
+        it(`fn.fmtCurrency(8888888) should return '8,888,888.00'.`, function () {
+            assert(fn.fmtCurrency(8888888) === '8,888,888.00');
         });
     });
     describe('#fn.cutString()', function () {
