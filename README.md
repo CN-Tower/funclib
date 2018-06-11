@@ -31,8 +31,8 @@ $ npm install
 # Start
 $ npm start
 
-# DoTry
-$ npm run dist
+# Do Try
+$ npm run usage
 
 # Build
 $ npm run build
@@ -88,13 +88,13 @@ funclib.js
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
 ├── .gitignore              # You know the drill...
 ├── .travis.yml             # CI配置
-├── app.js                  # 服务端试验
-├── funclib.html            # 客户端试验
 ├── LICENSE                 # 授权说明
 ├── package-lock.json       # NPM Lock
 ├── package.json            # 库配置
 ├── README.md               # Read this FIRST :)
-└── tsconfig.json           # Typescript配置
+├── tsconfig.json           # Typescript配置
+├── usage.html              # 客户端试验
+└── usage.js                # 服务端试验
 ```
 
 ## Document (CM: Client side method, SM: Server side method)
