@@ -19,7 +19,7 @@ export class Object_ {
      * [fn.isEmpty] 判断对象是否为空对象或数组
      * @param obj 
      */
-    public static isEmpty(obj: Object | any[]): boolean {
+    public static isEmpty(obj: Object| Function | string | any[]): boolean {
         return obj && !this.len(obj) || false;
     }
 
