@@ -10,5 +10,15 @@
     <div id="myDiv" style="width: 100px; height: 100px; background: red;"></div>
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./dist/funclib.min.js"></script>
+    <script>
+        /**
+         * Url
+         * =======================================================================
+         */
+        const url = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10';
+        fn.log(fn.parseQueryString(url));
+        const params = {name: 'Tom', age: 28};
+        fn.log(fn.stringfyQueryString(params));
+    </script>
 </body>
 </html>
