@@ -25,12 +25,12 @@ export class String_ {
     }
 
     /**
-   * [fn.currency] 格式化显示货币
+   * [fn.fmtCurrency] 格式化显示货币
    * @param number
    * @param digit
    * @returns {string}
    */
-    public static currency(number: number, digit: number): string {
+    public static fmtCurrency(number: number, digit: number): string {
         let nbArr = String(number.toFixed(digit)).split('.');
         const integer = nbArr[0];
         const decimal = nbArr.length > 1 ? nbArr[1] : '';
