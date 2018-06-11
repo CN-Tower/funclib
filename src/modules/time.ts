@@ -8,7 +8,7 @@ export class Time {
      * @param duration
      * @param callback
      */
-    public static interval(timerId: string, duration: number | boolean, callback: Function) {
+    public static interval(timerId: any, duration: any, callback: Function) {
         if (typeof duration === 'number' && typeof callback === 'function') {
             clearInterval(Time.intervalTimers[timerId]);
             Time.intervalTimers[timerId] = setInterval(() => callback(), duration);
@@ -23,7 +23,7 @@ export class Time {
      * @param duration 
      * @param callback 
      */
-    public static timeout(timerId: string, duration: number | boolean, callback: Function) {
+    public static timeout(timerId: any, duration: any, callback: Function) {
         if (typeof duration === 'number' && typeof callback === 'function') {
             clearTimeout(Time.timeoutTimers[timerId]);
             Time.timeoutTimers[timerId] = setTimeout(() => callback(), duration);
