@@ -199,12 +199,12 @@ interface Funclib {
      */
     decodeHtml(html: string): string;
     /**
-     * [fn.currency] 格式化显示货币
+     * [fn.fmtCurrency] 格式化显示货币
      * @param number
      * @param digit
      * @returns {string}
      */
-    currency(number: number, digit?: number): any;
+    fmtCurrency(number: number, digit?: number): any;
     /**
      * [fn.cutString] 裁切字符串到指定长度
      * @param str
@@ -234,14 +234,14 @@ interface Funclib {
      * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
      */
-    throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function;
+    throttle(delay: number, noTrailing?: any, callback?: any, debounceMode?: any): Function;
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
      * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
      * @param atBegin  是否不需要延迟调用
      * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      */
-    debounce(delay: number, atBegin: boolean, callback?: Function): Function;
+    debounce(delay: number, atBegin?: any, callback?: Function): Function;
     /**
      * [fn.getKeyCodeByName] 根据键名获取键码
      * @param keyName 
@@ -281,11 +281,11 @@ interface Funclib {
     /**
      * [fn.pollingEl] 轮询获取异步出现的HTML元素
      * @param selector 选择器
-     * @param timeout 超时时间
+     * @param duration 超时时间
      * @param options {duration: number = 250; isSelectAll: boolean = false}
      * @param callback
      */
-    pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void;
+    pollingEl(selector: string|string[], duration?: any, options?: any, callback?: Function): void;
     /**
      * [fn.noAutoComplete] 防止input密码自动填充
      * @param input [HTMLInputElement]
@@ -330,7 +330,7 @@ interface Funclib {
      * part: 'pre'|'end' (opt.)
      * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      */
-    log(value: any, configs?: Object | string): void;
+    log(value?: any, configs?: Object | string): void;
     /**
      * [fn.rd] 读文件
      * @param file
