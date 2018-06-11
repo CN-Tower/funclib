@@ -41,12 +41,13 @@ export class Time {
 
     /**
      * [fn.timeStamp] 返回一个当前时间戳
+     * @param time 
      */
-    public static timeStamp(date: Date | string): number {
-        if (date instanceof Date) {
-            return date.getTime();
+    public static timeStamp(time?: Date | string | number): number {
+        if (time instanceof Date) {
+            return time.getTime();
         } else {
-            return (new Date(date)).getTime() || (new Date()).getTime();
+            return (new Date(String(time)).getTime() || (new Date()).getTime());
         }
     }
 
@@ -55,8 +56,8 @@ export class Time {
      * @param fmtStr 
      * @param time 
      */
-    public static fmtDate(fmtStr: string, time: any): string {
-        const _date = new Date(time);
+    public static fmtDate(fmtStr: string, time: Date | string | number): string {
+        const _date = new Date(String(time));
         const date = _date.getTime() ? _date : new Date();
         const obj = {
             'M+': date.getMonth() + 1,
