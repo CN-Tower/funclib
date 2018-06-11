@@ -170,14 +170,14 @@ interface Funclib {
      * @param duration
      * @param callback
      */
-    interval(timerId: string, duration: number | boolean, callback?: Function): void;
+    interval(timerId: any, duration: any, callback?: Function): void;
     /**
      * [fn.timeout] 延时定时器
      * @param timerId
      * @param duration
      * @param callback
      */
-    timeout(timerId: string, duration: number | boolean, callback?: Function): void;
+    timeout(timerId: any, duration: any, callback?: Function): void;
     /**
      * [fn.timeStamp] 返回一个当前时间戳
      */
