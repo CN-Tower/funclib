@@ -20,7 +20,7 @@ let root, isClient;
 
 export class Funclib {
 
-  public version: string = 'V2.1.0'
+  public version: string = 'V2.1.1'
   
   private deleteProp = prop => {
     delete this[prop];
@@ -42,6 +42,9 @@ export class Funclib {
       FN_CONF.clientMethods.forEach(prop => this.deleteProp(prop));
     }
     this.initTricks();
+    ['deleteProp', 'initTricks', 'initFileSystem', 'initProgress'].forEach(priMethod => {
+      delete this[priMethod];
+    });
   }
 
 
@@ -93,7 +96,7 @@ export class Funclib {
 
   /**
    * [fn.len] 获取对象自有属性的个数
-   * @arg obj [object]
+   * @arg obj
    */
   len(obj: any): number {
     return Object_.len(obj);
@@ -103,7 +106,7 @@ export class Funclib {
    * [fn.isEmpty] 判断对象是否为空对象或数组
    * @param obj 
    */
-  isEmpty(obj: Object | any[]): boolean {
+  isEmpty(obj: Object| Function | string | any[]): boolean {
     return Object_.isEmpty(obj);
   }
 
@@ -181,9 +184,10 @@ export class Funclib {
 
   /**
    * [fn.timeStamp] 返回一个当前时间戳
+   * @param time 
    */
-  timeStamp(date?: Date | string): number {
-    return Time.timeStamp(date);
+  timeStamp(time?: Date | string | number): number {
+    return Time.timeStamp(time);
   }
 
   /**
@@ -191,7 +195,7 @@ export class Funclib {
    * @param fmtStr 
    * @param time 
    */
-  fmtDate(fmtStr: string, time?: any): string {
+  fmtDate(fmtStr: string, time?: Date | string | number): string {
     return Time.fmtDate(fmtStr, time);
   }
 
@@ -212,13 +216,13 @@ export class Funclib {
   }
 
   /**
-   * [fn.currency] 格式化显示货币
+   * [fn.fmtCurrency] 格式化显示货币
    * @param number
    * @param digit
    * @returns {string}
    */
-  currency(number: number, digit: number = 2): string {
-    return String_.currency(number, digit);
+  fmtCurrency(number: number, digit: number = 2): string {
+    return String_.fmtCurrency(number, digit);
   }
 
   /**
@@ -269,7 +273,7 @@ export class Funclib {
    * @param atBegin  是否不需要延迟调用
    * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
    */
-  debounce(delay: number, atBegin: boolean, callback?: Function): Function {
+  debounce(delay: number, atBegin: any, callback?: Function): Function {
     return Function_.debounce(delay, atBegin, callback);
   }
 
