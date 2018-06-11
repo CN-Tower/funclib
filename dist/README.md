@@ -31,8 +31,8 @@ $ npm install
 # Start
 $ npm start
 
-# DoTry
-$ npm run dist
+# Do Try
+$ npm run usage
 
 # Build
 $ npm run build
@@ -88,13 +88,13 @@ funclib.js
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
 ├── .gitignore              # You know the drill...
 ├── .travis.yml             # CI配置
-├── app.js                  # 服务端试验
-├── funclib.html            # 客户端试验
 ├── LICENSE                 # 授权说明
 ├── package-lock.json       # NPM Lock
 ├── package.json            # 库配置
 ├── README.md               # Read this FIRST :)
-└── tsconfig.json           # Typescript配置
+├── tsconfig.json           # Typescript配置
+├── usage.html              # 客户端试验
+└── usage.js                # 服务端试验
 ```
 
 ## Document (CM: Client side method, SM: Server side method)
@@ -126,7 +126,7 @@ funclib.js
 #### String     
 [fn.encodeHtml](#fnencodehtml)&nbsp;&nbsp;编码HTML字符串<br/>
 [fn.decodeHtml](#fndecodehtml)&nbsp;&nbsp;解码HTML字符串<br/>
-[fn.currency](#fncurrency)&nbsp;&nbsp;格式化显示货币<br/>
+[fn.fmtCurrency](#fnfmtcurrency)&nbsp;&nbsp;格式化显示货币<br/>
 [fn.cutString](#fncutstring)&nbsp;&nbsp;裁切字符串到指定长度
 #### RegExp     
 [fn.getPattern](#fngetpattern)&nbsp;&nbsp;获取一个通用的正则表达式<br/>
@@ -260,7 +260,7 @@ fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
 ```
 /**
 * [fn.len] 获取对象自有属性的个数
-* @arg obj [object]
+* @arg obj
 */
 fn.len(obj: any): number;
 
@@ -275,7 +275,7 @@ fn.len(x => console.log(s)); // 1
 * [fn.isEmpty] 判断对象是否为空对象或数组
 * @param obj 
 */
-fn.isEmpty(obj: Object | any[]): boolean;
+fn.isEmpty(obj: Object| Function | string | any[]): boolean;
 
 // examples:
 fn.isEmpty({});            // true
@@ -401,8 +401,9 @@ fn.timeout('test', false);
 ```
 /**
 * [fn.timeStamp] 返回一个当前时间戳
+* @param time 
 */
-fn.timeStamp(date?: Date | string): number;
+fn.timeStamp(time: Date | string | number): number;
 
 // examples:
 fn.timeStamp();                             // 1528295152832
@@ -415,7 +416,7 @@ fn.timeStamp(new Date('2018-06-06 12:30')); // 1528259400000
 * @param fmtStr 
 * @param time 
 */
-fn.fmtDate(fmtStr: string, time?: any): string;
+fn.fmtDate(fmtStr: string, time?: Date | string | number): string;
 
 // examples:
 fn.fmtDate('yy-MM-dd hh:mm:ss');                // 18-06-06 22:31:16
@@ -445,19 +446,19 @@ fn.decodeHtml(html: string): string;
 // examples:
 fn.decodeHtml('&lt;div&gt;&lt;/div&gt;'); // <div></div>
 ```
-#### fn.currency
+#### fn.fmtCurrency
 ```
 /**
-* [fn.currency] 格式化显示货币
+* [fn.fmtCurrency] 格式化显示货币
 * @param number
 * @param digit
 * @returns {string}
 */
-fn.currency(number: number, digit?: number): any;
+fn.fmtCurrency(number: number, digit?: number): any;
 
 // examples:
-'￥' + fn.currency(199999999);    // ￥199,999,999.00
-'￥' + fn.currency(199999999, 4); // ￥199,999,999.0000
+'￥' + fn.fmtCurrency(199999999);    // ￥199,999,999.00
+'￥' + fn.fmtCurrency(199999999, 4); // ￥199,999,999.0000
 ```
 #### fn.cutString
 ```
@@ -521,7 +522,7 @@ throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Fu
 * @param atBegin  是否不需要延迟调用
 * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
 */
-debounce(delay: number, atBegin: boolean, callback?: Function): Function;
+debounce(delay: number, atBegin: any, callback?: Function): Function;
 ```
 ### Events     
 #### fn.getKeyCodeByName

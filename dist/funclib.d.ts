@@ -30,7 +30,7 @@
  ## String     
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
- * fn.currency               格式化显示货币
+ * fn.fmtCurrency               格式化显示货币
  * fn.cutString              裁切字符串到指定长度
  ## RegExp     
  * fn.getPattern             获取一个通用的正则表达式
@@ -129,7 +129,7 @@ interface Funclib {
      * [fn.isEmpty] 判断对象是否为空对象或数组
      * @param obj 
      */
-    isEmpty(obj: Object | any[]): boolean;
+    isEmpty(obj: Object| Function | string | any[]): boolean;
     /**
      * [fn.overlay] 给对象赋值
      * @param target 
@@ -170,24 +170,24 @@ interface Funclib {
      * @param duration
      * @param callback
      */
-    interval(timerId: string, duration: number | boolean, callback?: Function): void;
+    interval(timerId: any, duration: any, callback?: Function): void;
     /**
      * [fn.timeout] 延时定时器
      * @param timerId
      * @param duration
      * @param callback
      */
-    timeout(timerId: string, duration: number | boolean, callback?: Function): void;
+    timeout(timerId: any, duration?: any, callback?: Function): void;
     /**
      * [fn.timeStamp] 返回一个当前时间戳
      */
-    timeStamp(date?: Date | string): number;
+    timeStamp(time?: Date | string | number): number;
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr 
      * @param time 
      */
-    fmtDate(fmtStr: string, time?: any): string;
+    fmtDate(fmtStr: string, time?: Date | string | number): string;
     /**
      * [fn.encodeHtml] 编码HTML字符串
      * @param html 
@@ -199,12 +199,12 @@ interface Funclib {
      */
     decodeHtml(html: string): string;
     /**
-     * [fn.currency] 格式化显示货币
+     * [fn.fmtCurrency] 格式化显示货币
      * @param number
      * @param digit
      * @returns {string}
      */
-    currency(number: number, digit?: number): any;
+    fmtCurrency(number: number, digit?: number): any;
     /**
      * [fn.cutString] 裁切字符串到指定长度
      * @param str
@@ -241,7 +241,7 @@ interface Funclib {
      * @param atBegin  是否不需要延迟调用
      * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      */
-    debounce(delay: number, atBegin: boolean, callback?: Function): Function;
+    debounce(delay: number, atBegin: any, callback?: Function): Function;
     /**
      * [fn.getKeyCodeByName] 根据键名获取键码
      * @param keyName 
@@ -369,4 +369,9 @@ interface Funclib {
      * [fn.progress] 进度工具
      */
     progress: Progress;
+    /**
+     * [fn.extendJquery] jQuery拓展
+     * @param jquery
+     */
+    extendJquery(jquery): void;
 }
