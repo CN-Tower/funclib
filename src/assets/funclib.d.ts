@@ -30,7 +30,7 @@
  ## String     
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
- * fn.currency               格式化显示货币
+ * fn.fmtCurrency               格式化显示货币
  * fn.cutString              裁切字符串到指定长度
  ## RegExp     
  * fn.getPattern             获取一个通用的正则表达式
@@ -129,7 +129,7 @@ interface Funclib {
      * [fn.isEmpty] 判断对象是否为空对象或数组
      * @param obj 
      */
-    isEmpty(obj: Object | any[]): boolean;
+    isEmpty(obj: Object| Function | string | any[]): boolean;
     /**
      * [fn.overlay] 给对象赋值
      * @param target 
@@ -181,13 +181,13 @@ interface Funclib {
     /**
      * [fn.timeStamp] 返回一个当前时间戳
      */
-    timeStamp(date?: Date | string): number;
+    timeStamp(time?: Date | string | number): number;
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr 
      * @param time 
      */
-    fmtDate(fmtStr: string, time?: any): string;
+    fmtDate(fmtStr: string, time?: Date | string | number): string;
     /**
      * [fn.encodeHtml] 编码HTML字符串
      * @param html 
@@ -234,14 +234,14 @@ interface Funclib {
      * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
      */
-    throttle(delay: number, noTrailing?: any, callback?: any, debounceMode?: any): Function;
+    throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function;
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
      * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
      * @param atBegin  是否不需要延迟调用
      * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
      */
-    debounce(delay: number, atBegin?: any, callback?: Function): Function;
+    debounce(delay: number, atBegin: any, callback?: Function): Function;
     /**
      * [fn.getKeyCodeByName] 根据键名获取键码
      * @param keyName 
@@ -281,11 +281,11 @@ interface Funclib {
     /**
      * [fn.pollingEl] 轮询获取异步出现的HTML元素
      * @param selector 选择器
-     * @param duration 超时时间
+     * @param timeout 超时时间
      * @param options {duration: number = 250; isSelectAll: boolean = false}
      * @param callback
      */
-    pollingEl(selector: string|string[], duration?: any, options?: any, callback?: Function): void;
+    pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void;
     /**
      * [fn.noAutoComplete] 防止input密码自动填充
      * @param input [HTMLInputElement]
@@ -330,7 +330,7 @@ interface Funclib {
      * part: 'pre'|'end' (opt.)
      * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      */
-    log(value?: any, configs?: Object | string): void;
+    log(value: any, configs?: Object | string): void;
     /**
      * [fn.rd] 读文件
      * @param file
@@ -369,4 +369,9 @@ interface Funclib {
      * [fn.progress] 进度工具
      */
     progress: Progress;
+    /**
+     * [fn.extendJquery] jQuery拓展
+     * @param jquery
+     */
+    extendJquery(jquery): void;
 }
