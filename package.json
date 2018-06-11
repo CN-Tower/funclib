@@ -4,9 +4,9 @@
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && npm run dist",
+    "start": "npm run build && npm run usage",
     "build": "node ./scripts/build.js",
-    "dist": "node app.js",
+    "usage": "node usages.js",
     "test": "karma start scripts/karma.conf.js"
   },
   "repository": {
