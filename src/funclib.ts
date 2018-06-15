@@ -47,6 +47,8 @@ export class Funclib {
     });
   }
 
+
+
   /**
    * [fn.isTypeOf] 检查值的类型，返回布尔值
    * @param value 
@@ -99,13 +101,13 @@ export class Funclib {
   len(obj: any): number {
     return Object_.len(obj);
   }
-  
+
   /**
-   * [fn.forEach] 遍历对象的可数自有属性
+   * [fn.forIn] 遍历对象的可数自有属性
    * @arg obj
    * @arg callback
    */
-  forEach(obj: Object, callback: any): void {
+  forIn(obj: Object, callback: any): void {
     Object.keys(obj).forEach(callback);
   }
 
