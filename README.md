@@ -110,6 +110,7 @@ funclib.js
 [fn.sortByField](#fnsortbyfield)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
 [fn.len](#fnlen)&nbsp;&nbsp;获取对象自有属性的个数<br/>
+[fn.forEach](#fnforeach)&nbsp;&nbsp;遍历对象的可数自有属性<br/>
 [fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
@@ -268,6 +269,19 @@ fn.len(obj: any): number;
 fn.len({name: 'Tom'});       // 1
 fn.len(['x']);               // 1
 fn.len(x => console.log(s)); // 1
+```
+#### fn.forEach
+```
+/**
+* [fn.forEach] 遍历对象的可数自有属性
+* @arg obj
+* @arg callback
+*/
+forEach(obj: Object, callback: any): void;
+
+// examples:
+const tom = {name: 'Tom', age: 28}
+fn.forEach(tom, prop => console.log(prop)); // Tom \n 28
 ```
 #### fn.isEmpty
 ```
