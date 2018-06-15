@@ -17,6 +17,7 @@ const fn = require('./dist/');
 // const obj2 = {name: 'Obj', metadata: null}
 // const val1 = fn.getChainProperty(obj1, 'metadata/subObj/name');
 // const val2 = fn.getChainProperty(obj2, 'metadata/subObj/name');
+// fn.forEach(['aaa', 'bbb'], x => fn.log(x));
 // fn.log(val1);
 // fn.log(val2);
 
