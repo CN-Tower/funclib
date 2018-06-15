@@ -281,7 +281,7 @@ forEach(obj: Object, callback: any): void;
 
 // examples:
 const tom = {name: 'Tom', age: 28}
-fn.forEach(tom, prop => console.log(prop)); // Tom \n 28
+fn.forEach(tom, prop => console.log(prop)); // name \n age
 ```
 #### fn.isEmpty
 ```
