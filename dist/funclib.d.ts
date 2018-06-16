@@ -14,6 +14,7 @@
  * fn.sortByField            对象数组根据字段排序
  ## Object     
  * fn.len                    获取对象自有属性的个数
+ * fn.forIn                  遍历对象的可数自有属性
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
@@ -125,6 +126,12 @@ interface Funclib {
      * @arg obj [object]
      */
     len(obj: any): number;
+    /**
+     * [fn.forIn] 遍历对象的可数自有属性
+     * @arg obj
+     * @arg callback
+     */
+    forIn(obj: Object, callback: any): void;
     /**
      * [fn.isEmpty] 判断对象是否为空对象或数组
      * @param obj 

@@ -7,11 +7,11 @@ describe('Object Methods:', function () {
             assert(fn.len(obj1) === 1, fn.len(obj2) === 1, fn.len(obj3) === 2);
         });
     });
-    describe('#fn.forEach()', function () {
-        it(`fn.forEach(obj, callback) should traverse the keys of obj.`, function () {
+    describe('#fn.forIn()', function () {
+        it(`fn.forIn(obj, callback) should traverse the keys of obj.`, function () {
             const tom = {name: 'Tom', age: 28};
             let tmpStr = '';
-            fn.forEach(tom, p => tmpStr += tom[p]);
+            fn.forIn(tom, p => tmpStr += tom[p]);
             assert(tmpStr === 'Tom28');
         });
     });
