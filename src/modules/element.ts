@@ -42,8 +42,35 @@ export class Element_ {
      * @returns {boolean}
      */
     public static isFullScreen(): boolean {
-        return !!document['fullscreenEnabled'] || document['fullScreen']
-            || document['webkitIsFullScreen'] || document['msFullscreenEnabled'] || false;
+        return document['fullscreenEnabled']
+                || window['fullScreen']
+                || document['mozFullscreenEnabled']
+                || document['webkitIsFullScreen']
+                || document['msIsFullScreen'] || false;
+    }
+
+    /**
+     * [fn.fullScreenChange] 检测是否全屏状态
+     * @param callback
+     */
+    public static fullScreenChange(callback: boolean|any): void {
+        if (window.addEventListener) {
+            if (typeof callback === 'function') {
+                this.fullScreenChange(false);
+                window['fullScreenFunc'] = callback;
+                document.addEventListener('fullscreenchange', window['fullScreenFunc']);
+                document.addEventListener('webkitfullscreenchange', window['fullScreenFunc']);
+                document.addEventListener('mozfullscreenchange', window['fullScreenFunc']);
+                document.addEventListener('MSFullscreenChange', window['fullScreenFunc']);
+            } else {
+                if (window['fullScreenFunc']) {
+                    document.removeEventListener('fullscreenchange', window['fullScreenFunc']);
+                    document.removeEventListener('webkitfullscreenchange', window['fullScreenFunc']);
+                    document.removeEventListener('mozfullscreenchange', window['fullScreenFunc']);
+                    document.removeEventListener('MSFullscreenChange', window['fullScreenFunc']);
+                }
+            }
+        }
     }
 
     /**

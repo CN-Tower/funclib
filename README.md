@@ -145,6 +145,7 @@ funclib.js
 [fn.fullScreen](#fnfullscreen)&nbsp;&nbsp;全屏显示一个HTML元素<br/>
 [fn.exitFullScreen](#fnexitfullscreen)&nbsp;&nbsp;退出全屏显示<br/>
 [fn.isFullScreen](#fnisFullScreen)&nbsp;&nbsp;检测是否处理全屏状态<br/>
+[fn.fullScreenChange](#fullscreenchange)&nbsp;&nbsp;检测是否全屏状态<br/>
 [fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素<br/>
 [fn.noAutoComplete](#fnnoautocomplete)&nbsp;&nbsp;防止input密码自动填充<br/>
 [fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
@@ -173,8 +174,8 @@ funclib.js
 返回当前函数库版本
 ```
 /**
-* [fn.version] 返回一个指定长度和默认值的数组
-*/
+  * [fn.version] 返回一个指定长度和默认值的数组
+  */
 
 // examples:
 fn.version;  // V2.0.5
@@ -183,10 +184,10 @@ fn.version;  // V2.0.5
 #### fn.isTypeOf
 ```
 /**
-* [fn.isTypeOf] 检查值的类型，返回布尔值
-* @param value 
-* @param type ['arr'|'obj'|'fun'|string|string[]]
-*/
+  * [fn.isTypeOf] 检查值的类型，返回布尔值
+  * @param value 
+  * @param type ['arr'|'obj'|'fun'|string|string[]]
+  */
 isTypeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
 
 // examples:
@@ -200,10 +201,10 @@ console.log(c); // false
 #### fn.typeValue
 ```
 /**
-* [fn.typeValue] 检查值的类型，true则返回该值，否则返回false
-* @param value 
-* @param type ['arr'|'obj'|'fun'|string|string[]]
-*/
+  * [fn.typeValue] 检查值的类型，true则返回该值，否则返回false
+  * @param value 
+  * @param type ['arr'|'obj'|'fun'|string|string[]]
+  */
 typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
 
 // examples:
@@ -218,10 +219,10 @@ console.log(c); // []
 #### fn.array
 ```
 /**
-* [fn.array] 返回一个指定长度和默认值的数组
-* @param length [number]
-* @param value  [any, function]
-*/
+  * [fn.array] 返回一个指定长度和默认值的数组
+  * @param length [number]
+  * @param value  [any, function]
+  */
 fn.array(length: number, value?: any): any[];
 
 // examples:
@@ -233,9 +234,9 @@ fn.array(5, () => x += 2); // [2, 4, 6, 8, 10]
 #### fn.toArr
 ```
 /**
-* [fn.toArr] 值数组化
-* @param src 
-*/
+  * [fn.toArr] 值数组化
+  * @param src 
+  */
 fn.toArr(src: any): any[];
 
 // examples:
@@ -245,11 +246,11 @@ fn.toArr(['str']); // ['str']
 #### fn.sortByField
 ```
 /**
-* [fn.sortByField] 对象数组根据字段排序
-* @param tableData
-* @param field
-* @param isDesc
-*/
+  * [fn.sortByField] 对象数组根据字段排序
+  * @param tableData
+  * @param field
+  * @param isDesc
+  */
 fn.sortByField(tableData: any, field: string, isDesc?: boolean): any;
 
 // examples:
@@ -260,9 +261,9 @@ fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
 #### fn.len
 ```
 /**
-* [fn.len] 获取对象自有属性的个数
-* @arg obj
-*/
+  * [fn.len] 获取对象自有属性的个数
+  * @arg obj
+  */
 fn.len(obj: any): number;
 
 // examples:
@@ -273,10 +274,10 @@ fn.len(x => console.log(s)); // 1
 #### fn.forIn
 ```
 /**
-* [fn.forIn] 遍历对象的可数自有属性
-* @arg obj
-* @arg callback
-*/
+  * [fn.forIn] 遍历对象的可数自有属性
+  * @arg obj
+  * @arg callback
+  */
 forIn(obj: Object, callback: any): void;
 
 // examples:
@@ -286,9 +287,9 @@ fn.forIn(tom, prop => console.log(prop)); // name \n age
 #### fn.isEmpty
 ```
 /**
-* [fn.isEmpty] 判断对象是否为空对象或数组
-* @param obj 
-*/
+  * [fn.isEmpty] 判断对象是否为空对象或数组
+  * @param obj 
+  */
 fn.isEmpty(obj: Object| Function | string | any[]): boolean;
 
 // examples:
@@ -298,11 +299,11 @@ fn.isEmpty({name: 'Tom'}); // false
 #### fn.overlay
 ```
 /**
-* [fn.overlay] 给对象赋值
-* @param target 
-* @param source 
-* @param propList 
-*/
+  * [fn.overlay] 给对象赋值
+  * @param target 
+  * @param source 
+  * @param propList 
+  */
 fn.overlay(target: Object, source: Object, propList?: string[]): void;
 
 // examples:
@@ -314,9 +315,9 @@ console.log(tom); // {name: 'Tom', age: 28, sex: 'm'}
 #### fn.deepCopy
 ```
 /**
-* [fn.deepCopy] 深拷贝对象或数组
-* @param data
-*/
+  * [fn.deepCopy] 深拷贝对象或数组
+  * @param data
+  */
 fn.deepCopy(data: any): any;
 
 // examples:
@@ -325,11 +326,11 @@ You know the drill...
 #### fn.pickProperty
 ```
 /**
-* [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
-* @param obj [Object]
-* @param chain [string]
-* @param type ['arr'|'obj'|'fun'|string|string[]]
-*/
+  * [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
+  * @param obj [Object]
+  * @param chain [string]
+  * @param type ['arr'|'obj'|'fun'|string|string[]]
+  */
 pickProperty(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
 
 // examples:
@@ -344,10 +345,10 @@ fn.log(val2); // undefined
 #### fn.random
 ```
 /**
-* [fn.random] 返回一个指定范围的随机数
-* @param sta [number]
-* @param end [number]
-*/
+  * [fn.random] 返回一个指定范围的随机数
+  * @param sta [number]
+  * @param end [number]
+  */
 fn.random(sta: number, end?: number): number;
 
 // examples:
@@ -359,9 +360,9 @@ fn.random(5, 10); // 9
 #### fn.rdid
 ```
 /**
-* [fn.rdid] 返回一个指定长度(最小4位，默认12位)的随机ID。
-* @param len [number]
-*/
+  * [fn.rdid] 返回一个指定长度(最小4位，默认12位)的随机ID。
+  * @param len [number]
+  */
 fn.rdid(len?: number): string;
 
 // examples:
@@ -371,8 +372,8 @@ fn.rdid(6); // 9Y0MQZ
 #### fn.rdcolor
 ```
 /**
-* [fn.rdcolor] 返回一个随机色值
-*/
+  * [fn.rdcolor] 返回一个随机色值
+  */
 fn.rdcolor(): string;
 
 // examples:
@@ -382,11 +383,11 @@ fn.rdcolor(); // #2913ba
 #### fn.interval
 ```
 /**
-* [fn.interval] 循环定时器
-* @param timerId
-* @param duration
-* @param callback
-*/
+  * [fn.interval] 循环定时器
+  * @param timerId
+  * @param duration
+  * @param callback
+  */
 fn.interval(timerId: string, duration: number | boolean, callback?: Function): void;
 
 // examples:
@@ -398,11 +399,11 @@ fn.interval('test', false);
 #### fn.timeout
 ```
 /**
-* [fn.timeout] 延时定时器
-* @param timerId
-* @param duration
-* @param callback
-*/
+  * [fn.timeout] 延时定时器
+  * @param timerId
+  * @param duration
+  * @param callback
+  */
 fn.timeout(timerId: string, duration: number | boolean, callback?: Function): void;
 
 // examples:
@@ -414,9 +415,9 @@ fn.timeout('test', false);
 #### fn.timeStamp
 ```
 /**
-* [fn.timeStamp] 返回一个当前时间戳
-* @param time 
-*/
+  * [fn.timeStamp] 返回一个当前时间戳
+  * @param time 
+  */
 fn.timeStamp(time: Date | string | number): number;
 
 // examples:
@@ -426,10 +427,10 @@ fn.timeStamp(new Date('2018-06-06 12:30')); // 1528259400000
 #### fn.fmtDate
 ```
 /**
-* [fn.fmtDate] 获取格式化的时间字符串
-* @param fmtStr 
-* @param time 
-*/
+  * [fn.fmtDate] 获取格式化的时间字符串
+  * @param fmtStr 
+  * @param time 
+  */
 fn.fmtDate(fmtStr: string, time?: Date | string | number): string;
 
 // examples:
@@ -441,9 +442,9 @@ fn.fmtDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30')); // 18-06-06 12:30
 #### fn.encodeHtml
 ```
 /**
-* [fn.encodeHtml] 编码HTML字符串
-* @param html 
-*/
+  * [fn.encodeHtml] 编码HTML字符串
+  * @param html 
+  */
 fn.encodeHtml(html: string): string;
 
 // examples:
@@ -452,9 +453,9 @@ fn.encodeHtml('<div></div>');             // &lt;div&gt;&lt;/div&gt;
 #### fn.decodeHtml
 ```
 /**
-* [fn.decodeHtml] 解码HTML字符串
-* @param html 
-*/
+  * [fn.decodeHtml] 解码HTML字符串
+  * @param html 
+  */
 fn.decodeHtml(html: string): string;
 
 // examples:
@@ -463,11 +464,11 @@ fn.decodeHtml('&lt;div&gt;&lt;/div&gt;'); // <div></div>
 #### fn.fmtCurrency
 ```
 /**
-* [fn.fmtCurrency] 格式化显示货币
-* @param number
-* @param digit
-* @returns {string}
-*/
+  * [fn.fmtCurrency] 格式化显示货币
+  * @param number
+  * @param digit
+  * @returns {string}
+  */
 fn.fmtCurrency(number: number, digit?: number): any;
 
 // examples:
@@ -477,11 +478,11 @@ fn.fmtCurrency(number: number, digit?: number): any;
 #### fn.cutString
 ```
 /**
-* [fn.cutString] 裁切字符串到指定长度
-* @param str
-* @param len
-* @returns {string}
-*/
+  * [fn.cutString] 裁切字符串到指定长度
+  * @param str
+  * @param len
+  * @returns {string}
+  */
 fn.cutString(str: number, len: number): string;
 
 // examples:
@@ -492,11 +493,11 @@ fn.cutString('test测试！', 4); // test...
 #### fn.getPattern
 ```
 /**
-* [fn.getPattern] 获取一个通用的正则表达式
-* @param type
-* @param isNoLimit
-* @returns {pattern|undefined}
-*/
+  * [fn.getPattern] 获取一个通用的正则表达式
+  * @param type
+  * @param isNoLimit
+  * @returns {pattern|undefined}
+  */
 fn.getPattern(type: string, isNoLimit?: boolean): any;
 
 // examples:
@@ -505,12 +506,12 @@ fn.getPattern('email'); // /^(([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z
 #### fn.matchPattern
 ```
 /**
-* [fn.matchPattern] 与一个或几个通用正则匹配
-* @param src
-* @param type
-* @param isNoLimit
-* @returns {boolean}
-*/
+  * [fn.matchPattern] 与一个或几个通用正则匹配
+  * @param src
+  * @param type
+  * @param isNoLimit
+  * @returns {boolean}
+  */
 fn.matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean;
 
 // examples:
@@ -520,31 +521,31 @@ fn.matchPattern('cntower@yahoo.com', 'email'); // true
 #### fn.throttle
 ```
 /**
-* [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-* @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-* @param  noTrailing   默认为false，为true相当于debunce
-* @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
-* @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
-*/
+  * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
+  * @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+  * @param  noTrailing   默认为false，为true相当于debunce
+  * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+  * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+  */
 throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function;
 ```
 #### fn.debounce
 ```
 /**
-* [fn.debounce] 防抖函数, 适用于获取用户输入
-* @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-* @param atBegin  是否不需要延迟调用
-* @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
-*/
+  * [fn.debounce] 防抖函数, 适用于获取用户输入
+  * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
+  * @param atBegin  是否不需要延迟调用
+  * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+  */
 debounce(delay: number, atBegin: any, callback?: Function): Function;
 ```
 ### Events     
 #### fn.getKeyCodeByName
 ```
 /**
-* [fn.getKeyCodeByName] 根据键名获取键码
-* @param keyName 
-*/
+  * [fn.getKeyCodeByName] 根据键名获取键码
+  * @param keyName 
+  */
 fn.getKeyCodeByName(keyName: string): number;
 
 // examples:
@@ -553,9 +554,9 @@ fn.getKeyCodeByName('Ctrl'); // 17
 #### fn.getKeyNameByCode
 ```
 /**
-* [fn.getKeyCodeByName] 根据键码获取键名
-* @param keyName 
-*/
+  * [fn.getKeyCodeByName] 根据键码获取键名
+  * @param keyName 
+  */
 fn.getKeyNameByCode(keyCode: number): string;
 
 // examples:
@@ -565,9 +566,9 @@ fn.getKeyNameByCode(38); // Up
 #### fn.parseQueryString
 ```
 /**
-* [fn.parseQueryString] 解析Url参数成对象
-* @param url [string]  default: window.location.href
-*/
+  * [fn.parseQueryString] 解析Url参数成对象
+  * @param url [string]  default: window.location.href
+  */
 parseQueryString(url?: string): Object;
 
 // examples:
@@ -577,9 +578,9 @@ fn.log(fn.parseQueryString(url));       // {"wd": "百度", "rsv_spt": "10"}
 #### fn.stringfyQueryString
 ```
 /**
-* [fn.stringfyQueryString] 把对象编译成Url参数
-* @param obj [string]  default: window.location.href
-*/
+  * [fn.stringfyQueryString] 把对象编译成Url参数
+  * @param obj [string]  default: window.location.href
+  */
 stringfyQueryString(obj: Object): string;
 
 // examples:
@@ -590,10 +591,10 @@ fn.log(fn.stringfyQueryString(params)); // ?name=Tom&age=28
 #### fn.fullScreen
 ```
 /**
-* [fn.fullScreen] 全屏显示HTML元素
-* @param el
-* @returns {any}
-*/
+  * [fn.fullScreen] 全屏显示HTML元素
+  * @param el
+  * @returns {any}
+  */
 fn.fullScreen(el: any): void;
 
 // examples:
@@ -602,9 +603,9 @@ fn.fullScreen($('html')[0]);
 #### fn.exitFullScreen
 ```
 /**
-* [fn.exitFullScreen] 退出全屏显示
-* @returns {any}
-*/
+  * [fn.exitFullScreen] 退出全屏显示
+  * @returns {any}
+  */
 fn.exitFullScreen(): void;
 
 // examples:
@@ -613,51 +614,63 @@ fn.exitFullScreen();
 #### fn.isFullScreen
 ```
 /**
-* [fn.isFullScreen] 检测是否全屏状态
-* @returns {boolean}
-*/
+  * [fn.isFullScreen] 检测是否全屏状态
+  * @returns {boolean}
+  */
 fn.isFullScreen(): boolean;
 
 // examples:
 fn.isFullScreen(); // false
 ```
+#### fn.fullScreenChange
+```
+/**
+  * [fn.fullScreenChange] 检测是否全屏状态
+  * @param callback
+  */
+fullScreenChange(callback?: boolean|any): void;
+
+// examples:
+fn.isFullScreen(() => {Do something!});
+fn.isFullScreen(false);
+```
 #### fn.pollingEl
 ```
 /**
-* [fn.pollingEl] 轮询获取异步出现的HTML元素
-* @param selector 选择器
-* @param timeout 超时时间
-* @param options {duration: number = 250; isSelectAll: boolean = false}
-* @param callback
-*/
+  * [fn.pollingEl] 轮询获取异步出现的HTML元素
+  * @param selector 选择器
+  * @param timeout 超时时间
+  * @param options {duration: number = 250; isSelectAll: boolean = false}
+  * @param callback
+  */
 pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void;
 ```
 #### fn.noAutoComplete
 ```
 /**
-* [fn.noAutoComplete] 防止input密码自动填充
-* @param input [HTMLInputElement]
-* @param type ['username'|'password']
-*/
+  * [fn.noAutoComplete] 防止input密码自动填充
+  * @param input [HTMLInputElement]
+  * @param type ['username'|'password']
+  */
 noAutoComplete(input: any, type: 'username'|'password'): void;
 ```
 #### fn.copyText
 ```
 /**
-* [fn.copyText] 复制文本到粘贴板
-* @param text [string]
-*/
+  * [fn.copyText] 复制文本到粘贴板
+  * @param text [string]
+  */
 copyText(text: string): void;
 ```
 ### Cookie     
 #### fn.setCookie
 ```
 /**
-* [fn.setCookie] 设置Cookie
-* @param name 
-* @param value 
-* @param days 
-*/
+  * [fn.setCookie] 设置Cookie
+  * @param name 
+  * @param value 
+  * @param days 
+  */
 fn.setCookie(name: string, value: string, days?: number): void;
 
 // examples:
@@ -666,10 +679,10 @@ fn.setCookie('name', 'Tom');
 #### fn.getCookie
 ```
 /**
-* [fn.getCookie] 根据name读取cookie
-* @param  name 
-* @return {String}
-*/
+  * [fn.getCookie] 根据name读取cookie
+  * @param  name 
+  * @return {String}
+  */
 fn.getCookie(name: string): string;
 
 // examples:
@@ -678,9 +691,9 @@ fn.getCookie('name'); // 'Tom'
 #### fn.removeCookie
 ```
 /**
-* [fn.removeCookie] 根据name删除cookie
-* @param name 
-*/
+  * [fn.removeCookie] 根据name删除cookie
+  * @param name 
+  */
 fn.removeCookie(name: string): void;
 
 // examples:
@@ -690,10 +703,10 @@ fn.removeCookie('name'); // 'Tom'
 #### fn.chalk
 ```
 /**
-* [fn.chalk] 返回带颜色的字符串
-* @param value 
-* @param color 
-*/
+  * [fn.chalk] 返回带颜色的字符串
+  * @param value 
+  * @param color 
+  */
 fn.chalk(value: string, color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'): string;
 
 // examples:
@@ -702,14 +715,14 @@ console.log(fn.chalk('test', 'cyan'));
 #### fn.log
 ```
 /**
-* [fn.log] 控制台打印
-* @param value 
-* @param configs {
-* title: string,
-* lineLen: number [20-100]
-* part: 'pre'|'end' (opt.)
-* color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
-*/
+  * [fn.log] 控制台打印
+  * @param value 
+  * @param configs {
+  * title: string,
+  * lineLen: number [20-100]
+  * part: 'pre'|'end' (opt.)
+  * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+  */
 fn.log(value: any, configs?: Object|string): void;
 
 // examples:
@@ -728,87 +741,87 @@ fn.log({name: 'Tom', age: 28});
 #### fn.rd
 ```
 /**
-* [fn.rd] 读文件
-* @param file
-*/
+  * [fn.rd] 读文件
+  * @param file
+  */
 fn.rd(file: string): string;
 ```
 #### fn.wt
 ```
 /**
-* [fn.wt] 写文件
-* @param file
-* @param text
-* @param flag ['w'|'a'] default: 'w'
-*/
+  * [fn.wt] 写文件
+  * @param file
+  * @param text
+  * @param flag ['w'|'a'] default: 'w'
+  */
 fn.wt(file: string, text: string, flag?: 'w' | 'a'): void;
 ```
 #### fn.cp
 ```
 /**
-* [fn.cp] 复制文件或文件夹
-* @param src
-* @param dist
-*/
+  * [fn.cp] 复制文件或文件夹
+  * @param src
+  * @param dist
+  */
 fn.cp(src: string, dist: string): void;
 ```
 #### fn.mv
 ```
 /**
-* [fn.mv] 移动文件或文件夹
-* @param src
-* @param dist
-*/
+  * [fn.mv] 移动文件或文件夹
+  * @param src
+  * @param dist
+  */
 fn.mv(src: string, dist: string): void;
 ```
 #### fn.rm
 ```
 /**
-* [fn.rm] 删除文件或文件夹
-* @param src
-*/
+  * [fn.rm] 删除文件或文件夹
+  * @param src
+  */
 fn.rm(src: string): void;
 ```
 #### fn.mk
 ```
 /**
-* [fn.mk] 创建文件夹
-* @param dist
-*/
+  * [fn.mk] 创建文件夹
+  * @param dist
+  */
 fn.mk(dist: string): void;
 ```
 ### Progress      
 #### fn.progress.start
 ```
 /**
-* [fn.progress.start] 开启进度，并传入参数
-* @param options {title: string, width: number (base: 40)} | 'message'
-*/
+  * [fn.progress.start] 开启进度，并传入参数
+  * @param options {title: string, width: number (base: 40)} | 'message'
+  */
 fn.start(options: any): void;
 ```
 #### fn.progress.stop
 ```
 /**
-* [fn.progress.stop] 结束进度，结束后触发回调
-* @param options 
-*/
+  * [fn.progress.stop] 结束进度，结束后触发回调
+  * @param options 
+  */
 fn.stop(onStopped?: Function): void;
 ```
 ### Tricks      
 #### fn.extendJquery
 ```
 /**
-* [fn.extendJquery] jQuery拓展
-* @param jquery
-*/
+  * [fn.extendJquery] jQuery拓展
+  * @param jquery
+  */
 fn.extendJquery(jquery: any): void;
 ```
 #### $ele.findCousin
 ```
 /**
-* [$ele.findCousin] 寻找元素的表亲
-* @param selector [string]
-* @param level    [number]
-*/
+  * [$ele.findCousin] 寻找元素的表亲
+  * @param selector [string]
+  * @param level    [number]
+  */
 $.fn.findCousin(selector: string, level: number = 0): any;
 ```

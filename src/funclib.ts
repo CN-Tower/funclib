@@ -20,7 +20,7 @@ let root, isClient;
 
 export class Funclib {
 
-  public version: string = 'V2.1.2'
+  public version: string = 'V2.1.3'
   
   private deleteProp = prop => {
     delete this[prop];
@@ -46,8 +46,6 @@ export class Funclib {
       delete this[priMethod];
     });
   }
-
-
 
   /**
    * [fn.isTypeOf] 检查值的类型，返回布尔值
@@ -341,6 +339,14 @@ export class Funclib {
    */
   isFullScreen(): boolean {
     return Element_.isFullScreen();
+  }
+
+  /**
+   * [fn.fullScreenChange] 检测是否全屏状态
+   * @param callback
+   */
+  fullScreenChange(callback?: boolean|any): void {
+    return Element_.fullScreenChange(callback);
   }
 
   /**

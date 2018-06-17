@@ -6,6 +6,7 @@ export const FN_CONF = {
         'fullScreen',
         'exitFullScreen',
         'isFullScreen',
+        'fullScreenChange',
         'pollingEl',
         'noAutoComplete',
         'copyText'

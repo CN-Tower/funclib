@@ -52,6 +52,7 @@
  * fn.fullScreen             全屏显示一个HTML元素
  * fn.exitFullScreen         退出全屏显示
  * fn.checkIsFullScreen      检测是否处理全屏状态
+ * fn.fullScreenChange       检测是否全屏状态
  * fn.pollingEl              轮询获取异步出现的HTML元素
  * fn.noAutoComplete         防止input密码自动填充
  * fn.copyText               复制文本到粘贴板
@@ -285,6 +286,11 @@ interface Funclib {
      * @returns {boolean}
      */
     isFullScreen(): boolean;
+    /**
+     * [fn.fullScreenChange] 检测是否全屏状态
+     * @param callback
+     */
+    fullScreenChange(callback?: boolean|any): void;
     /**
      * [fn.pollingEl] 轮询获取异步出现的HTML元素
      * @param selector 选择器
