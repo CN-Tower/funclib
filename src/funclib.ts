@@ -20,7 +20,7 @@ let root, isClient;
 
 export class Funclib {
 
-  public version: string = 'V2.1.3'
+  public version: string = 'V2.1.4'
   
   private deleteProp = prop => {
     delete this[prop];
