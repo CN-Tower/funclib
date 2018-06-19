@@ -24,10 +24,7 @@ export class FileSystem {
      * @param flag ['w'|'a'] default: 'w'
      */
     public wt = (file: string, text: string, flag: 'w'|'a') => {
-        const fd = fs.openSync(file, flag);
-        var buffer = new Buffer(text);
-        fs.writeSync(fd, buffer, 0, buffer.length, 0);
-        fs.closeSync(fd);
+        fs.writeFileSync(file, text, {encoding: 'utf8', flag: flag});
     }
 
     /**
