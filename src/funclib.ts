@@ -20,7 +20,7 @@ let root, isClient;
 
 export class Funclib {
 
-  public version: string = 'V2.1.4'
+  public version: string = 'V2.1.5'
   
   private deleteProp = prop => {
     delete this[prop];
@@ -136,13 +136,13 @@ export class Funclib {
   }
 
   /**
-   * [fn.pickProperty] 返回对象或子孙对象的属性，可判断类型
+   * [fn.pick] 返回对象或子孙对象的属性，可判断类型
    * @param obj [Object]
    * @param layers [string]
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  pickProperty(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
-    return Object_.pickProperty.call(this, obj, layers, type);
+  pick(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
+    return Object_.pick.call(this, obj, layers, type);
   }
 
   /**
