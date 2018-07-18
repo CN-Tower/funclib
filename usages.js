@@ -1,5 +1,6 @@
 const fn = require('./dist/');
 
+// fn.log(fn.deleteProp);
 /**
  * Url
  * =======================================================================
@@ -14,12 +15,12 @@ const fn = require('./dist/');
  * =======================================================================
  */
 // const obj1 = {name: 'Obj', metadata: {subObj: {name: true}}}
-// const obj2 = {name: 'Obj', metadata: null}
-// const val1 = fn.getChainProperty(obj1, 'metadata/subObj/name');
-// const val2 = fn.getChainProperty(obj2, 'metadata/subObj/name');
-// fn.forEach(['aaa', 'bbb'], x => fn.log(x));
+const obj2 = {name: 'Obj', metadata: null}
+// const val1 = fn.pick(undefined, 'metadata/subObj/name');
+const val2 = fn.pick(obj2, 'metadata/subObj/name');
+// fn.forIn(['aaa', 'bbb'], x => fn.log(x));
 // fn.log(val1);
-// fn.log(val2);
+fn.log(val2);
 
 /**
  * String
@@ -60,10 +61,9 @@ const fn = require('./dist/');
  * =======================================================================
  */
 // const a = fn.isTypeOf(true, 'bol');
-// const d = fn.isTypeOf([], 'arr');
-
 // const b = fn.typeValue('aaa', ['bol']);
 // const c = fn.typeValue('aaa', ['str']);
+// const d = fn.isTypeOf([], 'arr');
 // const e = fn.typeValue({}, ['obj']);
 // fn.log(a);
 // fn.log(b);
@@ -76,7 +76,9 @@ const fn = require('./dist/');
  * =======================================================================
  */
 // fn.log({name: 'Tom', age: 28}, {title: 'tom', color: 'cyan'});
+
 // fn.log('Hello world!', 'green');
+// console.log(fn.chalk('Hello world!', 'green'))
 
 /**
  * Progress
