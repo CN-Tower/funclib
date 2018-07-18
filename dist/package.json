@@ -1,6 +1,6 @@
 {
   "name": "funclib",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
