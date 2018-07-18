@@ -1,7 +1,7 @@
 export class Element_ {
     private static isTypeOf: Function;
     private static typeValue: Function;
-    private static pickProperty: Function;
+    private static pick: Function;
     private static interval: Function;
     private static toArray: Function;
     /**
@@ -82,7 +82,7 @@ export class Element_ {
      */
     public static pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void {
         if ((this.isTypeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
-            const duration = this.pickProperty(options, 'duration', 'num') || 250;
+            const duration = this.pick(options, 'duration', 'num') || 250;
             const isSelectAll = !!(options && options['isSelectAll']);
             callback = this.typeValue(callback, 'func') || this.typeValue(options, 'func');
             let count = 0;
