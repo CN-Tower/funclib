@@ -1,6 +1,6 @@
 {
   "name": "funclib",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "A Powerful javascript functions lib!",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "funclib": "^2.1.4",
+    "funclib": "^2.1.1",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
