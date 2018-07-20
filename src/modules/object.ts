@@ -69,12 +69,12 @@ export class Object_ {
     }
 
     /**
-     * [fn.pick] 返回对象或子孙对象的属性，可判断类型
+     * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]
      * @param layers [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static pick(obj: Object, layers: string, type: string|string[]): any {
+    public static get(obj: Object, layers: string, type: string|string[]): any {
         if (!obj || !layers || !layers.trim()) {
             return undefined;
         }
@@ -88,7 +88,7 @@ export class Object_ {
                     lys.shift();
                 }
                 lys.shift();
-                return this.pick(obj[prop], lys.join('/'), type);
+                return this.get(obj[prop], lys.join('/'), type);
             } else {
                 return undefined;
             }
