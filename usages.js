@@ -16,8 +16,8 @@ const fn = require('./dist/');
  */
 // const obj1 = {name: 'Obj', metadata: {subObj: {name: true}}}
 const obj2 = {name: 'Obj', metadata: null}
-// const val1 = fn.pick(undefined, 'metadata/subObj/name');
-const val2 = fn.pick(obj2, 'metadata/subObj/name');
+// const val1 = fn.get(undefined, 'metadata/subObj/name');
+const val2 = fn.get(obj2, 'metadata/subObj/name');
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
 // fn.log(val1);
 fn.log(val2);
