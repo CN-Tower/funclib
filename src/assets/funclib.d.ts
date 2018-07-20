@@ -18,7 +18,7 @@
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
- * fn.get                   返回对象或子孙对象的属性，可判断类型
+ * fn.get                    返回对象或子孙对象的属性，可判断类型
  ## Mathematic 
  * fn.random                 返回指定范围的随机数
  * fn.rdid                   返回指定长度(最小6位)的随机ID
@@ -31,7 +31,7 @@
  ## String     
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
- * fn.fmtCurrency               格式化显示货币
+ * fn.fmtCurrency            格式化显示货币
  * fn.cutString              裁切字符串到指定长度
  ## RegExp     
  * fn.getPattern             获取一个通用的正则表达式
