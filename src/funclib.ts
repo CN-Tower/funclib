@@ -136,13 +136,13 @@ export class Funclib {
   }
 
   /**
-   * [fn.pick] 返回对象或子孙对象的属性，可判断类型
+   * [fn.get] 返回对象或子孙对象的属性，可判断类型
    * @param obj [Object]
    * @param layers [string]
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  pick(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
-    return Object_.pick.call(this, obj, layers, type);
+  get(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
+    return Object_.get.call(this, obj, layers, type);
   }
 
   /**
