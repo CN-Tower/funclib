@@ -45,8 +45,8 @@ describe('Object Methods:', function () {
             assert(tom.age === 28 && tom2.age === 22);
         });
     });
-    describe('#fn.pick()', function () {
-        it(`fn.pick(obj, layers) should return the inner prop of obj or undefined.`, function () {
+    describe('#fn.get()', function () {
+        it(`fn.get(obj, layers) should return the inner prop of obj or undefined.`, function () {
             const obj = {
                 name: 'Obj',
                 id: 'Obj_001',
@@ -57,8 +57,8 @@ describe('Object Methods:', function () {
                     }
                 }
             };
-            const p1 = fn.pick(obj, '/metadata/subObj/name');
-            const p2 = fn.pick(obj, '/metadata/subArr/id');
+            const p1 = fn.get(obj, '/metadata/subObj/name');
+            const p2 = fn.get(obj, '/metadata/subArr/id');
             assert(p1 === 'subOjb', p2 === undefined);
         });
     });
