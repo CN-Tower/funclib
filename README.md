@@ -114,7 +114,7 @@ funclib.js
 [fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
-[fn.pick](#fnpick)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
+[fn.get](#fnget)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
 #### Mathematic 
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
 [fn.rdid](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
@@ -323,21 +323,21 @@ fn.deepCopy(data: any): any;
 // examples:
 You know the drill...
 ```
-#### fn.pick
+#### fn.get
 ```
 /**
-  * [fn.pick] 返回对象或子孙对象的属性，可判断类型
+  * [fn.get] 返回对象或子孙对象的属性，可判断类型
   * @param obj [Object]
   * @param chain [string]
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-pick(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
+fn.get(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
 
 // examples:
 const obj1 = {name: 'Obj', metadata: {subObj: {name: 'Tom'}}}
 const obj2 = {name: 'Obj', metadata: null}
-const val1 = fn.pick(obj1, 'metadata/subObj/name');
-const val2 = fn.pick(obj2, 'metadata/subObj/name');
+const val1 = fn.get(obj1, 'metadata/subObj/name');
+const val2 = fn.get(obj2, 'metadata/subObj/name');
 fn.log(val1); // Tom
 fn.log(val2); // undefined
 ```
