@@ -18,7 +18,7 @@
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
- * fn.pick                   返回对象或子孙对象的属性，可判断类型
+ * fn.get                   返回对象或子孙对象的属性，可判断类型
  ## Mathematic 
  * fn.random                 返回指定范围的随机数
  * fn.rdid                   返回指定长度(最小6位)的随机ID
@@ -151,12 +151,12 @@
       */
      deepCopy(data: any): any;
      /**
-      * [fn.pick] 返回对象或子孙对象的属性，可判断类型
+      * [fn.get] 返回对象或子孙对象的属性，可判断类型
       * @param obj [Object]
       * @param chain [string]
       * @param type ['arr'|'obj'|'fun'|string|string[]]
       */
-     pick(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
+     get(obj: Object, chain: string, type?: 'arr'|'obj'|'fun'|string|string[]): any;
      /**
       * [fn.random] 返回一个指定范围的随机数
       * @param sta [number]
