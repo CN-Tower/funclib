@@ -18,7 +18,7 @@ export class FnFunction {
             if (!timeout) context = args = null;
         };
 
-        const throttled = function () {
+        const throttled: any = function () {
             const now = this.time();
             if (!previous && options.leading === false) previous = now;
             const remaining = wait - (now - previous);
@@ -39,7 +39,7 @@ export class FnFunction {
             return result;
         };
 
-        throttled.prototype.cancel = function () {
+        throttled.cancel = function () {
             clearTimeout(timeout);
             previous = 0;
             timeout = context = args = null;
@@ -62,7 +62,7 @@ export class FnFunction {
           if (args) result = func.apply(context, args);
         };
     
-        const debounced = function(...args) {
+        const debounced: any = function(...args) {
           if (timeout) clearTimeout(timeout);
           if (immediate) {
             const callNow = !timeout;
@@ -79,7 +79,7 @@ export class FnFunction {
           return result;
         };
     
-        debounced.prototype.cancel = function() {
+        debounced.cancel = function() {
           clearTimeout(timeout);
           timeout = null;
         };
