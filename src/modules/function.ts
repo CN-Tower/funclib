@@ -1,57 +1,89 @@
-export class Function_ {
+export class FnFunction {
+    public static time: Function
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-     * @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-     * @param  noTrailing   默认为false，为true相当于debunce
-     * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
-     * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+     * @param  func
+     * @param  wait
+     * @param  options
      */
-    public static throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any) {
-        let timeoutID;
-        let lastExec = 0;
-        if (typeof noTrailing !== 'boolean') {
-            debounceMode = callback;
-            callback = noTrailing;
-            noTrailing = undefined;
-        }
-        return function () {
-            const that = this;
-            const elapsed = Number(new Date()) - lastExec;
-            const args = arguments;
-            const exec =() => {
-                lastExec = Number(new Date());
-                callback.apply(that, args);
-            }
-            const clear = () => {
-                timeoutID = undefined;
-            }
-            if (debounceMode && !timeoutID) {
-                exec();
-            }
-            if (timeoutID) {
-                clearTimeout(timeoutID);
-            }
-            if (debounceMode === undefined && elapsed > delay) {
-                exec();
-            } else if (noTrailing !== true) {
-                timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
-            }
+    public static throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }) {
+        let timeout, context, args, result;
+        let previous = 0;
+        if (!options) options = {};
+
+        const later = function () {
+            previous = options.leading === false ? 0 : this.time();
+            timeout = null;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
         };
+
+        const throttled = function () {
+            const now = this.time();
+            if (!previous && options.leading === false) previous = now;
+            const remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0 || remaining > wait) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+                previous = now;
+                result = func.apply(context, args);
+                if (!timeout) context = args = null;
+            }
+            else if (!timeout && options.trailing !== false) {
+                timeout = setTimeout(later, remaining);
+            }
+            return result;
+        };
+
+        throttled.prototype.cancel = function () {
+            clearTimeout(timeout);
+            previous = 0;
+            timeout = context = args = null;
+        };
+
+        return throttled;
     }
 
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
-     * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-     * @param atBegin  是否不需要延迟调用
-     * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+     * @param func
+     * @param wait
+     * @param immediate
      */
-    public static debounce(delay: number, atBegin: any, callback?: Function) {
-        if (typeof atBegin !== 'boolean') {
-            callback = atBegin;
-            atBegin = undefined;
-            return this.throttle(delay, callback, false);
-        } else {
-            return this.throttle(delay, callback, atBegin !== false);
-        }
-    }
+    public static debounce(func: Function, wait: number, immediate: boolean = false) {
+        let timeout, result;
+    
+        const later = function(context, args) {
+          timeout = null;
+          if (args) result = func.apply(context, args);
+        };
+    
+        const debounced = function(...args) {
+          if (timeout) clearTimeout(timeout);
+          if (immediate) {
+            const callNow = !timeout;
+            timeout = setTimeout(later, wait);
+            if (callNow) result = func.apply(this, args);
+          } else {
+            timeout = function(func, wait, ...args) {
+                return setTimeout(function() {
+                    return func.apply(null, args);
+                }, wait);
+            }
+          }
+    
+          return result;
+        };
+    
+        debounced.prototype.cancel = function() {
+          clearTimeout(timeout);
+          timeout = null;
+        };
+    
+        return debounced;
+      }
 }

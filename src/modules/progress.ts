@@ -3,7 +3,7 @@ let duration: number;
 let pgType: 'sp'|'pg'|null;
 const process: any = global.process;
 
-export class Progress {
+export class FnProgress {
     private static overlay;
     private static chalk;
     private static interval;
@@ -14,17 +14,17 @@ export class Progress {
      * @param options {title: string, width: number (base: 40)}
      */
     public static start(options: string|any) {
-        Progress.chalk = this.chalk;
-        Progress.interval = this.interval;
-        Progress.timeout = this.timeout;
+        FnProgress.chalk = this.chalk;
+        FnProgress.interval = this.interval;
+        FnProgress.timeout = this.timeout;
         this.interval('pg_sping', false);
         this.timeout('pg_Bar', false);
         if (typeof options === 'string') {
             pgType = 'sp';
-            Progress.startSping(options);
+            FnProgress.startSping(options);
         } else {
             pgType = 'pg';
-            Progress.startPgbar(options);
+            FnProgress.startPgbar(options);
         }
     }
 
@@ -35,9 +35,9 @@ export class Progress {
     public static stop(onStopped?: Function) {
         if (pgType === 'sp') {
             pgType = null;
-            Progress.stopSping();
+            FnProgress.stopSping();
         } else {
-            Progress.stopPgbar(() => {
+            FnProgress.stopPgbar(() => {
                 pgType = null;
                 if (typeof onStopped === 'function') {
                     onStopped();

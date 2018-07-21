@@ -1,4 +1,4 @@
-export class Mathematic {
+export class FnMath {
     private static array: Function;
     
     /**

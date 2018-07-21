@@ -1,13 +1,13 @@
 describe('Type Methods:', function () {
-    describe('#fn.isTypeOf()', function () {
-        it(`fn.isTypeOf('string', 'str') should return true.`, function () {
-            assert(fn.isTypeOf('string', 'str') === true);
+    describe('#fn.typeOf()', function () {
+        it(`fn.typeOf('string', 'str') should return true.`, function () {
+            assert(fn.typeOf('string', 'str') === true);
         });
-        it(`fn.isTypeOf([], 'obj') should return false.`, function () {
-            assert(fn.isTypeOf([], 'obj') === false);
+        it(`fn.typeOf([], 'obj') should return false.`, function () {
+            assert(fn.typeOf([], 'obj') === false);
         });        
-        it(`fn.isTypeOf({}, ['str', 'obj']) should return true.`, function () {
-            assert(fn.isTypeOf({}, ['str', 'obj']) === true);
+        it(`fn.typeOf({}, ['str', 'obj']) should return true.`, function () {
+            assert(fn.typeOf({}, ['str', 'obj']) === true);
         });
     });
     describe('#fn.typeValue()', function () {
@@ -19,7 +19,7 @@ describe('Type Methods:', function () {
         });        
         it(`fn.typeValue({}, ['str', 'obj']) should return {}.`, function () {
             const obj = fn.typeValue({}, ['str', 'obj']);
-            assert(fn.isTypeOf(obj, 'obj') && fn.isEmpty(obj));
+            assert(fn.typeOf(obj, 'obj') && fn.isEmpty(obj));
         });
     });
 });

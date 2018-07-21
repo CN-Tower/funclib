@@ -39,13 +39,11 @@ webpack(config, function (err, stats) {
 
 function buildFix() {
   const funclibMin = fn.rd(fnMinJs);
-  const idx = '!function('.length;
-  const rt = funclibMin.substr(idx, 1);
-  const ft = funclibMin.substr(idx + 2, 1);
-  const it = `new (${ft}().Funclib)(${rt})`;
+  const factory = funclibMin.substr('!function('.length + 2, 1);
+  const funclib = `new (${factory}().FuncLib)()`;
   const newFnMin = funclibMin
-    .replace(new RegExp(`module\.exports=${ft}\\(\\)`), `module.exports=${it}`)
-    .replace(new RegExp(`define\\(\\[\\],${ft}\\)`), `define([${rt}], function(${rt}) {${it}})`)
-    .replace(new RegExp(`\.fn=${ft}\\(\\)`, 'mg'), `.fn=${it}`);
+    .replace(new RegExp(`module\.exports=${factory}\\(\\)`), `module.exports=${funclib}`)
+    .replace(new RegExp(`define\\(\\[\\],${factory}\\)`), `define('fn', [], function() {return ${funclib}})`)
+    .replace(new RegExp(`\.fn=${factory}\\(\\)`, 'mg'), `.fn=${funclib}`);
   fn.wt(fnMinJs, newFnMin);
 }

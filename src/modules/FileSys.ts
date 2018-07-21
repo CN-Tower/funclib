@@ -1,6 +1,6 @@
 let fs, path, Buffer, execSync, process;
 
-export class FileSystem {
+export class FnFileSys {
     constructor () {
         fs = eval('require("fs")');
         path = eval('require("path")');

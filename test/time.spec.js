@@ -14,9 +14,9 @@ describe('Time Methods:', function () {
             });
         });
     });
-    describe('#fn.timeStamp()', function () {
-        it(`fn.timeStamp() should return a time stamp.`, function () {
-            assert(/^[0-9]{13}$/.test(fn.timeStamp()) === true);
+    describe('#fn.time()', function () {
+        it(`fn.time() should return a time stamp.`, function () {
+            assert(/^[0-9]{13}$/.test(fn.time()) === true);
         });
     });
     describe('#fn.fmtDate()', function () {
@@ -24,7 +24,7 @@ describe('Time Methods:', function () {
             const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss');
             assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
         });
-        it.skip(`fn.fmtDate(yyyy-MM-dd hh:mm', timeStamp) should return a fmted date string.`, function () {
+        it.skip(`fn.fmtDate(yyyy-MM-dd hh:mm', time) should return a fmted date string.`, function () {
             const t2 = fn.fmtDate('yyyy-MM-dd hh:mm', 1528259400000);
             assert(t2 === '2018-06-06 12:30');
         });

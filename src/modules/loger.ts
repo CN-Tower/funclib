@@ -1,4 +1,4 @@
-export class Loger {
+export class FnLoger {
     private static array: Function;
     private static cutString: Function;
     private static version: string;
@@ -62,8 +62,8 @@ export class Loger {
             dL += d;
         });
         isClient
-            ? Loger.clientLog(dL, tt, sL, value)
-            : Loger.serverLog(dL, tt, sL, value, configs);    
+            ? FnLoger.clientLog(dL, tt, sL, value)
+            : FnLoger.serverLog(dL, tt, sL, value, configs);
     }
 
     /**
@@ -77,12 +77,8 @@ export class Loger {
      * 服务端打印
      */
     private static serverLog(dL, tt, sL, value, configs)  {
-        const color = configs
-                      && configs['color'] in this.colors
-                      && configs['color'] || 'grey';
-        const ttColor = configs
-                        && configs['ttColor'] in this.colors
-                        && configs['ttColor'] || 'green';
+        const color = configs && configs['color'] in this.colors && configs['color'] || 'grey';
+        const ttColor = configs && configs['ttColor'] in this.colors && configs['ttColor'] || 'green';
 
         if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
             if (configs['part'] === 'pre') {

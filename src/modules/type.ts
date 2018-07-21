@@ -1,17 +1,17 @@
-export class Type {
+export class FnType {
     private static toArray: Function;
 
     /**
-     * [fn.isTypeOf] 检查值的类型
+     * [fn.typeOf] 检查值的类型
      * @param value 
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static isTypeOf(value: any, type: string|string[]): boolean {
+    public static typeOf(value: any, type: string|string[]): boolean {
         const types = this.toArray(type);
         if (types.length === 0) {
             return false;
         }
-        return types.map(type => {
+        return types.some(type => {
             switch (type) {
                 case 'arr': return value && value instanceof Array;
                 case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
@@ -22,7 +22,7 @@ export class Type {
                 case 'udf': return typeof value === 'undefined';
                 default: return typeof value === type;
             }
-        }).reduce((x, y) => x || y);
+        });
     }
 
     /**
@@ -31,6 +31,6 @@ export class Type {
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
     public static typeValue(value: any, type: string|string[]): any {
-        return this.isTypeOf(value, type) && value;
+        return this.typeOf(value, type) && value;
     }
 }

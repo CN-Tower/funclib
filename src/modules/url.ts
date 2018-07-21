@@ -1,5 +1,5 @@
-export class Url {
-    private static isTypeOf: Function;
+export class FnUrl {
+    private static typeOf: Function;
     
     /**
      * [fn.parseQueryString] 解析Url参数成对象
@@ -28,7 +28,7 @@ export class Url {
      * @param obj [string]  default: window.location.href
      */
     public static stringfyQueryString(obj: Object) {
-        if (!this.isTypeOf(obj, 'obj')) {
+        if (!this.typeOf(obj, 'obj')) {
             return '';
         }
         var pairs = [];

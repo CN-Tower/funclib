@@ -1,4 +1,4 @@
-export class Cookie {
+export class FnCookie {
     /**
      * [fn.setCookie] 设置Cookie
      * @param name 
@@ -32,6 +32,6 @@ export class Cookie {
      * @param name 
      */
     public static removeCookie(name: string) {
-        Cookie.setCookie(name, '1', -1);
+        FnCookie.setCookie(name, '1', -1);
     }
 }

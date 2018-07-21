@@ -1,4 +1,4 @@
-export class Time {
+export class FnTime {
     private static intervalTimers: any = {};
     private static timeoutTimers: any = {};
 
@@ -8,12 +8,19 @@ export class Time {
      * @param duration
      * @param callback
      */
-    public static interval(timerId: any, duration: any, callback: Function) {
-        if (typeof duration === 'number' && typeof callback === 'function') {
-            clearInterval(Time.intervalTimers[timerId]);
-            Time.intervalTimers[timerId] = setInterval(() => callback(), duration);
-        } else if (duration === false) {
-            clearInterval(Time.intervalTimers[timerId]);
+    public static interval(timerId: any, duration?: any, callback?: Function) {
+        if (duration === false) {
+            clearInterval(this.intervalTimers[timerId]);
+        }
+        else if (typeof duration === 'number' && typeof callback === 'function') {
+            clearInterval(this.intervalTimers[timerId]);
+            this.intervalTimers[timerId] = setInterval(() => callback(), duration);
+            return this.intervalTimers[timerId];
+        }
+        else if (typeof timerId === 'number' && typeof duration === 'function') {
+            callback = duration;
+            duration = timerId;
+            return setInterval(() => callback(), duration);
         }
     }
 
@@ -23,27 +30,39 @@ export class Time {
      * @param duration 
      * @param callback 
      */
-    public static timeout(timerId: any, duration: any, callback: Function) {
-        if (typeof duration === 'number' && typeof callback === 'function') {
-            clearTimeout(Time.timeoutTimers[timerId]);
-            Time.timeoutTimers[timerId] = setTimeout(() => callback(), duration);
-        } else if (duration === false) {
-            clearTimeout(Time.timeoutTimers[timerId]);
-        } else if (typeof timerId === 'number' && typeof duration === 'function') {
+    public static timeout(timerId: any, duration?: any, callback?: Function) {
+        if (duration === false) {
+            clearTimeout(this.timeoutTimers[timerId]);
+        }
+        else if (typeof duration === 'number' && typeof callback === 'function') {
+            clearTimeout(this.timeoutTimers[timerId]);
+            this.timeoutTimers[timerId] = setTimeout(() => callback(), duration);
+            return this.timeoutTimers[timerId];
+        }
+        else if (typeof timerId === 'number' && typeof duration === 'function') {
             callback = duration;
             duration = timerId;
-            setTimeout(() => callback(), duration)
-        } else if (typeof timerId === 'function') {
+            return setTimeout(() => callback(), duration);
+        }
+        else if (typeof timerId === 'function') {
             callback = timerId;
-            setTimeout(() => callback())
+            return setTimeout(() => callback());
         }
     }
 
     /**
-     * [fn.timeStamp] 返回一个当前时间戳
+     * [fn.defer] 延迟执行函数
+     * @param func 
+     */
+    public static defer(func: Function) {
+        this.timeout(func);
+    }
+
+    /**
+     * [fn.time] 返回一个当前时间戳
      * @param time 
      */
-    public static timeStamp(time?: Date | string | number): number {
+    public static time(time?: Date | string | number): number {
         if (time instanceof Date) {
             return time.getTime();
         } else {

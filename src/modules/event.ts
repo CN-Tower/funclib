@@ -1,6 +1,6 @@
 import { KEY_MAP } from '../configs/keyMap'
 
-export class Event_ {
+export class FnEvent {
     /**
      * [fn.getKeyCodeByName] 根据键名获取键码
      * @param keyName 

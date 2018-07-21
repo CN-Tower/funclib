@@ -1,4 +1,4 @@
-export class Tricks {
+export class FnTrick {
     public static extendJquery(jquery?: any) {
         const $ = jquery || window['jquery'] || window['jQuery'] || null;
         if ($) {

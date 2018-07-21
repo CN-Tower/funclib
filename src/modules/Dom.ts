@@ -1,5 +1,5 @@
-export class Element_ {
-    private static isTypeOf: Function;
+export class FnDom {
+    private static typeOf: Function;
     private static typeValue: Function;
     private static get: Function;
     private static interval: Function;
@@ -81,7 +81,7 @@ export class Element_ {
      * @param callback
      */
     public static pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void {
-        if ((this.isTypeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
+        if ((this.typeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
             const duration = this.get(options, 'duration', 'num') || 250;
             const isSelectAll = !!(options && options['isSelectAll']);
             callback = this.typeValue(callback, 'func') || this.typeValue(options, 'func');

@@ -1,27 +1,26 @@
-import { Type } from './modules/type';
-import { Array_ } from './modules/array';
-import { Object_ } from './modules/object';
-import { String_ } from './modules/string';
-import { Time } from './modules/time';
-import { Pattern } from './modules/pattern';
-import { Mathematic } from './modules/math';
-import { Function_ } from './modules/function';
-import { Event_ } from './modules/event';
-import { Cookie } from './modules/cookie';
-import { Element_ } from './modules/element';
-import { Loger } from './modules/loger';
-import { FileSystem } from './modules/fs';
-import { Progress } from './modules/progress';
-import { Tricks } from './modules/tricks';
+import { FnType } from './modules/Type';
+import { FnArray } from './modules/Array';
+import { FnObject } from './modules/Object';
+import { FnString } from './modules/String';
+import { FnTime } from './modules/Time';
+import { FnRegExp } from './modules/RegExp';
+import { FnMath } from './modules/Math';
+import { FnFunction } from './modules/Function';
+import { FnEvent } from './modules/Event';
+import { FnCookie } from './modules/Cookie';
+import { FnDom } from './modules/Dom';
+import { FnLoger } from './modules/Loger';
+import { FnFileSys } from './modules/FileSys';
+import { FnProgress } from './modules/Progress';
+import { FnTrick } from './modules/Trick';
+import { FnUrl } from './modules/Url';
 import { FN_CONF } from './configs/fnConf'
-import { Url } from './modules/url';
 
 let root, isClient;
 
-export class Funclib {
+export class FuncLib {
 
-  public version: string = 'V2.1.5'
-  
+  public version: string = 'V2.1.7'
   private deleteProp = prop => {
     delete this[prop];
     if (this['__proto__']) {
@@ -48,12 +47,12 @@ export class Funclib {
   }
 
   /**
-   * [fn.isTypeOf] 检查值的类型，返回布尔值
+   * [fn.typeOf] 检查值的类型，返回布尔值
    * @param value 
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  isTypeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
-    return Type.isTypeOf.call(this, value, type);
+  typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
+    return FnType.typeOf.call(this, value, type);
   }
 
   /**
@@ -62,7 +61,7 @@ export class Funclib {
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
   typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
-    return Type.typeValue.call(this, value, type);
+    return FnType.typeValue.call(this, value, type);
   }
 
   /**
@@ -71,7 +70,7 @@ export class Funclib {
    * @param value  [any, function]
    */
   array(length: number, value?: any): any[] {
-    return Array_.array(length, value);
+    return FnArray.array(length, value);
   }
 
   /**
@@ -79,17 +78,62 @@ export class Funclib {
    * @param src 
    */
   toArray(src: any): any[] {
-    return Array_.toArray(src);
+    return FnArray.toArray(src);
   }
 
   /**
-   * [fn.sortByField] 对象数组根据字段排序
+   * [fn.find] 根据条件寻找值
+   * @param src 
+   * @param predicate 
+   */
+  find(src: any[], predicate: any): any {
+    return FnArray.find.call(this, src, predicate);
+  }
+
+  /**
+   * [fn.filter] 根据条件取过滤值
+   * @param src 
+   * @param predicate 
+   */
+  filter(src: any[], predicate: any): any[] {
+    return FnArray.filter.call(this, src, predicate);
+  }
+
+  /**
+   * [fn.reject] 根据条件过滤值
+   * @param src 
+   * @param predicate 
+   */
+  reject(src: any[], predicate: any): any[] {
+    return FnArray.reject.call(this, src, predicate);
+  }
+
+  /**
+   * [fn.contains] 判断数组是否包含符合条件的值
+   * @param src 
+   * @param predicate 
+   */
+  contains(src: any[], predicate: any): boolean {
+    return FnArray.contains.call(this, src, predicate);
+  }
+
+  /**
+  * [fn.findIndex] 寻找值在数组中的索引
+  * @param src 
+  * @param predicate 
+  */
+  findIndex(src: any[], predicate: any): number {
+    return FnArray.findIndex.call(this, src, predicate);
+  }
+
+  /**
+   * [fn.sortBy] 对象数组根据字段排序
    * @param data
    * @param field
    * @param isDesc
    */
-  sortByField(data: any, field: string, isDesc?: boolean): any {
-    return Array_.sortByField(data, field, isDesc);
+  sortBy(data: any, field: string, isDesc?: boolean): any {
+    return FnArray.sortBy.call(this, data, field, isDesc);
   }
 
   /**
@@ -97,7 +141,7 @@ export class Funclib {
    * @arg obj
    */
   len(obj: any): number {
-    return Object_.len(obj);
+    return FnObject.len(obj);
   }
 
   /**
@@ -106,15 +150,15 @@ export class Funclib {
    * @arg callback
    */
   forIn(obj: Object, callback: any): void {
-    Object.keys(obj).forEach(callback);
+    return FnObject.forIn(obj, callback);
   }
 
   /**
    * [fn.isEmpty] 判断对象是否为空对象或数组
    * @param obj 
    */
-  isEmpty(obj: Object| Function | string | any[]): boolean {
-    return Object_.isEmpty(obj);
+  isEmpty(obj: Object | Function | string | any[]): boolean {
+    return FnObject.isEmpty(obj);
   }
 
   /**
@@ -123,8 +167,8 @@ export class Funclib {
    * @param source 
    * @param propList 
    */
-  overlay(target: Object, source: Object, propList?: string[]): void {
-    return Object_.overlay(target, source, propList);
+  overlay(target: Object, source: Object, propList?: string[]): any {
+    return FnObject.overlay(target, source, propList);
   }
 
   /**
@@ -132,7 +176,7 @@ export class Funclib {
    * @param data
    */
   deepCopy(data: any) {
-    return Object_.deepCopy(data);
+    return FnObject.deepCopy(data);
   }
 
   /**
@@ -141,8 +185,8 @@ export class Funclib {
    * @param layers [string]
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  get(obj: Object, layers: string, type?: 'arr'|'obj'|'fun'|string|string[]): any {
-    return Object_.get.call(this, obj, layers, type);
+  get(obj: Object, layers: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
+    return FnObject.get.call(this, obj, layers, type);
   }
 
   /**
@@ -151,7 +195,7 @@ export class Funclib {
    * @param end 
    */
   random(sta: number, end?: number): number {
-    return Mathematic.random(sta, end);
+    return FnMath.random(sta, end);
   }
 
   /**
@@ -159,14 +203,14 @@ export class Funclib {
    * @param len 
    */
   rdid(len: number = 12): string {
-    return Mathematic.rdid.call(this, len);
+    return FnMath.rdid.call(this, len);
   }
 
   /**
    * [fn.rdcolor] 返回一个随机颜色色值
    */
   rdcolor() {
-    return Mathematic.rdcolor();
+    return FnMath.rdcolor();
   }
 
   /**
@@ -176,7 +220,7 @@ export class Funclib {
    * @param callback
    */
   interval(timerId: any, duration: any, callback?: Function) {
-    return Time.interval(timerId, duration, callback);
+    return FnTime.interval(timerId, duration, callback);
   }
 
   /**
@@ -186,15 +230,23 @@ export class Funclib {
    * @param callback 
    */
   timeout(timerId: any, duration?: any, callback?: Function) {
-    return Time.timeout(timerId, duration, callback);
+    return FnTime.timeout(timerId, duration, callback);
   }
 
   /**
-   * [fn.timeStamp] 返回一个当前时间戳
+   * [fn.defer] 延迟执行函数
+   * @param func 
+   */
+  defer(func: Function): void {
+    return FnTime.defer(func);
+  }
+
+  /**
+   * [fn.time] 返回一个当前时间戳
    * @param time 
    */
-  timeStamp(time?: Date | string | number): number {
-    return Time.timeStamp(time);
+  time(time?: Date | string | number): number {
+    return FnTime.time(time);
   }
 
   /**
@@ -203,7 +255,7 @@ export class Funclib {
    * @param time 
    */
   fmtDate(fmtStr: string, time?: Date | string | number): string {
-    return Time.fmtDate(fmtStr, time);
+    return FnTime.fmtDate(fmtStr, time);
   }
 
   /**
@@ -211,7 +263,7 @@ export class Funclib {
    * @param html 
    */
   encodeHtml(html: string): string {
-    return String_.encodeHtml(html);
+    return FnString.encodeHtml(html);
   }
 
   /**
@@ -219,7 +271,7 @@ export class Funclib {
    * @param html 
    */
   decodeHtml(html: string): string {
-    return String_.decodeHtml(html);
+    return FnString.decodeHtml(html);
   }
 
   /**
@@ -229,7 +281,7 @@ export class Funclib {
    * @returns {string}
    */
   fmtCurrency(number: number, digit: number = 2): string {
-    return String_.fmtCurrency(number, digit);
+    return FnString.fmtCurrency(number, digit);
   }
 
   /**
@@ -239,7 +291,7 @@ export class Funclib {
    * @returns {string}
    */
   cutString(str: string, len: number): string {
-    return String_.cutString.call(this, str, len);
+    return FnString.cutString.call(this, str, len);
   }
 
   /**
@@ -249,7 +301,7 @@ export class Funclib {
    * @returns {pattern|undefined}
    */
   getPattern(type: string, isNoLimit: boolean = false): any {
-    return Pattern.getPattern(type, isNoLimit);
+    return FnRegExp.getPattern(type, isNoLimit);
   }
 
   /**
@@ -260,28 +312,27 @@ export class Funclib {
    * @returns {boolean}
    */
   matchPattern(src: string, type: string | string[], isNoLimit: boolean = false): boolean {
-    return Pattern.matchPattern(src, type, isNoLimit);
+    return FnRegExp.matchPattern(src, type, isNoLimit);
   }
 
   /**
    * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-   * @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-   * @param  noTrailing   默认为false，为true相当于debunce
-   * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
-   * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+   * @param  func
+   * @param  wait
+   * @param  options
    */
-  throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function {
-    return Function_.throttle(delay, noTrailing, callback, debounceMode);
+  throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }) {
+    return FnFunction.throttle.bind(this, func, wait, options);
   }
 
   /**
    * [fn.debounce] 防抖函数, 适用于获取用户输入
-   * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-   * @param atBegin  是否不需要延迟调用
-   * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+   * @param func
+   * @param wait
+   * @param immediate
    */
-  debounce(delay: number, atBegin: any, callback?: Function): Function {
-    return Function_.debounce(delay, atBegin, callback);
+  debounce(func: Function, wait: number, immediate: boolean = false) {
+    return FnFunction.debounce(func, wait, immediate);
   }
 
   /**
@@ -289,7 +340,7 @@ export class Funclib {
    * @param keyName 
    */
   getKeyCodeByName(keyName: string): number {
-    return Event_.getKeyCodeByName(keyName);
+    return FnEvent.getKeyCodeByName(keyName);
   }
 
   /**
@@ -297,7 +348,7 @@ export class Funclib {
    * @param keyName 
    */
   getKeyNameByCode(keyCode: number): string {
-    return Event_.getKeyNameByCode(keyCode);
+    return FnEvent.getKeyNameByCode(keyCode);
   }
 
   /**
@@ -305,7 +356,7 @@ export class Funclib {
    * @param url [string]  default: window.location.href
    */
   parseQueryString(url?: string): Object {
-    return Url.parseQueryString(url);
+    return FnUrl.parseQueryString(url);
   }
 
   /**
@@ -313,7 +364,7 @@ export class Funclib {
    * @param obj [string]  default: window.location.href
    */
   stringfyQueryString(obj: Object): string {
-    return Url.stringfyQueryString.call(this, obj);
+    return FnUrl.stringfyQueryString.call(this, obj);
   }
 
   /**
@@ -322,7 +373,7 @@ export class Funclib {
    * @returns {any}
    */
   fullScreen(el: any): any {
-    return Element_.fullScreen(el);
+    return FnDom.fullScreen(el);
   }
 
   /**
@@ -330,7 +381,7 @@ export class Funclib {
    * @returns {any}
    */
   exitFullScreen(): any {
-    return Element_.exitFullScreen();
+    return FnDom.exitFullScreen();
   }
 
   /**
@@ -338,15 +389,15 @@ export class Funclib {
    * @returns {boolean}
    */
   isFullScreen(): boolean {
-    return Element_.isFullScreen();
+    return FnDom.isFullScreen();
   }
 
   /**
    * [fn.fullScreenChange] 检测是否全屏状态
    * @param callback
    */
-  fullScreenChange(callback?: boolean|any): void {
-    return Element_.fullScreenChange(callback);
+  fullScreenChange(callback?: boolean | any): void {
+    return FnDom.fullScreenChange(callback);
   }
 
   /**
@@ -356,8 +407,8 @@ export class Funclib {
    * @param options {duration: number = 250; isSelectAll: boolean = false}
    * @param callback
    */
-  pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void {
-    return Element_.pollingEl.call(this, selector, timeout, options, callback);
+  pollingEl(selector: string | string[], timeout: number | boolean, options?: Object, callback?: Function): void {
+    return FnDom.pollingEl.call(this, selector, timeout, options, callback);
   }
 
   /**
@@ -365,8 +416,8 @@ export class Funclib {
    * @param input [HTMLInputElement]
    * @param type ['username'|'password']
    */
-  noAutoComplete(input: any, type: 'username'|'password'): void {
-    return Element_.noAutoComplete(input, type);
+  noAutoComplete(input: any, type: 'username' | 'password'): void {
+    return FnDom.noAutoComplete(input, type);
   }
 
   /**
@@ -374,7 +425,7 @@ export class Funclib {
    * @param text [string]
    */
   copyText(text: string): void {
-    return Element_.copyText(text);
+    return FnDom.copyText(text);
   }
 
   /**
@@ -384,7 +435,7 @@ export class Funclib {
    * @param days 
    */
   setCookie(name: string, value: string, days: number = 0) {
-    return Cookie.setCookie(name, value, days);
+    return FnCookie.setCookie(name, value, days);
   }
 
   /**
@@ -393,7 +444,7 @@ export class Funclib {
    * @return {String}
    */
   getCookie(name: string): string {
-    return Cookie.getCookie(name);
+    return FnCookie.getCookie(name);
   }
 
   /**
@@ -401,7 +452,7 @@ export class Funclib {
    * @param name 
    */
   removeCookie(name: string) {
-    return Cookie.removeCookie(name);
+    return FnCookie.removeCookie(name);
   }
 
   /**
@@ -410,7 +461,7 @@ export class Funclib {
    * @param color 
    */
   chalk(value: string, color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow') {
-    return Loger.chalk(value, color);
+    return FnLoger.chalk(value, color);
   }
 
   /**
@@ -423,14 +474,14 @@ export class Funclib {
    * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S] }
    */
   log(value?: any, configs?: Object) {
-    return Loger.log.call(this, value, configs, isClient);
+    return FnLoger.log.call(this, value, configs, isClient);
   }
 
   /**
    * 初始化NodeJs工具
    */
   private initFileSystem() {
-    const tools = new FileSystem();
+    const tools = new FnFileSys();
     /**
      * [fn.rd] 读文件
      * @param file
@@ -482,7 +533,7 @@ export class Funclib {
      * @param options {title: string, width: number (base: 40)}
      */
     this['progress']['start'] = (options: Object) => {
-      return Progress.start.call(this, options);
+      return FnProgress.start.call(this, options);
     }
 
     /**
@@ -490,14 +541,14 @@ export class Funclib {
      * @param onStopped 
      */
     this['progress']['stop'] = (onStopped: Function) => {
-      return Progress.stop(onStopped);
+      return FnProgress.stop(onStopped);
     }
   }
 
   private initTricks() {
     if (isClient) {
-      if (!Tricks.extendJquery()) {
-        this['extendJquery'] = jquery => Tricks.extendJquery(jquery);
+      if (!FnTrick.extendJquery()) {
+        this['extendJquery'] = jquery => FnTrick.extendJquery(jquery);
       }
     }
   }

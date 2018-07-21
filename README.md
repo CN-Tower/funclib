@@ -63,22 +63,22 @@ funclib.js
 │   │   ├── fnConf.ts       # 特殊方法
 │   │   └── keyMap.ts       # 键映射表
 │   ├── modules             # 模块
-│   │   ├── array.ts        # Array
-│   │   ├── cookie.ts       # Cookie
-│   │   ├── element.ts      # Element
-│   │   ├── event.ts        # Event
-│   │   ├── fs.ts           # FileSystem
-│   │   ├── function.ts     # Function
-│   │   ├── loger.ts        # Loger
-│   │   ├── math.ts         # Mathematic
-│   │   ├── object.ts       # Object
-│   │   ├── pattern.ts      # RegExp
-│   │   ├── progress.ts     # 进度条工具
-│   │   ├── string.ts       # String
-│   │   ├── time.ts         # Time
-│   │   ├── tricks.ts       # Tricks
-│   │   ├── type.ts         # Type
-│   │   └── url.ts          # Url
+│   │   ├── Array.ts        # Array
+│   │   ├── Cookie.ts       # Cookie
+│   │   ├── Dom.ts          # Element
+│   │   ├── Event.ts        # Event
+│   │   ├── FileSys.ts      # FileSystem
+│   │   ├── Function.ts     # Function
+│   │   ├── Loger.ts        # Loger
+│   │   ├── Math.ts         # Mathematic
+│   │   ├── Object.ts       # Object
+│   │   ├── Pattern.ts      # RegExp
+│   │   ├── Progress.ts     # Progress
+│   │   ├── String.ts       # String
+│   │   ├── Time.ts         # Time
+│   │   ├── Trick.ts        # Trick
+│   │   ├── Type.ts         # Type
+│   │   └── Url.ts          # Url
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
 │   ├── client-methods      # 客户端方法测试用例
@@ -102,12 +102,17 @@ funclib.js
 #### Version
 [fn.version](#fnversion)&nbsp;&nbsp;返回当前函数库版本
 #### Type      
-[fn.isTypeOf](#fnistypeof)&nbsp;&nbsp;检查值的类型，返回布尔值<br/>
+[fn.typeOf](#fntypeof)&nbsp;&nbsp;检查值的类型，返回布尔值<br/>
 [fn.typeValue](#fntypevalue)&nbsp;&nbsp;检查值的类型，是则返回该值，否则返回false
 #### Array      
 [fn.array](#fnarray)&nbsp;&nbsp;返回指定长度和默认值的数组<br/>
 [fn.toArr](#fntoarr)&nbsp;&nbsp;值数组化<br/>
-[fn.sortByField](#fnsortbyfield)&nbsp;&nbsp;对象数组根据字段排序
+[fn.find](#fnfind)&nbsp;&nbsp;根据条件寻找值<br/>
+[fn.filter](#fnfind)&nbsp;&nbsp;根据条件过滤值<br/>
+[fn.reject](#fnfind)&nbsp;&nbsp;根据条件取过滤值<br/>
+[fn.contains](#fnfind)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
+[fn.findIndex](#fnfindindex)&nbsp;&nbsp;寻找值在数组中的索引<br/>
+[fn.sortBy](#fnsortby)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
 [fn.len](#fnlen)&nbsp;&nbsp;获取对象自有属性的个数<br/>
 [fn.forIn](#fnforin)&nbsp;&nbsp;遍历对象的可数自有属性<br/>
@@ -122,7 +127,8 @@ funclib.js
 #### Time       
 [fn.interval](#fninterval)&nbsp;&nbsp;循环定时器<br/>
 [fn.timeout](#fntimeout)&nbsp;&nbsp;延时定时器<br/>
-[fn.timeStamp](#fntimestamp)&nbsp;&nbsp;返回一个当前时间戳<br/>
+[fn.defer](#fndefer)&nbsp;&nbsp;延迟执行函数<br/>
+[fn.time](#fntime)&nbsp;&nbsp;返回一个当前时间戳<br/>
 [fn.fmtDate](#fnfmtdate)&nbsp;&nbsp;获取格式化的时间字符串
 #### String     
 [fn.encodeHtml](#fnencodehtml)&nbsp;&nbsp;编码HTML字符串<br/>
@@ -181,18 +187,18 @@ funclib.js
 fn.version;  // V2.0.5
 ```
 ### Type  
-#### fn.isTypeOf
+#### fn.typeOf
 ```
 /**
-  * [fn.isTypeOf] 检查值的类型，返回布尔值
+  * [fn.typeOf] 检查值的类型，返回布尔值
   * @param value 
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-isTypeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
+typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
 
 // examples:
-const a = fn.isTypeOf(true, 'bol');
-const b = fn.isTypeOf([], ['arr, 'str']);
+const a = fn.typeOf(true, 'bol');
+const b = fn.typeOf([], ['arr, 'str']);
 const c = fn.typeValue([], ['obj']);
 console.log(a); // true
 console.log(b); // true
@@ -243,19 +249,90 @@ fn.toArr(src: any): any[];
 fn.toArr('str');   // ['str']
 fn.toArr(['str']); // ['str']
 ```
-#### fn.sortByField
+#### fn.find
 ```
 /**
-  * [fn.sortByField] 对象数组根据字段排序
+  * [fn.find] 根据条件寻找值
+  * @param src 
+  * @param predicate 
+  */
+fn.find(src: any[], predicate: any): any;
+
+// examples:
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.find(persons, {name: 'Tom'});             // {name:'Tom', age: 22}
+fn.find(persons, ps => ps.name === 'Tom');   // {name:'Tom', age: 22}
+```
+#### fn.filter
+```
+/**
+  * [fn.filter] 根据条件取过滤值
+  * @param src 
+  * @param predicate 
+  */
+fn.filter(src: any[], predicate: any): any[];
+
+// examples:
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.filter(persons, {name: 'Tom'});             // [{name:'Tom', age: 22}]
+fn.filter(persons, ps => ps.name === 'Tom');   // [{name:'Tom', age: 22}]
+```
+#### fn.reject
+```
+/**
+  * [fn.reject] 根据条件过滤值
+  * @param src 
+  * @param predicate 
+  */
+fn.reject(src: any[], predicate: any): any[];
+
+// examples:
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.reject(persons, {name: 'Tom'});             // [{name:'Jerry', age: 18}]
+fn.reject(persons, ps => ps.name === 'Tom');   // [{name:'Jerry', age: 18}]
+```
+#### fn.contains
+```
+/**
+  * [fn.contains] 判断数组是否包含符合条件的值
+  * @param src 
+  * @param predicate 
+  */
+fn.contains(src: any[], predicate: any): boolean;
+
+// examples:
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.contains(persons, {name: 'Tom'});             // true
+fn.contains(persons, ps => ps.name === 'Tom');   // true
+fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom');   // true
+```
+#### fn.findIndex
+```
+/**
+  * [fn.findIndex] 寻找值在数组中的索引
+  * @param src 
+  * @param predicate 
+  */
+findIndex(src: any[], predicate: any): number;
+
+// examples:
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.findIndex(persons, {name: 'Tom'});             // 1
+fn.findIndex(persons, ps => ps.name === 'Tom');   // 1
+```
+#### fn.sortBy
+```
+/**
+  * [fn.sortBy] 对象数组根据字段排序
   * @param tableData
   * @param field
   * @param isDesc
   */
-fn.sortByField(tableData: any, field: string, isDesc?: boolean): any;
+fn.sortBy(tableData: any, field: string, isDesc?: boolean): any;
 
 // examples:
-const person = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
-fn.sortByField(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+fn.sortBy(); //[{name:'Jerry', age: 18}, {name:'Tom', age: 22}]
 ```
 ### Object     
 #### fn.len
@@ -412,17 +489,28 @@ fn.timeout('test', 1000, () => console.log(111));
 // 清除Id为test的延时定时器
 fn.timeout('test', false);
 ```
-#### fn.timeStamp
+#### fn.defer
 ```
 /**
-  * [fn.timeStamp] 返回一个当前时间戳
+  * [fn.defer] 延迟执行函数
+  * @param func 
+  */
+fn.defer(func: Function): void;
+
+// 相当于:
+setTimeout(func, 0);
+```
+#### fn.time
+```
+/**
+  * [fn.time] 返回一个当前时间戳
   * @param time 
   */
-fn.timeStamp(time: Date | string | number): number;
+fn.time(time: Date | string | number): number;
 
 // examples:
-fn.timeStamp();                             // 1528295152832
-fn.timeStamp(new Date('2018-06-06 12:30')); // 1528259400000
+fn.time();                             // 1528295152832
+fn.time(new Date('2018-06-06 12:30')); // 1528259400000
 ```
 #### fn.fmtDate
 ```

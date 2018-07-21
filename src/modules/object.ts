@@ -1,6 +1,7 @@
-export class Object_ {
-    private static isTypeOf: Function;
+export class FnObject {
+    private static typeOf: Function;
     private static typeValue: Function;
+    private static toArray: Function;
     private static log: Function;
 
     /**
@@ -8,7 +9,7 @@ export class Object_ {
      * @arg obj [object]
      */
     public static len(obj: any): number {
-        if (obj && typeof obj === 'object' && ! (obj instanceof Array)) {
+        if (obj && typeof obj === 'object' && !(obj instanceof Array)) {
             return Object.keys(obj).length;
         } else {
             return obj && obj[length] || undefined;
@@ -16,10 +17,19 @@ export class Object_ {
     }
 
     /**
+     * [fn.forIn] 遍历对象的可数自有属性
+     * @arg obj
+     * @arg callback
+     */
+    public static forIn(obj: Object, callback: any): void {
+        return Object.keys(obj).forEach(callback);
+    }
+
+    /**
      * [fn.isEmpty] 判断对象是否为空对象或数组
      * @param obj 
      */
-    public static isEmpty(obj: Object| Function | string | any[]): boolean {
+    public static isEmpty(obj: Object | Function | string | any[]): boolean {
         return obj && !this.len(obj) || false;
     }
 
@@ -43,6 +53,7 @@ export class Object_ {
                 });
             }
         }
+        return target;
     }
 
     /**
@@ -74,7 +85,7 @@ export class Object_ {
      * @param layers [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static get(obj: Object, layers: string, type: string|string[]): any {
+    public static get(obj: Object, layers: string, type: string | string[]): any {
         if (!obj || !layers || !layers.trim()) {
             return undefined;
         }
@@ -83,7 +94,7 @@ export class Object_ {
         if (lys.length === lys.indexOf(prop) + 1) {
             return type ? this.typeValue(obj[prop], type) : obj[prop];
         } else {
-            if (this.isTypeOf(obj[prop], ['obj', 'arr'])) {
+            if (this.typeOf(obj[prop], ['obj', 'arr'])) {
                 if (lys.indexOf(prop)) {
                     lys.shift();
                 }
