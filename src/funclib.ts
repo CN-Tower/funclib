@@ -1,26 +1,26 @@
-import { FnType } from './modules/Type';
-import { FnArray } from './modules/Array';
-import { FnObject } from './modules/Object';
-import { FnString } from './modules/String';
-import { FnTime } from './modules/Time';
-import { FnRegExp } from './modules/RegExp';
-import { FnMath } from './modules/Math';
-import { FnFunction } from './modules/Function';
-import { FnEvent } from './modules/Event';
-import { FnCookie } from './modules/Cookie';
-import { FnDom } from './modules/Dom';
-import { FnLoger } from './modules/Loger';
-import { FnFileSys } from './modules/FileSys';
-import { FnProgress } from './modules/Progress';
-import { FnTrick } from './modules/Trick';
-import { FnUrl } from './modules/Url';
+import { FnType } from './modules/_Type';
+import { FnArray } from './modules/_Array';
+import { FnObject } from './modules/_Object';
+import { FnString } from './modules/_String';
+import { FnTime } from './modules/_Time';
+import { FnRegExp } from './modules/_RegExp';
+import { FnMath } from './modules/_Math';
+import { FnFunction } from './modules/_Function';
+import { FnEvent } from './modules/_Event';
+import { FnCookie } from './modules/_Cookie';
+import { FnDom } from './modules/_Dom';
+import { FnLoger } from './modules/_Loger';
+import { FnFileSys } from './modules/_FileSys';
+import { FnProgress } from './modules/_Progress';
+import { FnTrick } from './modules/_Trick';
+import { FnUrl } from './modules/_Url';
 import { FN_CONF } from './configs/fnConf'
 
 let root, isClient;
 
 export class FuncLib {
 
-  public version: string = 'V2.1.8'
+  public version: string = 'v2.1.9'
   private deleteProp = prop => {
     delete this[prop];
     if (this['__proto__']) {
