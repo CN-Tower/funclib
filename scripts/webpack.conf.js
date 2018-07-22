@@ -7,7 +7,7 @@ module.exports = {
     entry: path.resolve(rootPath, 'src', 'funclib.ts'),
     output: {
         filename: 'funclib.min.js',
-        path: path.resolve(rootPath, 'dist'),
+        path: path.resolve(rootPath, 'assets'),
         library: 'fn',
         libraryTarget: "umd"
     },

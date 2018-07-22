@@ -45,22 +45,18 @@ $ npm run test
 ```
 funclib.js
 ├── node_modules/           # You know the drill...
-├── dist                    # 构建目录
-│   ├── funclib.d.ts        # 定义文件
+├── assets                  # 构建目录
 │   ├── funclib.min.js      # 生成的UMD文件
-│   ├── index.js            # Index
+│   ├── index.d.ts          # 定义文件
+│   ├── index.js            # 索引文件
 │   ├── package.json        # 库模块定义
 │   └── README.md           # Read this FIRST :)
 ├── script                  # 脚本
 │   ├── build.js            # 编译脚本
 │   └── webpack.conf.js     # Webpack配置
 ├── src                     # Source code
-│   ├── asstes              # 静态文件
-│   │   ├── funclib.d.ts    # 定义文件
-│   │   ├── index.js        # Index
-│   │   └── package.json    # 库模块定义
 │   ├── configs             # 配置
-│   │   ├── fnConf.ts       # 特殊方法
+│   │   ├── fnConf.ts       # 配置文件
 │   │   └── keyMap.ts       # 键映射表
 │   ├── modules             # 模块
 │   │   ├── Array.ts        # Array

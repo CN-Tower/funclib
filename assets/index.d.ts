@@ -432,4 +432,3 @@ interface Funclib {
      */
     extendJquery(jquery): void;
 }
-

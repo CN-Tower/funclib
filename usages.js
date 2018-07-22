@@ -1,12 +1,14 @@
-const fn = require('./dist/');
+const fn = require('./assets/');
 
 /**
  * Loger
  * =======================================================================
  */
-// fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4doooo0000d04400000040000400ooooold'});
-// fn.log([{name: 'tom', age: 22}], false);
-// fn.log([{name: 'tom', age: 22}], 'false');
+fn.log([{name: 'tom', age: 22}], false);
+fn.log([{name: 'tom', age: 22}], 'false');
+fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4d55oooo0000d04400000040000400ooooold'});
+fn.log([{name: 'tom', age: 22}], {title: 'Hello world', width: 80, color: 'red', ttColor: 'blue'});
+fn.log(() => {console.log(111)}, 'Function');
 
 /**
  * Function
