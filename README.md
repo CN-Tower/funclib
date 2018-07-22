@@ -62,7 +62,6 @@ funclib.js
 │   │   ├── Array.ts        # Array
 │   │   ├── Cookie.ts       # Cookie
 │   │   ├── Dom.ts          # Element
-│   │   ├── Event.ts        # Event
 │   │   ├── FileSys.ts      # FileSystem
 │   │   ├── Function.ts     # Function
 │   │   ├── Loger.ts        # Loger
@@ -95,18 +94,16 @@ funclib.js
 
 ## Document (CM: Client side method, SM: Server side method)
 ### CONTENT
-#### Version
-[fn.version](#fnversion)&nbsp;&nbsp;返回当前函数库版本
 #### Type      
 [fn.typeOf](#fntypeof)&nbsp;&nbsp;检查值的类型，返回布尔值<br/>
 [fn.typeValue](#fntypevalue)&nbsp;&nbsp;检查值的类型，是则返回该值，否则返回false
 #### Array      
 [fn.array](#fnarray)&nbsp;&nbsp;返回指定长度和默认值的数组<br/>
-[fn.toArr](#fntoarr)&nbsp;&nbsp;值数组化<br/>
+[fn.toArray](#fntoarray)&nbsp;&nbsp;值数组化<br/>
 [fn.find](#fnfind)&nbsp;&nbsp;根据条件寻找值<br/>
-[fn.filter](#fnfind)&nbsp;&nbsp;根据条件过滤值<br/>
-[fn.reject](#fnfind)&nbsp;&nbsp;根据条件取过滤值<br/>
-[fn.contains](#fnfind)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
+[fn.filter](#fnfilter)&nbsp;&nbsp;根据条件过滤值<br/>
+[fn.reject](#fnreject)&nbsp;&nbsp;根据条件取过滤值<br/>
+[fn.contains](#fncontains)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
 [fn.findIndex](#fnfindindex)&nbsp;&nbsp;寻找值在数组中的索引<br/>
 [fn.sortBy](#fnsortby)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
@@ -116,7 +113,7 @@ funclib.js
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
 [fn.get](#fnget)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
-#### Mathematic 
+#### Math
 [fn.random](#fnrandom)&nbsp;&nbsp;返回指定范围的随机数<br/>
 [fn.rdid](#fnrdid)&nbsp;&nbsp;返回指定长度(最小6位)的随机ID<br/>
 [fn.rdcolor](#fnrdcolor)&nbsp;&nbsp;返回一个随机色值
@@ -137,24 +134,26 @@ funclib.js
 #### Function
 [fn.throttle](#fnthrottle)&nbsp;&nbsp;节流函数，适用于限制resize和scroll等函数的调用频率<br/>
 [fn.debounce](#fndebounce)&nbsp;&nbsp;防抖函数, 适用于获取用户输入
-#### Events     
-[fn.getKeyCodeByName](#fngetkeycodebyname)&nbsp;&nbsp;根据键名获取键码<br/>
-[fn.getKeyNameByCode](#fngetkeynamebycode)&nbsp;&nbsp;根据键码获取键名
 #### Url
 [fn.parseQueryString](#fnparsequerystring)&nbsp;&nbsp;解析Url参数成对象<br/>
 [fn.stringfyQueryString](#fnstringfyquerystring)&nbsp;&nbsp;把对象编译成Url参数
-#### Element        
+#### Dom        
 [fn.fullScreen](#fnfullscreen)&nbsp;&nbsp;全屏显示一个HTML元素<br/>
 [fn.exitFullScreen](#fnexitfullscreen)&nbsp;&nbsp;退出全屏显示<br/>
 [fn.isFullScreen](#fnisFullScreen)&nbsp;&nbsp;检测是否处理全屏状态<br/>
 [fn.fullScreenChange](#fullscreenchange)&nbsp;&nbsp;检测是否全屏状态<br/>
 [fn.pollingEl](#fnpollingel)&nbsp;&nbsp;轮询获取异步出现的HTML元素<br/>
 [fn.noAutoComplete](#fnnoautocomplete)&nbsp;&nbsp;防止input密码自动填充<br/>
-[fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
 #### Cookie     
 [fn.setCookie](#fnsetcookie)&nbsp;&nbsp;设置Cookie<br/>
 [fn.getCookie](#fngetcookie)&nbsp;&nbsp;根据name读取cookie<br/>
 [fn.removeCookie](#fnremovecookie)&nbsp;&nbsp;根据name删除cookie
+#### Tricks
+[fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
+[fn.getKeyCodeByName](#fngetkeycodebyname)&nbsp;&nbsp;根据键名获取键码<br/>
+[fn.getKeyNameByCode](#fngetkeynamebycode)&nbsp;&nbsp;根据键码获取键名<br/>
+[fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]<br/>
+[$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
 #### Loger
 [fn.chalk](#fnchalk)&nbsp;&nbsp;返回带颜色的字符串<br/>
 [fn.log](#fnlog)&nbsp;&nbsp;控制打印格式化值
@@ -168,20 +167,9 @@ funclib.js
 #### Progress      
 [fn.progress.start](#fnprogressstart)&nbsp;&nbsp;开启进度条，并传入参数<br/>
 [fn.progress.stop](#fnprogressstop)&nbsp;&nbsp;停止进度条，结束后触发回调
-#### Tricks
-[fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]<br/>
-[$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
-### Version
-#### fn.version
-返回当前函数库版本
-```
-/**
-  * [fn.version] 返回一个指定长度和默认值的数组
-  */
+#### Version
+[fn.version](#fnversion)&nbsp;&nbsp;返回当前函数库版本
 
-// examples:
-fn.version;  // V2.0.5
-```
 ### Type  
 #### fn.typeOf
 ```
@@ -233,17 +221,17 @@ fn.array(5, 0); // [0, 0, 0, 0, 0]
 let x = 0;
 fn.array(5, () => x += 2); // [2, 4, 6, 8, 10]
 ```
-#### fn.toArr
+#### fn.toArray
 ```
 /**
-  * [fn.toArr] 值数组化
+  * [fn.toArray] 值数组化
   * @param src 
   */
-fn.toArr(src: any): any[];
+fn.toArray(src: any): any[];
 
 // examples:
-fn.toArr('str');   // ['str']
-fn.toArr(['str']); // ['str']
+fn.toArray('str');   // ['str']
+fn.toArray(['str']); // ['str']
 ```
 #### fn.find
 ```
@@ -622,29 +610,6 @@ fn.throttle(func: Function, wait: number, options?: { leading?: boolean, trailin
   */
 fn.debounce(func: Function, wait: number, immediate?: boolean): Function;
 ```
-### Events     
-#### fn.getKeyCodeByName
-```
-/**
-  * [fn.getKeyCodeByName] 根据键名获取键码
-  * @param keyName 
-  */
-fn.getKeyCodeByName(keyName: string): number;
-
-// examples:
-fn.getKeyCodeByName('Ctrl'); // 17
-```
-#### fn.getKeyNameByCode
-```
-/**
-  * [fn.getKeyCodeByName] 根据键码获取键名
-  * @param keyName 
-  */
-fn.getKeyNameByCode(keyCode: number): string;
-
-// examples:
-fn.getKeyNameByCode(38); // Up
-```
 ### Url
 #### fn.parseQueryString
 ```
@@ -737,14 +702,6 @@ pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, 
   */
 noAutoComplete(input: any, type: 'username'|'password'): void;
 ```
-#### fn.copyText
-```
-/**
-  * [fn.copyText] 复制文本到粘贴板
-  * @param text [string]
-  */
-copyText(text: string): void;
-```
 ### Cookie     
 #### fn.setCookie
 ```
@@ -781,6 +738,32 @@ fn.removeCookie(name: string): void;
 
 // examples:
 fn.removeCookie('name'); // 'Tom'
+```
+### Tricks
+#### fn.copyText
+```
+/**
+  * [fn.copyText] 复制文本到粘贴板
+  * @param text [string]
+  */
+copyText(text: string): void;
+```
+#### fn.extendJquery
+```
+/**
+  * [fn.extendJquery] jQuery拓展
+  * @param jquery
+  */
+fn.extendJquery(jquery: any): void;
+```
+#### $ele.findCousin
+```
+/**
+  * [$ele.findCousin] 寻找元素的表亲
+  * @param selector [string]
+  * @param level    [number]
+  */
+$.fn.findCousin(selector: string, level: number = 0): any;
 ```
 ### Loger
 #### fn.chalk
@@ -893,21 +876,14 @@ fn.start(options: any): void;
   */
 fn.stop(onStopped?: Function): void;
 ```
-### Tricks      
-#### fn.extendJquery
+### Version
+#### fn.version
+返回当前函数库版本
 ```
 /**
-  * [fn.extendJquery] jQuery拓展
-  * @param jquery
+  * [fn.version] 返回一个指定长度和默认值的数组
   */
-fn.extendJquery(jquery: any): void;
-```
-#### $ele.findCousin
-```
-/**
-  * [$ele.findCousin] 寻找元素的表亲
-  * @param selector [string]
-  * @param level    [number]
-  */
-$.fn.findCousin(selector: string, level: number = 0): any;
+
+// examples:
+fn.version;  // V2.0.5
 ```

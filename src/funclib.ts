@@ -6,7 +6,6 @@ import { FnTime } from './modules/_Time';
 import { FnRegExp } from './modules/_RegExp';
 import { FnMath } from './modules/_Math';
 import { FnFunction } from './modules/_Function';
-import { FnEvent } from './modules/_Event';
 import { FnCookie } from './modules/_Cookie';
 import { FnDom } from './modules/_Dom';
 import { FnLoger } from './modules/_Loger';
@@ -14,9 +13,7 @@ import { FnFileSys } from './modules/_FileSys';
 import { FnProgress } from './modules/_Progress';
 import { FnTrick } from './modules/_Trick';
 import { FnUrl } from './modules/_Url';
-import {
-  VERSION, SERVER_METHODS, CLIENT_METHODS, INIT_METHODS
-} from './configs/fnConfigs'
+import { VERSION, SERVER_METHODS, CLIENT_METHODS, INIT_METHODS } from './funclib.conf'
 
 let isClient;
 
@@ -338,22 +335,6 @@ export class FuncLib {
   }
 
   /**
-   * [fn.getKeyCodeByName] 根据键名获取键码
-   * @param keyName 
-   */
-  getKeyCodeByName(keyName: string): number {
-    return FnEvent.getKeyCodeByName(keyName);
-  }
-
-  /**
-   * [fn.getKeyNameByCode] 根据键码获取键名
-   * @param keyName 
-   */
-  getKeyNameByCode(keyCode: number): string {
-    return FnEvent.getKeyNameByCode(keyCode);
-  }
-
-  /**
    * [fn.parseQueryString] 解析Url参数成对象
    * @param url [string]  default: window.location.href
    */
@@ -423,14 +404,6 @@ export class FuncLib {
   }
 
   /**
-   * [fn.copyText] 复制文本到粘贴板
-   * @param text [string]
-   */
-  copyText(text: string): void {
-    return FnDom.copyText(text);
-  }
-
-  /**
    * [fn.setCookie] 设置Cookie
    * @param name 
    * @param value 
@@ -455,6 +428,14 @@ export class FuncLib {
    */
   removeCookie(name: string) {
     return FnCookie.removeCookie(name);
+  }
+
+  /**
+   * [fn.copyText] 复制文本到粘贴板
+   * @param text [string]
+   */
+  copyText(text: string): void {
+    return FnTrick.copyText(text);
   }
 
   /**

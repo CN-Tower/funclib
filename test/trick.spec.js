@@ -1,0 +1,3 @@
+describe('Trick Methods:', function () {
+   
+});

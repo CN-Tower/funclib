@@ -3,8 +3,6 @@
  * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
  * Github: http://github.com/CN-Tower/funclib.js
  ----------------------------------------------------------------
- ## Version
- * fn.version                返回当前函数库版本
  ## Type
  * fn.typeOf                 检查值的类型，返回布尔值
  * fn.typeValue              检查值的类型，是则返回该值，否则返回false
@@ -24,7 +22,7 @@
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
  * fn.get                    返回对象或子孙对象的属性，可判断类型
- ## Mathematic 
+ ## Math
  * fn.random                 返回指定范围的随机数
  * fn.rdid                   返回指定长度(最小6位)的随机ID
  * fn.rdcolor                返回一个随机色值
@@ -45,9 +43,6 @@
  ## Function
  * fn.throttle               节流函数
  * fn.debounce               防抖函数
- ## Events     
- * fn.getKeyCodeByName       根据键名获取键码
- * fn.getKeyNameByCode       根据键码获取键名
  ## Url
  * fn.parseQueryString       解析Url参数成对象
  * fn.stringfyQueryString    把对象编译成Url参数
@@ -61,11 +56,14 @@
  * fn.fullScreenChange       检测是否全屏状态
  * fn.pollingEl              轮询获取异步出现的HTML元素
  * fn.noAutoComplete         防止input密码自动填充
- * fn.copyText               复制文本到粘贴板
  ## Cookie
  * fn.setCookie              设置Cookie
  * fn.getCookie              根据name读取cookie
  * fn.removeCookie           根据name删除cookie
+ ## Tricks
+ * fn.copyText               复制文本到粘贴板
+ * fn.extendJquery           jQuery拓展
+ * $ele.findCousin           jQuery获取元素表亲
  ## Tools      
  * fn.rd                     NodeJs读文件
  * fn.wt                     NodeJs写文件
@@ -76,9 +74,8 @@
  ## Progress      
  * fn.progress.start         开启进度，并传入参数
  * fn.progress.stop          停止进度，结束后触发回调
- ## Tricks
- * fn.extendJquery           jQuery拓展
- * $ele.findCousin           jQuery获取元素表亲
+ ## Version
+ * fn.version                返回当前函数库版本
  ================================================================*/
 declare var fn: Funclib;
 export = fn;
@@ -295,16 +292,6 @@ interface Funclib {
      */
     debounce(func: Function, wait: number, immediate?: boolean): Function;
     /**
-     * [fn.getKeyCodeByName] 根据键名获取键码
-     * @param keyName 
-     */
-    getKeyCodeByName(keyName: string): number;
-    /**
-     * [fn.getKeyNameByCode] 根据键码获取键名
-     * @param keyName 
-     */
-    getKeyNameByCode(keyCode: number): string;
-    /**
      * [fn.parseQueryString] 解析Url参数成对象
      * @param url [string]  default: window.location.href
      */
@@ -350,11 +337,6 @@ interface Funclib {
      */
     noAutoComplete(input: any, type: 'username' | 'password'): void;
     /**
-     * [fn.copyText] 复制文本到粘贴板
-     * @param text [string]
-     */
-    copyText(text: string): void;
-    /**
      * [fn.setCookie] 设置Cookie
      * @param name 
      * @param value 
@@ -372,6 +354,11 @@ interface Funclib {
      * @param name 
      */
     removeCookie(name: string): void;
+    /**
+     * [fn.copyText] 复制文本到粘贴板
+     * @param text [string]
+     */
+    copyText(text: string): void;
     /**
       * [fn.chalk] 返回带颜色的字符串
       * @param value 

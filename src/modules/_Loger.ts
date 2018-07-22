@@ -1,4 +1,4 @@
-import { COLOR_LIST } from '../configs/fnConfigs';
+import { COLOR_LIST } from '../funclib.conf';
 
 export class FnLoger {
     private static array: Function;

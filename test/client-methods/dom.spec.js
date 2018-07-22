@@ -1,4 +1,4 @@
-describe('Element Methods:', function () {
+describe('Dom Methods:', function () {
     describe('#fn.fullScreen()', function () {
         before(function() {
             fn.fullScreen($('html')[0]);
