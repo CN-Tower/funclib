@@ -10,20 +10,33 @@
     <div id="myDiv" style="width: 100px; height: 100px; background: red;"></div>
     <input type="text" id="ipt" oninput="onIptChange()">
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="./dist/funclib.min.js"></script>
+    <script src="./assets/funclib.min.js"></script>
     <script>
         /**
          * Url
          * =======================================================================
          */
-        const url = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10';
-        fn.log(fn.parseQueryString(url));
-        const params = {name: 'Tom', age: 28};
-        fn.log(fn.stringfyQueryString(params));
-        fn.log($('#ipt').val(), 'Woooooooooooooooooo00000000000000000000066566600660000a');
-        function onIptChange(e) {
-            fn.debounce(() => fn.log($('#ipt').val()), 1000);
-        }
+        // const url = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10';
+        // fn.log(fn.parseQueryString(url));
+        // const params = {name: 'Tom', age: 28};
+        // fn.log(fn.stringfyQueryString(params));
+        // fn.log($('#ipt').val(), 'Woooooooooooooooooo00000000000000000000066566600660000a');
+        /**
+         * Function
+         * =======================================================================
+         */
+        // var logVal = fn.debounce(function() {
+        //     fn.log($('#ipt').val(), false);
+        // }, 500);
+        // function onIptChange(e) {
+        //     logVal();
+        // }
+        var showClientTop = fn.throttle(function(e) {
+            fn.log(e.clientX, false);
+        }, 1000);
+        $(document).mousemove(function(e) {
+            showClientTop(e);
+        });
     </script>
 </body>
 </html>

@@ -26,21 +26,20 @@ export class FnLoger {
             isFormate = configs; configs = undefined;
         }
         value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
-        let time = this.fmtDate('hh:mm:ss');
+        let time = `[${this.fmtDate('hh:mm:ss')}] `;
         let title = (this.typeValue(configs, 'str') || this.get(configs, '/title')
             || `funclib(${this.version})`).replace(/\n/mg, '');
         const originTtLength = (time + title + '[] ').length;
+        if (!isFormate) title = `( ${title} )`;
         if (!isClient) {
-            time = this.chalk(`[${time}] `, 'grey');
-            value = this.chalk(value, FnLoger.getColorConf(configs, 'color'));
-            if (isFormate) {
-                title = this.chalk(title, FnLoger.getColorConf(configs, 'ttColor'));
-            } else {
-                title = this.chalk(`( ${title} )`, FnLoger.getColorConf(configs, 'ttColor'));
-            }
+            time  = this.chalk(time);
+            const titlec = this.get(configs, '/ttColor');
+            const valuec = this.get(configs, '/color');
+            title = this.chalk(title, titlec in COLOR_LIST && titlec || 'green');
+            value = this.chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
         }
-        title = time + title;
 
+        title = time + title;
         let width = this.get(configs, '/width');
         if (!width || width < 30 || width > 100) width = 66;
         if (originTtLength <= width) {
@@ -91,13 +90,8 @@ export class FnLoger {
      * @param value 
      * @param color 
      */
-    public static chalk(value: string, color: string = 'default') {
-        if (!(color in COLOR_LIST)) color = 'default'
+    public static chalk(value: string, color?: string) {
+        if (!(color in COLOR_LIST)) color = 'grey'
         return COLOR_LIST[color].replace(/%s/, value);
-    }
-
-    private static getColorConf(configs: any, field: 'ttColor' | 'color') {
-        const themeConfs = { ttColor: 'green', color: 'cyan' }
-        return configs && configs[field] in COLOR_LIST && configs[field] || themeConfs[field];
     }
 }
