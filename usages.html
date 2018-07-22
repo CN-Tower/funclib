@@ -8,6 +8,7 @@
 </head>
 <body>
     <div id="myDiv" style="width: 100px; height: 100px; background: red;"></div>
+    <input type="text" id="ipt" oninput="onIptChange()">
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./dist/funclib.min.js"></script>
     <script>
@@ -19,6 +20,10 @@
         fn.log(fn.parseQueryString(url));
         const params = {name: 'Tom', age: 28};
         fn.log(fn.stringfyQueryString(params));
+        fn.log($('#ipt').val(), 'Woooooooooooooooooo00000000000000000000066566600660000a');
+        function onIptChange(e) {
+            fn.debounce(() => fn.log($('#ipt').val()), 1000);
+        }
     </script>
 </body>
 </html>

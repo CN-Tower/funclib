@@ -1,17 +1,16 @@
+import { COLOR_LIST } from '../configs/fnConfigs';
+
 export class FnLoger {
     private static array: Function;
+    private static get: Function;
+    private static typeValue: Function;
     private static cutString: Function;
+    private static fmtDate: Function;
     private static version: string;
-    
-    private static colors = {
-        'grey': '\x1B[90m%s\x1B[0m',
-        'blue': '\x1B[34m%s\x1B[0m',
-        'cyan': '\x1B[36m%s\x1B[0m',
-        'green': '\x1B[32m%s\x1B[0m',
-        'magenta': '\x1B[35m%s\x1B[0m',
-        'red': '\x1B[31m%s\x1B[0m',
-        'yellow': '\x1B[33m%s\x1B[0m',
-        'default': '%s',
+
+    private static getColorConf(configs: any, field: 'ttColor' | 'color') {
+        const themeConfs = { ttColor: 'green', color: 'cyan' }
+        return configs && configs[field] in COLOR_LIST && configs[field] || themeConfs[field];
     }
 
     /**
@@ -19,80 +18,92 @@ export class FnLoger {
      * @param value 
      * @param color 
      */
-    public static chalk(value: string, color?: string) {
-        if (!(color in this.colors)) {
-            color = 'default'
-        }
-        return this.colors[color].replace(/%s/, value);
+    public static chalk(value: string, color: string = 'default') {
+        if (!(color in COLOR_LIST)) color = 'default'
+        return COLOR_LIST[color].replace(/%s/, value);
     }
 
-  /**
-   * [fn.log] 控制台格式化打印值
-   * @param value 
-   * @param configs {
-   * title: string,
-   * lineLen: number [20-100]
-   * part: 'pre'|'end'
-   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
-   * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' }
-   */
-    public static log (value: any, configs: Object, isClient: boolean) {
-        value = typeof value === 'object'
-            ? JSON.stringify(value, null, 2)
-            : String(value);
-        let title = (typeof configs === 'string' && configs)
-            || (configs && configs['title']) || `funclib ${this.version}`;
-        let lineLen = configs && configs['lineLen'];
-        if (!lineLen || lineLen < 20 || lineLen > 100) {
-            lineLen = 66;
+    /**
+     * [fn.log] 控制台格式化打印值
+     * @param value 
+     * @param configs {
+     * title: string,
+     * width: number [20-100]
+     * part: 'pre'|'end'
+     * isFmt: boolean
+     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+     * @param isFmt 
+     */
+    public static log(isClient: boolean, value: any,  configs: Object, isFmt: boolean) {
+        isFmt = this.get(configs, '/isFmt') || isFmt;
+        if (typeof configs === 'boolean') {
+            isFmt = configs;
+            configs = undefined;
         }
-        let titlelen, sp = '';
-        if (title.length <= lineLen - 10) {
-            titlelen = title.length;
+        value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+        let title = (this.typeValue(configs, 'str')
+            || this.get(configs, '/title')
+            || `funclib(${this.version})`).replace(/\n|\s/mg, '');
+        let time = this.fmtDate('hh:mm:ss');
+        if (!isFmt) {
+            if (!isClient) {
+                time = this.chalk(`[${time}] `, 'grey');
+                title = this.chalk(`( ${title} )`, FnLoger.getColorConf(configs, 'ttColor'));
+            }
+            console.log(`${time + title}: ${this.chalk(value, FnLoger.getColorConf(configs, 'color'))}`);
         } else {
-            titlelen = lineLen - 10;
-            title = this.cutString(title, titlelen - 2);
+            const originTtLength = (time + title + '[] ').length;
+            if (!isClient) {
+                time = this.chalk(`[${time}] `, 'grey');
+                title = this.chalk(title, FnLoger.getColorConf(configs, 'ttColor'));
+            }
+            title = time + title;
+            let width = this.get(configs, '/width');
+            if (!width || width < 30 || width > 100) width = 66;
+            if (originTtLength <= width) {
+                title = this.array((width - originTtLength) / 2, ' ').join('') + title;
+            } else {
+                const colorEnd = '\x1B[0m';
+                const fixLength = title.length - originTtLength - colorEnd.length;
+                title = isClient
+                    ? this.cutString(title, width - 3)
+                    : this.cutString(title, width + fixLength - 3) + colorEnd;
+            }
+            let sgLine = '', dbLine = '';
+            this.array(width).forEach(x => {
+                sgLine += '-'; dbLine += '=';
+            });
+            isClient
+                ? FnLoger.clientLog(dbLine, title, sgLine, value)
+                : FnLoger.serverLog.call(this, dbLine, title, sgLine, value, configs);
         }
-        this.array((lineLen - titlelen) / 2, ' ').forEach(x => sp += x);
-        const tt = sp + title;
-        const s = '-', d = '=';
-        let sL = '', dL = '';
-        this.array(lineLen).forEach(x => {
-            sL += s;
-            dL += d;
-        });
-        isClient
-            ? FnLoger.clientLog(dL, tt, sL, value)
-            : FnLoger.serverLog(dL, tt, sL, value, configs);
     }
 
     /**
      * 客户端打印
      */
-    private static clientLog(dL, tt, sL, value)  {
+    private static clientLog(dL, tt, sL, value) {
         console.log(`\n${dL}\n${tt}\n${sL}\n${value}\n${dL}\n`);
     }
 
     /**
      * 服务端打印
      */
-    private static serverLog(dL, tt, sL, value, configs)  {
-        const color = configs && configs['color'] in this.colors && configs['color'] || 'grey';
-        const ttColor = configs && configs['ttColor'] in this.colors && configs['ttColor'] || 'green';
-
+    private static serverLog(dL, tt, sL, value, configs) {
         if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
             if (configs['part'] === 'pre') {
                 console.log('\n' + dL);
-                console.log(this.chalk(tt, ttColor));
+                console.log(tt);
                 console.log(sL);
             } else {
                 console.log(dL + '\n');
             }
         } else {
             console.log('\n' + dL);
-            console.log(this.chalk(tt, ttColor));
+            console.log(tt);
             console.log(sL);
-            console.log(this.chalk(value, color));
+            console.log(this.chalk(value, FnLoger.getColorConf(configs, 'color')));
             console.log(dL + '\n');
         }
     }

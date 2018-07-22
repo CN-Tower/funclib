@@ -14,13 +14,15 @@ import { FnFileSys } from './modules/_FileSys';
 import { FnProgress } from './modules/_Progress';
 import { FnTrick } from './modules/_Trick';
 import { FnUrl } from './modules/_Url';
-import { FN_CONF } from './configs/fnConf'
+import {
+  VERSION, SERVER_METHODS, CLIENT_METHODS, INIT_METHODS
+} from './configs/fnConfigs'
 
-let root, isClient;
+let isClient;
 
 export class FuncLib {
 
-  public version: string = 'v2.1.9'
+  public version: string = VERSION
   private deleteProp = prop => {
     delete this[prop];
     if (this['__proto__']) {
@@ -29,21 +31,21 @@ export class FuncLib {
   }
 
   constructor() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (typeof window === 'object' && window.window === window) {
       isClient = true;
-      root = window;
-      FN_CONF.serverMethods.forEach(prop => this.deleteProp(prop));
-    } else if (typeof global !== 'undefined') {
+      this.initTricks();
+      SERVER_METHODS.forEach(prop => this.deleteProp(prop));
+    } else if (typeof global === 'object' && global.global === global) {
       isClient = false;
-      root = global;
       this.initFileSystem();
       this.initProgress();
-      FN_CONF.clientMethods.forEach(prop => this.deleteProp(prop));
+      CLIENT_METHODS.forEach(prop => this.deleteProp(prop));
+    } else {
+      isClient = false;
+      SERVER_METHODS.forEach(prop => this.deleteProp(prop));
+      CLIENT_METHODS.forEach(prop => this.deleteProp(prop));
     }
-    this.initTricks();
-    ['deleteProp', 'initTricks', 'initFileSystem', 'initProgress'].forEach(priMethod => {
-      delete this[priMethod];
-    });
+    INIT_METHODS.forEach(initMethod => delete this[initMethod]);
   }
 
   /**
@@ -322,7 +324,7 @@ export class FuncLib {
    * @param  options
    */
   throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }) {
-    return FnFunction.throttle.bind(this, func, wait, options);
+    return FnFunction.throttle.call(this, func, wait, options);
   }
 
   /**
@@ -469,12 +471,15 @@ export class FuncLib {
    * @param value 
    * @param configs {
    * title: string,
-   * lineLen: number [20-100]
+   * width: number [20-100]
    * part: 'pre'|'end' [S]
-   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S] }
+   * isFmt: boolean
+   * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [S]
+   * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+   * @param isFmt 
    */
-  log(value?: any, configs?: Object) {
-    return FnLoger.log.call(this, value, configs, isClient);
+  log(value?: any, configs?: any, isFmt: boolean = true) {
+    return FnLoger.log.call(this, isClient, value, configs, isFmt);
   }
 
   /**

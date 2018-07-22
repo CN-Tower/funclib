@@ -610,22 +610,21 @@ fn.matchPattern('cntower@yahoo.com', 'email'); // true
 ```
 /**
   * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-  * @param  delay        对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-  * @param  noTrailing   默认为false，为true相当于debunce
-  * @param  callback     延迟执行的回调，`this`上下文和所有参数都是按原样传递的
-  * @param  debounceMode 如果`debounceMode`为true，`clear`在`delay`ms后执行，如果debounceMode是false，`callback`在`delay`ms之后执行
+  * @param  func
+  * @param  wait
+  * @param  options
   */
-throttle(delay: number, noTrailing: any, callback?: any, debounceMode?: any): Function;
+fn.throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }): Function;
 ```
 #### fn.debounce
 ```
 /**
   * [fn.debounce] 防抖函数, 适用于获取用户输入
-  * @param delay    对于事件回调，大约100或250毫秒（或更高）的延迟是最有用的
-  * @param atBegin  是否不需要延迟调用
-  * @param callback 延迟执行的回调，`this`上下文和所有参数都是按原样传递的
+  * @param func
+  * @param wait
+  * @param immediate
   */
-debounce(delay: number, atBegin: any, callback?: Function): Function;
+fn.debounce(func: Function, wait: number, immediate?: boolean): Function;
 ```
 ### Events     
 #### fn.getKeyCodeByName
@@ -807,9 +806,12 @@ console.log(fn.chalk('test', 'cyan'));
   * @param value 
   * @param configs {
   * title: string,
-  * lineLen: number [20-100]
+  * width: number [20-100]
   * part: 'pre'|'end' (opt.)
-  * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+  * isFmt: boolean
+  * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+  * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+  * @param isFmt 
   */
 fn.log(value: any, configs?: Object|string): void;
 

@@ -1,33 +1,58 @@
 const fn = require('./dist/');
 
-// fn.log(fn.deleteProp);
+/**
+ * Loger
+ * =======================================================================
+ */
+// fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4doooo0000d04400000040000400ooooold'});
+// fn.log([{name: 'tom', age: 22}], false);
+// fn.log([{name: 'tom', age: 22}], 'false');
+
+/**
+ * Function
+ * =======================================================================
+ */
+// let i = 0;
+// const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
+// fn.interval(500, () => {
+//     i ++;
+//     log();
+// });
+
+// let i = 0;
+// const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
+// fn.interval(500, () => {
+//     i ++
+//     log();
+// });
+
 /**
  * Array
  * =======================================================================
  */
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
-fn.log(fn.find(persons, {name: 'Tom'}), 'fn.find');
-fn.log(fn.find(persons, ps => ps.name === 'Tom'), 'fn.find');
-fn.log(fn.filter(persons, {name: 'Tom'}), 'fn.filter');
-fn.log(fn.filter(persons, ps => ps.name === 'Tom'), 'fn.filter');
-fn.log(fn.reject(persons, {name: 'Tom'}), 'fn.reject');
-fn.log(fn.reject(persons, ps => ps.name === 'Tom'), 'fn.reject');
-fn.log(fn.contains(persons, {name: 'Tom'}), 'fn.contains');
-fn.log(fn.contains(persons, ps => ps.name === 'Tom'), 'fn.contains');
-fn.log(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom'), 'fn.contains');
-fn.log(fn.findIndex(persons, {name: 'Tom'}), 'fn.findIndex');
-fn.log(fn.findIndex(persons, ps => ps.name === 'Tom'), 'fn.findIndex');
+// const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
+// fn.log(fn.find(persons, {name: 'Tom'}), 'fn.find');
+// fn.log(fn.find(persons, ps => ps.name === 'Tom'), 'fn.find');
+// fn.log(fn.filter(persons, {name: 'Tom'}), 'fn.filter');
+// fn.log(fn.filter(persons, ps => ps.name === 'Tom'), 'fn.filter');
+// fn.log(fn.reject(persons, {name: 'Tom'}), 'fn.reject');
+// fn.log(fn.reject(persons, ps => ps.name === 'Tom'), 'fn.reject');
+// fn.log(fn.contains(persons, {name: 'Tom'}), 'fn.contains');
+// fn.log(fn.contains(persons, ps => ps.name === 'Tom'), 'fn.contains');
+// fn.log(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom'), 'fn.contains');
+// fn.log(fn.findIndex(persons, {name: 'Tom'}), 'fn.findIndex');
+// fn.log(fn.findIndex(persons, ps => ps.name === 'Tom'), 'fn.findIndex');
 
 /**
  * Object
  * =======================================================================
  */
-const obj1 = {name: 'Obj', metadata: {subObj: {name: true}}}
+// const obj1 = {name: 'Obj', metadata: {subObj: {name: true}}}
 // const obj2 = {name: 'Obj', metadata: null}
-const val1 = fn.get(obj1, '/metadata/subObj/name');
+// const val1 = fn.get(obj1, '/metadata/subObj/name');
 // const val2 = fn.get(obj2, 'metadata/subObj/name');
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
-fn.log(val1);
+// fn.log(val1);
 // fn.log(val2);
 
 /**

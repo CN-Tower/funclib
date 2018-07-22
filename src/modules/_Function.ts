@@ -9,17 +9,10 @@ export class FnFunction {
     public static throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }) {
         let timeout, context, args, result;
         let previous = 0;
+        const that = this;
         if (!options) options = {};
-
-        const later = function () {
-            previous = options.leading === false ? 0 : this.time();
-            timeout = null;
-            result = func.apply(context, args);
-            if (!timeout) context = args = null;
-        };
-
         const throttled: any = function () {
-            const now = this.time();
+            const now = that.time();
             if (!previous && options.leading === false) previous = now;
             const remaining = wait - (now - previous);
             context = this;
@@ -34,7 +27,12 @@ export class FnFunction {
                 if (!timeout) context = args = null;
             }
             else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
+                timeout = setTimeout(function () {
+                    previous = options.leading === false ? 0 : that.time();
+                    timeout = null;
+                    result = func.apply(context, args);
+                    if (!timeout) context = args = null;
+                }, remaining);
             }
             return result;
         };
@@ -44,7 +42,6 @@ export class FnFunction {
             previous = 0;
             timeout = context = args = null;
         };
-
         return throttled;
     }
 
@@ -56,26 +53,24 @@ export class FnFunction {
      */
     public static debounce(func: Function, wait: number, immediate: boolean = false) {
         let timeout, result;
-    
         const later = function(context, args) {
           timeout = null;
           if (args) result = func.apply(context, args);
         };
-    
+        const delay = function(func, wait, ...args) {
+            return setTimeout(function() {
+                return func.apply(null, args);
+            }, wait);
+        }
         const debounced: any = function(...args) {
           if (timeout) clearTimeout(timeout);
           if (immediate) {
-            const callNow = !timeout;
+            var callNow = !timeout;
             timeout = setTimeout(later, wait);
             if (callNow) result = func.apply(this, args);
           } else {
-            timeout = function(func, wait, ...args) {
-                return setTimeout(function() {
-                    return func.apply(null, args);
-                }, wait);
-            }
+            timeout = delay(later, wait, this, args);
           }
-    
           return result;
         };
     
@@ -85,5 +80,5 @@ export class FnFunction {
         };
     
         return debounced;
-      }
+    }
 }

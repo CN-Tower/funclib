@@ -286,7 +286,7 @@ interface Funclib {
      * @param  wait
      * @param  options
      */
-    throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }): Funclib;
+    throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }): Funclib;
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
      * @param func
