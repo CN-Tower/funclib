@@ -1,4 +1,4 @@
-export const VERSION = 'v2.1.12';
+export const VERSION = 'v2.1.13';
 
 export const SERVER_METHODS = [
     'chalk'

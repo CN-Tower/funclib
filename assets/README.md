@@ -55,9 +55,6 @@ funclib.js
 │   ├── build.js            # 编译脚本
 │   └── webpack.conf.js     # Webpack配置
 ├── src                     # Source code
-│   ├── configs             # 配置
-│   │   ├── fnConf.ts       # 配置文件
-│   │   └── keyMap.ts       # 键映射表
 │   ├── modules             # 模块
 │   │   ├── Array.ts        # Array
 │   │   ├── Cookie.ts       # Cookie
@@ -74,6 +71,7 @@ funclib.js
 │   │   ├── Trick.ts        # Trick
 │   │   ├── Type.ts         # Type
 │   │   └── Url.ts          # Url
+│   ├── funclib.conf.ts     # 配置文件
 │   └── funclib.ts          # Main函数
 ├── test                    # 测试
 │   ├── client-methods      # 客户端方法测试用例
@@ -150,8 +148,6 @@ funclib.js
 [fn.removeCookie](#fnremovecookie)&nbsp;&nbsp;根据name删除cookie
 #### Tricks
 [fn.copyText](#fncopytext)&nbsp;&nbsp;复制文本到粘贴板
-[fn.getKeyCodeByName](#fngetkeycodebyname)&nbsp;&nbsp;根据键名获取键码<br/>
-[fn.getKeyNameByCode](#fngetkeynamebycode)&nbsp;&nbsp;根据键码获取键名<br/>
 [fn.extendJquery](#fnextendjquery)&nbsp;&nbsp;jQuery拓展]<br/>
 [$ele.findCousin](#elefindcousin)&nbsp;&nbsp;jQuery获取元素表亲
 #### Loger

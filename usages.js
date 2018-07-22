@@ -1,4 +1,5 @@
-const fn = require('./assets/');
+// const fn = require('./assets/funclib');
+const fn = require('./assets');
 
 /**
  * Loger
