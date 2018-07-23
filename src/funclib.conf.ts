@@ -31,5 +31,6 @@ export const COLOR_LIST= {
     'green': '\x1B[32m%s\x1B[0m',
     'magenta': '\x1B[35m%s\x1B[0m',
     'red': '\x1B[31m%s\x1B[0m',
-    'yellow': '\x1B[33m%s\x1B[0m'
+    'yellow': '\x1B[33m%s\x1B[0m',
+    'default': '%s1B[0m'
 }
