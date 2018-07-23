@@ -1,7 +1,6 @@
 export class FnArray {
-    public static get: Function
-    public static has: Function
-    public static typeOf: Function
+    private static get: Function
+    private static typeOf: Function
 
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
