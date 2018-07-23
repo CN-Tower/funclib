@@ -107,7 +107,7 @@ module.exports = g;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.1.13';
+exports.VERSION = 'v2.1.14';
 exports.SERVER_METHODS = [
     'chalk'
 ];
@@ -136,7 +136,8 @@ exports.COLOR_LIST = {
     'green': '\x1B[32m%s\x1B[0m',
     'magenta': '\x1B[35m%s\x1B[0m',
     'red': '\x1B[31m%s\x1B[0m',
-    'yellow': '\x1B[33m%s\x1B[0m'
+    'yellow': '\x1B[33m%s\x1B[0m',
+    'default': '%s\x1B[0m'
 };
 
 
