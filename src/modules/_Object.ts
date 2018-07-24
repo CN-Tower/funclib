@@ -24,7 +24,7 @@ export class FnObject {
      * @arg obj
      * @arg iteratee
      */
-    public static forIn(obj: Object, iteratee: any): void {
+    public static forIn(obj: Object, iteratee: any): any {
         return Object.keys(obj).forEach(iteratee);
     }
 
