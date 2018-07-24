@@ -103,11 +103,11 @@ funclib.js
 [fn.reject](#fnreject)&nbsp;&nbsp;根据条件取过滤值<br/>
 [fn.contains](#fncontains)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
 [fn.findIndex](#fnfindindex)&nbsp;&nbsp;寻找值在数组中的索引<br/>
+[fn.forEach](#fnforeach)&nbsp;&nbsp;遍历数组或类数组<br/>
 [fn.sortBy](#fnsortby)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
 [fn.len](#fnlen)&nbsp;&nbsp;获取对象自有属性的个数<br/>
 [fn.forIn](#fnforin)&nbsp;&nbsp;遍历对象的可数自有属性<br/>
-[fn.isEmpty](#fnisempty)&nbsp;&nbsp;判断对象是否为空对象或数组<br/>
 [fn.overlay](#fnoverlay)&nbsp;&nbsp;给对象赋值，可指定字段<br/>
 [fn.deepCopy](#fndeepcopy)&nbsp;&nbsp;深拷贝数组或对象<br/>
 [fn.get](#fnget)&nbsp;&nbsp;返回对象或子孙对象的属性，可判断类型
@@ -174,7 +174,7 @@ funclib.js
   * @param value 
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
+fn.typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
 
 // examples:
 const a = fn.typeOf(true, 'bol');
@@ -191,7 +191,7 @@ console.log(c); // false
   * @param value 
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
+fn.typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
 
 // examples:
 const a = fn.typeValue(true, 'bol');
@@ -239,7 +239,7 @@ fn.toArray(['str']); // ['str']
 fn.find(src: any[], predicate: any): any;
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.find(persons, {name: 'Tom'});             // {name:'Tom', age: 22}
 fn.find(persons, ps => ps.name === 'Tom');   // {name:'Tom', age: 22}
 ```
@@ -253,7 +253,7 @@ fn.find(persons, ps => ps.name === 'Tom');   // {name:'Tom', age: 22}
 fn.filter(src: any[], predicate: any): any[];
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.filter(persons, {name: 'Tom'});             // [{name:'Tom', age: 22}]
 fn.filter(persons, ps => ps.name === 'Tom');   // [{name:'Tom', age: 22}]
 ```
@@ -267,7 +267,7 @@ fn.filter(persons, ps => ps.name === 'Tom');   // [{name:'Tom', age: 22}]
 fn.reject(src: any[], predicate: any): any[];
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.reject(persons, {name: 'Tom'});             // [{name:'Jerry', age: 18}]
 fn.reject(persons, ps => ps.name === 'Tom');   // [{name:'Jerry', age: 18}]
 ```
@@ -293,17 +293,26 @@ fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom');   // true
   * @param src 
   * @param predicate 
   */
-findIndex(src: any[], predicate: any): number;
+fn.findIndex(src: any[], predicate: any): number;
 
 // examples:
 const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
 fn.findIndex(persons, {name: 'Tom'});             // 1
 fn.findIndex(persons, ps => ps.name === 'Tom');   // 1
 ```
+#### fn.forEach
+```
+/**
+  * [fn.forEach] 遍历数组或类数组
+  * @param arrayLike
+  * @param iteratee
+  */
+fn.forEach(arrayLike: any, iteratee: any): any;
+```
 #### fn.sortBy
 ```
 /**
-  * [fn.sortBy] 对象数组根据字段排序
+  * [fn.sortBy] 返回对象数组根据字段排序后的副本
   * @param tableData
   * @param field
   * @param isDesc
@@ -333,25 +342,13 @@ fn.len(x => console.log(s)); // 1
 /**
   * [fn.forIn] 遍历对象的可数自有属性
   * @arg obj
-  * @arg callback
+  * @arg iteratee
   */
-forIn(obj: Object, callback: any): void;
+forIn(obj: Object, iteratee: Function): void;
 
 // examples:
 const tom = {name: 'Tom', age: 28}
 fn.forIn(tom, prop => console.log(prop)); // name \n age
-```
-#### fn.isEmpty
-```
-/**
-  * [fn.isEmpty] 判断对象是否为空对象或数组
-  * @param obj 
-  */
-fn.isEmpty(obj: Object| Function | string | any[]): boolean;
-
-// examples:
-fn.isEmpty({});            // true
-fn.isEmpty({name: 'Tom'}); // false
 ```
 #### fn.overlay
 ```
@@ -398,7 +395,7 @@ const val2 = fn.get(obj2, 'metadata/subObj/name');
 fn.log(val1); // Tom
 fn.log(val2); // undefined
 ```
-### Mathematic 
+### Math
 #### fn.random
 ```
 /**
@@ -445,7 +442,7 @@ fn.rdcolor(); // #2913ba
   * @param duration
   * @param callback
   */
-fn.interval(timerId: string, duration: number | boolean, callback?: Function): void;
+fn.interval(timerId: string, duration: number | boolean, callback?: Function): any;
 
 // examples:
 // 设置Id为test的循环定时器
@@ -461,7 +458,7 @@ fn.interval('test', false);
   * @param duration
   * @param callback
   */
-fn.timeout(timerId: string, duration: number | boolean, callback?: Function): void;
+fn.timeout(timerId: string, duration: number | boolean, callback?: Function): any;
 
 // examples:
 // 设置Id为test的延时定时器
@@ -631,7 +628,7 @@ stringfyQueryString(obj: Object): string;
 const params = {name: 'Tom', age: 28};
 fn.log(fn.stringfyQueryString(params)); // ?name=Tom&age=28
 ```
-### Element        
+### Dom        
 #### fn.fullScreen
 ```
 /**
@@ -669,14 +666,14 @@ fn.isFullScreen(); // false
 #### fn.fullScreenChange
 ```
 /**
-  * [fn.fullScreenChange] 检测是否全屏状态
+  * [fn.fullScreenChange] 全屏显示变化事件
   * @param callback
   */
 fullScreenChange(callback?: boolean|any): void;
 
 // examples:
-fn.isFullScreen(() => {Do something!});
-fn.isFullScreen(false);
+fn.fullScreenChange(() => {Do something!});
+fn.fullScreenChange(false);
 ```
 #### fn.pollingEl
 ```
@@ -696,7 +693,7 @@ pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, 
   * @param input [HTMLInputElement]
   * @param type ['username'|'password']
   */
-noAutoComplete(input: any, type: 'username'|'password'): void;
+fn.noAutoComplete(input: any, type: 'username'|'password'): void;
 ```
 ### Cookie     
 #### fn.setCookie
@@ -860,7 +857,7 @@ fn.mk(dist: string): void;
 ```
 /**
   * [fn.progress.start] 开启进度，并传入参数
-  * @param options {title: string, width: number (base: 40)} | 'message'
+  * @param options {title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}
   */
 fn.start(options: any): void;
 ```
@@ -868,7 +865,7 @@ fn.start(options: any): void;
 ```
 /**
   * [fn.progress.stop] 结束进度，结束后触发回调
-  * @param options 
+  * @param onStopped 
   */
 fn.stop(onStopped?: Function): void;
 ```
@@ -877,7 +874,7 @@ fn.stop(onStopped?: Function): void;
 返回当前函数库版本
 ```
 /**
-  * [fn.version] 返回一个指定长度和默认值的数组
+  * [fn.version] 返回当前函数库版本
   */
 
 // examples:

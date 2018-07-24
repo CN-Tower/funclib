@@ -107,7 +107,7 @@ module.exports = g;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.1.14';
+exports.VERSION = 'v2.1.15';
 exports.SERVER_METHODS = [
     'chalk'
 ];
@@ -124,10 +124,10 @@ exports.CLIENT_METHODS = [
     'copyText'
 ];
 exports.INIT_METHODS = [
-    'deleteProp',
     'initTricks',
     'initFileSystem',
-    'initProgress'
+    'initProgress',
+    'deleteProp'
 ];
 exports.COLOR_LIST = {
     'grey': '\x1B[90m%s\x1B[0m',
@@ -191,7 +191,7 @@ var FuncLib = /** @class */ (function () {
             funclib_conf_1.SERVER_METHODS.forEach(function (prop) { return _this.deleteProp(prop); });
             funclib_conf_1.CLIENT_METHODS.forEach(function (prop) { return _this.deleteProp(prop); });
         }
-        funclib_conf_1.INIT_METHODS.forEach(function (initMethod) { return delete _this[initMethod]; });
+        funclib_conf_1.INIT_METHODS.forEach(function (initMethod) { return _this.deleteProp(initMethod); });
     }
     /**
      * [fn.typeOf] 检查值的类型，返回布尔值
@@ -265,7 +265,15 @@ var FuncLib = /** @class */ (function () {
         return _Array_1.FnArray.findIndex.call(this, src, predicate);
     };
     /**
-     * [fn.sortBy] 对象数组根据字段排序
+     * [fn.forEach] 遍历数组或类数组
+     * @param arrayLike
+     * @param iteratee
+     */
+    FuncLib.prototype.forEach = function (arrayLike, iteratee) {
+        return _Array_1.FnArray.forEach.call(this, arrayLike, iteratee);
+    };
+    /**
+     * [fn.sortBy] 返回对象数组根据字段排序后的副本
      * @param data
      * @param field
      * @param isDesc
@@ -278,22 +286,15 @@ var FuncLib = /** @class */ (function () {
      * @arg obj
      */
     FuncLib.prototype.len = function (obj) {
-        return _Object_1.FnObject.len(obj);
+        return _Object_1.FnObject.len.call(this, obj);
     };
     /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj
-     * @arg callback
+     * @arg iteratee
      */
-    FuncLib.prototype.forIn = function (obj, callback) {
-        return _Object_1.FnObject.forIn(obj, callback);
-    };
-    /**
-     * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param obj
-     */
-    FuncLib.prototype.isEmpty = function (obj) {
-        return _Object_1.FnObject.isEmpty(obj);
+    FuncLib.prototype.forIn = function (obj, iteratee) {
+        return _Object_1.FnObject.forIn(obj, iteratee);
     };
     /**
      * [fn.overlay] 给对象赋值
@@ -623,7 +624,7 @@ var FuncLib = /** @class */ (function () {
         this['progress'] = {};
         /**
          * [fn.progress.start] 开启进度条，并传入参数
-         * @param options {title: string, width: number (base: 40)}
+         * @param options {title: string, width: number = 40, type: 'bar'|'spi' = 'bar'}
          */
         this['progress']['start'] = function (options) {
             return _Progress_1.FnProgress.start.call(_this, options);
@@ -822,7 +823,21 @@ var FnArray = /** @class */ (function () {
         return src.indexOf(predicate);
     };
     /**
-     * [fn.sortBy] 对象数组根据字段排序
+     * [fn.forEach] 遍历数组或类数组
+     * @param arrayLike
+     * @param iteratee
+     */
+    FnArray.forEach = function (arrayLike, iteratee) {
+        var length = this.get(arrayLike, '/length', 'num');
+        if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
+            for (var i = 0; i < length; i++) {
+                iteratee(arrayLike[i], i, arrayLike);
+            }
+        }
+        return arrayLike;
+    };
+    /**
+     * [fn.sortBy] 返回对象数组根据字段排序后的副本
      * @param data
      * @param field
      * @param isDesc
@@ -830,13 +845,16 @@ var FnArray = /** @class */ (function () {
     FnArray.sortBy = function (data, field, isDesc) {
         var _this = this;
         if (isDesc === void 0) { isDesc = false; }
-        return data.sort(function (row1, row2) {
+        return data.slice().sort(function (row1, row2) {
             var _a = [_this.get(row1, field), _this.get(row2, field)], rst1 = _a[0], rst2 = _a[1];
-            if ([rst1, rst2].every(function (x) { return x === 0 || !!x; }) && rst1 !== rst2) {
-                return rst1 > rst2 && isDesc ? -1 : 1;
-            }
-            else
+            if ([rst1, rst2].some(function (x) { return x !== 0 && !x; }) || rst1 === rst2) {
                 return 0;
+            }
+            else {
+                return rst1 > rst2
+                    ? isDesc ? -1 : 1
+                    : isDesc ? 1 : -1;
+            }
         });
     };
     return FnArray;
@@ -859,27 +877,24 @@ var FnObject = /** @class */ (function () {
      * @arg obj [object]
      */
     FnObject.len = function (obj) {
-        if (obj && typeof obj === 'object' && !(obj instanceof Array)) {
+        if (this.typeOf(obj, 'obj')) {
             return Object.keys(obj).length;
         }
+        else if (this.typeOf(obj, ['str', 'arr', 'fun'])
+            || this.get(obj, '/lenght', 'num')) {
+            return obj.length;
+        }
         else {
-            return obj && obj[length] || undefined;
+            return 0;
         }
     };
     /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj
-     * @arg callback
+     * @arg iteratee
      */
-    FnObject.forIn = function (obj, callback) {
-        return Object.keys(obj).forEach(callback);
-    };
-    /**
-     * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param obj
-     */
-    FnObject.isEmpty = function (obj) {
-        return obj && !this.len(obj) || false;
+    FnObject.forIn = function (obj, iteratee) {
+        return Object.keys(obj).forEach(iteratee);
     };
     /**
      * [fn.overlay] 给对象赋值
@@ -1922,7 +1937,7 @@ var FnProgress = /** @class */ (function () {
     }
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options {title: string, width: number (base: 40)}
+     * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
      */
     FnProgress.start = function (options) {
         FnProgress.chalk = this.chalk;
@@ -1930,13 +1945,17 @@ var FnProgress = /** @class */ (function () {
         FnProgress.timeout = this.timeout;
         this.interval('pg_sping', false);
         this.timeout('pg_Bar', false);
-        if (typeof options === 'string') {
-            pgType = 'sp';
-            FnProgress.startSping(options);
+        if (!this.typeOf(options, 'obj')) {
+            options = { title: this.typeValue(options, 'str') };
+        }
+        options.title = this.get(options, 'title', 'str') || "funclib " + this.version;
+        pgType = this.get(options, '/type', 'str');
+        if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
+            pgType = 'bar';
+            FnProgress.startPgbar(options);
         }
         else {
-            pgType = 'pg';
-            FnProgress.startPgbar(options);
+            FnProgress.startSping(options.title);
         }
     };
     /**
@@ -1944,17 +1963,17 @@ var FnProgress = /** @class */ (function () {
      * @param onStopped
      */
     FnProgress.stop = function (onStopped) {
-        if (pgType === 'sp') {
-            pgType = null;
-            FnProgress.stopSping();
-        }
-        else {
+        if (pgType === 'bar') {
             FnProgress.stopPgbar(function () {
                 pgType = null;
                 if (typeof onStopped === 'function') {
                     onStopped();
                 }
             });
+        }
+        else {
+            pgType = null;
+            FnProgress.stopSping();
         }
     };
     /**
@@ -2003,11 +2022,11 @@ var FnProgress = /** @class */ (function () {
     FnProgress.startPgbar = function (options) {
         this.timeout('pg_Bar', false);
         var Pgbar = eval('require("progress")');
-        var prog = (options && options.title || '[fn.progress]') + " [:bar] :percent";
+        var prog = (options.title || '[fn.progress]') + " [:bar] :percent";
         progress = new Pgbar(prog, {
             complete: '=', incomplete: ' ',
-            width: options && options['width'] || 40,
-            total: options && options['total'] || 20
+            width: options['width'] || 40,
+            total: options['total'] || 20
         });
         duration = 250;
         this.tickFun('+');
