@@ -116,17 +116,21 @@ export class FnArray {
     }
 
     /**
-     * [fn.sortBy] 对象数组根据字段排序
+     * [fn.sortBy] 返回对象数组根据字段排序后的副本
      * @param data
      * @param field
      * @param isDesc
      */
     public static sortBy(data: any, field: string, isDesc: boolean = false) {
-        return data.sort((row1, row2) => {
+        return [...data].sort((row1, row2) => {
             const [rst1, rst2] = [this.get(row1, field), this.get(row2, field)];
-            if ([rst1, rst2].every(x => x === 0 || !!x) && rst1 !== rst2) {
-                return rst1 > rst2 && isDesc ? -1 : 1;
-            } else return 0;
+            if ([rst1, rst2].some(x => x !== 0 && !x) || rst1 === rst2) {
+                return 0;
+            } else {
+                return rst1 > rst2
+                    ? isDesc ? -1 : 1
+                    : isDesc ? 1 : -1
+            }
         });
     }
 }
