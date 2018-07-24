@@ -116,6 +116,21 @@ export class FnArray {
     }
 
     /**
+     * [fn.forEach] 遍历数组或类数组
+     * @param arrayLike
+     * @param iteratee
+     */
+    public static forEach(arrayLike: any, iteratee: any): any {
+        const length = this.get(arrayLike, '/length', 'num');
+        if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
+            for(let i = 0; i < length; i ++) {
+                iteratee(arrayLike[i], i, arrayLike);
+            }
+        }
+        return arrayLike;
+    }
+
+    /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
      * @param data
      * @param field
