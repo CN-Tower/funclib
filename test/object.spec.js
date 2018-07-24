@@ -15,13 +15,6 @@ describe('Object Methods:', function () {
             assert(tmpStr === 'Tom28');
         });
     });
-    describe('#fn.isEmpty()', function () {
-        it(`fn.isEmpty(obj) should return a boolean by obj length.`, function () {
-            const obj = {};
-            const obj2 = {name: 'Tom'};
-            assert(fn.isEmpty(obj) === true && fn.isEmpty(obj2) === false);
-        });
-    });
     describe('#fn.overlay()', function () {
         let tom, jerry;
         beforeEach(function() {
