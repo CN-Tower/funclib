@@ -19,7 +19,7 @@ describe('Type Methods:', function () {
         });        
         it(`fn.typeValue({}, ['str', 'obj']) should return {}.`, function () {
             const obj = fn.typeValue({}, ['str', 'obj']);
-            assert(fn.typeOf(obj, 'obj') && fn.isEmpty(obj));
+            assert(fn.typeOf(obj, 'obj') && fn.len(obj) === 0);
         });
     });
 });
