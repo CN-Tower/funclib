@@ -1,30 +1,37 @@
 let progress: any;
 let duration: number;
-let pgType: 'sp'|'pg'|null;
+let pgType: 'bar'|'spi'|null;
 const process: any = global.process;
 
 export class FnProgress {
-    private static overlay;
-    private static chalk;
-    private static interval;
-    private static timeout;
+    private static chalk: Function;
+    private static interval: Function;
+    private static timeout: Function;
+    private static typeOf: Function;
+    private static typeValue: Function;
+    private static get: Function;
+    private static version: string;
     
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options {title: string, width: number (base: 40)}
+     * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
      */
-    public static start(options: string|any) {
+    public static start(options: any) {
         FnProgress.chalk = this.chalk;
         FnProgress.interval = this.interval;
         FnProgress.timeout = this.timeout;
         this.interval('pg_sping', false);
         this.timeout('pg_Bar', false);
-        if (typeof options === 'string') {
-            pgType = 'sp';
-            FnProgress.startSping(options);
-        } else {
-            pgType = 'pg';
+        if (!this.typeOf(options, 'obj')) {
+            options = {title: this.typeValue(options, 'str')};
+        }
+        options.title = this.get(options, 'title', 'str') || `funclib ${this.version}`;
+        pgType = this.get(options, '/type', 'str');
+        if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
+            pgType = 'bar';
             FnProgress.startPgbar(options);
+        } else {
+            FnProgress.startSping(options.title);
         }
     }
 
@@ -33,18 +40,17 @@ export class FnProgress {
      * @param onStopped 
      */
     public static stop(onStopped?: Function) {
-        if (pgType === 'sp') {
-            pgType = null;
-            FnProgress.stopSping();
-        } else {
+        if (pgType === 'bar') {
             FnProgress.stopPgbar(() => {
                 pgType = null;
                 if (typeof onStopped === 'function') {
                     onStopped();
                 }
             });
+        } else {
+            pgType = null;
+            FnProgress.stopSping();
         }
-
     }
 
     /**
@@ -85,11 +91,11 @@ export class FnProgress {
     private static startPgbar(options: any) {
         this.timeout('pg_Bar', false);
         const Pgbar = eval('require("progress")');
-        const prog = `${options && options.title || '[fn.progress]'} [:bar] :percent`;
+        const prog = `${options.title || '[fn.progress]'} [:bar] :percent`;
         progress = new Pgbar(prog, {
             complete: '=', incomplete: ' ',
-            width: options && options['width'] || 40,
-            total: options && options['total'] || 20
+            width: options['width'] || 40,
+            total: options['total'] || 20
         });
         duration = 250;
         this.tickFun('+');
