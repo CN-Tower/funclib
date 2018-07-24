@@ -126,7 +126,7 @@ export class FuncLib {
   }
 
   /**
-   * [fn.sortBy] 对象数组根据字段排序
+   * [fn.sortBy] 返回对象数组根据字段排序后的副本
    * @param data
    * @param field
    * @param isDesc
@@ -140,24 +140,16 @@ export class FuncLib {
    * @arg obj
    */
   len(obj: any): number {
-    return FnObject.len(obj);
+    return FnObject.len.call(this, obj);
   }
 
   /**
    * [fn.forIn] 遍历对象的可数自有属性
    * @arg obj
-   * @arg callback
+   * @arg iteratee
    */
-  forIn(obj: Object, callback: any): void {
-    return FnObject.forIn(obj, callback);
-  }
-
-  /**
-   * [fn.isEmpty] 判断对象是否为空对象或数组
-   * @param obj 
-   */
-  isEmpty(obj: Object | Function | string | any[]): boolean {
-    return FnObject.isEmpty(obj);
+  forIn(obj: Object, iteratee: any): void {
+    return FnObject.forIn(obj, iteratee);
   }
 
   /**
@@ -379,7 +371,7 @@ export class FuncLib {
    * [fn.fullScreenChange] 检测是否全屏状态
    * @param callback
    */
-  fullScreenChange(callback?: boolean | any): void {
+  fullScreenChange(callback?: any): void {
     return FnDom.fullScreenChange(callback);
   }
 
