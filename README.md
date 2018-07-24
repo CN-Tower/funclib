@@ -174,7 +174,7 @@ funclib.js
   * @param value 
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
+fn.typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
 
 // examples:
 const a = fn.typeOf(true, 'bol');
@@ -191,7 +191,7 @@ console.log(c); // false
   * @param value 
   * @param type ['arr'|'obj'|'fun'|string|string[]]
   */
-typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
+fn.typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
 
 // examples:
 const a = fn.typeValue(true, 'bol');
@@ -239,7 +239,7 @@ fn.toArray(['str']); // ['str']
 fn.find(src: any[], predicate: any): any;
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.find(persons, {name: 'Tom'});             // {name:'Tom', age: 22}
 fn.find(persons, ps => ps.name === 'Tom');   // {name:'Tom', age: 22}
 ```
@@ -253,7 +253,7 @@ fn.find(persons, ps => ps.name === 'Tom');   // {name:'Tom', age: 22}
 fn.filter(src: any[], predicate: any): any[];
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.filter(persons, {name: 'Tom'});             // [{name:'Tom', age: 22}]
 fn.filter(persons, ps => ps.name === 'Tom');   // [{name:'Tom', age: 22}]
 ```
@@ -267,7 +267,7 @@ fn.filter(persons, ps => ps.name === 'Tom');   // [{name:'Tom', age: 22}]
 fn.reject(src: any[], predicate: any): any[];
 
 // examples:
-const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
+const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
 fn.reject(persons, {name: 'Tom'});             // [{name:'Jerry', age: 18}]
 fn.reject(persons, ps => ps.name === 'Tom');   // [{name:'Jerry', age: 18}]
 ```
