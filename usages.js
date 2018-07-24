@@ -3,7 +3,7 @@ const fn = require('./assets');
 
 // fn.log(fn.len('aaa'))
 
-fn.progress.start('Test');
+// fn.progress.start('Test');
 // fn.progress.start({title: 'Test'});
 
 /**
