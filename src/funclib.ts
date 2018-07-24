@@ -42,7 +42,7 @@ export class FuncLib {
       SERVER_METHODS.forEach(prop => this.deleteProp(prop));
       CLIENT_METHODS.forEach(prop => this.deleteProp(prop));
     }
-    INIT_METHODS.forEach(initMethod => delete this[initMethod]);
+    INIT_METHODS.forEach(initMethod => this.deleteProp(initMethod));
   }
 
   /**
@@ -123,6 +123,15 @@ export class FuncLib {
   */
   findIndex(src: any[], predicate: any): number {
     return FnArray.findIndex.call(this, src, predicate);
+  }
+
+  /**
+   * [fn.forEach] 遍历数组或类数组
+   * @param arrayLike
+   * @param iteratee
+   */
+  forEach(arrayLike: any, iteratee: any): any {
+    return FnArray.forEach.call(this, arrayLike, iteratee);
   }
 
   /**
@@ -508,7 +517,7 @@ export class FuncLib {
     this['progress'] = {};
     /**
      * [fn.progress.start] 开启进度条，并传入参数
-     * @param options {title: string, width: number (base: 40)}
+     * @param options {title: string, width: number = 40, type: 'bar'|'spi' = 'bar'}
      */
     this['progress']['start'] = (options: Object) => {
       return FnProgress.start.call(this, options);
@@ -518,7 +527,7 @@ export class FuncLib {
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped 
      */
-    this['progress']['stop'] = (onStopped: Function) => {
+    this['progress']['stop'] = (onStopped?: Function) => {
       return FnProgress.stop(onStopped);
     }
   }
