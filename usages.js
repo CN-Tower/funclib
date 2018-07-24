@@ -1,15 +1,20 @@
 // const fn = require('./assets/funclib');
 const fn = require('./assets');
 
+// fn.log(fn.len('aaa'))
+
+fn.progress.start('Test');
+// fn.progress.start({title: 'Test'});
+
 /**
  * Loger
  * =======================================================================
  */
-fn.log([{name: 'tom', age: 22}], false);
-fn.log([{name: 'tom', age: 22}], 'false');
-fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4d55oooo0000d04400000040000400ooooold'});
-fn.log([{name: 'tom', age: 22}], {title: 'Hello world', width: 80, color: 'red', ttColor: 'blue'});
-fn.log(() => {console.log(111)}, 'Function');
+// fn.log([{name: 'tom', age: 22}], false);
+// fn.log([{name: 'tom', age: 22}], 'false');
+// fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4d55oooo0000d04400000040000400ooooold'});
+// fn.log([{name: 'tom', age: 22}], {title: 'Hello world', width: 80, color: 'red', ttColor: 'blue'});
+// fn.log(() => {console.log(111)}, 'Function');
 
 /**
  * Function
@@ -57,6 +62,17 @@ fn.log(() => {console.log(111)}, 'Function');
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
 // fn.log(val1);
 // fn.log(val2);
+// const persons = [{name:'Tom', age: 22, indexes: {height: 180, weight: 70}},
+//                  {name:'Jerry', age: 18, indexes: {height: 175, weight: 72}}]
+// const a = fn.sortBy(persons, 'age');             
+// const b = fn.sortBy(persons, 'age', true);
+// const c = fn.sortBy(persons, '/indexes/height');
+// const d = fn.sortBy(persons, '/indexes/weight');
+
+// fn.log(a, 'By age');
+// fn.log(b, 'By age decs');
+// fn.log(c, 'By height');
+// fn.log(d, 'By weight');
 
 /**
  * String
