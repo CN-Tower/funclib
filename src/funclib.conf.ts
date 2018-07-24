@@ -1,4 +1,4 @@
-export const VERSION = 'v2.1.14';
+export const VERSION = 'v2.1.15';
 
 export const SERVER_METHODS = [
     'chalk'
@@ -18,10 +18,10 @@ export const CLIENT_METHODS = [
 ];
 
 export const INIT_METHODS = [
-    'deleteProp',
     'initTricks',
     'initFileSystem',
-    'initProgress'
+    'initProgress',
+    'deleteProp'
 ];
 
 export const COLOR_LIST= {
