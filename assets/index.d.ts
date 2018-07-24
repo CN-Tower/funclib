@@ -14,7 +14,7 @@
  * fn.reject                 根据条件过滤值
  * fn.contains               判断数组是否包含符合条件的值
  * fn.findIndex              寻找值在数组中的索引
- * fn.sortBy                 对象数组根据字段排序
+ * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
  * fn.len                    获取对象自有属性的个数
  * fn.forIn                  遍历对象的可数自有属性
@@ -161,20 +161,15 @@ interface Funclib {
     sortBy(tableData: any, field: string, isDesc?: boolean): any;
     /**
      * [fn.len] 获取对象自有属性的个数
-     * @arg obj [object]
+     * @param obj [object]
      */
     len(obj: any): number;
     /**
      * [fn.forIn] 遍历对象的可数自有属性
-     * @arg obj
-     * @arg callback
+     * @param obj
+     * @param callback
      */
-    forIn(obj: Object, callback: any): void;
-    /**
-     * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param obj 
-     */
-    isEmpty(obj: Object | Function | string | any[]): boolean;
+    forIn(obj: Object, iteratee: Function): void;
     /**
      * [fn.overlay] 给对象赋值
      * @param target 
@@ -215,14 +210,14 @@ interface Funclib {
      * @param duration
      * @param callback
      */
-    interval(timerId: any, duration: any, callback?: Function): void;
+    interval(timerId: any, duration: any, callback?: Function): any;
     /**
      * [fn.timeout] 延时定时器
      * @param timerId
      * @param duration
      * @param callback
      */
-    timeout(timerId: any, duration?: any, callback?: Function): void;
+    timeout(timerId: any, duration?: any, callback?: Function): any;
     /**
      * [fn.defer] 延迟执行函数
      * @param func 
