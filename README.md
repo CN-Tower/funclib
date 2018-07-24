@@ -103,6 +103,7 @@ funclib.js
 [fn.reject](#fnreject)&nbsp;&nbsp;根据条件取过滤值<br/>
 [fn.contains](#fncontains)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
 [fn.findIndex](#fnfindindex)&nbsp;&nbsp;寻找值在数组中的索引<br/>
+[fn.forEach](#fnforeach)&nbsp;&nbsp;遍历数组或类数组<br/>
 [fn.sortBy](#fnsortby)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
 [fn.len](#fnlen)&nbsp;&nbsp;获取对象自有属性的个数<br/>
@@ -292,12 +293,21 @@ fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom');   // true
   * @param src 
   * @param predicate 
   */
-findIndex(src: any[], predicate: any): number;
+fn.findIndex(src: any[], predicate: any): number;
 
 // examples:
 const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
 fn.findIndex(persons, {name: 'Tom'});             // 1
 fn.findIndex(persons, ps => ps.name === 'Tom');   // 1
+```
+#### fn.forEach
+```
+/**
+  * [fn.forEach] 遍历数组或类数组
+  * @param arrayLike
+  * @param iteratee
+  */
+fn.forEach(arrayLike: any, iteratee: any): any;
 ```
 #### fn.sortBy
 ```
@@ -847,7 +857,7 @@ fn.mk(dist: string): void;
 ```
 /**
   * [fn.progress.start] 开启进度，并传入参数
-  * @param options {title: string, width: number (base: 40)} | 'message'
+  * @param options {title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}
   */
 fn.start(options: any): void;
 ```
@@ -855,7 +865,7 @@ fn.start(options: any): void;
 ```
 /**
   * [fn.progress.stop] 结束进度，结束后触发回调
-  * @param options 
+  * @param onStopped 
   */
 fn.stop(onStopped?: Function): void;
 ```
