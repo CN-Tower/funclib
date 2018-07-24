@@ -14,6 +14,7 @@
  * fn.reject                 根据条件过滤值
  * fn.contains               判断数组是否包含符合条件的值
  * fn.findIndex              寻找值在数组中的索引
+ * fn.forEach                遍历数组或类数组
  * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
  * fn.len                    获取对象自有属性的个数
@@ -84,12 +85,12 @@ export as namespace fn;
 interface Progress {
     /**
      * [fn.progress.start] 开启进度，并传入参数
-     * @param options {title: string, width: number (base: 40)} | 'message'
+     * @param options {title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}
      */
     start(options: any): void;
     /**
      * [fn.progress.stop] 结束进度，结束后触发回调
-     * @param options 
+     * @param onStopped 
      */
     stop(onStopped?: Function): void;
 }
@@ -124,34 +125,36 @@ interface Funclib {
      * @param predicate 
      */
     find(src: any[], predicate: any): any;
-
     /**
      * [fn.filter] 根据条件取过滤值
      * @param src 
      * @param predicate 
      */
     filter(src: any[], predicate: any): any[];
-
     /**
      * [fn.reject] 根据条件过滤值
      * @param src 
      * @param predicate 
      */
     reject(src: any[], predicate: any): any[];
-
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
      * @param src 
      * @param predicate 
      */
     contains(src: any[], predicate: any): boolean;
-
     /**
     * [fn.findIndex] 寻找值在数组中的索引
     * @param src 
     * @param predicate 
     */
     findIndex(src: any[], predicate: any): number;
+    /**
+     * [fn.forEach] 遍历数组或类数组
+     * @param arrayLike
+     * @param iteratee
+     */
+    forEach(arrayLike: any, iteratee: any): any;
     /**
      * [fn.sortBy] 对象数组根据字段排序
      * @param tableData
