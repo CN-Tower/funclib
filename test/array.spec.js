@@ -67,6 +67,13 @@ describe('Array Methods:', function () {
             assert(tomIdx === 0);
         });
     });
+    describe('#fn.forEach()', function () {
+        it(`fn.forEach(['a', 'b'], function(x) {}) should return 'ab'.`, function () {
+            var tmpStr = '';
+            fn.forEach(['a', 'b'], function(x) {tmpStr += x});
+            assert(tmpStr === 'ab');
+        });
+    });
     describe('#fn.sortBy()', function () {
         it(`fn.sortBy(5) should return a sorted strArr.`, function () {
             const person = [{name: 'Tom', age: 22}, {name: 'Jerry', age: 18}];
