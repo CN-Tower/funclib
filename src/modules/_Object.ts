@@ -9,28 +9,23 @@ export class FnObject {
      * @arg obj [object]
      */
     public static len(obj: any): number {
-        if (obj && typeof obj === 'object' && !(obj instanceof Array)) {
+        if (this.typeOf(obj, 'obj')) {
             return Object.keys(obj).length;
+        } else if (this.typeOf(obj, ['str', 'arr', 'fun'])
+            || this.get(obj, '/lenght', 'num')) {
+            return obj.length;
         } else {
-            return obj && obj[length] || undefined;
+            return 0;
         }
     }
 
     /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj
-     * @arg callback
+     * @arg iteratee
      */
-    public static forIn(obj: Object, callback: any): void {
-        return Object.keys(obj).forEach(callback);
-    }
-
-    /**
-     * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param obj 
-     */
-    public static isEmpty(obj: Object | Function | string | any[]): boolean {
-        return obj && !this.len(obj) || false;
+    public static forIn(obj: Object, iteratee: any): void {
+        return Object.keys(obj).forEach(iteratee);
     }
 
     /**
