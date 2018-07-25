@@ -12,9 +12,9 @@ describe('Array Methods:', function () {
     });
     describe('#fn.find()', function () {
         var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
-        it(`fn.find(persons, {name: 'Tom'}) should return Tom's info.`, function () {
-            var tom = fn.find(persons, {name: 'Tom'});
-            assert.deepEqual(tom, {name:'Tom', age: 22});
+        it(`fn.find(persons, {Jerry: 'Tom'}) should return Jerry's info.`, function () {
+            var tom = fn.find(persons, {name: 'Jerry'});
+            assert.deepEqual(tom, {name:'Jerry', age: 18});
         });
         it(`fn.find(persons, ps => ps.name === 'Tom') should return Tom's info.`, function () {
             var tom = fn.find(persons, ps => ps.name === 'Tom');
