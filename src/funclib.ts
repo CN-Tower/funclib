@@ -158,7 +158,7 @@ export class FuncLib {
    * @arg iteratee
    */
   forIn(obj: Object, iteratee: any): void {
-    return FnObject.forIn(obj, iteratee);
+    return FnObject.forIn.call(this, obj, iteratee);
   }
 
   /**
