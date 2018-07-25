@@ -93,7 +93,8 @@ export class FnTime {
         for (const k in obj) {
             if (obj.hasOwnProperty(k)) {
                 if (new RegExp(`(${k})`).test(fmtStr)) {
-                    fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[k]) : (('00' + obj[k]).substr(('' + obj[k]).length)));
+                    fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
+                        ? obj[k] : `00${obj[k]}`.substr((obj[k] + '').length));
                 }
             }
         }
