@@ -9,14 +9,12 @@ export class FnArray {
      */
     public static array(length: number, value?: any): any[] {
         const tmpArr = [];
-        const isUndefied = value === undefined;
-        const isFunction = typeof value === 'function';
         let tmpVal = 0;
         for (let i = 0; i < length; i++) {
-            if (isUndefied) {
+            if (value === undefined) {
                 tmpArr.push(tmpVal);
                 tmpVal++;
-            } else if (isFunction) {
+            } else if (typeof value === 'function') {
                 tmpArr.push(value());
             } else {
                 tmpArr.push(value);
@@ -67,18 +65,16 @@ export class FnArray {
      * @param predicate 
      */
     private static _filter(src: any[], predicate: any, isFlt: boolean): any[] {
-        const isPrdObj = this.typeOf(predicate, 'obj');
-        const isPrdFun = this.typeOf(predicate, 'fun');
         const ftItems = [];
         const rjItems = [];
         src.forEach(item => {
-            if (isPrdObj) {
+            if (this.typeOf(predicate, 'obj')) {
                 if (Object.keys(predicate).every(k => predicate[k] === item[k])) {
                     ftItems.push(item);
                 } else {
                     rjItems.push(item);
                 }
-            } else if (isPrdFun) {
+            } else if (this.typeOf(predicate, 'fun')) {
                 predicate(item) ? ftItems.push(item) : rjItems.push(item);
             }
         });
@@ -101,14 +97,13 @@ export class FnArray {
      * @param predicate 
      */
     public static findIndex(src: any[], predicate: any): number {
-        const isPrdObj = this.typeOf(predicate, 'obj');
-        const isPrdFun = this.typeOf(predicate, 'fun');
         for (let i = 0; i < src.length; i++) {
-            if (isPrdObj) {
-                if (Object.keys(predicate).every(k => src[i].hasOwnProperty(k))) {
-                    return i;
-                }
-            } else if (isPrdFun) {
+            if (this.typeOf(predicate, 'obj')) {
+                let isInSrc = Object.keys(predicate).every(k => {
+                    return src[i][k] === predicate[k];
+                });
+                if (isInSrc) return i;
+            } else if (this.typeOf(predicate, 'fun')) {
                 if (predicate(src[i])) return i;
             }
         }
@@ -117,17 +112,22 @@ export class FnArray {
 
     /**
      * [fn.forEach] 遍历数组或类数组
-     * @param arrayLike
+     * @param obj
      * @param iteratee
      */
-    public static forEach(arrayLike: any, iteratee: any): any {
-        const length = this.get(arrayLike, '/length', 'num');
+    public static forEach(obj: any, iteratee: any): any {
+        const length = this.get(obj, '/length', 'num');
         if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
             for(let i = 0; i < length; i ++) {
-                iteratee(arrayLike[i], i, arrayLike);
+                iteratee(obj[i], i);
+            }
+        } else {
+            const keys = Object.keys(obj);
+            for (let i = 0; i < keys.length; i ++) {
+                iteratee(obj[keys[i]], keys[i]);
             }
         }
-        return arrayLike;
+        return obj;
     }
 
     /**
