@@ -1,8 +1,7 @@
 export class FnObject {
     private static typeOf: Function;
     private static typeValue: Function;
-    private static toArray: Function;
-    private static log: Function;
+    private static forEach: Function;
 
     /**
      * [fn.len] 获取对象自有属性的个数
@@ -24,8 +23,8 @@ export class FnObject {
      * @arg obj
      * @arg iteratee
      */
-    public static forIn(obj: Object, iteratee: any): any {
-        return Object.keys(obj).forEach(iteratee);
+    public static forIn(obj: any, iteratee: any): any {
+        return this.forEach(obj, (v, k) => iteratee(k, v));
     }
 
     /**
@@ -43,9 +42,7 @@ export class FnObject {
                     }
                 });
             } else {
-                Object.keys(source).forEach(key => {
-                    target[key] = source[key];
-                });
+                Object.keys(source).forEach(key => target[key] = source[key]);
             }
         }
         return target;
@@ -81,18 +78,14 @@ export class FnObject {
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
     public static get(obj: Object, layers: string, type: string | string[]): any {
-        if (!obj || !layers || !layers.trim()) {
-            return undefined;
-        }
+        if (!obj || !layers || !layers.trim()) return undefined;
         const lys = layers.trim().split('/');
         const prop = lys[0] || lys[1];
         if (lys.length === lys.indexOf(prop) + 1) {
             return type ? this.typeValue(obj[prop], type) : obj[prop];
         } else {
             if (this.typeOf(obj[prop], ['obj', 'arr'])) {
-                if (lys.indexOf(prop)) {
-                    lys.shift();
-                }
+                if (lys.indexOf(prop)) lys.shift();
                 lys.shift();
                 return this.get(obj[prop], lys.join('/'), type);
             } else {
