@@ -1,6 +1,7 @@
 export class FnUrl {
     private static typeOf: Function;
-    
+    private static forIn: Function;
+
     /**
      * [fn.parseQueryString] 解析Url参数成对象
      * @param url [string]  default: window.location.href
@@ -28,20 +29,19 @@ export class FnUrl {
      * @param obj [string]  default: window.location.href
      */
     public static stringfyQueryString(obj: Object) {
-        if (!this.typeOf(obj, 'obj')) {
-            return '';
-        }
-        var pairs = [];
-        for (var key in obj) {
-            var value = obj[key];
-            if (value instanceof Array) {
-                for (var i = 0; i < value.length; ++i) {
-                    pairs.push(encodeURIComponent(`${key}[${i}]`) + '=' + encodeURIComponent(value[i]));
-                }
-                continue;
+        if (!this.typeOf(obj, 'object')) return '';
+        const pairs = [];
+        this.forIn(obj, (key, value) => {
+            if (this.typeOf(value, 'arr')) {
+                value.forEach((v, i) => {
+                    const _k = encodeURIComponent(`${key}[${i}]`);
+                    pairs.push(`${_k}=${encodeURIComponent(v)}`);
+                });
+            } else {
+                const _v = encodeURIComponent(value);
+                pairs.push(`${encodeURIComponent(key)}=${_v}`);
             }
-            pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
-        }
+        });
         return '?' + pairs.join('&');
     }
 }
