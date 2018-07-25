@@ -107,7 +107,7 @@ module.exports = g;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.1.15';
+exports.VERSION = 'v2.1.16';
 exports.SERVER_METHODS = [
     'chalk'
 ];
@@ -294,7 +294,7 @@ var FuncLib = /** @class */ (function () {
      * @arg iteratee
      */
     FuncLib.prototype.forIn = function (obj, iteratee) {
-        return _Object_1.FnObject.forIn(obj, iteratee);
+        return _Object_1.FnObject.forIn.call(this, obj, iteratee);
     };
     /**
      * [fn.overlay] 给对象赋值
@@ -713,15 +713,13 @@ var FnArray = /** @class */ (function () {
      */
     FnArray.array = function (length, value) {
         var tmpArr = [];
-        var isUndefied = value === undefined;
-        var isFunction = typeof value === 'function';
         var tmpVal = 0;
         for (var i = 0; i < length; i++) {
-            if (isUndefied) {
+            if (value === undefined) {
                 tmpArr.push(tmpVal);
                 tmpVal++;
             }
-            else if (isFunction) {
+            else if (typeof value === 'function') {
                 tmpArr.push(value());
             }
             else {
@@ -768,12 +766,11 @@ var FnArray = /** @class */ (function () {
      * @param predicate
      */
     FnArray._filter = function (src, predicate, isFlt) {
-        var isPrdObj = this.typeOf(predicate, 'obj');
-        var isPrdFun = this.typeOf(predicate, 'fun');
+        var _this = this;
         var ftItems = [];
         var rjItems = [];
         src.forEach(function (item) {
-            if (isPrdObj) {
+            if (_this.typeOf(predicate, 'obj')) {
                 if (Object.keys(predicate).every(function (k) { return predicate[k] === item[k]; })) {
                     ftItems.push(item);
                 }
@@ -781,7 +778,7 @@ var FnArray = /** @class */ (function () {
                     rjItems.push(item);
                 }
             }
-            else if (isPrdFun) {
+            else if (_this.typeOf(predicate, 'fun')) {
                 predicate(item) ? ftItems.push(item) : rjItems.push(item);
             }
         });
@@ -802,19 +799,20 @@ var FnArray = /** @class */ (function () {
      * @param predicate
      */
     FnArray.findIndex = function (src, predicate) {
-        var isPrdObj = this.typeOf(predicate, 'obj');
-        var isPrdFun = this.typeOf(predicate, 'fun');
         var _loop_1 = function (i) {
-            if (isPrdObj) {
-                if (Object.keys(predicate).every(function (k) { return src[i].hasOwnProperty(k); })) {
+            if (this_1.typeOf(predicate, 'obj')) {
+                var isInSrc = Object.keys(predicate).every(function (k) {
+                    return src[i][k] === predicate[k];
+                });
+                if (isInSrc)
                     return { value: i };
-                }
             }
-            else if (isPrdFun) {
+            else if (this_1.typeOf(predicate, 'fun')) {
                 if (predicate(src[i]))
                     return { value: i };
             }
         };
+        var this_1 = this;
         for (var i = 0; i < src.length; i++) {
             var state_1 = _loop_1(i);
             if (typeof state_1 === "object")
@@ -824,17 +822,23 @@ var FnArray = /** @class */ (function () {
     };
     /**
      * [fn.forEach] 遍历数组或类数组
-     * @param arrayLike
+     * @param obj
      * @param iteratee
      */
-    FnArray.forEach = function (arrayLike, iteratee) {
-        var length = this.get(arrayLike, '/length', 'num');
+    FnArray.forEach = function (obj, iteratee) {
+        var length = this.get(obj, '/length', 'num');
         if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
             for (var i = 0; i < length; i++) {
-                iteratee(arrayLike[i], i, arrayLike);
+                iteratee(obj[i], i);
             }
         }
-        return arrayLike;
+        else {
+            var keys = Object.keys(obj);
+            for (var i = 0; i < keys.length; i++) {
+                iteratee(obj[keys[i]], keys[i]);
+            }
+        }
+        return obj;
     };
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
@@ -894,7 +898,7 @@ var FnObject = /** @class */ (function () {
      * @arg iteratee
      */
     FnObject.forIn = function (obj, iteratee) {
-        return Object.keys(obj).forEach(iteratee);
+        return this.forEach(obj, function (v, k) { return iteratee(k, v); });
     };
     /**
      * [fn.overlay] 给对象赋值
@@ -912,9 +916,7 @@ var FnObject = /** @class */ (function () {
                 });
             }
             else {
-                Object.keys(source).forEach(function (key) {
-                    target[key] = source[key];
-                });
+                Object.keys(source).forEach(function (key) { return target[key] = source[key]; });
             }
         }
         return target;
@@ -951,9 +953,8 @@ var FnObject = /** @class */ (function () {
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
     FnObject.get = function (obj, layers, type) {
-        if (!obj || !layers || !layers.trim()) {
+        if (!obj || !layers || !layers.trim())
             return undefined;
-        }
         var lys = layers.trim().split('/');
         var prop = lys[0] || lys[1];
         if (lys.length === lys.indexOf(prop) + 1) {
@@ -961,9 +962,8 @@ var FnObject = /** @class */ (function () {
         }
         else {
             if (this.typeOf(obj[prop], ['obj', 'arr'])) {
-                if (lys.indexOf(prop)) {
+                if (lys.indexOf(prop))
                     lys.shift();
-                }
                 lys.shift();
                 return this.get(obj[prop], lys.join('/'), type);
             }
@@ -993,7 +993,9 @@ var FnString = /** @class */ (function () {
      */
     FnString.encodeHtml = function (html) {
         var _this = this;
-        this.htmlMap.src.forEach(function (src, i) { return html = html.replace(new RegExp(src, 'g'), _this.htmlMap.map[i]); });
+        this.htmlMap.src.forEach(function (src, i) {
+            html = html.replace(new RegExp(src, 'g'), _this.htmlMap.map[i]);
+        });
         return html;
     };
     /**
@@ -1002,7 +1004,9 @@ var FnString = /** @class */ (function () {
      */
     FnString.decodeHtml = function (html) {
         var _this = this;
-        this.htmlMap.map.forEach(function (map, i) { return html = html.replace(new RegExp(map, 'g'), _this.htmlMap.src[i]); });
+        this.htmlMap.map.forEach(function (map, i) {
+            html = html.replace(new RegExp(map, 'g'), _this.htmlMap.src[i]);
+        });
         return html;
     };
     /**
@@ -1020,7 +1024,9 @@ var FnString = /** @class */ (function () {
         sti = integer.length % 3;
         integerStr = integer.substr(0, sti);
         for (i = 0; i < spn; i++) {
-            integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
+            integerStr += i === 0 && !integerStr
+                ? integer.substr(sti, 3)
+                : ',' + integer.substr(sti, 3);
             sti += 3;
         }
         return decimal ? integerStr + '.' + decimal : integerStr;
@@ -1036,14 +1042,11 @@ var FnString = /** @class */ (function () {
         var count = 0;
         var tmpChar;
         for (var i = 0; i < str.length; i++) {
-            if (count < len) {
-                tmpChar = str.substr(i, 1);
-                tmpStr += tmpChar;
-                count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
-            }
-            else {
+            if (count >= len)
                 break;
-            }
+            tmpChar = str.substr(i, 1);
+            tmpStr += tmpChar;
+            count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
         }
         return tmpStr + '...';
     };
@@ -1154,7 +1157,8 @@ var FnTime = /** @class */ (function () {
         for (var k in obj) {
             if (obj.hasOwnProperty(k)) {
                 if (new RegExp("(" + k + ")").test(fmtStr)) {
-                    fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[k]) : (('00' + obj[k]).substr(('' + obj[k]).length)));
+                    fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
+                        ? obj[k] : ("00" + obj[k]).substr((obj[k] + '').length));
                 }
             }
         }
@@ -2152,20 +2156,22 @@ var FnUrl = /** @class */ (function () {
      * @param obj [string]  default: window.location.href
      */
     FnUrl.stringfyQueryString = function (obj) {
-        if (!this.typeOf(obj, 'obj')) {
+        var _this = this;
+        if (!this.typeOf(obj, 'object'))
             return '';
-        }
         var pairs = [];
-        for (var key in obj) {
-            var value = obj[key];
-            if (value instanceof Array) {
-                for (var i = 0; i < value.length; ++i) {
-                    pairs.push(encodeURIComponent(key + "[" + i + "]") + '=' + encodeURIComponent(value[i]));
-                }
-                continue;
+        this.forIn(obj, function (key, value) {
+            if (_this.typeOf(value, 'arr')) {
+                value.forEach(function (v, i) {
+                    var _k = encodeURIComponent(key + "[" + i + "]");
+                    pairs.push(_k + "=" + encodeURIComponent(v));
+                });
             }
-            pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
-        }
+            else {
+                var _v = encodeURIComponent(value);
+                pairs.push(encodeURIComponent(key) + "=" + _v);
+            }
+        });
         return '?' + pairs.join('&');
     };
     return FnUrl;

@@ -304,10 +304,10 @@ fn.findIndex(persons, ps => ps.name === 'Tom');   // 1
 ```
 /**
   * [fn.forEach] 遍历数组或类数组
-  * @param arrayLike
+  * @param obj
   * @param iteratee
   */
-fn.forEach(arrayLike: any, iteratee: any): any;
+fn.forEach(obj: any, iteratee: any): any;
 ```
 #### fn.sortBy
 ```
@@ -344,7 +344,7 @@ fn.len(x => console.log(s)); // 1
   * @arg obj
   * @arg iteratee
   */
-forIn(obj: Object, iteratee: Function): void;
+forIn(obj: any, iteratee: Function): void;
 
 // examples:
 const tom = {name: 'Tom', age: 28}
