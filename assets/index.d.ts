@@ -151,10 +151,10 @@ interface Funclib {
     findIndex(src: any[], predicate: any): number;
     /**
      * [fn.forEach] 遍历数组或类数组
-     * @param arrayLike
+     * @param obj
      * @param iteratee
      */
-    forEach(arrayLike: any, iteratee: any): any;
+    forEach(obj: any, iteratee: any): any;
     /**
      * [fn.sortBy] 对象数组根据字段排序
      * @param tableData
@@ -170,9 +170,9 @@ interface Funclib {
     /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @param obj
-     * @param callback
+     * @param iteratee
      */
-    forIn(obj: Object, iteratee: Function): void;
+    forIn(obj: any, iteratee: any): void;
     /**
      * [fn.overlay] 给对象赋值
      * @param target 
