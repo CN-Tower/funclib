@@ -11,7 +11,9 @@ export class FnString {
      * @param html 
      */
     public static encodeHtml(html: string): string {
-        this.htmlMap.src.forEach((src, i) => html = html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]));
+        this.htmlMap.src.forEach((src, i) => {
+            html = html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]);
+        });
         return html;
     }
 
@@ -20,7 +22,9 @@ export class FnString {
      * @param html 
      */
     public static decodeHtml(html: string): string {
-        this.htmlMap.map.forEach((map, i) => html = html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]));
+        this.htmlMap.map.forEach((map, i) => {
+            html = html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]);
+        });
         return html;
     }
 
@@ -39,7 +43,9 @@ export class FnString {
         sti = integer.length % 3;
         integerStr = integer.substr(0, sti);
         for (i = 0; i < spn; i++) {
-            integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
+            integerStr += i === 0 && !integerStr
+                ? integer.substr(sti, 3)
+                : ',' + integer.substr(sti, 3);
             sti += 3;
         }
         return decimal ? integerStr + '.' + decimal : integerStr;
@@ -56,13 +62,10 @@ export class FnString {
         let count = 0;
         let tmpChar;
         for (let i = 0; i < str.length; i++) {
-            if (count < len) {
-                tmpChar = str.substr(i, 1);
-                tmpStr += tmpChar;
-                count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
-            } else {
-                break;
-            }
+            if (count >= len) break;
+            tmpChar = str.substr(i, 1);
+            tmpStr += tmpChar;
+            count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
         }
         return tmpStr + '...';
     }
