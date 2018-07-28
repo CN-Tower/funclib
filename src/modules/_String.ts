@@ -1,18 +1,18 @@
+import { FnRegExp } from './_RegExp';
+
+const htmlMap = {
+    src: ['&', '<', '>', ' ', '\'', '"'],
+    map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
+}
+
 export class FnString {
-    private static matchPattern: any;
-
-    private static htmlMap = {
-        src: ['&', '<', '>', ' ', '\'', '"'],
-        map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
-    }
-
     /**
      * [fn.encodeHtml] 编码HTML字符串
      * @param html 
      */
     public static encodeHtml(html: string): string {
-        this.htmlMap.src.forEach((src, i) => {
-            html = html.replace(new RegExp(src, 'g'), this.htmlMap.map[i]);
+        htmlMap.src.forEach((src, i) => {
+            html = html.replace(new RegExp(src, 'g'), htmlMap.map[i]);
         });
         return html;
     }
@@ -22,8 +22,8 @@ export class FnString {
      * @param html 
      */
     public static decodeHtml(html: string): string {
-        this.htmlMap.map.forEach((map, i) => {
-            html = html.replace(new RegExp(map, 'g'), this.htmlMap.src[i]);
+        htmlMap.map.forEach((map, i) => {
+            html = html.replace(new RegExp(map, 'g'), htmlMap.src[i]);
         });
         return html;
     }
@@ -34,7 +34,7 @@ export class FnString {
    * @param digit
    * @returns {string}
    */
-    public static fmtCurrency(number: number, digit: number): string {
+    public static fmtCurrency(number: number, digit: number = 2): string {
         let nbArr = String(number.toFixed(digit)).split('.');
         const integer = nbArr[0];
         const decimal = nbArr.length > 1 ? nbArr[1] : '';
@@ -57,7 +57,7 @@ export class FnString {
      * @param len
      * @returns {string}
      */
-    public static cutString(str, len): string {
+    public static cutString(str: string, len: number): string {
         let tmpStr = '';
         let count = 0;
         let tmpChar;
@@ -65,7 +65,7 @@ export class FnString {
             if (count >= len) break;
             tmpChar = str.substr(i, 1);
             tmpStr += tmpChar;
-            count += this.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
+            count += FnRegExp.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
         }
         return tmpStr + '...';
     }

@@ -6,7 +6,7 @@ export class FnRegExp {
    * @returns {pattern|undefined}
    */
   public static getPattern(type: string, isNoLimit: boolean = false): any {
-    if (!type) { return; }
+    if (!type) return; 
     const patternObj = {
       cnChar: FnRegExp.cnCharPattern,
       dblBitChar: FnRegExp.dblBitCharPattern,
@@ -51,8 +51,8 @@ export class FnRegExp {
    * @param isNoLimit
    * @returns {boolean}
    */
-  public static matchPattern(src: string, type: string | string[], isNoLimit: boolean): boolean {
-    if (!src || !type) { return false; }
+  public static matchPattern(src: string, type: string | string[], isNoLimit?: boolean): boolean {
+    if (!src || !type) return false;
     if (type instanceof Array) {
       let matchResult = false;
       type.forEach(item => {

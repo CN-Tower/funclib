@@ -1,5 +1,6 @@
+import { FnTime } from './_Time';
+
 export class FnFunction {
-    public static time: Function
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
      * @param  func
@@ -9,10 +10,9 @@ export class FnFunction {
     public static throttle(func: Function, wait: number, options: { leading?: boolean, trailing?: boolean }) {
         let timeout, context, args, result;
         let previous = 0;
-        const that = this;
         if (!options) options = {};
         const throttled: any = function () {
-            const now = that.time();
+            const now = FnTime.time();
             if (!previous && options.leading === false) previous = now;
             const remaining = wait - (now - previous);
             context = this;
@@ -28,7 +28,7 @@ export class FnFunction {
             }
             else if (!timeout && options.trailing !== false) {
                 timeout = setTimeout(function () {
-                    previous = options.leading === false ? 0 : that.time();
+                    previous = options.leading === false ? 0 : FnTime.time();
                     timeout = null;
                     result = func.apply(context, args);
                     if (!timeout) context = args = null;

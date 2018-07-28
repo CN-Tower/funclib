@@ -17,8 +17,7 @@ fn.cp(rdmeSrc, rdmeDist);
 webpack(config.funclibJsConf, function (err, stats) {
   if (err) throw (err);
   fn.progress.stop(() => {
-    buildFix();
-    fn.log('', {part: 'pre'});
+    fn.log('', {part: 'pre', title: 'Building FunclibJs'});
     process.stdout.write(stats.toString({
       colors: true, modules: false,
       children: false, chunks: false, chunkModules: false
@@ -33,8 +32,23 @@ function buidFunclibJs() {
   webpack(config.funclibMinJsConf, function (err, stats) {
     if (err) throw (err);
     fn.progress.stop(() => {
-      buildMinFix();
-      fn.log('', {part: 'pre'});
+      fn.log('', {part: 'pre', title: 'Building FunclibMinJs'});
+      process.stdout.write(stats.toString({
+        colors: true, modules: false,
+        children: false, chunks: false, chunkModules: false
+      }) + '\n');
+      fn.log('', {part: 'end'});
+      buildIndexJs();
+    });
+  });
+}
+
+function buildIndexJs() {
+  fn.progress.start({title: 'Building IndexJs', width: 42});
+  webpack(config.indexJsConf, function (err, stats) {
+    if (err) throw (err);
+    fn.progress.stop(() => {
+      fn.log('', {part: 'pre', title: 'Building IndexJs'});
       process.stdout.write(stats.toString({
         colors: true, modules: false,
         children: false, chunks: false, chunkModules: false
@@ -42,22 +56,4 @@ function buidFunclibJs() {
       fn.log('', {part: 'end'});
     });
   });
-}
-
-function buildFix() {
-  const newFnJs = fn.rd(fnJs)
-    .replace(/factory\(\)/mg, 'new (factory().FuncLib)()')
-    .replace(/define\(\[\], factory\)/, `define('fn', [], function() {return new (factory().FuncLib)()})`)
-  fn.wt(fnJs, newFnJs);
-}
-
-function buildMinFix() {
-  const funclibMin = fn.rd(fnMinJs);
-  const factory = funclibMin.substr('!function('.length + 2, 1);
-  const funclib = `new (${factory}().FuncLib)()`;
-  const newFnMin = funclibMin
-    .replace(new RegExp(`module\.exports=${factory}\\(\\)`), `module.exports=${funclib}`)
-    .replace(new RegExp(`define\\(\\[\\],${factory}\\)`), `define('fn', [], function() {return ${funclib}})`)
-    .replace(new RegExp(`\.fn=${factory}\\(\\)`, 'mg'), `.fn=${funclib}`);
-  fn.wt(fnMinJs, newFnMin);
 }

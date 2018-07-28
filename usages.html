@@ -25,12 +25,12 @@
          * Function
          * =======================================================================
          */
-        // var logVal = fn.debounce(function() {
-        //     fn.log($('#ipt').val(), false);
-        // }, 500);
-        // function onIptChange(e) {
-        //     logVal();
-        // }
+        var logVal = fn.debounce(function() {
+            fn.log($('#ipt').val(), false);
+        }, 500);
+        function onIptChange(e) {
+            logVal();
+        }
         var showClientTop = fn.throttle(function(e) {
             fn.log(e.clientX, false);
         }, 1000);

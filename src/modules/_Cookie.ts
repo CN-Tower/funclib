@@ -5,7 +5,7 @@ export class FnCookie {
      * @param value 
      * @param days 
      */
-    public static setCookie(name: string, value: string, days: number) {
+    public static setCookie(name: string, value: string, days: number = 0) {
         const date = new Date();
         date.setDate(date.getDate() + days);
         document.cookie = `${name}=${value};expires=${date}`;

@@ -1,9 +1,9 @@
+import { FnType } from './_Type'; 
+import { FnObject } from './_Object'; 
+import { FnArray } from './_Array'; 
+import { FnTime } from './_Time'; 
+
 export class FnDom {
-    private static typeOf: Function;
-    private static typeValue: Function;
-    private static get: Function;
-    private static interval: Function;
-    private static toArray: Function;
     /**
      * [fn.fullScreen] 全屏显示HTML元素
      * @param el
@@ -53,7 +53,7 @@ export class FnDom {
      * [fn.fullScreenChange] 检测是否全屏状态
      * @param callback
      */
-    public static fullScreenChange(callback: boolean|any): void {
+    public static fullScreenChange(callback?: boolean|any): void {
         if (window.addEventListener) {
             if (typeof callback === 'function') {
                 this.fullScreenChange(false);
@@ -81,15 +81,15 @@ export class FnDom {
      * @param callback
      */
     public static pollingEl(selector: string|string[], timeout: number|boolean, options?: Object, callback?: Function): void {
-        if ((this.typeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
-            const duration = this.get(options, 'duration', 'num') || 250;
+        if ((FnType.typeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
+            const duration = FnObject.get(options, 'duration', 'num') || 250;
             const isSelectAll = !!(options && options['isSelectAll']);
-            callback = this.typeValue(callback, 'func') || this.typeValue(options, 'func');
+            callback = FnType.typeValue(callback, 'func') || FnType.typeValue(options, 'func');
             let count = 0;
-            this.interval(selector, duration, eles => {
-                parseInt(String(timeout / duration), 10) <= count ? this.interval(selector, false) : count++;
+            FnTime.interval(selector, duration, eles => {
+                parseInt(String(timeout / duration), 10) <= count ? FnTime.interval(selector, false) : count++;
                 const tmpArr = [];
-                const selectors: any = this.toArray(selector);
+                const selectors: any = FnArray.toArray(selector);
                 selectors.forEach(slt => {
                     const elements = isSelectAll ? document.querySelectorAll(slt) : document.querySelector(slt);
                     if (elements.length > 0) {
@@ -97,14 +97,14 @@ export class FnDom {
                     }
                 });
                 if (tmpArr.length === selectors.length) {
-                    this.interval(selector, false);
+                    FnTime.interval(selector, false);
                     if (callback) {
                         callback(tmpArr);
                     }
                 }
             });
         } else {
-            this.interval(selector, false);
+            FnTime.interval(selector, false);
         }
     }
 

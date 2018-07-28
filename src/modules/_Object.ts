@@ -1,17 +1,16 @@
-export class FnObject {
-    private static typeOf: Function;
-    private static typeValue: Function;
-    private static forEach: Function;
+import { FnType } from './_Type';
+import { FnArray } from './_Array'
 
+export class FnObject {
     /**
      * [fn.len] 获取对象自有属性的个数
      * @arg obj [object]
      */
     public static len(obj: any): number {
-        if (this.typeOf(obj, 'obj')) {
+        if (FnType.typeOf(obj, 'obj')) {
             return Object.keys(obj).length;
-        } else if (this.typeOf(obj, ['str', 'arr', 'fun'])
-            || this.get(obj, '/lenght', 'num')) {
+        } else if (FnType.typeOf(obj, ['str', 'arr', 'fun'])
+            || FnObject.get(obj, '/lenght', 'num')) {
             return obj.length;
         } else {
             return 0;
@@ -24,7 +23,7 @@ export class FnObject {
      * @arg iteratee
      */
     public static forIn(obj: any, iteratee: any): any {
-        return this.forEach(obj, (v, k) => iteratee(k, v));
+        return FnArray.forEach(obj, (v, k) => iteratee(k, v));
     }
 
     /**
@@ -33,7 +32,7 @@ export class FnObject {
      * @param source 
      * @param propList 
      */
-    public static overlay(target: Object, source: Object, propList: string[]) {
+    public static overlay(target: Object, source: Object, propList?: string[]) {
         if (source) {
             if (propList && propList.length > 0) {
                 propList.forEach(prop => {
@@ -58,13 +57,13 @@ export class FnObject {
         if (data instanceof Array) {
             tmpData = [];
             for (let i = 0; i < data.length; i++) {
-                tmpData.push(this.deepCopy(data[i]));
+                tmpData.push(FnObject.deepCopy(data[i]));
             }
         } else {
             tmpData = {};
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
-                    tmpData[key] = this.deepCopy(data[key]);
+                    tmpData[key] = FnObject.deepCopy(data[key]);
                 }
             }
         }
@@ -74,20 +73,20 @@ export class FnObject {
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]
-     * @param layers [string]
+     * @param path [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static get(obj: Object, layers: string, type: string | string[]): any {
-        if (!obj || !layers || !layers.trim()) return undefined;
-        const lys = layers.trim().split('/');
-        const prop = lys[0] || lys[1];
-        if (lys.length === lys.indexOf(prop) + 1) {
-            return type ? this.typeValue(obj[prop], type) : obj[prop];
+    public static get(obj: Object, path: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
+        if (!obj || !path || !path.trim()) return undefined;
+        const paths = path.trim().split('/');
+        const prop = paths[0] || paths[1];
+        if (paths.length === paths.indexOf(prop) + 1) {
+            return type ? FnType.typeValue(obj[prop], type) : obj[prop];
         } else {
-            if (this.typeOf(obj[prop], ['obj', 'arr'])) {
-                if (lys.indexOf(prop)) lys.shift();
-                lys.shift();
-                return this.get(obj[prop], lys.join('/'), type);
+            if (FnType.typeOf(obj[prop], ['obj', 'arr'])) {
+                if (paths.indexOf(prop)) paths.shift();
+                paths.shift();
+                return FnObject.get(obj[prop], paths.join('/'), type);
             } else {
                 return undefined;
             }

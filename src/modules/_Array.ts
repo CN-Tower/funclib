@@ -1,7 +1,7 @@
-export class FnArray {
-    private static get: Function
-    private static typeOf: Function
+import { FnType } from './_Type';
+import { FnObject } from './_Object';
 
+export class FnArray {
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length [number]
@@ -25,56 +25,56 @@ export class FnArray {
 
     /**
      * [fn.toArray] 值数组化
-     * @param src 
+     * @param value 
      */
-    public static toArray(src: any): any[] {
-        return src instanceof Array ? src : [src];
+    public static toArray(value: any): any[] {
+        return value instanceof Array ? value : [value];
     }
 
     /**
      * [fn.find] 根据条件取值
-     * @param src 
+     * @param srcArr 
      * @param predicate 
      */
-    public static find(src: any[], predicate: any): any {
-        const idx = this.findIndex(src, predicate);
-        return idx > -1 ? src[idx] : undefined;
+    public static find(srcArr: any[], predicate: any): any {
+        const idx = FnArray.indexOf(srcArr, predicate);
+        return idx > -1 ? srcArr[idx] : undefined;
     }
 
     /**
      * [fn.filter] 根据条件取过滤值
-     * @param src 
+     * @param srcArr 
      * @param predicate 
      */
-    public static filter(src: any[], predicate: any): any[] {
-        return FnArray._filter.call(this, src, predicate, true);
+    public static filter(srcArr: any[], predicate: any): any[] {
+        return FnArray._filter(srcArr, predicate, true);
     }
 
     /**
      * [fn.reject] 根据条件过滤值
-     * @param src 
+     * @param srcArr 
      * @param predicate 
      */
-    public static reject(src: any[], predicate: any): any[] {
-        return FnArray._filter.call(this, src, predicate, false);
+    public static reject(srcArr: any[], predicate: any): any[] {
+        return FnArray._filter(srcArr, predicate, false);
     }
 
     /**
      * 过滤函数
-     * @param src 
+     * @param srcArr 
      * @param predicate 
      */
-    private static _filter(src: any[], predicate: any, isFlt: boolean): any[] {
+    private static _filter(srcArr: any[], predicate: any, isFlt: boolean): any[] {
         const ftItems = [];
         const rjItems = [];
-        src.forEach(item => {
-            if (this.typeOf(predicate, 'obj')) {
+        srcArr.forEach(item => {
+            if (FnType.typeOf(predicate, 'obj')) {
                 if (Object.keys(predicate).every(k => predicate[k] === item[k])) {
                     ftItems.push(item);
                 } else {
                     rjItems.push(item);
                 }
-            } else if (this.typeOf(predicate, 'fun')) {
+            } else if (FnType.typeOf(predicate, 'fun')) {
                 predicate(item) ? ftItems.push(item) : rjItems.push(item);
             }
         });
@@ -83,31 +83,68 @@ export class FnArray {
 
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
-     * @param src 
+     * @param srcArr 
      * @param predicate 
      */
-    public static contains(src: any[], predicate: any): boolean {
-        const idx = this.findIndex(src, predicate);
+    public static contains(srcArr: any[], predicate: any): boolean {
+        const idx = FnArray.indexOf(srcArr, predicate);
         return idx > -1;
+    }
+    
+    /**
+     * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
+     * @param srcArr 
+     * @param isDrop0 
+     */
+    public static drop(srcArr: any[], isDrop0: boolean = false): any[] {
+        return;
     }
 
     /**
-     * [fn.findIndex] 寻找值在数组中的索引
-     * @param src 
+     * [fn.flatten] 把有结构的数组打散，减少层数
+     * @param srcArr 
+     * @param isDeep 
+     */
+    public static flatten(srcArr: any[], isDeep: boolean = false): any[] {
+        return;
+    }
+
+    /**
+     * [fn.pluck] 把结构中的字段取出合并到一个数组中
+     * @param obj 
+     * @param path 
+     * @param isUniq 
+     */
+    public static pluck(obj: any, path: string, isUniq: boolean = false): any[] {
+        return;
+    }
+
+    /**
+     * [fn.uniq] 把
+     * @param srcArr 
+     * @param path 
+     */
+    public static uniq(srcArr: any[], path: string): any[] {
+        return;
+    }
+
+    /**
+     * [fn.indexOf] 寻找值在数组中的索引
+     * @param srcArr 
      * @param predicate 
      */
-    public static findIndex(src: any[], predicate: any): number {
-        for (let i = 0; i < src.length; i++) {
-            if (this.typeOf(predicate, 'obj')) {
+    public static indexOf(srcArr: any[], predicate: any): number {
+        for (let i = 0; i < srcArr.length; i++) {
+            if (FnType.typeOf(predicate, 'obj')) {
                 let isInSrc = Object.keys(predicate).every(k => {
-                    return src[i][k] === predicate[k];
+                    return srcArr[i][k] === predicate[k];
                 });
                 if (isInSrc) return i;
-            } else if (this.typeOf(predicate, 'fun')) {
-                if (predicate(src[i])) return i;
+            } else if (FnType.typeOf(predicate, 'fun')) {
+                if (predicate(srcArr[i])) return i;
             }
         }
-        return src.indexOf(predicate);
+        return srcArr.indexOf(predicate);
     }
 
     /**
@@ -116,7 +153,7 @@ export class FnArray {
      * @param iteratee
      */
     public static forEach(obj: any, iteratee: any): any {
-        const length = this.get(obj, '/length', 'num');
+        const length = FnObject.get(obj, '/length', 'num');
         if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
             for(let i = 0; i < length; i ++) {
                 iteratee(obj[i], i);
@@ -132,13 +169,13 @@ export class FnArray {
 
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
-     * @param data
+     * @param srcArr
      * @param field
      * @param isDesc
      */
-    public static sortBy(data: any, field: string, isDesc: boolean = false) {
-        return [...data].sort((row1, row2) => {
-            const [rst1, rst2] = [this.get(row1, field), this.get(row2, field)];
+    public static sortBy(srcArr: any, field: string, isDesc: boolean = false) {
+        return [...srcArr].sort((row1, row2) => {
+            const [rst1, rst2] = [FnObject.get(row1, field), FnObject.get(row2, field)];
             if ([rst1, rst2].some(x => x !== 0 && !x) || rst1 === rst2) {
                 return 0;
             } else {

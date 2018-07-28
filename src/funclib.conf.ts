@@ -1,28 +1,62 @@
-export const VERSION = 'v2.1.16';
+export const VERSION = 'v2.2.1';
 
-export const SERVER_METHODS = [
-    'chalk'
-];
+export const MAIN_METHODS = [
+    /* Type */
+    'typeOf',
+    'typeValue',
 
-export const CLIENT_METHODS = [
-    'setCookie',
-    'getCookie',
-    'removeCookie',
-    'fullScreen',
-    'exitFullScreen',
-    'isFullScreen',
-    'fullScreenChange',
-    'pollingEl',
-    'noAutoComplete',
-    'copyText'
-];
+    /* Array */
+    'array',
+    'toArray',
+    'find',
+    'filter',
+    'reject',
+    'contains',
+    'drop',
+    'flatten',
+    'pluck',
+    'uniq',
+    'indexOf',
+    'forEach',
+    'sortBy',
 
-export const INIT_METHODS = [
-    'initTricks',
-    'initFileSystem',
-    'initProgress',
-    'deleteProp'
-];
+    /* Object */
+    'len',
+    'forIn',
+    'overlay',
+    'deepCopy',
+    'get',
+
+    /* Math */
+    'random',
+    'rdid',
+    'rdcolor',
+
+    /* Time */
+    'interval',
+    'timeout',
+    'defer',
+    'time',
+    'fmtDate',
+
+    /* String */
+    'encodeHtml',
+    'decodeHtml',
+    'fmtCurrency',
+    'cutString',
+
+    /* RegExp */
+    'getPattern',
+    'matchPattern',
+
+    /* Function */
+    'throttle',
+    'debounce',
+
+    /* Url */
+    'parseQueryString',
+    'stringfyQueryString',
+]
 
 export const COLOR_LIST= {
     'grey': '\x1B[90m%s\x1B[0m',

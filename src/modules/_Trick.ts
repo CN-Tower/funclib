@@ -1,5 +1,4 @@
 export class FnTrick {
-    
     /**
      * [fn.copyText] 复制文本到粘贴板
      * @param text [string]

@@ -7,32 +7,16 @@ import { FnRegExp } from './modules/_RegExp';
 import { FnMath } from './modules/_Math';
 import { FnFunction } from './modules/_Function';
 import { FnUrl } from './modules/_Url';
-import { FnCookie } from './modules/_Cookie';
-import { FnDom } from './modules/_Dom';
 import { FnLoger } from './modules/_Loger';
-import { FnTrick } from './modules/_Trick';
+import { FnFileSys } from './modules/_FileSys';
+import { FnProgress } from './modules/_Progress';
 import { VERSION, MAIN_METHODS } from './funclib.conf'
 
 const fnModules = [
   FnType, FnArray, FnObject, FnString, FnTime, FnRegExp,
-  FnMath, FnFunction, FnUrl, FnCookie, FnDom, FnTrick
+  FnMath, FnFunction, FnUrl, FnLoger, FnFileSys
 ] 
-
-const methods = [...MAIN_METHODS,
-  /* Dom */
-  'fullScreen',
-  'exitFullScreen',
-  'isFullScreen',
-  'fullScreenChange',
-  'pollingEl',
-  'noAutoComplete',
-  /* Cookie */
-  'setCookie',
-  'getCookie',
-  'removeCookie',
-  /* Trick */
-  'copyText',
-];
+const methods = [...MAIN_METHODS, 'chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk' ];
 
 var fn: any = function() {}
 
@@ -44,8 +28,13 @@ fnModules.forEach(fnModule => {
 
 fn.version = VERSION;
 
+fn.progress = {
+  start: FnProgress.start,
+  stop: FnProgress.stop
+};
+
 fn.log = (value: any, configs: Object, isFmt: boolean) => {
-  return FnLoger.log(true, value, configs, isFmt);
+  return FnLoger.log(false, value, configs, isFmt);
 }
 
 module.exports = fn;

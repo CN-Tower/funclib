@@ -1,13 +1,13 @@
-export class FnType {
-    private static toArray: Function;
+import { FnArray } from './_Array';
 
+export class FnType {
     /**
      * [fn.typeOf] 检查值的类型
      * @param value 
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static typeOf(value: any, type: string|string[]): boolean {
-        const types = this.toArray(type);
+    public static typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
+        const types = FnArray.toArray(type);
         if (types.length === 0) {
             return false;
         }
@@ -30,7 +30,7 @@ export class FnType {
      * @param value 
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static typeValue(value: any, type: string|string[]): any {
-        return this.typeOf(value, type) && value;
+    public static typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
+        return FnType.typeOf(value, type) && value;
     }
 }

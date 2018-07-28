@@ -1,7 +1,7 @@
-export class FnTime {
-    private static intervalTimers: any = {};
-    private static timeoutTimers: any = {};
+const intervalTimers: any = {};
+const timeoutTimers: any = {};
 
+export class FnTime {
     /**
      * [fn.interval] 循环定时器
      * @param timerId
@@ -10,12 +10,12 @@ export class FnTime {
      */
     public static interval(timerId: any, duration?: any, callback?: Function) {
         if (duration === false) {
-            clearInterval(this.intervalTimers[timerId]);
+            clearInterval(intervalTimers[timerId]);
         }
         else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearInterval(this.intervalTimers[timerId]);
-            this.intervalTimers[timerId] = setInterval(() => callback(), duration);
-            return this.intervalTimers[timerId];
+            clearInterval(intervalTimers[timerId]);
+            intervalTimers[timerId] = setInterval(() => callback(), duration);
+            return intervalTimers[timerId];
         }
         else if (typeof timerId === 'number' && typeof duration === 'function') {
             callback = duration;
@@ -32,12 +32,12 @@ export class FnTime {
      */
     public static timeout(timerId: any, duration?: any, callback?: Function) {
         if (duration === false) {
-            clearTimeout(this.timeoutTimers[timerId]);
+            clearTimeout(timeoutTimers[timerId]);
         }
         else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearTimeout(this.timeoutTimers[timerId]);
-            this.timeoutTimers[timerId] = setTimeout(() => callback(), duration);
-            return this.timeoutTimers[timerId];
+            clearTimeout(timeoutTimers[timerId]);
+            timeoutTimers[timerId] = setTimeout(() => callback(), duration);
+            return timeoutTimers[timerId];
         }
         else if (typeof timerId === 'number' && typeof duration === 'function') {
             callback = duration;
@@ -55,7 +55,7 @@ export class FnTime {
      * @param func 
      */
     public static defer(func: Function) {
-        this.timeout(func);
+        FnTime.timeout(func);
     }
 
     /**
@@ -75,7 +75,7 @@ export class FnTime {
      * @param fmtStr 
      * @param time 
      */
-    public static fmtDate(fmtStr: string, time: Date | string | number): string {
+    public static fmtDate(fmtStr: string, time?: Date | string | number): string {
         const _date = new Date(String(time));
         const date = _date.getTime() ? _date : new Date();
         const obj = {

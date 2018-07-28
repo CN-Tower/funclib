@@ -102,7 +102,7 @@ funclib.js
 [fn.filter](#fnfilter)&nbsp;&nbsp;根据条件过滤值<br/>
 [fn.reject](#fnreject)&nbsp;&nbsp;根据条件取过滤值<br/>
 [fn.contains](#fncontains)&nbsp;&nbsp;判断数组是否包含符合条件的值<br/>
-[fn.findIndex](#fnfindindex)&nbsp;&nbsp;寻找值在数组中的索引<br/>
+[fn.indexOf](#fnindexof)&nbsp;&nbsp;寻找值在数组中的索引<br/>
 [fn.forEach](#fnforeach)&nbsp;&nbsp;遍历数组或类数组<br/>
 [fn.sortBy](#fnsortby)&nbsp;&nbsp;对象数组根据字段排序
 #### Object     
@@ -286,19 +286,19 @@ fn.contains(persons, {name: 'Tom'});             // true
 fn.contains(persons, ps => ps.name === 'Tom');   // true
 fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom');   // true
 ```
-#### fn.findIndex
+#### fn.indexOf
 ```
 /**
-  * [fn.findIndex] 寻找值在数组中的索引
+  * [fn.indexOf] 寻找值在数组中的索引
   * @param src 
   * @param predicate 
   */
-fn.findIndex(src: any[], predicate: any): number;
+fn.indexOf(src: any[], predicate: any): number;
 
 // examples:
 const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}]
-fn.findIndex(persons, {name: 'Tom'});             // 1
-fn.findIndex(persons, ps => ps.name === 'Tom');   // 1
+fn.indexOf(persons, {name: 'Tom'});             // 1
+fn.indexOf(persons, ps => ps.name === 'Tom');   // 1
 ```
 #### fn.forEach
 ```

@@ -1,13 +1,11 @@
-import { COLOR_LIST } from '../funclib.conf';
+import { FnArray } from './_Array';
+import { FnObject } from './_Object';
+import { FnString } from './_String';
+import { FnTime } from './_Time';
+import { FnType } from './_Type';
+import { COLOR_LIST, VERSION } from '../funclib.conf';
 
 export class FnLoger {
-    private static array: Function;
-    private static get: Function;
-    private static typeValue: Function;
-    private static cutString: Function;
-    private static fmtDate: Function;
-    private static version: string;
-
     /**
      * [fn.log] 控制台格式化打印值
      * @param value 
@@ -20,39 +18,39 @@ export class FnLoger {
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      * @param isFmt 
      */
-    public static log(isClient: boolean, value: any, configs: Object, isFmt: boolean) {
-        let isFormate = this.get(configs, '/isFmt') || isFmt;
+    public static log(isClient: boolean, value: any, configs: Object, isFmt: boolean = true) {
+        let isFormate = FnObject.get(configs, '/isFmt') || isFmt;
         if (typeof configs === 'boolean') {
             isFormate = configs; configs = undefined;
         }
         value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
-        let time = `[${this.fmtDate('hh:mm:ss')}] `;
-        let title = (this.typeValue(configs, 'str') || this.get(configs, '/title')
-            || `funclib(${this.version})`).replace(/\n/mg, '');
+        let time = `[${FnTime.fmtDate('hh:mm:ss')}] `;
+        let title = (FnType.typeValue(configs, 'str') || FnObject.get(configs, '/title')
+            || `funclib(${VERSION})`).replace(/\n/mg, '');
         const originTtLength = (time + title + '[] ').length;
         if (!isFormate) title = `( ${title} )`;
         if (!isClient) {
-            time  = this.chalk(time);
-            const titlec = this.get(configs, '/ttColor');
-            const valuec = this.get(configs, '/color');
-            title = this.chalk(title, titlec in COLOR_LIST && titlec || 'green');
-            value = this.chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
+            time  = FnLoger.chalk(time);
+            const titlec = FnObject.get(configs, '/ttColor');
+            const valuec = FnObject.get(configs, '/color');
+            title = FnLoger.chalk(title, titlec in COLOR_LIST && titlec || 'green');
+            value = FnLoger.chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
         }
 
         title = time + title;
-        let width = this.get(configs, '/width');
+        let width = FnObject.get(configs, '/width');
         if (!width || width < 30 || width > 100) width = 66;
         if (originTtLength <= width) {
             if (isFormate) {
-                title = this.array((width - originTtLength) / 2, ' ').join('') + title;
+                title = FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
             }
         } else {
             const colorEnd = '\x1B[0m';
             const fixLength = title.length - originTtLength - colorEnd.length;
             if (isClient) {
-                title = this.cutString(title, width - 3);
+                title = FnString.cutString(title, width - 3);
             } else {
-                title = this.cutString(title, width + fixLength - 3) + colorEnd;
+                title = FnString.cutString(title, width + fixLength - 3) + colorEnd;
             }
         }
 
@@ -60,7 +58,7 @@ export class FnLoger {
             console.log(`${title}: ${value}`);
         } else {
             let sgLine = '', dbLine = '';
-            this.array(width).forEach(x => {
+            FnArray.array(width).forEach(x => {
                 sgLine += '-'; dbLine += '=';
             });
             if (isClient) {

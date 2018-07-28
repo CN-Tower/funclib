@@ -3,48 +3,73 @@ const webpack = require('webpack');
 const path = require('path');
 const rootPath = path.resolve(__dirname, '../');
 
-const funclibJsConf = {
-    entry: path.resolve(rootPath, 'src', 'funclib.ts'),
-    output: {
-        filename: 'funclib.js',
-        path: path.resolve(rootPath, 'assets'),
-        library: 'fn',
-        libraryTarget: "umd"
-    },
-    resolve: {
-        extensions: [".ts", ".js"]
-    },
-    module: {
-        loaders: [{
-            test: /\.ts$/,
-            loader: 'ts-loader'
-        }]
+module.exports = {
+    funclibJsConf: dfFnJsConf(),
+    funclibMinJsConf: dfMinJsConf(),
+    indexJsConf: fnIndexJs()
+}
+
+function dfFnJsConf() {
+    return {
+        entry: path.resolve(rootPath, 'src', 'funclib.ts'),
+        output: {
+            filename: 'funclib.js',
+            path: path.resolve(rootPath, 'assets'),
+            library: 'fn',
+            libraryTarget: "umd"
+        },
+        resolve: {
+            extensions: [".ts", ".js"]
+        },
+        module: {
+            loaders: [{
+                test: /\.ts$/,
+                loader: 'ts-loader'
+            }]
+        }
     }
 }
 
-const funclibMinJsConf = {
-    entry: path.resolve(rootPath, 'src', 'funclib.ts'),
-    output: {
-        filename: 'funclib.min.js',
-        path: path.resolve(rootPath, 'assets'),
-        library: 'fn',
-        libraryTarget: "umd"
-    },
-    resolve: {
-        extensions: [".ts", ".js"]
-    },
-    module: {
-        loaders: [{
-            test: /\.ts$/,
-            loader: 'ts-loader'
-        }]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin()
-    ]
+function dfMinJsConf() {
+    return {
+        entry: path.resolve(rootPath, 'src', 'funclib.ts'),
+        output: {
+            filename: 'funclib.min.js',
+            path: path.resolve(rootPath, 'assets'),
+            library: 'fn',
+            libraryTarget: "umd"
+        },
+        resolve: {
+            extensions: [".ts", ".js"]
+        },
+        module: {
+            loaders: [{
+                test: /\.ts$/,
+                loader: 'ts-loader'
+            }]
+        },
+        plugins: [
+            new webpack.optimize.UglifyJsPlugin()
+        ]
+    }
 }
 
-module.exports = {
-    funclibJsConf: funclibJsConf,
-    funclibMinJsConf: funclibMinJsConf
+function fnIndexJs() {
+    return {
+        entry: path.resolve(rootPath, 'src', 'index.ts'),
+        output: {
+            filename: 'index.js',
+            path: path.resolve(rootPath, 'assets'),
+            libraryTarget: "commonjs"
+        },
+        resolve: {
+            extensions: [".ts", ".js"]
+        },
+        module: {
+            loaders: [{
+                test: /\.ts$/,
+                loader: 'ts-loader'
+            }]
+        }
+    }
 }

@@ -13,7 +13,7 @@
  * fn.filter                 根据条件取过滤值
  * fn.reject                 根据条件过滤值
  * fn.contains               判断数组是否包含符合条件的值
- * fn.findIndex              寻找值在数组中的索引
+ * fn.indexOf              寻找值在数组中的索引
  * fn.forEach                遍历数组或类数组
  * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
@@ -144,11 +144,11 @@ interface Funclib {
      */
     contains(src: any[], predicate: any): boolean;
     /**
-    * [fn.findIndex] 寻找值在数组中的索引
+    * [fn.indexOf] 寻找值在数组中的索引
     * @param src 
     * @param predicate 
     */
-    findIndex(src: any[], predicate: any): number;
+    indexOf(src: any[], predicate: any): number;
     /**
      * [fn.forEach] 遍历数组或类数组
      * @param obj

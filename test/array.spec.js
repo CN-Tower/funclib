@@ -56,14 +56,14 @@ describe('Array Methods:', function () {
             assert(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom') === true);
         });
     });
-    describe('#fn.findIndex()', function () {
+    describe('#fn.indexOf()', function () {
         var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
-        it(`fn.findIndex(persons, {name: 'Tom'}) should return Tom's index in persons.`, function () {
-            var tomIdx = fn.findIndex(persons, {name: 'Tom'});
+        it(`fn.indexOf(persons, {name: 'Tom'}) should return Tom's index in persons.`, function () {
+            var tomIdx = fn.indexOf(persons, {name: 'Tom'});
             assert(tomIdx === 0);
         });
-        it(`fn.findIndex(persons, ps => ps.name === 'Tom') should return Tom's index in persons.`, function () {
-            var tomIdx = fn.findIndex(persons, ps => ps.name === 'Tom');
+        it(`fn.indexOf(persons, ps => ps.name === 'Tom') should return Tom's index in persons.`, function () {
+            var tomIdx = fn.indexOf(persons, ps => ps.name === 'Tom');
             assert(tomIdx === 0);
         });
     });

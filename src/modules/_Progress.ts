@@ -1,32 +1,27 @@
+import { FnType } from './_Type';
+import { FnLoger } from './_Loger';
+import { FnObject } from './_Object';
+import { FnTime } from './_Time';
+import { VERSION } from '../funclib.conf';
+
 let progress: any;
 let duration: number;
 let pgType: 'bar'|'spi'|null;
 const process: any = global.process;
 
 export class FnProgress {
-    private static chalk: Function;
-    private static interval: Function;
-    private static timeout: Function;
-    private static typeOf: Function;
-    private static typeValue: Function;
-    private static get: Function;
-    private static version: string;
-    
     /**
      * [fn.progress.start] 开启进度条，并传入参数
      * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
      */
     public static start(options: any) {
-        FnProgress.chalk = this.chalk;
-        FnProgress.interval = this.interval;
-        FnProgress.timeout = this.timeout;
-        this.interval('pg_sping', false);
-        this.timeout('pg_Bar', false);
-        if (!this.typeOf(options, 'obj')) {
-            options = {title: this.typeValue(options, 'str')};
+        FnTime.interval('pg_sping', false);
+        FnTime.timeout('pg_Bar', false);
+        if (!FnType.typeOf(options, 'obj')) {
+            options = {title: FnType.typeValue(options, 'str')};
         }
-        options.title = this.get(options, 'title', 'str') || `funclib ${this.version}`;
-        pgType = this.get(options, '/type', 'str');
+        options.title = FnObject.get(options, 'title', 'str') || `funclib ${VERSION}`;
+        pgType = FnObject.get(options, '/type', 'str');
         if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
             pgType = 'bar';
             FnProgress.startPgbar(options);
@@ -57,12 +52,12 @@ export class FnProgress {
      * 翻转
      */
     private static startSping(message: string) {
-        this.interval('pg_sping', false);
-        this.spingFun(message);
+        FnTime.interval('pg_sping', false);
+        FnProgress.spingFun(message);
     }
 
     private static stopSping() {
-        this.interval('pg_sping', false);
+        FnTime.interval('pg_sping', false);
     }
 
     private static spingFun(msg: string) {
@@ -73,8 +68,8 @@ export class FnProgress {
             stream.write(frame);
         };
         let s = '/'
-        this.interval('pg_sping', 180, () => {
-            interrupt(`${this.chalk(s, 'cyan')} ${msg}`);
+        FnTime.interval('pg_sping', 180, () => {
+            interrupt(`${FnLoger.chalk(s, 'cyan')} ${msg}`);
             switch (s) {
                 case '/':  s = '-';  break;
                 case '-':  s = '\\'; break;
@@ -89,7 +84,7 @@ export class FnProgress {
      * 进度条
      */
     private static startPgbar(options: any) {
-        this.timeout('pg_Bar', false);
+        FnTime.timeout('pg_Bar', false);
         const Pgbar = eval('require("progress")');
         const prog = `${options.title || '[fn.progress]'} [:bar] :percent`;
         progress = new Pgbar(prog, {
@@ -98,23 +93,23 @@ export class FnProgress {
             total: options['total'] || 20
         });
         duration = 250;
-        this.tickFun('+');
+        FnProgress.tickFun('+');
     }
 
     private static stopPgbar(onStopped: Function) {
         duration = 600;
-        this.tickFun('-', onStopped);
+        FnProgress.tickFun('-', onStopped);
     }
 
     private static tickFun(type, onStopped?) {
-        this.timeout('pg_Bar', duration, () => {
+        FnTime.timeout('pg_Bar', duration, () => {
             progress.tick();
             switch (type) {
                 case '+': duration += 300; break;
                 case '-': duration -= duration * 0.2; break;
             }
             if (!progress.complete) {
-                this.tickFun(type, onStopped);
+                FnProgress.tickFun(type, onStopped);
             } else if (onStopped) {
                 onStopped();
             }

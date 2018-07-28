@@ -1,6 +1,7 @@
 // const fn = require('./assets/funclib');
 const fn = require('./assets');
 
+console.log(fn);
 // fn.log(fn.len('aaa'))
 
 // fn.progress.start('Test');
@@ -48,8 +49,8 @@ const fn = require('./assets');
 // fn.log(fn.contains(persons, {name: 'Tom'}), 'fn.contains');
 // fn.log(fn.contains(persons, ps => ps.name === 'Tom'), 'fn.contains');
 // fn.log(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom'), 'fn.contains');
-// fn.log(fn.findIndex(persons, {name: 'Tom'}), 'fn.findIndex');
-// fn.log(fn.findIndex(persons, ps => ps.name === 'Tom'), 'fn.findIndex');
+// fn.log(fn.indexOf(persons, {name: 'Tom'}), 'fn.indexOf');
+// fn.log(fn.indexOf(persons, ps => ps.name === 'Tom'), 'fn.indexOf');
 
 /**
  * Object
@@ -145,7 +146,7 @@ const fn = require('./assets');
  * Progress
  * =======================================================================
  */
-// fn.progress.start({title: 'Loading'});
+fn.progress.start({title: 'Loading'});
 
 // fn.progress.start('Loading...');
 // setTimeout(() => {

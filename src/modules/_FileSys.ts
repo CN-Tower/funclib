@@ -1,19 +1,14 @@
-let fs, path, Buffer, execSync, process;
+const fs: any = eval('require("fs")');
+const path: any = eval('require("path")');
+const execSync: any = eval('require("child_process").execSync');
+const process: any = global.process;
 
 export class FnFileSys {
-    constructor () {
-        fs = eval('require("fs")');
-        path = eval('require("path")');
-        execSync = eval('require("child_process").execSync');
-        process = global.process;
-        Buffer = global.Buffer;
-    }
-
     /**
      * [fn.rd] 读文件
      * @param file
      */
-    public rd = (file: string) => {
+    public static rd = (file: string) => {
         return fs.existsSync(file) ? fs.readFileSync(file, {encoding: 'utf8'}) : '';
     }
 
@@ -23,7 +18,7 @@ export class FnFileSys {
      * @param text
      * @param flag ['w'|'a'] default: 'w'
      */
-    public wt = (file: string, text: string, flag: 'w'|'a') => {
+    public static wt = (file: string, text: string, flag: 'w'|'a' = 'w') => {
         fs.writeFileSync(file, text, {encoding: 'utf8', flag: flag});
     }
 
@@ -32,17 +27,17 @@ export class FnFileSys {
      * @param src
      * @param dist
      */
-    public cp(src: string, dist: string) {
+    public static cp(src: string, dist: string) {
         if (fs.existsSync(src)) {
             if (fs.statSync(src).isFile()) {
                 fs.createReadStream(src).pipe(fs.createWriteStream(dist));
             } else if (fs.statSync(src).isDirectory()) {
-                this.mk(dist);
+                FnFileSys.mk(dist);
                 const subSrcs = fs.readdirSync(src);
                 subSrcs.forEach(file => {
                     const subSrc = path.join(src, file);
                     const subDist = path.join(dist, file);
-                    this.cp(subSrc, subDist);
+                    FnFileSys.cp(subSrc, subDist);
                 });
             }
         }
@@ -53,12 +48,12 @@ export class FnFileSys {
      * @param src 
      * @param dist 
      */
-    public mv(src: string, dist: string) {
+    public static mv(src: string, dist: string) {
         try {
             fs.renameSync(src, dist);
         } catch (e) {
-            this.cp(src, dist);
-            this.rm(src);
+            FnFileSys.cp(src, dist);
+            FnFileSys.rm(src);
         }
     }
 
@@ -66,7 +61,7 @@ export class FnFileSys {
      * [fn.rm] 删除文件或文件夹
      * @param src
      */
-    public rm(src: string) {
+    public static rm(src: string) {
         if (fs.existsSync(src)) {
             if (fs.statSync(src).isFile()) {
                 fs.unlinkSync(src);
@@ -74,7 +69,7 @@ export class FnFileSys {
                 const subSrcs = fs.readdirSync(src);
                 subSrcs.forEach(file => {
                     const subSrc = path.join(src, file);
-                    this.rm(subSrc);
+                    FnFileSys.rm(subSrc);
                 });
                 try {
                     fs.rmdirSync(src);
@@ -96,13 +91,13 @@ export class FnFileSys {
      * [fn.mk] 创建文件夹
      * @param dist
      */
-    public mk(dist) {
+    public static mk(dist: string) {
         const absDist = path.resolve(dist);
         if (!fs.existsSync(absDist)) {
             try {
                 fs.mkdirSync(absDist);
             } catch (e) {
-                this.mk(path.dirname(absDist));
+                FnFileSys.mk(path.dirname(absDist));
                 fs.mkdirSync(absDist);
             }
         };

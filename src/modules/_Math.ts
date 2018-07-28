@@ -1,6 +1,6 @@
+import { FnArray } from './_Array';
+
 export class FnMath {
-    private static array: Function;
-    
     /**
      * [fn.random] 返回一个指定范围内的随机数
      * @param sta 
@@ -25,13 +25,13 @@ export class FnMath {
      * [fn.rdid] 返回一个指定长度（最小4位）的随机ID
      * @param len 
      */
-    public static rdid(len: number): string {
+    public static rdid(len: number = 12): string {
         const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         let eleId = '';
         if (len < 4) {
             len = 4;
         };
-        this.array(len).forEach(x => eleId += charSet[this.random(charSet.length)]);
+        FnArray.array(len).forEach(x => eleId += charSet[FnMath.random(charSet.length)]);
         return eleId;
     }
 
@@ -39,6 +39,6 @@ export class FnMath {
      * [fn.rdColor] 返回一个随机颜色色值
      */
     public static rdcolor() {
-        return '#' + ('00000' + (this.random(0x1000000) << 0).toString(16)).slice(-6);
+        return '#' + ('00000' + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
     }
 }

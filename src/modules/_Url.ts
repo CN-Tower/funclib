@@ -1,12 +1,12 @@
-export class FnUrl {
-    private static typeOf: Function;
-    private static forIn: Function;
+import { FnType } from './_Type';
+import { FnObject } from './_Object';
 
+export class FnUrl {
     /**
      * [fn.parseQueryString] 解析Url参数成对象
      * @param url [string]  default: window.location.href
      */
-    public static parseQueryString(url: string) {
+    public static parseQueryString(url?: string) {
         url = url || typeof window !== 'undefined' && window.location.href || '';
         if(url.indexOf('?') === -1) {
             return {};
@@ -29,10 +29,10 @@ export class FnUrl {
      * @param obj [string]  default: window.location.href
      */
     public static stringfyQueryString(obj: Object) {
-        if (!this.typeOf(obj, 'object')) return '';
+        if (!FnType.typeOf(obj, 'object')) return '';
         const pairs = [];
-        this.forIn(obj, (key, value) => {
-            if (this.typeOf(value, 'arr')) {
+        FnObject.forIn(obj, (key, value) => {
+            if (FnType.typeOf(value, 'arr')) {
                 value.forEach((v, i) => {
                     const _k = encodeURIComponent(`${key}[${i}]`);
                     pairs.push(`${_k}=${encodeURIComponent(v)}`);
