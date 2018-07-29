@@ -18,7 +18,21 @@ const fnModules = [
 ] 
 const methods = [...MAIN_METHODS, 'chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk' ];
 
-var fn: any = function() {}
+let _fn: any = {};
+fnModules.forEach(fnModule => {
+  FnObject.forIn(fnModule, (mtd, method) => {
+    if (methods.indexOf(mtd) > -1) _fn[mtd] =  function() {
+      let args: any = arguments;
+      args = Object.keys(args).map(key => args[key]);
+      return _fn.data !== undefined ? method(_fn.data, ...args) : method(...args);
+    }
+  });
+});
+
+var fn: any = function(data: any) {
+  _fn.data = data;
+  return _fn;
+}
 
 fnModules.forEach(fnModule => {
   FnObject.forIn(fnModule, (mtd, method) => {

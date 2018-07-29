@@ -6,18 +6,29 @@ describe('Array Methods:', function () {
         });
     });
     describe('#fn.toArray()', function () {
-        it(`fn.toArr('funclib') should return an Array.`, function () {
-            assert(fn.toArray('funclib')[0] === fn.toArray(['funclib'])[0]);
+        it(`fn.toArray('funclib') should return an Array.`, function () {
+            assert.deepEqual(fn.toArray('funclib')[0], fn.toArray(['funclib'])[0]);
+        });
+        it(`fn('funclib').toArray() should return an Array.`, function () {
+            assert.deepEqual(fn('funclib').toArray(), ['funclib']);
         });
     });
     describe('#fn.find()', function () {
         var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
-        it(`fn.find(persons, {Jerry: 'Tom'}) should return Jerry's info.`, function () {
+        it(`fn.find(persons, {name: 'Jerry'}) should return Jerry's info.`, function () {
             var tom = fn.find(persons, {name: 'Jerry'});
             assert.deepEqual(tom, {name:'Jerry', age: 18});
         });
+        it(`fn(persons).find({name: 'Tom'}) should return Tom's info.`, function () {
+            var tom = fn(persons).find({name: 'Tom'});
+            assert.deepEqual(tom, {name:'Tom', age: 22});
+        });
         it(`fn.find(persons, ps => ps.name === 'Tom') should return Tom's info.`, function () {
             var tom = fn.find(persons, ps => ps.name === 'Tom');
+            assert.deepEqual(tom, {name:'Tom', age: 22});
+        });
+        it(`fn(persons).find(ps => ps.name === 'Tom') should return Tom's info.`, function () {
+            var tom = fn(persons).find(ps => ps.name === 'Tom');
             assert.deepEqual(tom, {name:'Tom', age: 22});
         });
     });

@@ -60,7 +60,8 @@ function fnIndexJs() {
         output: {
             filename: 'index.js',
             path: path.resolve(rootPath, 'assets'),
-            libraryTarget: "commonjs"
+            library: 'fn',
+            libraryTarget: "umd"
         },
         resolve: {
             extensions: [".ts", ".js"]

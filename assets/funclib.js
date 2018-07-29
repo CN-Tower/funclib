@@ -872,7 +872,7 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.3';
+exports.VERSION = 'v2.2.4';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -964,7 +964,21 @@ var methods = funclib_conf_1.MAIN_METHODS.concat([
     'removeCookie',
     'copyText',
 ]);
-var fn = function () { };
+var _fn = {};
+fnModules.forEach(function (fnModule) {
+    _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
+        if (methods.indexOf(mtd) > -1)
+            _fn[mtd] = function () {
+                var args = arguments;
+                args = Object.keys(args).map(function (key) { return args[key]; });
+                return _fn.data !== undefined ? method.apply(void 0, [_fn.data].concat(args)) : method.apply(void 0, args);
+            };
+    });
+});
+var fn = function (data) {
+    _fn.data = data;
+    return _fn;
+};
 fnModules.forEach(function (fnModule) {
     _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
         if (methods.indexOf(mtd) > -1)

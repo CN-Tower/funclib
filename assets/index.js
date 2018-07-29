@@ -1,4 +1,14 @@
-(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["fn"] = factory();
+	else
+		root["fn"] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -620,7 +630,7 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.3';
+exports.VERSION = 'v2.2.4';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -1082,7 +1092,21 @@ var fnModules = [
     _Math_1.FnMath, _Function_1.FnFunction, _Url_1.FnUrl, _FileSys_1.FnFileSys, _Logs_1.FnLog
 ];
 var methods = funclib_conf_1.MAIN_METHODS.concat(['chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk']);
-var fn = function () { };
+var _fn = {};
+fnModules.forEach(function (fnModule) {
+    _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
+        if (methods.indexOf(mtd) > -1)
+            _fn[mtd] = function () {
+                var args = arguments;
+                args = Object.keys(args).map(function (key) { return args[key]; });
+                return _fn.data !== undefined ? method.apply(void 0, [_fn.data].concat(args)) : method.apply(void 0, args);
+            };
+    });
+});
+var fn = function (data) {
+    _fn.data = data;
+    return _fn;
+};
 fnModules.forEach(function (fnModule) {
     _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
         if (methods.indexOf(mtd) > -1)
@@ -1587,4 +1611,5 @@ exports.FnProgress = FnProgress;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ })
-/******/ ])));
+/******/ ]);
+});

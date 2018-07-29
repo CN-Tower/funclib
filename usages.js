@@ -1,9 +1,10 @@
 // const fn = require('./assets/funclib');
 const fn = require('./assets');
 
-console.log(fn);
-// fn.log(fn.len('aaa'))
-
+// fn.log();
+// fn('aaa').log({title: 'AAA'});
+fn({name: 'Tom'}).get('/name');
+fn.get({name: 'Tom'}, '/name');
 // fn.progress.start('Test', {type: 'spi'});
 // fn.timeout(3000, () => fn.progress.stop());
 // fn.progress.start({title: 'Test'});
