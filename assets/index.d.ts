@@ -5,7 +5,7 @@
  ----------------------------------------------------------------
  ## Type
  * fn.typeOf                 检查值的类型，返回布尔值
- * fn.typeValue              检查值的类型，是则返回该值，否则返回false
+ * fn.typeVal                检查值的类型，是则返回该值，否则返回false
  ## Array      
  * fn.array                  返回指定长度和默认值的数组
  * fn.toArray                值数组化
@@ -13,7 +13,11 @@
  * fn.filter                 根据条件取过滤值
  * fn.reject                 根据条件过滤值
  * fn.contains               判断数组是否包含符合条件的值
- * fn.indexOf              寻找值在数组中的索引
+ * fn.drop                   去掉Boolean()后为false和空数组或对象的值
+ * fn.flatten                把有结构的数组打散，减少层数
+ * fn.pluck                  把结构中的字段取出合并到一个数组中
+ * fn.uniq                   去重或根据字段去重
+ * fn.indexOf                寻找值在数组中的索引
  * fn.forEach                遍历数组或类数组
  * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
@@ -22,10 +26,11 @@
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
  * fn.deepCopy               深拷贝数组或对象
+ * fn.isDeepEqual            判断数组或对象是否相等
  * fn.get                    返回对象或子孙对象的属性，可判断类型
  ## Math
  * fn.random                 返回指定范围的随机数
- * fn.rdid                   返回指定长度(最小6位)的随机ID
+ * fn.rdid                   返回指定长度的随机ID
  * fn.rdcolor                返回一个随机色值
  ## Time       
  * fn.interval               循环定时器
@@ -103,11 +108,11 @@ interface Funclib {
      */
     typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
     /**
-     * [fn.typeValue] 检查值的类型，true则返回该值，否则返回false
+     * [fn.typeVal] 检查值的类型，true则返回该值，否则返回false
      * @param value 
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
+    typeVal(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length [number]
@@ -143,6 +148,32 @@ interface Funclib {
      * @param predicate 
      */
     contains(src: any[], predicate: any): boolean;
+    /**
+     * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
+     * @param srcArr 
+     * @param isDrop0 
+     */
+    drop(srcArr: any[], isDrop0?: boolean): any[];
+    /**
+     * [fn.flatten] 把有结构的数组打散，减少层数
+     * @param srcArr 
+     * @param isDeep 
+     */
+    flatten(srcArr: any[], isDeep?: boolean): any[];
+    /**
+     * [fn.pluck] 把结构中的字段取出合并到一个数组中
+     * @param obj 
+     * @param path 
+     * @param isUniq 
+     */
+    pluck(srcArr: any, path: string): any[];
+    /**
+     * [fn.uniq] 去重或根据字段去重
+     * @param srcArr : any[]
+     * @param path?  : string
+     * @param isDeep : boolean = true
+     */
+    uniq(srcArr: any[], path?: string, isDeep?: boolean): any[];
     /**
     * [fn.indexOf] 寻找值在数组中的索引
     * @param src 
@@ -185,6 +216,12 @@ interface Funclib {
      * @param data
      */
     deepCopy(data: any): any;
+    /**
+     * [fn.isDeepEqual] 判断数组或对象是否相等
+     * @param obj1 
+     * @param obj2 
+     */
+    isDeepEqual(obj1: any, obj2: any): boolean;
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]

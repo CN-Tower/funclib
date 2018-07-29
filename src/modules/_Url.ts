@@ -8,13 +8,9 @@ export class FnUrl {
      */
     public static parseQueryString(url?: string) {
         url = url || typeof window !== 'undefined' && window.location.href || '';
-        if(url.indexOf('?') === -1) {
-            return {};
-        }
+        if(url.indexOf('?') === -1) return {};
         const queryStr = url.substring(url.lastIndexOf('?') + 1);
-        if (queryStr === '') {
-            return {};
-        }
+        if (queryStr === '') return {};
         const querys = queryStr.split('&');
         var params = {};
         for (var i = 0; i < querys.length; i++) {

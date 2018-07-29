@@ -56,6 +56,46 @@ describe('Array Methods:', function () {
             assert(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom') === true);
         });
     });
+    describe('#fn.drop()', function () {
+        const arr = [null, undefined, false, {}, [], 0, 'test'];
+        it(`fn.drop(arr) should return [0, 'test'].`, function () {
+            assert.deepEqual(fn.drop(arr), [0, 'test']);
+        });
+        it(`fn.drop(arr, true) should return ['test'].`, function () {
+            assert.deepEqual(fn.drop(arr, true), ['test']);
+        });
+    });
+    describe('#fn.flatten()', function () {
+        const arr = [1, [2, 3, [4, [5]], 6], 7];
+        it(`fn.flatten(arr) should return [1, 2, 3, [4, [5]], 6, 7].`, function () {
+            assert.deepEqual(fn.flatten(arr), [1, 2, 3, [4, [5]], 6, 7]);
+        });
+        it(`fn.flatten(arr, true) should return [1, 2, 3, 4, 5, 6, 7].`, function () {
+            assert.deepEqual(fn.flatten(arr, true), [1, 2, 3, 4, 5, 6, 7]);
+        });
+    });
+    describe('#fn.pluck()', function () {
+        var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
+        it(`fn.pluck(persons, 'name') should return ['Tom', 'Jerry'].`, function () {
+            assert.deepEqual(fn.pluck(persons, 'name'), ['Tom', 'Jerry']);
+        });
+    });
+    describe('#fn.uniq()', function () {
+        var arr1 = [0, {}, 0, false, null, false, [], [], {}, 'test', 'test']
+        var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 22}];
+        it(`fn.uniq(arr1) should return [0, {}, false, null, [], 'test'].`, function () {
+            assert.deepEqual(fn.uniq(arr1), [0, {}, false, null, [], 'test']);
+        });
+        it(`fn.uniq(arr1, false) should return [0, {}, false, null, [], [], {}, 'test'].`, function () {
+            assert.deepEqual(fn.uniq(arr1, false), [0, {}, false, null, [], [], {}, 'test']);
+        });
+        it(`fn.uniq(persons, '/name') should return persons.`, function () {
+            assert.deepEqual(fn.uniq(persons, '/name'), persons);
+        });
+        it(`fn.uniq(persons, '/age') should return Tom's info.`, function () {
+            assert.deepEqual(fn.uniq(persons, '/age'), [{name: 'Tom', age: 22}]);
+        });
+    });
     describe('#fn.indexOf()', function () {
         var persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
         it(`fn.indexOf(persons, {name: 'Tom'}) should return Tom's index in persons.`, function () {

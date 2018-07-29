@@ -1,7 +1,7 @@
 import { FnType } from './_Type';
-import { FnLoger } from './_Loger';
 import { FnObject } from './_Object';
 import { FnTime } from './_Time';
+import { FnLog } from './_Logs';
 import { VERSION } from '../funclib.conf';
 
 let progress: any;
@@ -18,7 +18,7 @@ export class FnProgress {
         FnTime.interval('pg_sping', false);
         FnTime.timeout('pg_Bar', false);
         if (!FnType.typeOf(options, 'obj')) {
-            options = {title: FnType.typeValue(options, 'str')};
+            options = {title: FnType.typeVal(options, 'str')};
         }
         options.title = FnObject.get(options, 'title', 'str') || `funclib ${VERSION}`;
         pgType = FnObject.get(options, '/type', 'str');
@@ -69,7 +69,7 @@ export class FnProgress {
         };
         let s = '/'
         FnTime.interval('pg_sping', 180, () => {
-            interrupt(`${FnLoger.chalk(s, 'cyan')} ${msg}`);
+            interrupt(`${FnLog.chalk(s, 'cyan')} ${msg}`);
             switch (s) {
                 case '/':  s = '-';  break;
                 case '-':  s = '\\'; break;

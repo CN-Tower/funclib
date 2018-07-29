@@ -20,9 +20,7 @@ export class FnCookie {
         const cks = document.cookie.replace(/\s/g, "").split(';');
         for (let i = 0; i < cks.length; i++) {
             const tempArr = cks[i].split('=');
-            if (tempArr[0] == name) {
-                return decodeURIComponent(tempArr[1]);
-            }
+            if (tempArr[0] == name) return decodeURIComponent(tempArr[1]);
         }
         return '';
     }

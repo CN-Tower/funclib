@@ -9,28 +9,26 @@ import { FnFunction } from './modules/_Function';
 import { FnUrl } from './modules/_Url';
 import { FnCookie } from './modules/_Cookie';
 import { FnDom } from './modules/_Dom';
-import { FnLoger } from './modules/_Loger';
 import { FnTrick } from './modules/_Trick';
+import { FnLog } from './modules/_Logc';
 import { VERSION, MAIN_METHODS } from './funclib.conf'
 
 const fnModules = [
   FnType, FnArray, FnObject, FnString, FnTime, FnRegExp,
-  FnMath, FnFunction, FnUrl, FnCookie, FnDom, FnTrick
+  FnMath, FnFunction, FnUrl, FnCookie, FnDom, FnTrick, FnLog
 ] 
 
-const methods = [...MAIN_METHODS,
-  /* Dom */
+const methods = [
+  ...MAIN_METHODS,
   'fullScreen',
   'exitFullScreen',
   'isFullScreen',
   'fullScreenChange',
   'pollingEl',
   'noAutoComplete',
-  /* Cookie */
   'setCookie',
   'getCookie',
   'removeCookie',
-  /* Trick */
   'copyText',
 ];
 
@@ -43,9 +41,5 @@ fnModules.forEach(fnModule => {
 });
 
 fn.version = VERSION;
-
-fn.log = (value: any, configs: Object, isFmt: boolean) => {
-  return FnLoger.log(true, value, configs, isFmt);
-}
 
 module.exports = fn;

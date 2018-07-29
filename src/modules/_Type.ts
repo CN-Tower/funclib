@@ -8,9 +8,7 @@ export class FnType {
      */
     public static typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
         const types = FnArray.toArray(type);
-        if (types.length === 0) {
-            return false;
-        }
+        if (types.length === 0) return false;
         return types.some(type => {
             switch (type) {
                 case 'arr': return value && value instanceof Array;
@@ -26,11 +24,11 @@ export class FnType {
     }
 
     /**
-     * [fn.typeValue] 检查是否为某类型的值，是则返回该值，不是则返回false
+     * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
      * @param value 
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    public static typeValue(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
+    public static typeVal(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
         return FnType.typeOf(value, type) && value;
     }
 }

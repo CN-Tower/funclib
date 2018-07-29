@@ -20,9 +20,6 @@ describe('Math Methods:', function () {
         it(`fn.rdid(6) should return an random ID with a length of 6.`, function () {
             assert(/^[0-9A-Z]{6}$/.test(fn.rdid(6)));
         });
-        it(`fn.rdid(2) should return an random ID with a length of 4.`, function () {
-            assert(/^[0-9A-Z]{4}$/.test(fn.rdid(2)));
-        });
     });
     describe('#fn.rdcolor()', function () {
         it(`fn.rdcolor() should return an random color.`, function () {

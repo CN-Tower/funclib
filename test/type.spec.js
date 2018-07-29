@@ -10,15 +10,15 @@ describe('Type Methods:', function () {
             assert(fn.typeOf({}, ['str', 'obj']) === true);
         });
     });
-    describe('#fn.typeValue()', function () {
-        it(`fn.typeValue('string', 'str') should return string.`, function () {
-            assert(fn.typeValue('string', 'str') === 'string');
+    describe('#fn.typeVal()', function () {
+        it(`fn.typeVal('string', 'str') should return string.`, function () {
+            assert(fn.typeVal('string', 'str') === 'string');
         });
-        it(`fn.typeValue([], 'obj') should return false.`, function () {
-            assert(fn.typeValue([], 'obj') === false);
+        it(`fn.typeVal([], 'obj') should return false.`, function () {
+            assert(fn.typeVal([], 'obj') === false);
         });        
-        it(`fn.typeValue({}, ['str', 'obj']) should return {}.`, function () {
-            const obj = fn.typeValue({}, ['str', 'obj']);
+        it(`fn.typeVal({}, ['str', 'obj']) should return {}.`, function () {
+            const obj = fn.typeVal({}, ['str', 'obj']);
             assert(fn.typeOf(obj, 'obj') && fn.len(obj) === 0);
         });
     });

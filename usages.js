@@ -1,7 +1,7 @@
 // const fn = require('./assets/funclib');
 const fn = require('./assets');
 
-console.log(fn);
+// console.log(fn);
 // fn.log(fn.len('aaa'))
 
 // fn.progress.start('Test');
@@ -64,7 +64,7 @@ console.log(fn);
 // fn.log(val1);
 // fn.log(val2);
 // const persons = [{name:'Tom', age: 22, indexes: {height: 180, weight: 70}},
-//                  {name:'Jerry', age: 18, indexes: {height: 175, weight: 72}}]
+//                  {name:'Jerry', age: 18, indexes: {height: 175, weight: 70}}]
 // const a = fn.sortBy(persons, 'age');             
 // const b = fn.sortBy(persons, 'age', true);
 // const c = fn.sortBy(persons, '/indexes/height');
@@ -74,6 +74,11 @@ console.log(fn);
 // fn.log(b, 'By age decs');
 // fn.log(c, 'By height');
 // fn.log(d, 'By weight');
+
+// fn.log(fn.isDeepEqual({name: 't', age: 11}, {age: 12, name: 't'}))
+// fn.log(fn.uniq([0, {}, 0, false, null, false, [], [], {}, 'test', 'test']))
+// fn.log(fn.uniq([0, {}, 0, false, null, false, [], [], {}, 'test', 'test'], false))
+// fn.log(fn.uniq(persons, '/indexes'))
 
 /**
  * String
@@ -114,10 +119,10 @@ console.log(fn);
  * =======================================================================
  */
 // const a = fn.typeOf(true, 'bol');
-// const b = fn.typeValue('aaa', ['bol']);
-// const c = fn.typeValue('aaa', ['str']);
+// const b = fn.typeVal('aaa', ['bol']);
+// const c = fn.typeVal('aaa', ['str']);
 // const d = fn.typeOf([], 'arr');
-// const e = fn.typeValue({}, ['obj']);
+// const e = fn.typeVal({}, ['obj']);
 // fn.log(a);
 // fn.log(b);
 // fn.log(c);
@@ -146,7 +151,7 @@ console.log(fn);
  * Progress
  * =======================================================================
  */
-fn.progress.start({title: 'Loading'});
+// fn.progress.start({title: 'Loading'});
 
 // fn.progress.start('Loading...');
 // setTimeout(() => {

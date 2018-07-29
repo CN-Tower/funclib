@@ -10,7 +10,7 @@ export class FnObject {
         if (FnType.typeOf(obj, 'obj')) {
             return Object.keys(obj).length;
         } else if (FnType.typeOf(obj, ['str', 'arr', 'fun'])
-            || FnObject.get(obj, '/lenght', 'num')) {
+            || FnObject.get(obj, '/length', 'num')) {
             return obj.length;
         } else {
             return 0;
@@ -52,7 +52,7 @@ export class FnObject {
      * @param data
      */
     public static deepCopy(data: any) {
-        if (typeof data !== 'object') { return data; }
+        if (typeof data !== 'object') return data;
         let tmpData;
         if (data instanceof Array) {
             tmpData = [];
@@ -71,25 +71,47 @@ export class FnObject {
     }
 
     /**
+     * [fn.isDeepEqual] 判断数组或对象是否相等
+     * @param obj1 
+     * @param obj2 
+     */
+    public static isDeepEqual(obj1: any, obj2: any): boolean {
+        if (typeof obj1 !== typeof obj2) return false;
+        if (FnType.typeOf(obj1, 'arr') && FnType.typeOf(obj2, 'arr')) {
+            if (obj1.length !== obj2.length) return false;
+            for (let i = 0; i < obj1.length; i ++) {
+                if (!FnObject.isDeepEqual(obj1[i], obj2[i])) return false;
+            }
+            return true;
+        } else if (FnType.typeOf(obj1, 'obj') && FnType.typeOf(obj2, 'obj')) {
+            if (FnObject.len(obj1) !== FnObject.len(obj2)) return false;
+            const keys = Object.keys(obj1);
+            for (let i = 0; i < keys.length; i ++) {
+                if (!obj2.hasOwnProperty(keys[i])) return false;
+                if (!FnObject.isDeepEqual(obj1[keys[i]], obj2[keys[i]])) return false;
+            }
+            return true;
+        } else {
+            return obj1 === obj2
+        }
+    }
+
+    /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param obj [Object]
      * @param path [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
     public static get(obj: Object, path: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
-        if (!obj || !path || !path.trim()) return undefined;
-        const paths = path.trim().split('/');
-        const prop = paths[0] || paths[1];
-        if (paths.length === paths.indexOf(prop) + 1) {
-            return type ? FnType.typeValue(obj[prop], type) : obj[prop];
+        if (!obj || !FnType.typeOf(path, 'str')) return undefined;
+        const paths = FnArray.drop(path.split('/'));
+        const key = paths.shift();
+        if (!key) return type ? FnType.typeVal(obj, type) : obj;
+        if (paths.length) {
+            if (!FnType.typeOf(obj[key], ['obj', 'arr'])) return undefined;
+            return FnObject.get(obj[key], paths.join('/'), type);
         } else {
-            if (FnType.typeOf(obj[prop], ['obj', 'arr'])) {
-                if (paths.indexOf(prop)) paths.shift();
-                paths.shift();
-                return FnObject.get(obj[prop], paths.join('/'), type);
-            } else {
-                return undefined;
-            }
+            return type ? FnType.typeVal(obj[key], type) : obj[key];
         }
     }
 }

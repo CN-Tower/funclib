@@ -7,14 +7,14 @@ import { FnRegExp } from './modules/_RegExp';
 import { FnMath } from './modules/_Math';
 import { FnFunction } from './modules/_Function';
 import { FnUrl } from './modules/_Url';
-import { FnLoger } from './modules/_Loger';
 import { FnFileSys } from './modules/_FileSys';
 import { FnProgress } from './modules/_Progress';
+import { FnLog } from './modules/_Logs';
 import { VERSION, MAIN_METHODS } from './funclib.conf'
 
 const fnModules = [
   FnType, FnArray, FnObject, FnString, FnTime, FnRegExp,
-  FnMath, FnFunction, FnUrl, FnLoger, FnFileSys
+  FnMath, FnFunction, FnUrl, FnFileSys, FnLog
 ] 
 const methods = [...MAIN_METHODS, 'chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk' ];
 
@@ -32,9 +32,5 @@ fn.progress = {
   start: FnProgress.start,
   stop: FnProgress.stop
 };
-
-fn.log = (value: any, configs: Object, isFmt: boolean) => {
-  return FnLoger.log(false, value, configs, isFmt);
-}
 
 module.exports = fn;

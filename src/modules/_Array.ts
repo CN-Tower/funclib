@@ -97,7 +97,12 @@ export class FnArray {
      * @param isDrop0 
      */
     public static drop(srcArr: any[], isDrop0: boolean = false): any[] {
-        return;
+        const tmpArr = [];
+        srcArr.forEach(val => {
+            const isLen0 = FnType.typeOf(val, ['arr', 'obj']) && FnObject.len(val) === 0;
+            if ((val && !isLen0) || (!isDrop0 && val === 0)) tmpArr.push(val);
+        });
+        return tmpArr;
     }
 
     /**
@@ -106,7 +111,15 @@ export class FnArray {
      * @param isDeep 
      */
     public static flatten(srcArr: any[], isDeep: boolean = false): any[] {
-        return;
+        const tmpArr = [];
+        srcArr.forEach(val => {
+            if (FnType.typeOf(val, 'arr')) {
+                isDeep ? tmpArr.push(...FnArray.flatten(val, true)) : tmpArr.push(...val);
+            } else {
+                tmpArr.push(val);
+            }
+        });
+        return tmpArr;
     }
 
     /**
@@ -115,17 +128,47 @@ export class FnArray {
      * @param path 
      * @param isUniq 
      */
-    public static pluck(obj: any, path: string, isUniq: boolean = false): any[] {
-        return;
+    public static pluck(srcArr: any, path: string): any[] {
+        const tmpArr = [];
+        if (FnType.typeVal(path, 'str')) {
+            srcArr.forEach(val => tmpArr.push(FnObject.get(val, path)));
+        }
+        return tmpArr;
     }
 
     /**
-     * [fn.uniq] 把
-     * @param srcArr 
-     * @param path 
+     * [fn.uniq] 去重或根据字段去重
+     * @param srcArr : any[]
+     * @param path?  : string
+     * @param isDeep : boolean = true
      */
-    public static uniq(srcArr: any[], path: string): any[] {
-        return;
+    public static uniq(srcArr: any[], path?: string, isDeep: boolean = true): any[] {
+        if (typeof path === 'boolean') {
+            isDeep = path;
+            path = undefined;
+        }
+        path = FnType.typeVal(path, 'str');
+        const tmpArr = [...srcArr];
+        for (let i = 0; i < tmpArr.length - 1; i ++) {
+            for (let j = i + 1; j < tmpArr.length; j ++) {
+                let isDuplicate;
+                if (path) {
+                    let val1 = FnObject.get(tmpArr[i], path);
+                    let val2 = FnObject.get(tmpArr[j], path);
+                    isDuplicate = isDeep
+                        ? FnObject.isDeepEqual(val1, val2) : val1 === val2;
+                } else {
+                    isDuplicate = isDeep
+                        ? FnObject.isDeepEqual(tmpArr[i], tmpArr[j])
+                        : tmpArr[i] === tmpArr[j];
+                }
+                if (isDuplicate) {
+                    tmpArr.splice(j, 1);
+                    j --;
+                }
+            }
+        }
+        return tmpArr;
     }
 
     /**

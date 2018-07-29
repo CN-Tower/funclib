@@ -22,17 +22,14 @@ export class FnMath {
     }
     
     /**
-     * [fn.rdid] 返回一个指定长度（最小4位）的随机ID
+     * [fn.rdid] 返回一个指定长度的随机ID
      * @param len 
      */
     public static rdid(len: number = 12): string {
         const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        let eleId = '';
-        if (len < 4) {
-            len = 4;
-        };
-        FnArray.array(len).forEach(x => eleId += charSet[FnMath.random(charSet.length)]);
-        return eleId;
+        let id = '';
+        FnArray.array(len).forEach(x => id += charSet[FnMath.random(charSet.length)]);
+        return id;
     }
 
     /**

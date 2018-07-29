@@ -65,7 +65,6 @@ funclib.js
 │   │   ├── _Dom.ts         # Element
 │   │   ├── _FileSys.ts     # FileSystem
 │   │   ├── _Function.ts    # Function
-│   │   ├── _Loger.ts       # Loger
 │   │   ├── _Math.ts        # Mathematic
 │   │   ├── _Object.ts      # Object
 │   │   ├── _Pattern.ts     # RegExp
@@ -74,7 +73,9 @@ funclib.js
 │   │   ├── _Time.ts        # Time
 │   │   ├── _Trick.ts       # Trick
 │   │   ├── _Type.ts        # Type
-│   │   └── _Url.ts         # Url
+│   │   ├── _Url.ts         # Url
+│   │   ├── _Logc.ts        # ClientLog
+│   │   └── _Logs.ts        # ServerLog
 │   ├── funclib.conf.ts     # 配置文件
 │   ├── funclib.ts          # ClientMain
 │   └── index.ts            # ServerMain

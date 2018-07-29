@@ -81,9 +81,8 @@ var FnType = /** @class */ (function () {
      */
     FnType.typeOf = function (value, type) {
         var types = _Array_1.FnArray.toArray(type);
-        if (types.length === 0) {
+        if (types.length === 0)
             return false;
-        }
         return types.some(function (type) {
             switch (type) {
                 case 'arr': return value && value instanceof Array;
@@ -98,11 +97,11 @@ var FnType = /** @class */ (function () {
         });
     };
     /**
-     * [fn.typeValue] 检查是否为某类型的值，是则返回该值，不是则返回false
+     * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
      * @param value
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    FnType.typeValue = function (value, type) {
+    FnType.typeVal = function (value, type) {
         return FnType.typeOf(value, type) && value;
     };
     return FnType;
@@ -146,45 +145,45 @@ var FnArray = /** @class */ (function () {
     };
     /**
      * [fn.toArray] 值数组化
-     * @param src
+     * @param value
      */
-    FnArray.toArray = function (src) {
-        return src instanceof Array ? src : [src];
+    FnArray.toArray = function (value) {
+        return value instanceof Array ? value : [value];
     };
     /**
      * [fn.find] 根据条件取值
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray.find = function (src, predicate) {
-        var idx = FnArray.indexOf(src, predicate);
-        return idx > -1 ? src[idx] : undefined;
+    FnArray.find = function (srcArr, predicate) {
+        var idx = FnArray.indexOf(srcArr, predicate);
+        return idx > -1 ? srcArr[idx] : undefined;
     };
     /**
      * [fn.filter] 根据条件取过滤值
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray.filter = function (src, predicate) {
-        return FnArray._filter(src, predicate, true);
+    FnArray.filter = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, true);
     };
     /**
      * [fn.reject] 根据条件过滤值
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray.reject = function (src, predicate) {
-        return FnArray._filter(src, predicate, false);
+    FnArray.reject = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, false);
     };
     /**
      * 过滤函数
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray._filter = function (src, predicate, isFlt) {
+    FnArray._filter = function (srcArr, predicate, isFlt) {
         var ftItems = [];
         var rjItems = [];
-        src.forEach(function (item) {
+        srcArr.forEach(function (item) {
             if (_Type_1.FnType.typeOf(predicate, 'obj')) {
                 if (Object.keys(predicate).every(function (k) { return predicate[k] === item[k]; })) {
                     ftItems.push(item);
@@ -201,38 +200,120 @@ var FnArray = /** @class */ (function () {
     };
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray.contains = function (src, predicate) {
-        var idx = FnArray.indexOf(src, predicate);
+    FnArray.contains = function (srcArr, predicate) {
+        var idx = FnArray.indexOf(srcArr, predicate);
         return idx > -1;
     };
     /**
+     * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
+     * @param srcArr
+     * @param isDrop0
+     */
+    FnArray.drop = function (srcArr, isDrop0) {
+        if (isDrop0 === void 0) { isDrop0 = false; }
+        var tmpArr = [];
+        srcArr.forEach(function (val) {
+            var isLen0 = _Type_1.FnType.typeOf(val, ['arr', 'obj']) && _Object_1.FnObject.len(val) === 0;
+            if ((val && !isLen0) || (!isDrop0 && val === 0))
+                tmpArr.push(val);
+        });
+        return tmpArr;
+    };
+    /**
+     * [fn.flatten] 把有结构的数组打散，减少层数
+     * @param srcArr
+     * @param isDeep
+     */
+    FnArray.flatten = function (srcArr, isDeep) {
+        if (isDeep === void 0) { isDeep = false; }
+        var tmpArr = [];
+        srcArr.forEach(function (val) {
+            if (_Type_1.FnType.typeOf(val, 'arr')) {
+                isDeep ? tmpArr.push.apply(tmpArr, FnArray.flatten(val, true)) : tmpArr.push.apply(tmpArr, val);
+            }
+            else {
+                tmpArr.push(val);
+            }
+        });
+        return tmpArr;
+    };
+    /**
+     * [fn.pluck] 把结构中的字段取出合并到一个数组中
+     * @param obj
+     * @param path
+     * @param isUniq
+     */
+    FnArray.pluck = function (srcArr, path) {
+        var tmpArr = [];
+        if (_Type_1.FnType.typeVal(path, 'str')) {
+            srcArr.forEach(function (val) { return tmpArr.push(_Object_1.FnObject.get(val, path)); });
+        }
+        return tmpArr;
+    };
+    /**
+     * [fn.uniq] 去重或根据字段去重
+     * @param srcArr : any[]
+     * @param path?  : string
+     * @param isDeep : boolean = true
+     */
+    FnArray.uniq = function (srcArr, path, isDeep) {
+        if (isDeep === void 0) { isDeep = true; }
+        if (typeof path === 'boolean') {
+            isDeep = path;
+            path = undefined;
+        }
+        path = _Type_1.FnType.typeVal(path, 'str');
+        var tmpArr = srcArr.slice();
+        for (var i = 0; i < tmpArr.length - 1; i++) {
+            for (var j = i + 1; j < tmpArr.length; j++) {
+                var isDuplicate = void 0;
+                if (path) {
+                    var val1 = _Object_1.FnObject.get(tmpArr[i], path);
+                    var val2 = _Object_1.FnObject.get(tmpArr[j], path);
+                    isDuplicate = isDeep
+                        ? _Object_1.FnObject.isDeepEqual(val1, val2) : val1 === val2;
+                }
+                else {
+                    isDuplicate = isDeep
+                        ? _Object_1.FnObject.isDeepEqual(tmpArr[i], tmpArr[j])
+                        : tmpArr[i] === tmpArr[j];
+                }
+                if (isDuplicate) {
+                    tmpArr.splice(j, 1);
+                    j--;
+                }
+            }
+        }
+        return tmpArr;
+    };
+    /**
      * [fn.indexOf] 寻找值在数组中的索引
-     * @param src
+     * @param srcArr
      * @param predicate
      */
-    FnArray.indexOf = function (src, predicate) {
+    FnArray.indexOf = function (srcArr, predicate) {
         var _loop_1 = function (i) {
             if (_Type_1.FnType.typeOf(predicate, 'obj')) {
                 var isInSrc = Object.keys(predicate).every(function (k) {
-                    return src[i][k] === predicate[k];
+                    return srcArr[i][k] === predicate[k];
                 });
                 if (isInSrc)
                     return { value: i };
             }
             else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-                if (predicate(src[i]))
+                if (predicate(srcArr[i]))
                     return { value: i };
             }
         };
-        for (var i = 0; i < src.length; i++) {
+        for (var i = 0; i < srcArr.length; i++) {
             var state_1 = _loop_1(i);
             if (typeof state_1 === "object")
                 return state_1.value;
         }
-        return src.indexOf(predicate);
+        return srcArr.indexOf(predicate);
     };
     /**
      * [fn.forEach] 遍历数组或类数组
@@ -256,13 +337,13 @@ var FnArray = /** @class */ (function () {
     };
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
-     * @param data
+     * @param srcArr
      * @param field
      * @param isDesc
      */
-    FnArray.sortBy = function (data, field, isDesc) {
+    FnArray.sortBy = function (srcArr, field, isDesc) {
         if (isDesc === void 0) { isDesc = false; }
-        return data.slice().sort(function (row1, row2) {
+        return srcArr.slice().sort(function (row1, row2) {
             var _a = [_Object_1.FnObject.get(row1, field), _Object_1.FnObject.get(row2, field)], rst1 = _a[0], rst2 = _a[1];
             if ([rst1, rst2].some(function (x) { return x !== 0 && !x; }) || rst1 === rst2) {
                 return 0;
@@ -300,7 +381,7 @@ var FnObject = /** @class */ (function () {
             return Object.keys(obj).length;
         }
         else if (_Type_1.FnType.typeOf(obj, ['str', 'arr', 'fun'])
-            || FnObject.get(obj, '/lenght', 'num')) {
+            || FnObject.get(obj, '/length', 'num')) {
             return obj.length;
         }
         else {
@@ -341,9 +422,8 @@ var FnObject = /** @class */ (function () {
      * @param data
      */
     FnObject.deepCopy = function (data) {
-        if (typeof data !== 'object') {
+        if (typeof data !== 'object')
             return data;
-        }
         var tmpData;
         if (data instanceof Array) {
             tmpData = [];
@@ -362,29 +442,58 @@ var FnObject = /** @class */ (function () {
         return tmpData;
     };
     /**
-     * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param obj [Object]
-     * @param layers [string]
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     * [fn.isDeepEqual] 判断数组或对象是否相等
+     * @param obj1
+     * @param obj2
      */
-    FnObject.get = function (obj, layers, type) {
-        if (!obj || !layers || !layers.trim())
-            return undefined;
-        var lys = layers.trim().split('/');
-        var prop = lys[0] || lys[1];
-        if (lys.length === lys.indexOf(prop) + 1) {
-            return type ? _Type_1.FnType.typeValue(obj[prop], type) : obj[prop];
+    FnObject.isDeepEqual = function (obj1, obj2) {
+        if (typeof obj1 !== typeof obj2)
+            return false;
+        if (_Type_1.FnType.typeOf(obj1, 'arr') && _Type_1.FnType.typeOf(obj2, 'arr')) {
+            if (obj1.length !== obj2.length)
+                return false;
+            for (var i = 0; i < obj1.length; i++) {
+                if (!FnObject.isDeepEqual(obj1[i], obj2[i]))
+                    return false;
+            }
+            return true;
+        }
+        else if (_Type_1.FnType.typeOf(obj1, 'obj') && _Type_1.FnType.typeOf(obj2, 'obj')) {
+            if (FnObject.len(obj1) !== FnObject.len(obj2))
+                return false;
+            var keys = Object.keys(obj1);
+            for (var i = 0; i < keys.length; i++) {
+                if (!obj2.hasOwnProperty(keys[i]))
+                    return false;
+                if (!FnObject.isDeepEqual(obj1[keys[i]], obj2[keys[i]]))
+                    return false;
+            }
+            return true;
         }
         else {
-            if (_Type_1.FnType.typeOf(obj[prop], ['obj', 'arr'])) {
-                if (lys.indexOf(prop))
-                    lys.shift();
-                lys.shift();
-                return FnObject.get(obj[prop], lys.join('/'), type);
-            }
-            else {
+            return obj1 === obj2;
+        }
+    };
+    /**
+     * [fn.get] 返回对象或子孙对象的属性，可判断类型
+     * @param obj [Object]
+     * @param path [string]
+     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     */
+    FnObject.get = function (obj, path, type) {
+        if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
+            return undefined;
+        var paths = _Array_1.FnArray.drop(path.split('/'));
+        var key = paths.shift();
+        if (!key)
+            return type ? _Type_1.FnType.typeVal(obj, type) : obj;
+        if (paths.length) {
+            if (!_Type_1.FnType.typeOf(obj[key], ['obj', 'arr']))
                 return undefined;
-            }
+            return FnObject.get(obj[key], paths.join('/'), type);
+        }
+        else {
+            return type ? _Type_1.FnType.typeVal(obj[key], type) : obj[key];
         }
     };
     return FnObject;
@@ -511,11 +620,11 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.1.16';
+exports.VERSION = 'v2.2.1';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
-    'typeValue',
+    'typeVal',
     /* Array */
     'array',
     'toArray',
@@ -523,6 +632,10 @@ exports.MAIN_METHODS = [
     'filter',
     'reject',
     'contains',
+    'drop',
+    'flatten',
+    'pluck',
+    'uniq',
     'indexOf',
     'forEach',
     'sortBy',
@@ -531,6 +644,7 @@ exports.MAIN_METHODS = [
     'forIn',
     'overlay',
     'deepCopy',
+    'isDeepEqual',
     'get',
     /* Math */
     'random',
@@ -556,17 +670,9 @@ exports.MAIN_METHODS = [
     /* Url */
     'parseQueryString',
     'stringfyQueryString',
+    /* Log */
+    'log'
 ];
-exports.COLOR_LIST = {
-    'grey': '\x1B[90m%s\x1B[0m',
-    'blue': '\x1B[34m%s\x1B[0m',
-    'cyan': '\x1B[36m%s\x1B[0m',
-    'green': '\x1B[32m%s\x1B[0m',
-    'magenta': '\x1B[35m%s\x1B[0m',
-    'red': '\x1B[31m%s\x1B[0m',
-    'yellow': '\x1B[33m%s\x1B[0m',
-    'default': '%s\x1B[0m'
-};
 
 
 /***/ }),
@@ -813,122 +919,6 @@ exports.FnRegExp = FnRegExp;
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Array_1 = __webpack_require__(1);
-var _Object_1 = __webpack_require__(2);
-var _String_1 = __webpack_require__(5);
-var _Time_1 = __webpack_require__(3);
-var _Type_1 = __webpack_require__(0);
-var funclib_conf_1 = __webpack_require__(4);
-var FnLoger = /** @class */ (function () {
-    function FnLoger() {
-    }
-    /**
-     * [fn.log] 控制台格式化打印值
-     * @param value
-     * @param configs {
-     * title: string,
-     * width: number [20-100]
-     * part: 'pre'|'end'
-     * isFmt: boolean
-     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
-     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
-     * @param isFmt
-     */
-    FnLoger.log = function (isClient, value, configs, isFmt) {
-        if (isFmt === void 0) { isFmt = true; }
-        var isFormate = _Object_1.FnObject.get(configs, '/isFmt') || isFmt;
-        if (typeof configs === 'boolean') {
-            isFormate = configs;
-            configs = undefined;
-        }
-        value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
-        var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
-        var title = (_Type_1.FnType.typeValue(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
-            || "funclib(" + funclib_conf_1.VERSION + ")").replace(/\n/mg, '');
-        var originTtLength = (time + title + '[] ').length;
-        if (!isFormate)
-            title = "( " + title + " )";
-        if (!isClient) {
-            time = FnLoger.chalk(time);
-            var titlec = _Object_1.FnObject.get(configs, '/ttColor');
-            var valuec = _Object_1.FnObject.get(configs, '/color');
-            title = FnLoger.chalk(title, titlec in funclib_conf_1.COLOR_LIST && titlec || 'green');
-            value = FnLoger.chalk(value, valuec in funclib_conf_1.COLOR_LIST && valuec || 'cyan');
-        }
-        title = time + title;
-        var width = _Object_1.FnObject.get(configs, '/width');
-        if (!width || width < 30 || width > 100)
-            width = 66;
-        if (originTtLength <= width) {
-            if (isFormate) {
-                title = _Array_1.FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
-            }
-        }
-        else {
-            var colorEnd = '\x1B[0m';
-            var fixLength = title.length - originTtLength - colorEnd.length;
-            if (isClient) {
-                title = _String_1.FnString.cutString(title, width - 3);
-            }
-            else {
-                title = _String_1.FnString.cutString(title, width + fixLength - 3) + colorEnd;
-            }
-        }
-        if (!isFormate) {
-            console.log(title + ": " + value);
-        }
-        else {
-            var sgLine_1 = '', dbLine_1 = '';
-            _Array_1.FnArray.array(width).forEach(function (x) {
-                sgLine_1 += '-';
-                dbLine_1 += '=';
-            });
-            if (isClient) {
-                console.log("\n" + dbLine_1 + "\n" + title + "\n" + sgLine_1 + "\n" + value + "\n" + dbLine_1 + "\n");
-            }
-            else {
-                if (configs && ['pre', 'end'].indexOf(configs['part']) > -1) {
-                    if (configs['part'] === 'pre') {
-                        console.log('\n' + dbLine_1);
-                        console.log(title);
-                        console.log(sgLine_1);
-                    }
-                    else {
-                        console.log(dbLine_1 + '\n');
-                    }
-                }
-                else {
-                    console.log('\n' + dbLine_1);
-                    console.log(title);
-                    console.log(sgLine_1);
-                    console.log(value);
-                    console.log(dbLine_1 + '\n');
-                }
-            }
-        }
-    };
-    /**
-     * [fn.chalk] 在控制台打印有颜色的字符串
-     * @param value
-     * @param color
-     */
-    FnLoger.chalk = function (value, color) {
-        if (!(color in funclib_conf_1.COLOR_LIST))
-            color = 'grey';
-        return funclib_conf_1.COLOR_LIST[color].replace(/%s/, value);
-    };
-    return FnLoger;
-}());
-exports.FnLoger = FnLoger;
-
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -955,6 +945,119 @@ module.exports = g;
 
 
 /***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Array_1 = __webpack_require__(1);
+var _Object_1 = __webpack_require__(2);
+var _String_1 = __webpack_require__(5);
+var _Time_1 = __webpack_require__(3);
+var _Type_1 = __webpack_require__(0);
+var funclib_conf_1 = __webpack_require__(4);
+var COLOR_LIST = {
+    'grey': '\x1B[90m%s\x1B[0m',
+    'blue': '\x1B[34m%s\x1B[0m',
+    'cyan': '\x1B[36m%s\x1B[0m',
+    'green': '\x1B[32m%s\x1B[0m',
+    'magenta': '\x1B[35m%s\x1B[0m',
+    'red': '\x1B[31m%s\x1B[0m',
+    'yellow': '\x1B[33m%s\x1B[0m',
+    'default': '%s\x1B[0m'
+};
+var FnLog = /** @class */ (function () {
+    function FnLog() {
+    }
+    /**
+     * [fn.log] 控制台格式化打印值
+     * @param value
+     * @param configs
+     * {title: string, width: number [20-100], isFmt: boolean
+     * pre: boolean = false, end: boolean = false
+     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+     * @param isFmt
+     */
+    FnLog.log = function (value, configs, isFmt) {
+        if (isFmt === void 0) { isFmt = true; }
+        var isFormate = _Object_1.FnObject.get(configs, '/isFmt') || isFmt;
+        if (typeof configs === 'boolean') {
+            isFormate = configs;
+            configs = undefined;
+        }
+        // Value
+        value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+        // Title
+        var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
+        var title = (_Type_1.FnType.typeVal(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
+            || "funclib(" + funclib_conf_1.VERSION + ")").replace(/\n/mg, '');
+        var originTtLength = (time + title + '[] ').length;
+        if (!isFormate)
+            title = "( " + title + " )";
+        time = FnLog.chalk(time);
+        var titlec = _Object_1.FnObject.get(configs, '/ttColor');
+        var valuec = _Object_1.FnObject.get(configs, '/color');
+        title = FnLog.chalk(title, titlec in COLOR_LIST && titlec || 'green');
+        value = FnLog.chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
+        title = time + title;
+        // Line width
+        var width = _Object_1.FnObject.get(configs, '/width');
+        if (!width || width < 30 || width > 100)
+            width = 66;
+        // Fix title width
+        if (originTtLength > width) {
+            var colorEnd = '\x1B[0m';
+            var fixLength = title.length - originTtLength - colorEnd.length;
+            title = _String_1.FnString.cutString(title, width + fixLength - 3) + colorEnd;
+        }
+        else if (isFormate) {
+            title = _Array_1.FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
+        }
+        // Do log
+        if (!isFormate) {
+            console.log(title + ": " + value);
+        }
+        else {
+            var sgLine_1 = '', dbLine_1 = '';
+            _Array_1.FnArray.array(width).forEach(function (x) {
+                sgLine_1 += '-';
+                dbLine_1 += '=';
+            });
+            if (_Object_1.FnObject.get(configs, '/pre', 'bol')) {
+                console.log('\n' + dbLine_1);
+                console.log(title);
+                console.log(sgLine_1);
+            }
+            else if (_Object_1.FnObject.get(configs, '/end', 'bol')) {
+                console.log(dbLine_1 + '\n');
+            }
+            else {
+                console.log('\n' + dbLine_1);
+                console.log(title);
+                console.log(sgLine_1);
+                console.log(value);
+                console.log(dbLine_1 + '\n');
+            }
+        }
+    };
+    /**
+     * [fn.chalk] 在控制台打印有颜色的字符串
+     * @param value
+     * @param color
+     */
+    FnLog.chalk = function (value, color) {
+        if (!(color in COLOR_LIST))
+            color = 'grey';
+        return COLOR_LIST[color].replace(/%s/, value);
+    };
+    return FnLog;
+}());
+exports.FnLog = FnLog;
+
+
+/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -970,13 +1073,13 @@ var _RegExp_1 = __webpack_require__(6);
 var _Math_1 = __webpack_require__(10);
 var _Function_1 = __webpack_require__(11);
 var _Url_1 = __webpack_require__(12);
-var _Loger_1 = __webpack_require__(7);
 var _FileSys_1 = __webpack_require__(13);
 var _Progress_1 = __webpack_require__(14);
+var _Logs_1 = __webpack_require__(8);
 var funclib_conf_1 = __webpack_require__(4);
 var fnModules = [
     _Type_1.FnType, _Array_1.FnArray, _Object_1.FnObject, _String_1.FnString, _Time_1.FnTime, _RegExp_1.FnRegExp,
-    _Math_1.FnMath, _Function_1.FnFunction, _Url_1.FnUrl, _Loger_1.FnLoger, _FileSys_1.FnFileSys
+    _Math_1.FnMath, _Function_1.FnFunction, _Url_1.FnUrl, _FileSys_1.FnFileSys, _Logs_1.FnLog
 ];
 var methods = funclib_conf_1.MAIN_METHODS.concat(['chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk']);
 var fn = function () { };
@@ -990,9 +1093,6 @@ fn.version = funclib_conf_1.VERSION;
 fn.progress = {
     start: _Progress_1.FnProgress.start,
     stop: _Progress_1.FnProgress.stop
-};
-fn.log = function (value, configs, isFmt) {
-    return _Loger_1.FnLoger.log(false, value, configs, isFmt);
 };
 module.exports = fn;
 
@@ -1030,19 +1130,15 @@ var FnMath = /** @class */ (function () {
         }
     };
     /**
-     * [fn.rdid] 返回一个指定长度（最小4位）的随机ID
+     * [fn.rdid] 返回一个指定长度的随机ID
      * @param len
      */
     FnMath.rdid = function (len) {
         if (len === void 0) { len = 12; }
         var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var eleId = '';
-        if (len < 4) {
-            len = 4;
-        }
-        ;
-        _Array_1.FnArray.array(len).forEach(function (x) { return eleId += charSet[FnMath.random(charSet.length)]; });
-        return eleId;
+        var id = '';
+        _Array_1.FnArray.array(len).forEach(function (x) { return id += charSet[FnMath.random(charSet.length)]; });
+        return id;
     };
     /**
      * [fn.rdColor] 返回一个随机颜色色值
@@ -1182,13 +1278,11 @@ var FnUrl = /** @class */ (function () {
      */
     FnUrl.parseQueryString = function (url) {
         url = url || typeof window !== 'undefined' && window.location.href || '';
-        if (url.indexOf('?') === -1) {
+        if (url.indexOf('?') === -1)
             return {};
-        }
         var queryStr = url.substring(url.lastIndexOf('?') + 1);
-        if (queryStr === '') {
+        if (queryStr === '')
             return {};
-        }
         var querys = queryStr.split('&');
         var params = {};
         for (var i = 0; i < querys.length; i++) {
@@ -1343,7 +1437,7 @@ var FnFileSys = /** @class */ (function () {
 }());
 exports.FnFileSys = FnFileSys;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 14 */
@@ -1353,9 +1447,9 @@ exports.FnFileSys = FnFileSys;
 /* WEBPACK VAR INJECTION */(function(global) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _Type_1 = __webpack_require__(0);
-var _Loger_1 = __webpack_require__(7);
 var _Object_1 = __webpack_require__(2);
 var _Time_1 = __webpack_require__(3);
+var _Logs_1 = __webpack_require__(8);
 var funclib_conf_1 = __webpack_require__(4);
 var progress;
 var duration;
@@ -1372,7 +1466,7 @@ var FnProgress = /** @class */ (function () {
         _Time_1.FnTime.interval('pg_sping', false);
         _Time_1.FnTime.timeout('pg_Bar', false);
         if (!_Type_1.FnType.typeOf(options, 'obj')) {
-            options = { title: _Type_1.FnType.typeValue(options, 'str') };
+            options = { title: _Type_1.FnType.typeVal(options, 'str') };
         }
         options.title = _Object_1.FnObject.get(options, 'title', 'str') || "funclib " + funclib_conf_1.VERSION;
         pgType = _Object_1.FnObject.get(options, '/type', 'str');
@@ -1421,7 +1515,7 @@ var FnProgress = /** @class */ (function () {
         };
         var s = '/';
         _Time_1.FnTime.interval('pg_sping', 180, function () {
-            interrupt(_Loger_1.FnLoger.chalk(s, 'cyan') + " " + msg);
+            interrupt(_Logs_1.FnLog.chalk(s, 'cyan') + " " + msg);
             switch (s) {
                 case '/':
                     s = '-';
@@ -1483,7 +1577,7 @@ var FnProgress = /** @class */ (function () {
 }());
 exports.FnProgress = FnProgress;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ })
 /******/ ])));

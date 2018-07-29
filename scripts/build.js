@@ -11,18 +11,18 @@ const rdmeSrc = path.join(root, 'README.md');
 
 fn.progress.start({title: 'Building FunclibJs'});
 
-[rdmeDist, fnJs, fnMinJs].forEach(f => fn.rm(f));
+fn.rm(rdmeDist);
 fn.cp(rdmeSrc, rdmeDist);
 
 webpack(config.funclibJsConf, function (err, stats) {
   if (err) throw (err);
   fn.progress.stop(() => {
-    fn.log('', {part: 'pre', title: 'Building FunclibJs'});
+    fn.log('', {pre: true, title: 'Building FunclibJs'});
     process.stdout.write(stats.toString({
       colors: true, modules: false,
       children: false, chunks: false, chunkModules: false
     }) + '\n');
-    fn.log('', {part: 'end'});
+    fn.log('', {end: true});
     buidFunclibJs();
   });
 });
@@ -32,12 +32,12 @@ function buidFunclibJs() {
   webpack(config.funclibMinJsConf, function (err, stats) {
     if (err) throw (err);
     fn.progress.stop(() => {
-      fn.log('', {part: 'pre', title: 'Building FunclibMinJs'});
+      fn.log('', {pre: true, title: 'Building FunclibMinJs'});
       process.stdout.write(stats.toString({
         colors: true, modules: false,
         children: false, chunks: false, chunkModules: false
       }) + '\n');
-      fn.log('', {part: 'end'});
+      fn.log('', {end: true});
       buildIndexJs();
     });
   });
@@ -48,12 +48,12 @@ function buildIndexJs() {
   webpack(config.indexJsConf, function (err, stats) {
     if (err) throw (err);
     fn.progress.stop(() => {
-      fn.log('', {part: 'pre', title: 'Building IndexJs'});
+      fn.log('', {pre: true, title: 'Building IndexJs'});
       process.stdout.write(stats.toString({
         colors: true, modules: false,
         children: false, chunks: false, chunkModules: false
       }) + '\n');
-      fn.log('', {part: 'end'});
+      fn.log('', {end: true});
     });
   });
 }
