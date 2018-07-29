@@ -1,6 +1,6 @@
 /**==============================================================
  * funclib.js
- * Gitlab: http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
+ * Document: http://funclib.net 
  * Github: http://github.com/CN-Tower/funclib.js
  ----------------------------------------------------------------
  ## Type

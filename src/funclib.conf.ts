@@ -1,4 +1,4 @@
-export const VERSION = 'v2.2.2';
+export const VERSION = 'v2.2.3';
 
 export const MAIN_METHODS = [
     /* Type */

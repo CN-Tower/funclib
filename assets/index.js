@@ -620,7 +620,7 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.2';
+exports.VERSION = 'v2.2.3';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
