@@ -38,6 +38,17 @@ describe('Object Methods:', function () {
             assert(tom.age === 28 && tom2.age === 22);
         });
     });
+    describe('#fn.isDeepEqual()', function () {
+        it(`fn.isDeepEqual([], {}) should return false.`, function () {
+            assert(!fn.isDeepEqual([], {}));
+        });
+        it(`fn.isDeepEqual([{name: 'tom', age: 21}], [{name: 'tom', age: 22}]) should return false.`, function () {
+            assert(!fn.isDeepEqual([{name: 'tom', age: 21}], [{name: 'tom', age: 22}]));
+        });
+        it(`fn.isDeepEqual([{name: 'tom', age: 22}], [{name: 'tom', age: 22}]) should return false.`, function () {
+            assert(fn.isDeepEqual([{name: 'tom', age: 22}], [{name: 'tom', age: 22}]));
+        });
+    });
     describe('#fn.get()', function () {
         it(`fn.get(obj, layers) should return the inner prop of obj or undefined.`, function () {
             const obj = {
