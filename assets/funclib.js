@@ -872,7 +872,7 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.1';
+exports.VERSION = 'v2.2.2';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -1022,7 +1022,7 @@ var FnMath = /** @class */ (function () {
      * [fn.rdColor] 返回一个随机颜色色值
      */
     FnMath.rdcolor = function () {
-        return '#' + ('00000' + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
+        return '#' + ("00000" + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
     };
     return FnMath;
 }());

@@ -4,16 +4,15 @@ const webpack = require('webpack');
 const config = require('./webpack.conf');
 
 const root = path.dirname(__dirname);
-const fnJs = path.join(root, 'assets/funclib.js');
-const fnMinJs = path.join(root, 'assets/funclib.min.js');
 const rdmeDist = path.join(root, 'assets/README.md');
 const rdmeSrc = path.join(root, 'README.md');
 
-fn.progress.start({title: 'Building FunclibJs'});
-
+fn.progress.start('Replacing README.md', {type: 'spi'});
 fn.rm(rdmeDist);
 fn.cp(rdmeSrc, rdmeDist);
+fn.progress.stop();
 
+fn.progress.start('Building FunclibJs');
 webpack(config.funclibJsConf, function (err, stats) {
   if (err) throw (err);
   fn.progress.stop(() => {
@@ -28,7 +27,7 @@ webpack(config.funclibJsConf, function (err, stats) {
 });
 
 function buidFunclibJs() {
-  fn.progress.start({title: 'Building FunclibMinJs', width: 37});
+  fn.progress.start('Building FunclibMinJs', {width: 37});
   webpack(config.funclibMinJsConf, function (err, stats) {
     if (err) throw (err);
     fn.progress.stop(() => {
@@ -44,7 +43,7 @@ function buidFunclibJs() {
 }
 
 function buildIndexJs() {
-  fn.progress.start({title: 'Building IndexJs', width: 42});
+  fn.progress.start('Building IndexJs', {width: 42});
   webpack(config.indexJsConf, function (err, stats) {
     if (err) throw (err);
     fn.progress.stop(() => {

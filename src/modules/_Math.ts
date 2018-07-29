@@ -36,6 +36,6 @@ export class FnMath {
      * [fn.rdColor] 返回一个随机颜色色值
      */
     public static rdcolor() {
-        return '#' + ('00000' + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
+        return '#' + (`00000${(FnMath.random(0x1000000) << 0).toString(16)}`).slice(-6);
     }
 }

@@ -68,8 +68,6 @@
  * fn.removeCookie           根据name删除cookie
  ## Tricks
  * fn.copyText               复制文本到粘贴板
- * fn.extendJquery           jQuery拓展
- * $ele.findCousin           jQuery获取元素表亲
  ## Tools      
  * fn.rd                     NodeJs读文件
  * fn.wt                     NodeJs写文件
@@ -90,9 +88,10 @@ export as namespace fn;
 interface Progress {
     /**
      * [fn.progress.start] 开启进度，并传入参数
+     * @param title
      * @param options {title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}
      */
-    start(options: any): void;
+    start(title: string, options?: any): void;
     /**
      * [fn.progress.stop] 结束进度，结束后触发回调
      * @param onStopped 
@@ -452,5 +451,4 @@ interface Funclib {
      * [fn.extendJquery] jQuery拓展
      * @param jquery
      */
-    extendJquery(jquery): void;
 }

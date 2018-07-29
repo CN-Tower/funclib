@@ -12,21 +12,26 @@ const process: any = global.process;
 export class FnProgress {
     /**
      * [fn.progress.start] 开启进度条，并传入参数
+     * @param title: string
      * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
      */
-    public static start(options: any) {
+    public static start(title: string, options?: any) {
+        if (FnType.typeOf(title, 'obj')) {
+            options = title;
+            title = undefined;
+        }
         FnTime.interval('pg_sping', false);
         FnTime.timeout('pg_Bar', false);
-        if (!FnType.typeOf(options, 'obj')) {
-            options = {title: FnType.typeVal(options, 'str')};
-        }
-        options.title = FnObject.get(options, 'title', 'str') || `funclib ${VERSION}`;
+        title =FnType.typeVal(title, 'str')
+            || FnObject.get(options, 'title', 'str') || `funclib ${VERSION}`;
         pgType = FnObject.get(options, '/type', 'str');
+        if (!options) options = {};
+        options.title = title;
         if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
             pgType = 'bar';
             FnProgress.startPgbar(options);
         } else {
-            FnProgress.startSping(options.title);
+            FnProgress.startSping(title);
         }
     }
 
@@ -38,13 +43,12 @@ export class FnProgress {
         if (pgType === 'bar') {
             FnProgress.stopPgbar(() => {
                 pgType = null;
-                if (typeof onStopped === 'function') {
-                    onStopped();
-                }
+                if (FnType.typeOf(onStopped, 'fun')) onStopped();
             });
         } else {
-            pgType = null;
             FnProgress.stopSping();
+            pgType = null;
+            if (FnType.typeOf(onStopped, 'fun')) onStopped();
         }
     }
 

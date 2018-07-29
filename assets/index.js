@@ -620,7 +620,7 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.1';
+exports.VERSION = 'v2.2.2';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -1144,7 +1144,7 @@ var FnMath = /** @class */ (function () {
      * [fn.rdColor] 返回一个随机颜色色值
      */
     FnMath.rdcolor = function () {
-        return '#' + ('00000' + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
+        return '#' + ("00000" + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
     };
     return FnMath;
 }());
@@ -1460,22 +1460,28 @@ var FnProgress = /** @class */ (function () {
     }
     /**
      * [fn.progress.start] 开启进度条，并传入参数
+     * @param title: string
      * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
      */
-    FnProgress.start = function (options) {
+    FnProgress.start = function (title, options) {
+        if (_Type_1.FnType.typeOf(title, 'obj')) {
+            options = title;
+            title = undefined;
+        }
         _Time_1.FnTime.interval('pg_sping', false);
         _Time_1.FnTime.timeout('pg_Bar', false);
-        if (!_Type_1.FnType.typeOf(options, 'obj')) {
-            options = { title: _Type_1.FnType.typeVal(options, 'str') };
-        }
-        options.title = _Object_1.FnObject.get(options, 'title', 'str') || "funclib " + funclib_conf_1.VERSION;
+        title = _Type_1.FnType.typeVal(title, 'str')
+            || _Object_1.FnObject.get(options, 'title', 'str') || "funclib " + funclib_conf_1.VERSION;
         pgType = _Object_1.FnObject.get(options, '/type', 'str');
+        if (!options)
+            options = {};
+        options.title = title;
         if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
             pgType = 'bar';
             FnProgress.startPgbar(options);
         }
         else {
-            FnProgress.startSping(options.title);
+            FnProgress.startSping(title);
         }
     };
     /**
@@ -1486,14 +1492,15 @@ var FnProgress = /** @class */ (function () {
         if (pgType === 'bar') {
             FnProgress.stopPgbar(function () {
                 pgType = null;
-                if (typeof onStopped === 'function') {
+                if (_Type_1.FnType.typeOf(onStopped, 'fun'))
                     onStopped();
-                }
             });
         }
         else {
-            pgType = null;
             FnProgress.stopSping();
+            pgType = null;
+            if (_Type_1.FnType.typeOf(onStopped, 'fun'))
+                onStopped();
         }
     };
     /**
