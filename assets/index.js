@@ -630,7 +630,7 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.4';
+exports.VERSION = 'v2.2.5';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -992,9 +992,10 @@ var FnLog = /** @class */ (function () {
      */
     FnLog.log = function (value, configs, isFmt) {
         if (isFmt === void 0) { isFmt = true; }
-        var isFormate = _Object_1.FnObject.get(configs, '/isFmt') || isFmt;
+        if (configs && typeof configs.isFmt === 'boolean')
+            isFmt = configs.isFmt;
         if (typeof configs === 'boolean') {
-            isFormate = configs;
+            isFmt = configs;
             configs = undefined;
         }
         // Value
@@ -1004,7 +1005,7 @@ var FnLog = /** @class */ (function () {
         var title = (_Type_1.FnType.typeVal(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
             || "funclib(" + funclib_conf_1.VERSION + ")").replace(/\n/mg, '');
         var originTtLength = (time + title + '[] ').length;
-        if (!isFormate)
+        if (!isFmt)
             title = "( " + title + " )";
         time = FnLog.chalk(time);
         var titlec = _Object_1.FnObject.get(configs, '/ttColor');
@@ -1022,11 +1023,11 @@ var FnLog = /** @class */ (function () {
             var fixLength = title.length - originTtLength - colorEnd.length;
             title = _String_1.FnString.cutString(title, width + fixLength - 3) + colorEnd;
         }
-        else if (isFormate) {
+        else if (isFmt) {
             title = _Array_1.FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
         }
         // Do log
-        if (!isFormate) {
+        if (!isFmt) {
             console.log(title + ": " + value);
         }
         else {
