@@ -13,10 +13,10 @@ export class FnLog {
      * {title: string, width: number [20-100], isFmt: boolean}
      * @param isFmt 
      */
-    public static log(value: any, configs?: Object, isFmt: boolean = true) {
-        let isFormate = FnObject.get(configs, '/isFmt') || isFmt;
+    public static log(value: any, configs?: any, isFmt: boolean = true) {
+        if (configs && typeof configs.isFmt === 'boolean') isFmt = configs.isFmt;
         if (typeof configs === 'boolean') {
-            isFormate = configs;
+            isFmt = configs;
             configs = undefined;
         }
         // Value
@@ -26,7 +26,7 @@ export class FnLog {
         let title = (FnType.typeVal(configs, 'str') || FnObject.get(configs, '/title')
             || `funclib(${VERSION})`).replace(/\n/mg, '');
         const originTtLength = (time + title + '[] ').length;
-        if (!isFormate) title = `( ${title} )`;
+        if (!isFmt) title = `( ${title} )`;
         title = time + title;
         // Line width
         let width = FnObject.get(configs, '/width');
@@ -34,11 +34,11 @@ export class FnLog {
         // Fix title width
         if (originTtLength > width) {
             title = FnString.cutString(title, width - 3);
-        } else if (isFormate){
+        } else if (isFmt){
             title = FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
         }
         // Do log
-        if (!isFormate) {
+        if (!isFmt) {
             console.log(`${title}: ${value}`);
         } else {
             let sgLine = '', dbLine = '';
