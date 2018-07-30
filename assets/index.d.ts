@@ -400,15 +400,16 @@ interface Funclib {
       */
     chalk(value: string, color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow'): string;
     /**
-     * [fn.log] 控制台打印
+     * [fn.log] 控制台格式化打印值
      * @param value 
-     * @param configs {
-     * title: string,
-     * lineLen: number [20-100]
-     * part: 'pre'|'end' (opt.)
-     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+     * @param configs 
+     * {title: string, width: number [20-100], isFmt: boolean
+     * pre: boolean = false, end: boolean = false
+     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
+     * @param isFmt 
      */
-    log(value: any, configs?: Object | string): void;
+    log(value: any, configs?: Object | string, isFmt?: boolean): void;
     /**
      * [fn.rd] 读文件
      * @param file
@@ -447,8 +448,4 @@ interface Funclib {
      * [fn.progress] 进度工具
      */
     progress: Progress;
-    /**
-     * [fn.extendJquery] jQuery拓展
-     * @param jquery
-     */
 }
