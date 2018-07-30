@@ -27,10 +27,10 @@ export class FnLog {
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
      * @param isFmt 
      */
-    public static log(value: any, configs?: Object, isFmt: boolean = true) {
-        let isFormate = FnObject.get(configs, '/isFmt') || isFmt;
+    public static log(value: any, configs?: any, isFmt: boolean = true) {
+        if (configs && typeof configs.isFmt === 'boolean') isFmt = configs.isFmt;
         if (typeof configs === 'boolean') {
-            isFormate = configs;
+            isFmt = configs;
             configs = undefined;
         }
         // Value
@@ -40,7 +40,7 @@ export class FnLog {
         let title = (FnType.typeVal(configs, 'str') || FnObject.get(configs, '/title')
             || `funclib(${VERSION})`).replace(/\n/mg, '');
         const originTtLength = (time + title + '[] ').length;
-        if (!isFormate) title = `( ${title} )`;
+        if (!isFmt) title = `( ${title} )`;
         time  = FnLog.chalk(time);
         const titlec = FnObject.get(configs, '/ttColor');
         const valuec = FnObject.get(configs, '/color');
@@ -55,11 +55,11 @@ export class FnLog {
             const colorEnd = '\x1B[0m';
             const fixLength = title.length - originTtLength - colorEnd.length;
             title = FnString.cutString(title, width + fixLength - 3) + colorEnd;
-        } else if (isFormate) {
+        } else if (isFmt) {
             title = FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
         }
         // Do log
-        if (!isFormate) {
+        if (!isFmt) {
             console.log(`${title}: ${value}`);
         } else {
             let sgLine = '', dbLine = '';
