@@ -399,6 +399,14 @@ var FnObject = /** @class */ (function () {
         }
     };
     /**
+     * [fn.has] 判断对象是否存在某自有属性
+     * @param obj
+     * @param property
+     */
+    FnObject.has = function (obj, property) {
+        return obj && obj.hasOwnProperty(property) || false;
+    };
+    /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj
      * @arg iteratee
@@ -659,6 +667,14 @@ var FnString = /** @class */ (function () {
         return html;
     };
     /**
+     * [fn.capitalize] 字符串首字母大写
+     * @param str
+     */
+    FnString.capitalize = function (str) {
+        return str && typeof str === 'string'
+            ? str[0].toUpperCase() + str.substr(1) : str;
+    };
+    /**
    * [fn.fmtCurrency] 格式化显示货币
    * @param number
    * @param digit
@@ -872,7 +888,7 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.5';
+exports.VERSION = 'v2.2.6';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -893,6 +909,7 @@ exports.MAIN_METHODS = [
     'sortBy',
     /* Object */
     'len',
+    'has',
     'forIn',
     'overlay',
     'deepCopy',
@@ -911,6 +928,7 @@ exports.MAIN_METHODS = [
     /* String */
     'encodeHtml',
     'decodeHtml',
+    'capitalize',
     'fmtCurrency',
     'cutString',
     /* RegExp */
@@ -921,7 +939,7 @@ exports.MAIN_METHODS = [
     'debounce',
     /* Url */
     'parseQueryString',
-    'stringfyQueryString',
+    'stringifyQueryString',
     /* Log */
     'log'
 ];
@@ -1184,12 +1202,13 @@ var FnUrl = /** @class */ (function () {
         return params;
     };
     /**
-     * [fn.stringfyQueryString] 把对象编译成Url参数
+     * [fn.stringifyQueryString] 把对象编译成Url参数
      * @param obj [string]  default: window.location.href
      */
-    FnUrl.stringfyQueryString = function (obj) {
-        if (!_Type_1.FnType.typeOf(obj, 'object'))
+    FnUrl.stringifyQueryString = function (obj) {
+        if (!_Type_1.FnType.typeOf(obj, ['obj', 'arr']))
             return '';
+        obj = JSON.parse(JSON.stringify(obj));
         var pairs = [];
         _Object_1.FnObject.forIn(obj, function (key, value) {
             if (_Type_1.FnType.typeOf(value, 'arr')) {

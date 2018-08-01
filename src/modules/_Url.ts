@@ -21,11 +21,12 @@ export class FnUrl {
     }
 
     /**
-     * [fn.stringfyQueryString] 把对象编译成Url参数
+     * [fn.stringifyQueryString] 把对象编译成Url参数
      * @param obj [string]  default: window.location.href
      */
-    public static stringfyQueryString(obj: Object) {
-        if (!FnType.typeOf(obj, 'object')) return '';
+    public static stringifyQueryString(obj: Object) {
+        if (!FnType.typeOf(obj, ['obj', 'arr'])) return '';
+        obj = JSON.parse(JSON.stringify(obj));
         const pairs = [];
         FnObject.forIn(obj, (key, value) => {
             if (FnType.typeOf(value, 'arr')) {

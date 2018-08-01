@@ -138,7 +138,7 @@ fn.get({name: 'Tom'}, '/name');
 // const url = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10';
 // fn.log(fn.parseQueryString(url));
 // const params = {name: 'Tom', age: 28};
-// fn.log(fn.stringfyQueryString(params));
+// fn.log(fn.stringifyQueryString(params));
 
 /**
  * Loger

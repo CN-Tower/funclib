@@ -15,6 +15,17 @@ describe('Object Methods:', function () {
             assert(tmpStr === 'Tom28');
         });
     });
+    describe('#fn.has()', function () {
+        it(`fn.has({name: 'Tom', age: 20}, 'name') should equal true.`, function () {
+            assert(fn.has({name: 'Tom', age: 20}, 'name'));
+        });
+        it(`fn.has({name: 'Tom', age: 20}, 'sex') should equal false.`, function () {
+            assert(!fn.has({name: 'Tom', age: 20}, 'sex'));
+        });
+        it(`fn.has(null, 'name') should equal false.`, function () {
+            assert(!fn.has(null, 'name'));
+        });
+    });
     describe('#fn.overlay()', function () {
         let tom, jerry;
         beforeEach(function() {

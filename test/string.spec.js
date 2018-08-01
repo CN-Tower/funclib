@@ -11,6 +11,11 @@ describe('String Methods:', function () {
             assert(fn.decodeHtml(htmlStr) === html);
         });
     });
+    describe('#fn.capitalize()', function () {
+        it(`fn.capitalize('abc') should return 'Abc'.`, function () {
+            assert(fn.capitalize('abc') === 'Abc');
+        });
+    });
     describe('#fn.fmtCurrency()', function () {
         it(`fn.fmtCurrency(8888888) should return '8,888,888.00'.`, function () {
             assert(fn.fmtCurrency(8888888) === '8,888,888.00');

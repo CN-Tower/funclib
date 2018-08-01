@@ -22,6 +22,7 @@
  * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
  * fn.len                    获取对象自有属性的个数
+ * fn.has                    判断对象是否存在某自有属性
  * fn.forIn                  遍历对象的可数自有属性
  * fn.isEmpty                判断对象是否为空对象或数组
  * fn.overlay                给对象赋值，可指定字段
@@ -41,6 +42,7 @@
  ## String     
  * fn.encodeHtml             编码HTML字符串
  * fn.decodeHtml             解码HTML字符串
+ * fn.capitalize             字符串首字母大写
  * fn.fmtCurrency            格式化显示货币
  * fn.cutString              裁切字符串到指定长度
  ## RegExp     
@@ -51,7 +53,7 @@
  * fn.debounce               防抖函数
  ## Url
  * fn.parseQueryString       解析Url参数成对象
- * fn.stringfyQueryString    把对象编译成Url参数
+ * fn.stringifyQueryString   把对象编译成Url参数
  ## Loger
  * fn.chalk                  返回带颜色的字符串
  * fn.log                    控制打印格式化值
@@ -198,6 +200,12 @@ interface Funclib {
      */
     len(obj: any): number;
     /**
+     * [fn.has] 判断对象是否存在某自有属性
+     * @param obj 
+     * @param property 
+     */
+    has(obj: any, property: string): boolean;
+    /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @param obj
      * @param iteratee
@@ -283,6 +291,11 @@ interface Funclib {
      */
     decodeHtml(html: string): string;
     /**
+     * [fn.capitalize] 字符串首字母大写
+     * @param str 
+     */
+    capitalize(str: string): string;
+    /**
      * [fn.fmtCurrency] 格式化显示货币
      * @param number
      * @param digit
@@ -331,10 +344,10 @@ interface Funclib {
      */
     parseQueryString(url?: string): Object;
     /**
-     * [fn.stringfyQueryString] 把对象编译成Url参数
+     * [fn.stringifyQueryString] 把对象编译成Url参数
      * @param obj [string]  default: window.location.href
      */
-    stringfyQueryString(obj: Object): string;
+    stringifyQueryString(obj: Object): string;
     /**
      * [fn.fullScreen] 全屏显示HTML元素
      * @param el

@@ -1,4 +1,4 @@
-export const VERSION = 'v2.2.5';
+export const VERSION = 'v2.2.6';
 
 export const MAIN_METHODS = [
     /* Type */
@@ -22,6 +22,7 @@ export const MAIN_METHODS = [
 
     /* Object */
     'len',
+    'has',
     'forIn',
     'overlay',
     'deepCopy',
@@ -43,6 +44,7 @@ export const MAIN_METHODS = [
     /* String */
     'encodeHtml',
     'decodeHtml',
+    'capitalize',
     'fmtCurrency',
     'cutString',
 
@@ -56,7 +58,7 @@ export const MAIN_METHODS = [
 
     /* Url */
     'parseQueryString',
-    'stringfyQueryString',
+    'stringifyQueryString',
 
     /* Log */
     'log'

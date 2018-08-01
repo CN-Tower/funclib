@@ -29,6 +29,15 @@ export class FnString {
     }
 
     /**
+     * [fn.capitalize] 字符串首字母大写
+     * @param str 
+     */
+    public static capitalize(str: string): string {
+        return str && typeof str === 'string'
+            ? str[0].toUpperCase() + str.substr(1) : str;
+    }
+
+    /**
    * [fn.fmtCurrency] 格式化显示货币
    * @param number
    * @param digit

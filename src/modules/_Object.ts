@@ -17,6 +17,16 @@ export class FnObject {
         }
     }
 
+
+    /**
+     * [fn.has] 判断对象是否存在某自有属性
+     * @param obj 
+     * @param property 
+     */
+    public static has(obj: any, property: string): boolean {
+        return obj && obj.hasOwnProperty(property) || false;
+    }
+
     /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj

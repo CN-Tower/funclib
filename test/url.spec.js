@@ -23,8 +23,8 @@ describe('Url Methods:', function () {
         });
     });
 
-    describe('#fn.stringfyQueryString()', function () {
-        it(`fn.stringfyQueryString({
+    describe('#fn.stringifyQueryString()', function () {
+        it(`fn.stringifyQueryString({
             wd: '百度',
             rsv_spt: '10'
         }) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10'  should return true`, function () {
@@ -32,7 +32,7 @@ describe('Url Methods:', function () {
                 wd: '百度',
                 rsv_spt: '10'
             }
-            assert(fn.stringfyQueryString(param) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10')
+            assert(fn.stringifyQueryString(param) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10')
         });
     });
 });
