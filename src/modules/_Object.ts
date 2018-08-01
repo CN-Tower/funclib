@@ -17,7 +17,6 @@ export class FnObject {
         }
     }
 
-
     /**
      * [fn.has] 判断对象是否存在某自有属性
      * @param obj 
