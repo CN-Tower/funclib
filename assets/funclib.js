@@ -463,15 +463,17 @@ var FnObject = /** @class */ (function () {
      * [fn.isDeepEqual] 判断数组或对象是否相等
      * @param obj1
      * @param obj2
+     * @param isStrict
      */
-    FnObject.isDeepEqual = function (obj1, obj2) {
+    FnObject.isDeepEqual = function (obj1, obj2, isStrict) {
+        if (isStrict === void 0) { isStrict = false; }
         if (typeof obj1 !== typeof obj2)
             return false;
         if (_Type_1.FnType.typeOf(obj1, 'arr') && _Type_1.FnType.typeOf(obj2, 'arr')) {
             if (obj1.length !== obj2.length)
                 return false;
             for (var i = 0; i < obj1.length; i++) {
-                if (!FnObject.isDeepEqual(obj1[i], obj2[i]))
+                if (!FnObject.isDeepEqual(obj1[i], obj2[i], isStrict))
                     return false;
             }
             return true;
@@ -480,10 +482,12 @@ var FnObject = /** @class */ (function () {
             if (FnObject.len(obj1) !== FnObject.len(obj2))
                 return false;
             var keys = Object.keys(obj1);
+            if (isStrict && !FnObject.isDeepEqual(keys, Object.keys(obj2)))
+                return false;
             for (var i = 0; i < keys.length; i++) {
                 if (!obj2.hasOwnProperty(keys[i]))
                     return false;
-                if (!FnObject.isDeepEqual(obj1[keys[i]], obj2[keys[i]]))
+                if (!FnObject.isDeepEqual(obj1[keys[i]], obj2[keys[i]], isStrict))
                     return false;
             }
             return true;
@@ -513,6 +517,33 @@ var FnObject = /** @class */ (function () {
         else {
             return type ? _Type_1.FnType.typeVal(obj[key], type) : obj[key];
         }
+    };
+    /**
+     * [fn.pick] 获取对象的部分属性
+     * @param obj
+     * @param predicate
+     */
+    FnObject.pick = function (obj, predicate) {
+        var tmpObj = {};
+        if (_Type_1.FnType.typeOf(predicate, 'str')) {
+            var rst = FnObject.get(obj, predicate);
+            if (rst)
+                tmpObj[predicate] = rst;
+        }
+        else if (_Type_1.FnType.typeOf(predicate, 'arr')) {
+            predicate.forEach(function (pd) {
+                var rst = FnObject.get(obj, pd);
+                if (rst)
+                    tmpObj[pd] = rst;
+            });
+        }
+        else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
+            FnObject.forIn(obj, function (k, v) {
+                if (predicate(k, v))
+                    tmpObj[k] = v;
+            });
+        }
+        return tmpObj;
     };
     return FnObject;
 }());
@@ -638,7 +669,9 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var _Type_1 = __webpack_require__(0);
 var _RegExp_1 = __webpack_require__(5);
+var _Object_1 = __webpack_require__(2);
 var htmlMap = {
     src: ['&', '<', '>', ' ', '\'', '"'],
     map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
@@ -647,7 +680,39 @@ var FnString = /** @class */ (function () {
     function FnString() {
     }
     /**
-     * [fn.encodeHtml] 编码HTML字符串
+     * [fn.match] 类型匹配，默认情况还可以写表达式
+     * @param source
+     * @param cases
+     * @param isExec
+     */
+    FnString.match = function (source, cases, isExec) {
+        if (isExec === void 0) { isExec = true; }
+        var type_;
+        if (_Object_1.FnObject.has(cases, source)) {
+            type_ = source;
+        }
+        else if (_Object_1.FnObject.has(cases, '@default')) {
+            type_ = '@default';
+        }
+        if (type_) {
+            if (isExec && typeof cases[type_] === 'function') {
+                return _Object_1.FnObject.len(cases[type_]) > 0 ? cases[type_](source) : cases[type_]();
+            }
+            else {
+                return cases[type_];
+            }
+        }
+        return undefined;
+    };
+    /**
+     * [fn.pretty] 转换成格式化字符串
+     * @param obj
+     */
+    FnString.pretty = function (obj) {
+        return typeof obj === 'object' ? JSON.stringify(obj, null, 2) : String(obj);
+    };
+    /**
+     * [fn.encodeHtml] 编码HTML字符串 同: fn.escape
      * @param html
      */
     FnString.encodeHtml = function (html) {
@@ -657,7 +722,7 @@ var FnString = /** @class */ (function () {
         return html;
     };
     /**
-     * [fn.decodeHtml] 解码HTML字符串
+     * [fn.decodeHtml] 解码HTML字符串 同: fn.unescape
      * @param html
      */
     FnString.decodeHtml = function (html) {
@@ -716,6 +781,49 @@ var FnString = /** @class */ (function () {
         }
         return tmpStr + '...';
     };
+    /**
+     * [fn.parseQueryStr] 解析Url参数成对象
+     * @param url [string]
+     */
+    FnString.parseQueryStr = function (url) {
+        if (url.indexOf('?') === -1)
+            return {};
+        var queryStr = url.substring(url.lastIndexOf('?') + 1);
+        if (queryStr === '')
+            return {};
+        var querys = queryStr.split('&');
+        var params = {};
+        for (var i = 0; i < querys.length; i++) {
+            var kw = querys[i].split('=');
+            params[decodeURIComponent(kw[0])] = decodeURIComponent(kw[1] || '');
+        }
+        return params;
+    };
+    /**
+     * [fn.stringifyQueryStr] 把对象编译成Url参数
+     * @param obj [string]
+     */
+    FnString.stringifyQueryStr = function (obj) {
+        if (!_Type_1.FnType.typeOf(obj, ['obj', 'arr']))
+            return '';
+        obj = JSON.parse(JSON.stringify(obj));
+        var pairs = [];
+        _Object_1.FnObject.forIn(obj, function (key, value) {
+            if (_Type_1.FnType.typeOf(value, 'arr')) {
+                value.forEach(function (v, i) {
+                    var _k = encodeURIComponent(key + "[" + i + "]");
+                    pairs.push(_k + "=" + encodeURIComponent(v));
+                });
+            }
+            else {
+                var _v = encodeURIComponent(value);
+                pairs.push(encodeURIComponent(key) + "=" + _v);
+            }
+        });
+        return '?' + pairs.join('&');
+    };
+    FnString.escape = FnString.encodeHtml;
+    FnString.unescape = FnString.decodeHtml;
     return FnString;
 }());
 exports.FnString = FnString;
@@ -782,24 +890,22 @@ var FnRegExp = /** @class */ (function () {
      * @param src
      * @param type
      * @param isNoLimit
-     * @returns {boolean}
      */
     FnRegExp.matchPattern = function (src, type, isNoLimit) {
         if (!src || !type)
-            return false;
+            return null;
         if (type instanceof Array) {
-            var matchResult_1 = false;
+            var matchRst_1 = null;
             type.forEach(function (item) {
                 var pattern = FnRegExp.getPattern(item, isNoLimit);
-                if (pattern && pattern.test(src)) {
-                    matchResult_1 = true;
-                }
+                if (!matchRst_1 && pattern)
+                    matchRst_1 = src.match(pattern);
             });
-            return matchResult_1;
+            return matchRst_1;
         }
         else if (typeof type === 'string') {
             var pattern = FnRegExp.getPattern(type, isNoLimit);
-            return pattern && pattern.test(src);
+            return pattern && src.match(pattern) || null;
         }
     };
     /* tslint:disable */
@@ -888,7 +994,7 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.6';
+exports.VERSION = 'v2.2.7';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -915,6 +1021,7 @@ exports.MAIN_METHODS = [
     'deepCopy',
     'isDeepEqual',
     'get',
+    'pick',
     /* Math */
     'random',
     'rdid',
@@ -926,20 +1033,23 @@ exports.MAIN_METHODS = [
     'time',
     'fmtDate',
     /* String */
+    'match',
+    'pretty',
+    'escape',
+    'unescape',
     'encodeHtml',
     'decodeHtml',
     'capitalize',
     'fmtCurrency',
     'cutString',
+    'parseQueryStr',
+    'stringifyQueryStr',
     /* RegExp */
     'getPattern',
     'matchPattern',
     /* Function */
     'throttle',
     'debounce',
-    /* Url */
-    'parseQueryString',
-    'stringifyQueryString',
     /* Log */
     'log'
 ];
@@ -960,15 +1070,14 @@ var _Time_1 = __webpack_require__(3);
 var _RegExp_1 = __webpack_require__(5);
 var _Math_1 = __webpack_require__(8);
 var _Function_1 = __webpack_require__(9);
-var _Url_1 = __webpack_require__(10);
-var _Cookie_1 = __webpack_require__(11);
-var _Dom_1 = __webpack_require__(12);
-var _Trick_1 = __webpack_require__(13);
-var _Logc_1 = __webpack_require__(14);
+var _Cookie_1 = __webpack_require__(10);
+var _Dom_1 = __webpack_require__(11);
+var _Trick_1 = __webpack_require__(12);
+var _Logc_1 = __webpack_require__(13);
 var funclib_conf_1 = __webpack_require__(6);
 var fnModules = [
     _Type_1.FnType, _Array_1.FnArray, _Object_1.FnObject, _String_1.FnString, _Time_1.FnTime, _RegExp_1.FnRegExp,
-    _Math_1.FnMath, _Function_1.FnFunction, _Url_1.FnUrl, _Cookie_1.FnCookie, _Dom_1.FnDom, _Trick_1.FnTrick, _Logc_1.FnLog
+    _Math_1.FnMath, _Function_1.FnFunction, _Cookie_1.FnCookie, _Dom_1.FnDom, _Trick_1.FnTrick, _Logc_1.FnLog
 ];
 var methods = funclib_conf_1.MAIN_METHODS.concat([
     'fullScreen',
@@ -1177,65 +1286,6 @@ exports.FnFunction = FnFunction;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _Object_1 = __webpack_require__(2);
-var FnUrl = /** @class */ (function () {
-    function FnUrl() {
-    }
-    /**
-     * [fn.parseQueryString] 解析Url参数成对象
-     * @param url [string]  default: window.location.href
-     */
-    FnUrl.parseQueryString = function (url) {
-        url = url || typeof window !== 'undefined' && window.location.href || '';
-        if (url.indexOf('?') === -1)
-            return {};
-        var queryStr = url.substring(url.lastIndexOf('?') + 1);
-        if (queryStr === '')
-            return {};
-        var querys = queryStr.split('&');
-        var params = {};
-        for (var i = 0; i < querys.length; i++) {
-            var kw = querys[i].split('=');
-            params[decodeURIComponent(kw[0])] = decodeURIComponent(kw[1] || '');
-        }
-        return params;
-    };
-    /**
-     * [fn.stringifyQueryString] 把对象编译成Url参数
-     * @param obj [string]  default: window.location.href
-     */
-    FnUrl.stringifyQueryString = function (obj) {
-        if (!_Type_1.FnType.typeOf(obj, ['obj', 'arr']))
-            return '';
-        obj = JSON.parse(JSON.stringify(obj));
-        var pairs = [];
-        _Object_1.FnObject.forIn(obj, function (key, value) {
-            if (_Type_1.FnType.typeOf(value, 'arr')) {
-                value.forEach(function (v, i) {
-                    var _k = encodeURIComponent(key + "[" + i + "]");
-                    pairs.push(_k + "=" + encodeURIComponent(v));
-                });
-            }
-            else {
-                var _v = encodeURIComponent(value);
-                pairs.push(encodeURIComponent(key) + "=" + _v);
-            }
-        });
-        return '?' + pairs.join('&');
-    };
-    return FnUrl;
-}());
-exports.FnUrl = FnUrl;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var FnCookie = /** @class */ (function () {
     function FnCookie() {
     }
@@ -1278,7 +1328,7 @@ exports.FnCookie = FnCookie;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1415,12 +1465,6 @@ var FnDom = /** @class */ (function () {
                 break;
             case 'password':
                 input.setAttribute('autocomplete', 'new-password');
-                input.setAttribute('type', 'text');
-                input.oninput = function () {
-                    this.value
-                        ? this.setAttribute('type', 'password')
-                        : this.setAttribute('type', 'text');
-                };
                 break;
         }
     };
@@ -1430,7 +1474,7 @@ exports.FnDom = FnDom;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1460,7 +1504,7 @@ exports.FnTrick = FnTrick;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1491,7 +1535,7 @@ var FnLog = /** @class */ (function () {
             configs = undefined;
         }
         // Value
-        value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+        value = _String_1.FnString.pretty(value);
         // Title
         var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
         var title = (_Type_1.FnType.typeVal(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
@@ -1513,7 +1557,7 @@ var FnLog = /** @class */ (function () {
         }
         // Do log
         if (!isFmt) {
-            console.log(title + ": " + value);
+            console.log(title + ":\n" + value);
         }
         else {
             var sgLine_1 = '', dbLine_1 = '';
