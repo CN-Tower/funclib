@@ -1,65 +1,68 @@
-export const VERSION = 'v2.2.6';
+export const VERSION = 'v2.2.7';
 
 export const MAIN_METHODS = [
-    /* Type */
-    'typeOf',
-    'typeVal',
+  /* Type */
+  'typeOf',
+  'typeVal',
 
-    /* Array */
-    'array',
-    'toArray',
-    'find',
-    'filter',
-    'reject',
-    'contains',
-    'drop',
-    'flatten',
-    'pluck',
-    'uniq',
-    'indexOf',
-    'forEach',
-    'sortBy',
+  /* Array */
+  'array',
+  'toArray',
+  'find',
+  'filter',
+  'reject',
+  'contains',
+  'drop',
+  'flatten',
+  'pluck',
+  'uniq',
+  'indexOf',
+  'forEach',
+  'sortBy',
 
-    /* Object */
-    'len',
-    'has',
-    'forIn',
-    'overlay',
-    'deepCopy',
-    'isDeepEqual',
-    'get',
+  /* Object */
+  'len',
+  'has',
+  'forIn',
+  'overlay',
+  'deepCopy',
+  'isDeepEqual',
+  'get',
+  'pick',
 
-    /* Math */
-    'random',
-    'rdid',
-    'rdcolor',
+  /* Math */
+  'random',
+  'rdid',
+  'rdcolor',
 
-    /* Time */
-    'interval',
-    'timeout',
-    'defer',
-    'time',
-    'fmtDate',
+  /* Time */
+  'interval',
+  'timeout',
+  'defer',
+  'time',
+  'fmtDate',
 
-    /* String */
-    'encodeHtml',
-    'decodeHtml',
-    'capitalize',
-    'fmtCurrency',
-    'cutString',
+  /* String */
+  'match',
+  'pretty',
+  'escape',
+  'unescape',
+  'encodeHtml',
+  'decodeHtml',
+  'capitalize',
+  'fmtCurrency',
+  'cutString',
+  'parseQueryStr',
+  'stringifyQueryStr',
 
-    /* RegExp */
-    'getPattern',
-    'matchPattern',
+  /* RegExp */
+  'getPattern',
+  'matchPattern',
 
-    /* Function */
-    'throttle',
-    'debounce',
+  /* Function */
+  'throttle',
+  'debounce',
 
-    /* Url */
-    'parseQueryString',
-    'stringifyQueryString',
-
-    /* Log */
-    'log'
+  /* Log */
+  'log'
 ]
