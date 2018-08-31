@@ -73,7 +73,6 @@ funclib.js
 │   │   ├── _Time.ts        # Time
 │   │   ├── _Trick.ts       # Trick
 │   │   ├── _Type.ts        # Type
-│   │   ├── _Url.ts         # Url
 │   │   ├── _Logc.ts        # ClientLog
 │   │   └── _Logs.ts        # ServerLog
 │   ├── funclib.conf.ts     # 配置文件
