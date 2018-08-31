@@ -6,7 +6,6 @@ import { FnTime } from './modules/_Time';
 import { FnRegExp } from './modules/_RegExp';
 import { FnMath } from './modules/_Math';
 import { FnFunction } from './modules/_Function';
-import { FnUrl } from './modules/_Url';
 import { FnCookie } from './modules/_Cookie';
 import { FnDom } from './modules/_Dom';
 import { FnTrick } from './modules/_Trick';
@@ -15,8 +14,8 @@ import { VERSION, MAIN_METHODS } from './funclib.conf'
 
 const fnModules = [
   FnType, FnArray, FnObject, FnString, FnTime, FnRegExp,
-  FnMath, FnFunction, FnUrl, FnCookie, FnDom, FnTrick, FnLog
-] 
+  FnMath, FnFunction, FnCookie, FnDom, FnTrick, FnLog
+]
 
 const methods = [
   ...MAIN_METHODS,
@@ -35,7 +34,7 @@ const methods = [
 let _fn: any = {};
 fnModules.forEach(fnModule => {
   FnObject.forIn(fnModule, (mtd, method) => {
-    if (methods.indexOf(mtd) > -1) _fn[mtd] =  function() {
+    if (methods.indexOf(mtd) > -1) _fn[mtd] = function () {
       let args: any = arguments;
       args = Object.keys(args).map(key => args[key]);
       return _fn.data !== undefined ? method(_fn.data, ...args) : method(...args);
@@ -43,7 +42,7 @@ fnModules.forEach(fnModule => {
   });
 });
 
-var fn: any = function(data: any) {
+var fn: any = function (data: any) {
   _fn.data = data;
   return _fn;
 }
