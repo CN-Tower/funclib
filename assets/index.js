@@ -170,20 +170,24 @@ var FnObject = /** @class */ (function () {
      * @param path [string]
      * @param type ['arr'|'obj'|'fun'|string|string[]]
      */
-    FnObject.get = function (obj, path, type) {
+    FnObject.get = function (obj, path) {
+        var types = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            types[_i - 2] = arguments[_i];
+        }
         if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
             return undefined;
         var paths = _Array_1.FnArray.drop(path.split('/'));
         var key = paths.shift();
         if (!key)
-            return type ? _Type_1.FnType.typeVal(obj, type) : obj;
+            return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj].concat(types)) : obj;
         if (paths.length) {
-            if (!_Type_1.FnType.typeOf(obj[key], ['obj', 'arr']))
+            if (!_Type_1.FnType.typeOf(obj[key], 'obj', 'arr'))
                 return undefined;
-            return FnObject.get(obj[key], paths.join('/'), type);
+            return FnObject.get.apply(FnObject, [obj[key], paths.join('/')].concat(types));
         }
         else {
-            return type ? _Type_1.FnType.typeVal(obj[key], type) : obj[key];
+            return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj[key]].concat(types)) : obj[key];
         }
     };
     /**
@@ -692,7 +696,7 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.8';
+exports.VERSION = 'v2.2.9';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',

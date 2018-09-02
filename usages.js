@@ -3,11 +3,23 @@ const fn = require('./assets');
 
 // fn.log();
 // fn('aaa').log({title: 'AAA'});
-fn({name: 'Tom'}).get('/name');
-fn.get({name: 'Tom'}, '/name');
+// fn({name: 'Tom'}).get('/name');
+// fn.get({name: 'Tom'}, '/name');
 // fn.progress.start('Test', {type: 'spi'});
 // fn.timeout(3000, () => fn.progress.stop());
 // fn.progress.start({title: 'Test'});
+fn.log(fn.get({
+  name: 'Obj',
+  id: 'Obj_001',
+  metadata: {
+    subObj: {
+      name: 'subOjb',
+      id: 'subOjb_001'
+    }
+  }
+}, '/metadata/subArr/id', 'arr', 'udf'));
+
+fn.log(fn.typeVal(undefined, 'arr'));
 
 /**
  * Loger

@@ -1,6 +1,4 @@
-import { FnArray } from './_Array';
-
-type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | string | string[];
+import { Types } from '../funclib.conf';
 
 export class FnType {
   /**
@@ -9,7 +7,7 @@ export class FnType {
    * @param type_
    * @param types
    */
-  public static typeOf(value: any, type_: Type|Type[]|any, ...types: Type[]): boolean {
+  public static typeOf(value: any, type_: Types|Types[]|any, ...types: Types[]): boolean {
     if (!type_) return false;
     type_ instanceof Array ? types = type_ : types.unshift(type_);
     return types.some(type => {
@@ -32,7 +30,7 @@ export class FnType {
    * @param type_
    * @param types
    */
-  public static typeVal(value: any, type_: Type|Type[], ...types: Type[]): any {
+  public static typeVal(value: any, type_?: Types|Types[]|any, ...types: Types[]): any {
     return FnType.typeOf(value, type_, ...types) && value;
   }
 }

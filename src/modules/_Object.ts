@@ -1,5 +1,6 @@
 import { FnType } from './_Type';
 import { FnArray } from './_Array'
+import { Types } from '../funclib.conf';
 
 export class FnObject {
   /**
@@ -32,16 +33,16 @@ export class FnObject {
    * @param path [string]
    * @param type ['arr'|'obj'|'fun'|string|string[]]
    */
-  public static get(obj: Object, path: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
+  public static get(obj: Object, path: string, ...types: Types[]): any {
     if (!obj || !FnType.typeOf(path, 'str')) return undefined;
     const paths = FnArray.drop(path.split('/'));
     const key = paths.shift();
-    if (!key) return type ? FnType.typeVal(obj, type) : obj;
+    if (!key) return types.length ? FnType.typeVal(obj, ...types) : obj;
     if (paths.length) {
-      if (!FnType.typeOf(obj[key], ['obj', 'arr'])) return undefined;
-      return FnObject.get(obj[key], paths.join('/'), type);
+      if (!FnType.typeOf(obj[key], 'obj', 'arr')) return undefined;
+      return FnObject.get(obj[key], paths.join('/'), ...types);
     } else {
-      return type ? FnType.typeVal(obj[key], type) : obj[key];
+      return types.length ? FnType.typeVal(obj[key], ...types) : obj[key];
     }
   }
 

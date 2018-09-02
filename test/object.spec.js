@@ -19,8 +19,9 @@ describe('Object Methods:', function () {
     });
   });
   describe('#fn.get()', function () {
-    it(`fn.get(obj, layers) should return the inner prop of obj or undefined.`, function () {
-      const obj = {
+    let obj;
+    beforeEach(function() {
+      obj = {
         name: 'Obj',
         id: 'Obj_001',
         metadata: {
@@ -30,9 +31,18 @@ describe('Object Methods:', function () {
           }
         }
       };
-      const p1 = fn.get(obj, '/metadata/subObj/name');
-      const p2 = fn.get(obj, '/metadata/subArr/id');
-      assert(p1 === 'subOjb', p2 === undefined);
+    });
+    it(`fn.get(obj, '/metadata/subObj/name') should return 'subOjb'.`, function () {
+      assert(fn.get(obj, '/metadata/subObj/name') === 'subOjb');
+    });
+    it(`fn.get(obj, '/metadata/subArr/id') should return undefined.`, function () {
+      assert(fn.get(obj, '/metadata/subArr/id') === undefined);
+    });
+    it(`fn.get(obj, '/metadata/subArr/id', ['arr', 'udf']) should return true.`, function () {
+      assert(fn.get(obj, '/metadata/subArr/id', ['arr', 'udf']) === undefined);
+    });
+    it(`fn.get(obj, '/metadata/subObj/name', 'arr', 'str') should return 'subOjb'.`, function () {
+      assert(fn.get(obj, '/metadata/subObj/name', 'arr', 'str') === 'subOjb');
     });
   });
   describe('#fn.pick()', function () {
