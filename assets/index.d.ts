@@ -23,13 +23,13 @@
  ## Object     
  * fn.len                    获取对象自有属性的个数
  * fn.has                    判断对象是否存在某自有属性
- * fn.forIn                  遍历对象的可数自有属性
- * fn.isEmpty                判断对象是否为空对象或数组
- * fn.overlay                给对象赋值，可指定字段
- * fn.deepCopy               深拷贝数组或对象
- * fn.isDeepEqual            判断数组或对象是否相等
  * fn.get                    返回对象或子孙对象的属性，可判断类型
  * fn.pick                   获取对象的部分属性
+ * fn.extend                 给对象赋值，可指定字段
+ * fn.forIn                  遍历对象的可数自有属性
+ * fn.deepCopy               深拷贝数组或对象
+ * fn.isEmpty                判断对象是否为空对象或数组
+ * fn.isDeepEqual            判断数组或对象是否相等
  ## Math
  * fn.random                 返回指定范围的随机数
  * fn.rdid                   返回指定长度的随机ID
@@ -105,19 +105,23 @@ interface Progress {
   stop(onStopped?: Function): void;
 }
 
+type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | string | string[];
+
 interface Funclib {
   /**
    * [fn.typeOf] 检查值的类型，返回布尔值
    * @param value 
-   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   * @param type_
+   * @param types
    */
-  typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean;
+  typeOf(value: any, type_: Type|Type[]|any, ...types: Type[]): boolean;
   /**
    * [fn.typeVal] 检查值的类型，true则返回该值，否则返回false
    * @param value 
-   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   * @param type_
+   * @param types
    */
-  typeVal(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any;
+  typeVal(value: any, type_: Type|Type[], ...types: Type[]): any;
   /**
    * [fn.array] 返回一个指定长度和默认值的数组
    * @param length [number]
@@ -210,31 +214,6 @@ interface Funclib {
    */
   has(obj: any, property: string): boolean;
   /**
-   * [fn.forIn] 遍历对象的可数自有属性
-   * @param obj
-   * @param iteratee
-   */
-  forIn(obj: any, iteratee: any): void;
-  /**
-   * [fn.overlay] 给对象赋值
-   * @param target 
-   * @param source 
-   * @param propList 
-   */
-  overlay(target: Object, source: Object, propList?: string[]): void;
-  /**
-   * [fn.deepCopy] 深拷贝对象或数组
-   * @param data
-   */
-  deepCopy(data: any): any;
-  /**
-   * [fn.isDeepEqual] 判断数组或对象是否相等
-   * @param obj1 
-   * @param obj2 
-   * @param isStrict 
-   */
-  isDeepEqual(obj1: any, obj2: any, isStrict?: boolean): boolean;
-  /**
    * [fn.get] 返回对象或子孙对象的属性，可判断类型
    * @param obj [Object]
    * @param chain [string]
@@ -243,10 +222,42 @@ interface Funclib {
   get(obj: Object, chain: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any;
   /**
    * [fn.pick] 获取对象的部分属性
-   * @param obj
+   * @param srcObj
    * @param predicate
+   * @param propList
    */
-  pick(obj: Object, predicate: any): any;
+  pick(srcObj: Object, predicate: any, ...propList: string[]): any;
+  /**
+   * [fn.extend] 给对象赋值
+   * @param tarObj 
+   * @param srcObj 
+   * @param predicate 
+   * @param propList
+   */
+  extend(target: any, srcObj: any, predicate?: any, ...propList: string[]): any;
+  /**
+   * [fn.forIn] 遍历对象的可数自有属性
+   * @param obj
+   * @param iteratee
+   */
+  forIn(obj: any, iteratee: any): any;
+  /**
+   * [fn.deepCopy] 深拷贝对象或数组
+   * @param data
+   */
+  deepCopy(data: any): any;
+  /**
+   * [fn.isEmpty] 判断对象是否为空对象或数组
+   * @param srcObj
+   */
+  isEmpty(srcObj: any): boolean;
+  /**
+   * [fn.isDeepEqual] 判断数组或对象是否相等
+   * @param obj1 
+   * @param obj2 
+   * @param isStrict 
+   */
+  isDeepEqual(obj1: any, obj2: any, isStrict?: boolean): boolean;
   /**
    * [fn.random] 返回一个指定范围的随机数
    * @param sta [number]

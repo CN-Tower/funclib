@@ -4,7 +4,7 @@ import { FnArray } from './_Array'
 export class FnObject {
   /**
    * [fn.len] 获取对象自有属性的个数
-   * @arg obj [object]
+   * @arg obj
    */
   public static len(obj: any): number {
     if (FnType.typeOf(obj, 'obj')) {
@@ -13,7 +13,7 @@ export class FnObject {
       || FnObject.get(obj, '/length', 'num')) {
       return obj.length;
     } else {
-      return 0;
+      return -1;
     }
   }
 
@@ -27,33 +27,80 @@ export class FnObject {
   }
 
   /**
+   * [fn.get] 返回对象或子孙对象的属性，可判断类型
+   * @param obj [Object]
+   * @param path [string]
+   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   */
+  public static get(obj: Object, path: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
+    if (!obj || !FnType.typeOf(path, 'str')) return undefined;
+    const paths = FnArray.drop(path.split('/'));
+    const key = paths.shift();
+    if (!key) return type ? FnType.typeVal(obj, type) : obj;
+    if (paths.length) {
+      if (!FnType.typeOf(obj[key], ['obj', 'arr'])) return undefined;
+      return FnObject.get(obj[key], paths.join('/'), type);
+    } else {
+      return type ? FnType.typeVal(obj[key], type) : obj[key];
+    }
+  }
+
+  /**
+   * [fn.pick] 获取对象的部分属性
+   * @param srcObj
+   * @param predicate
+   * @param propList
+   */
+  public static pick(srcObj: Object, predicate: any, ...propList: string[]): any {
+    return FnObject.propsTraversal({}, srcObj, predicate, propList, false);
+  }
+
+  /**
+   * [fn.extend] 给对象赋值
+   * @param tarObj 
+   * @param srcObj 
+   * @param predicate 
+   * @param propList
+   */
+  public static extend(target: any, srcObj: any, predicate?: any, ...propList: string[]) {
+    if (FnType.typeVal(srcObj, 'object')) {
+      FnObject.propsTraversal(target, srcObj, predicate, propList, true);
+    }
+    return target;
+  }
+
+  private static propsTraversal(tarObj, srcObj, predicate, propList, isDoTraDft: boolean) {
+    if (FnType.typeOf(predicate, 'str')) {
+      propList.unshift(predicate);
+      FnObject.doTraversal(tarObj, srcObj, propList);
+    }
+    else if (FnType.typeOf(predicate, 'arr')) {
+      FnObject.doTraversal(tarObj, srcObj, predicate);
+    }
+    else if (FnType.typeOf(predicate, 'fun')) {
+      FnObject.forIn(srcObj, (k, v) => {
+        if (predicate(k, v)) tarObj[k] = v;
+      });
+    }
+    else if (isDoTraDft) {
+      FnObject.doTraversal(tarObj, srcObj, Object.keys(srcObj));
+    }
+    return tarObj;
+  }
+
+  private static doTraversal(tarObj: any, srcObj: any, propList: string[]) {
+    propList.forEach(prop => {
+      if (FnObject.has(srcObj, prop)) tarObj[prop] = srcObj[prop];
+    });
+  }
+
+  /**
    * [fn.forIn] 遍历对象的可数自有属性
    * @arg obj
    * @arg iteratee
    */
   public static forIn(obj: any, iteratee: any): any {
     return FnArray.forEach(obj, (v, k) => iteratee(k, v));
-  }
-
-  /**
-   * [fn.overlay] 给对象赋值
-   * @param target 
-   * @param source 
-   * @param propList 
-   */
-  public static overlay(target: Object, source: Object, propList?: string[]) {
-    if (source) {
-      if (propList && propList.length > 0) {
-        propList.forEach(prop => {
-          if (source.hasOwnProperty(prop)) {
-            target[prop] = source[prop];
-          }
-        });
-      } else {
-        Object.keys(source).forEach(key => target[key] = source[key]);
-      }
-    }
-    return target;
   }
 
   /**
@@ -77,6 +124,14 @@ export class FnObject {
       }
     }
     return tmpData;
+  }
+
+  /**
+   * [fn.isEmpty] 判断对象是否为空对象或数组
+   * @param srcObj
+   */
+  public static isEmpty(srcObj: any) {
+    return FnObject.len(srcObj) === 0;
   }
 
   /**
@@ -105,49 +160,5 @@ export class FnObject {
     } else {
       return obj1 === obj2
     }
-  }
-
-  /**
-   * [fn.get] 返回对象或子孙对象的属性，可判断类型
-   * @param obj [Object]
-   * @param path [string]
-   * @param type ['arr'|'obj'|'fun'|string|string[]]
-   */
-  public static get(obj: Object, path: string, type?: 'arr' | 'obj' | 'fun' | string | string[]): any {
-    if (!obj || !FnType.typeOf(path, 'str')) return undefined;
-    const paths = FnArray.drop(path.split('/'));
-    const key = paths.shift();
-    if (!key) return type ? FnType.typeVal(obj, type) : obj;
-    if (paths.length) {
-      if (!FnType.typeOf(obj[key], ['obj', 'arr'])) return undefined;
-      return FnObject.get(obj[key], paths.join('/'), type);
-    } else {
-      return type ? FnType.typeVal(obj[key], type) : obj[key];
-    }
-  }
-
-  /**
-   * [fn.pick] 获取对象的部分属性
-   * @param obj
-   * @param predicate
-   */
-  public static pick(obj: Object, predicate: any): any {
-    const tmpObj = {};
-    if (FnType.typeOf(predicate, 'str')) {
-      const rst = FnObject.get(obj, predicate);
-      if (rst) tmpObj[predicate] = rst;
-    }
-    else if (FnType.typeOf(predicate, 'arr')) {
-      predicate.forEach(pd => {
-        const rst = FnObject.get(obj, pd);
-        if (rst) tmpObj[pd] = rst;
-      });
-    }
-    else if (FnType.typeOf(predicate, 'fun')) {
-      FnObject.forIn(obj, (k, v) => {
-        if (predicate(k, v)) tmpObj[k] = v;
-      });
-    }
-    return tmpObj;
   }
 }

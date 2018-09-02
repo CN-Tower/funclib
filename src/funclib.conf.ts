@@ -1,4 +1,4 @@
-export const VERSION = 'v2.2.7';
+export const VERSION = 'v2.2.8';
 
 export const MAIN_METHODS = [
   /* Type */
@@ -23,12 +23,13 @@ export const MAIN_METHODS = [
   /* Object */
   'len',
   'has',
-  'forIn',
-  'overlay',
-  'deepCopy',
-  'isDeepEqual',
   'get',
   'pick',
+  'forIn',
+  'extend',
+  'deepCopy',
+  'isEmpty',
+  'isDeepEqual',
 
   /* Math */
   'random',

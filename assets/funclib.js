@@ -80,19 +80,23 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var _Array_1 = __webpack_require__(1);
 var FnType = /** @class */ (function () {
     function FnType() {
     }
     /**
      * [fn.typeOf] 检查值的类型
      * @param value
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     * @param type_
+     * @param types
      */
-    FnType.typeOf = function (value, type) {
-        var types = _Array_1.FnArray.toArray(type);
-        if (types.length === 0)
+    FnType.typeOf = function (value, type_) {
+        var types = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            types[_i - 2] = arguments[_i];
+        }
+        if (!type_)
             return false;
+        type_ instanceof Array ? types = type_ : types.unshift(type_);
         return types.some(function (type) {
             switch (type) {
                 case 'arr': return value && value instanceof Array;
@@ -109,10 +113,15 @@ var FnType = /** @class */ (function () {
     /**
      * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
      * @param value
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     * @param type_
+     * @param types
      */
-    FnType.typeVal = function (value, type) {
-        return FnType.typeOf(value, type) && value;
+    FnType.typeVal = function (value, type_) {
+        var types = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            types[_i - 2] = arguments[_i];
+        }
+        return FnType.typeOf.apply(FnType, [value, type_].concat(types)) && value;
     };
     return FnType;
 }());
@@ -384,7 +393,7 @@ var FnObject = /** @class */ (function () {
     }
     /**
      * [fn.len] 获取对象自有属性的个数
-     * @arg obj [object]
+     * @arg obj
      */
     FnObject.len = function (obj) {
         if (_Type_1.FnType.typeOf(obj, 'obj')) {
@@ -395,7 +404,7 @@ var FnObject = /** @class */ (function () {
             return obj.length;
         }
         else {
-            return 0;
+            return -1;
         }
     };
     /**
@@ -407,33 +416,89 @@ var FnObject = /** @class */ (function () {
         return obj && obj.hasOwnProperty(property) || false;
     };
     /**
+     * [fn.get] 返回对象或子孙对象的属性，可判断类型
+     * @param obj [Object]
+     * @param path [string]
+     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     */
+    FnObject.get = function (obj, path, type) {
+        if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
+            return undefined;
+        var paths = _Array_1.FnArray.drop(path.split('/'));
+        var key = paths.shift();
+        if (!key)
+            return type ? _Type_1.FnType.typeVal(obj, type) : obj;
+        if (paths.length) {
+            if (!_Type_1.FnType.typeOf(obj[key], ['obj', 'arr']))
+                return undefined;
+            return FnObject.get(obj[key], paths.join('/'), type);
+        }
+        else {
+            return type ? _Type_1.FnType.typeVal(obj[key], type) : obj[key];
+        }
+    };
+    /**
+     * [fn.pick] 获取对象的部分属性
+     * @param srcObj
+     * @param predicate
+     * @param propList
+     */
+    FnObject.pick = function (srcObj, predicate) {
+        var propList = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            propList[_i - 2] = arguments[_i];
+        }
+        return FnObject.propsTraversal({}, srcObj, predicate, propList, false);
+    };
+    /**
+     * [fn.extend] 给对象赋值
+     * @param tarObj
+     * @param srcObj
+     * @param predicate
+     * @param propList
+     */
+    FnObject.extend = function (target, srcObj, predicate) {
+        var propList = [];
+        for (var _i = 3; _i < arguments.length; _i++) {
+            propList[_i - 3] = arguments[_i];
+        }
+        if (_Type_1.FnType.typeVal(srcObj, 'object')) {
+            FnObject.propsTraversal(target, srcObj, predicate, propList, true);
+        }
+        return target;
+    };
+    FnObject.propsTraversal = function (tarObj, srcObj, predicate, propList, isDoTraDft) {
+        if (_Type_1.FnType.typeOf(predicate, 'str')) {
+            propList.unshift(predicate);
+            FnObject.doTraversal(tarObj, srcObj, propList);
+        }
+        else if (_Type_1.FnType.typeOf(predicate, 'arr')) {
+            FnObject.doTraversal(tarObj, srcObj, predicate);
+        }
+        else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
+            FnObject.forIn(srcObj, function (k, v) {
+                if (predicate(k, v))
+                    tarObj[k] = v;
+            });
+        }
+        else if (isDoTraDft) {
+            FnObject.doTraversal(tarObj, srcObj, Object.keys(srcObj));
+        }
+        return tarObj;
+    };
+    FnObject.doTraversal = function (tarObj, srcObj, propList) {
+        propList.forEach(function (prop) {
+            if (FnObject.has(srcObj, prop))
+                tarObj[prop] = srcObj[prop];
+        });
+    };
+    /**
      * [fn.forIn] 遍历对象的可数自有属性
      * @arg obj
      * @arg iteratee
      */
     FnObject.forIn = function (obj, iteratee) {
         return _Array_1.FnArray.forEach(obj, function (v, k) { return iteratee(k, v); });
-    };
-    /**
-     * [fn.overlay] 给对象赋值
-     * @param target
-     * @param source
-     * @param propList
-     */
-    FnObject.overlay = function (target, source, propList) {
-        if (source) {
-            if (propList && propList.length > 0) {
-                propList.forEach(function (prop) {
-                    if (source.hasOwnProperty(prop)) {
-                        target[prop] = source[prop];
-                    }
-                });
-            }
-            else {
-                Object.keys(source).forEach(function (key) { return target[key] = source[key]; });
-            }
-        }
-        return target;
     };
     /**
      * [fn.deepCopy] 深拷贝对象或数组
@@ -458,6 +523,13 @@ var FnObject = /** @class */ (function () {
             }
         }
         return tmpData;
+    };
+    /**
+     * [fn.isEmpty] 判断对象是否为空对象或数组
+     * @param srcObj
+     */
+    FnObject.isEmpty = function (srcObj) {
+        return FnObject.len(srcObj) === 0;
     };
     /**
      * [fn.isDeepEqual] 判断数组或对象是否相等
@@ -495,55 +567,6 @@ var FnObject = /** @class */ (function () {
         else {
             return obj1 === obj2;
         }
-    };
-    /**
-     * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param obj [Object]
-     * @param path [string]
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
-     */
-    FnObject.get = function (obj, path, type) {
-        if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
-            return undefined;
-        var paths = _Array_1.FnArray.drop(path.split('/'));
-        var key = paths.shift();
-        if (!key)
-            return type ? _Type_1.FnType.typeVal(obj, type) : obj;
-        if (paths.length) {
-            if (!_Type_1.FnType.typeOf(obj[key], ['obj', 'arr']))
-                return undefined;
-            return FnObject.get(obj[key], paths.join('/'), type);
-        }
-        else {
-            return type ? _Type_1.FnType.typeVal(obj[key], type) : obj[key];
-        }
-    };
-    /**
-     * [fn.pick] 获取对象的部分属性
-     * @param obj
-     * @param predicate
-     */
-    FnObject.pick = function (obj, predicate) {
-        var tmpObj = {};
-        if (_Type_1.FnType.typeOf(predicate, 'str')) {
-            var rst = FnObject.get(obj, predicate);
-            if (rst)
-                tmpObj[predicate] = rst;
-        }
-        else if (_Type_1.FnType.typeOf(predicate, 'arr')) {
-            predicate.forEach(function (pd) {
-                var rst = FnObject.get(obj, pd);
-                if (rst)
-                    tmpObj[pd] = rst;
-            });
-        }
-        else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-            FnObject.forIn(obj, function (k, v) {
-                if (predicate(k, v))
-                    tmpObj[k] = v;
-            });
-        }
-        return tmpObj;
     };
     return FnObject;
 }());
@@ -994,7 +1017,7 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.7';
+exports.VERSION = 'v2.2.8';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
@@ -1016,12 +1039,13 @@ exports.MAIN_METHODS = [
     /* Object */
     'len',
     'has',
-    'forIn',
-    'overlay',
-    'deepCopy',
-    'isDeepEqual',
     'get',
     'pick',
+    'forIn',
+    'extend',
+    'deepCopy',
+    'isEmpty',
+    'isDeepEqual',
     /* Math */
     'random',
     'rdid',

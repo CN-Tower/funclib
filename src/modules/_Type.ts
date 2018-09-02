@@ -1,14 +1,17 @@
 import { FnArray } from './_Array';
 
+type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | string | string[];
+
 export class FnType {
   /**
    * [fn.typeOf] 检查值的类型
-   * @param value 
-   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   * @param value
+   * @param type_
+   * @param types
    */
-  public static typeOf(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): boolean {
-    const types = FnArray.toArray(type);
-    if (types.length === 0) return false;
+  public static typeOf(value: any, type_: Type|Type[]|any, ...types: Type[]): boolean {
+    if (!type_) return false;
+    type_ instanceof Array ? types = type_ : types.unshift(type_);
     return types.some(type => {
       switch (type) {
         case 'arr': return value && value instanceof Array;
@@ -26,9 +29,10 @@ export class FnType {
   /**
    * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
    * @param value 
-   * @param type ['arr'|'obj'|'fun'|string|string[]]
+   * @param type_
+   * @param types
    */
-  public static typeVal(value: any, type: 'arr' | 'obj' | 'fun' | string | string[]): any {
-    return FnType.typeOf(value, type) && value;
+  public static typeVal(value: any, type_: Type|Type[], ...types: Type[]): any {
+    return FnType.typeOf(value, type_, ...types) && value;
   }
 }

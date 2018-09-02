@@ -17,6 +17,17 @@ const COLOR_LIST = {
 }
 
 export class FnLog {
+  
+  /**
+   * [fn.chalk] 在控制台打印有颜色的字符串
+   * @param value 
+   * @param color 
+   */
+  public static chalk(value: string, color?: string) {
+    if (!(color in COLOR_LIST)) color = 'grey'
+    return COLOR_LIST[color].replace(/%s/, value);
+  }
+  
   /**
    * [fn.log] 控制台格式化打印值
    * @param value 
@@ -80,15 +91,5 @@ export class FnLog {
         console.log(dbLine + '\n');
       }
     }
-  }
-
-  /**
-   * [fn.chalk] 在控制台打印有颜色的字符串
-   * @param value 
-   * @param color 
-   */
-  public static chalk(value: string, color?: string) {
-    if (!(color in COLOR_LIST)) color = 'grey'
-    return COLOR_LIST[color].replace(/%s/, value);
   }
 }
