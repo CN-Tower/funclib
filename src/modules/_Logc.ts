@@ -5,26 +5,42 @@ import { FnTime } from './_Time';
 import { FnType } from './_Type';
 import { VERSION } from '../funclib.conf';
 
+const getIsFmt = configs => FnObject.has(configs, 'isFmt') ? configs.isFmt : true;
+const getTitle = configs => FnObject.get(configs, '/title') || `funclib(${VERSION})`
+
 export class FnLog {
   /**
    * [fn.log] 控制台格式化打印值
    * @param value 
+   * @param title 
    * @param configs
    * {title: string, width: number [20-100], isFmt: boolean}
-   * @param isFmt 
    */
-  public static log(value: any, configs?: any, isFmt: boolean = true) {
-    if (configs && typeof configs.isFmt === 'boolean') isFmt = configs.isFmt;
-    if (typeof configs === 'boolean') {
-      isFmt = configs;
-      configs = undefined;
+  public static log(value: any, title?: any, configs?: any) {
+    let isFmt;
+    if (FnType.typeVal(title, 'str')) {
+      if (FnType.typeOf(configs, 'bol')) {
+        isFmt = configs;
+        configs = undefined;
+      } else {
+        isFmt = getIsFmt(configs);
+      }
+    } else if (FnType.typeOf(title, 'bol')) {
+      isFmt = title;
+      title = getTitle(configs);
+    } else if (FnType.typeOf(title, 'obj')) {
+      configs = title;
+      isFmt = getIsFmt(configs);
+      title = getTitle(configs);
+    } else {
+      isFmt = true;
+      title = `funclib(${VERSION})`;
     }
     // Value
     value = FnString.pretty(value);
     // Title
     let time = `[${FnTime.fmtDate('hh:mm:ss')}] `;
-    let title = (FnType.typeVal(configs, 'str') || FnObject.get(configs, '/title')
-      || `funclib(${VERSION})`).replace(/\n/mg, '');
+    title = title.replace(/\n/mg, '');
     const originTtLength = (time + title + '[] ').length;
     if (!isFmt) title = `( ${title} )`;
     title = time + title;
