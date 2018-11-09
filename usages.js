@@ -1,6 +1,12 @@
 // const fn = require('./assets/funclib');
 const fn = require('./assets');
 
+// fn.interval(() => console.log(1), 1000, 'abc');
+
+fn.log(fn.interval());
+// fn.timeout(() => fn.interval(), 3000)
+// fn.timeout(() => fn.interval('abc', false), 2000);
+
 // fn.log();
 // fn('aaa').log({title: 'AAA'});
 // fn({name: 'Tom'}).get('/name');
@@ -8,18 +14,18 @@ const fn = require('./assets');
 // fn.progress.start('Test', {type: 'spi'});
 // fn.timeout(3000, () => fn.progress.stop());
 // fn.progress.start({title: 'Test'});
-fn.log(fn.get({
-  name: 'Obj',
-  id: 'Obj_001',
-  metadata: {
-    subObj: {
-      name: 'subOjb',
-      id: 'subOjb_001'
-    }
-  }
-}, '/metadata/subArr/id', 'arr', 'udf'));
+// fn.log(fn.get({
+//   name: 'Obj',
+//   id: 'Obj_001',
+//   metadata: {
+//     subObj: {
+//       name: 'subOjb',
+//       id: 'subOjb_001'
+//     }
+//   }
+// }, '/metadata/subArr/id', 'arr', 'udf'));
 
-fn.log(fn.typeVal(undefined, 'arr'));
+// fn.log(fn.typeVal(undefined, 'arr'));
 
 /**
  * Loger
@@ -70,16 +76,23 @@ fn.log(fn.typeVal(undefined, 'arr'));
  * Object
  * =======================================================================
  */
-// const obj1 = {name: 'Obj', metadata: {subObj: {name: true}}}
+// const obj1 = {name: 'Obj', metadata: {subObj: {name: 'abc'}}}
 // const obj2 = {name: 'Obj', metadata: null}
 // const val1 = fn.get(obj1, '/metadata/subObj/name');
 // const val2 = fn.get(obj2, 'metadata/subObj/name');
+// const val1 = fn.get(obj1, '.metadata.subObj.name');
+// const val2 = fn.get(obj2, 'metadata.subObj.name');
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
-// fn.log(val1);
-// fn.log(val2);
-// const persons = [{name:'Tom', age: 22, indexes: {height: 180, weight: 70}},
-//                  {name:'Jerry', age: 18, indexes: {height: 175, weight: 70}}]
-// const a = fn.sortBy(persons, 'age');             
+// fn.log(val1, 'val1');
+// fn.log(val2, 'val2');
+const persons = [{name:'LiLi', age: 22, indexes: {height: 180, weight: 70}},
+                 {name:'Mari', age: undefined, indexes: {height: 180, weight: 72}},
+                 {name:'Enn', age: null, indexes: {height: 180, weight: 70}},
+                 {name:'Bob', age: '', indexes: {height: 180, weight: 70}},
+                 {name:'Tom', indexes: {height: 180, weight: 70}},
+                 {name:'Jerry', age: 18, indexes: {height: 175, weight: 70}}]
+fn.log(fn.get(persons, '.1.indexes.weight'), 'weight')
+                 // const a = fn.sortBy(persons, 'age'); 
 // const b = fn.sortBy(persons, 'age', true);
 // const c = fn.sortBy(persons, '/indexes/height');
 // const d = fn.sortBy(persons, '/indexes/weight');
