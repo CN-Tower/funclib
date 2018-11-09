@@ -3,8 +3,14 @@ describe('String Methods:', function () {
     it(`fn.match('b', {'a': 'aaa', 'b': 'bbb'}) should return 'bbb'.`, function () {
       assert(fn.match('b', { 'a': 'aaa', 'b': 'bbb' }) === 'bbb');
     });
+    it(`fn.match('a', {'a': '@pass', 'b': () => 'bbb'}) should return 'bbb'.`, function () {
+      assert(fn.match('a', { 'a': '@pass', 'b': () => 'bbb' }) === 'bbb');
+    });
     it(`fn.match('c', {'a': 'aaa', 'b': () => 'bbb'}) should return undefined.`, function () {
       assert(fn.match('c', { 'a': 'aaa', 'b': () => 'bbb' }) === undefined);
+    });
+    it(`fn.match('c', {'a': 'aaa', '@dft': 'ddd'}) should return 'ddd'.`, function () {
+      assert(fn.match('c', { 'a': 'aaa', '@dft': 'ddd' }) === 'ddd');
     });
     it(`fn.match('c', {'a': 'aaa', '@default': 'ddd'}) should return 'ddd'.`, function () {
       assert(fn.match('c', { 'a': 'aaa', '@default': 'ddd' }) === 'ddd');
