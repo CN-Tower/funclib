@@ -8,7 +8,9 @@
  * fn.typeVal                检查值的类型，是则返回该值，否则返回false
  ## Array      
  * fn.array                  返回指定长度和默认值的数组
+ * fn.toArr                  同: fn.toArray
  * fn.toArray                值数组化
+ * fn.indexOf                寻找值在数组中的索引
  * fn.find                   根据条件寻找值
  * fn.filter                 根据条件取过滤值
  * fn.reject                 根据条件过滤值
@@ -17,7 +19,6 @@
  * fn.flatten                把有结构的数组打散，减少层数
  * fn.pluck                  把结构中的字段取出合并到一个数组中
  * fn.uniq                   去重或根据字段去重
- * fn.indexOf                寻找值在数组中的索引
  * fn.forEach                遍历数组或类数组
  * fn.sortBy                 返回对象数组根据字段排序后的副本
  ## Object     
@@ -66,7 +67,6 @@
  * fn.exitFullScreen         退出全屏显示
  * fn.checkIsFullScreen      检测是否处理全屏状态
  * fn.fullScreenChange       检测是否全屏状态
- * fn.pollingEl              轮询获取异步出现的HTML元素
  * fn.noAutoComplete         防止input密码自动填充
  ## Cookie
  * fn.setCookie              设置Cookie
@@ -114,14 +114,14 @@ interface Funclib {
    * @param type_
    * @param types
    */
-  typeOf(value: any, type_: Type|Type[]|any, ...types: Type[]): boolean;
+  typeOf(value: any, type_: Type | Type[] | any, ...types: Type[]): boolean;
   /**
    * [fn.typeVal] 检查值的类型，true则返回该值，否则返回false
    * @param value 
    * @param type_
    * @param types
    */
-  typeVal(value: any, type_: Type|Type[], ...types: Type[]): any;
+  typeVal(value: any, type_: Type | Type[], ...types: Type[]): any;
   /**
    * [fn.array] 返回一个指定长度和默认值的数组
    * @param length [number]
@@ -129,10 +129,21 @@ interface Funclib {
    */
   array(length: number, value?: any): any[];
   /**
+   * [fn.toArr] 值数组化
+   * @param src 
+   */
+  toArr(src: any): any[];
+  /**
    * [fn.toArray] 值数组化
    * @param src 
    */
   toArray(src: any): any[];
+  /**
+    * [fn.indexOf] 寻找值在数组中的索引
+    * @param src 
+    * @param predicate 
+    */
+  indexOf(src: any[], predicate: any): number;
   /**
    * [fn.find] 根据条件寻找值
    * @param src 
@@ -183,12 +194,6 @@ interface Funclib {
    * @param isDeep : boolean = true
    */
   uniq(srcArr: any[], path?: string, isDeep?: boolean): any[];
-  /**
-  * [fn.indexOf] 寻找值在数组中的索引
-  * @param src 
-  * @param predicate 
-  */
-  indexOf(src: any[], predicate: any): number;
   /**
    * [fn.forEach] 遍历数组或类数组
    * @param obj
@@ -275,18 +280,18 @@ interface Funclib {
   rdcolor(): string;
   /**
    * [fn.interval] 循环定时器
-   * @param timerId
-   * @param duration
    * @param callback
+   * @param duration
+   * @param timerId
    */
-  interval(timerId: any, duration: any, callback?: Function): any;
+  interval(callback?: any, duration?: any, timerId?: any, ): any | { stop: () => any };
   /**
    * [fn.timeout] 延时定时器
-   * @param timerId
-   * @param duration
    * @param callback
+   * @param duration
+   * @param timerId
    */
-  timeout(timerId: any, duration?: any, callback?: Function): any;
+  timeout(callback?: any, duration?: any, timerId?: any, ): any | { stop: () => any };
   /**
    * [fn.defer] 延迟执行函数
    * @param func 
@@ -413,19 +418,11 @@ interface Funclib {
    */
   fullScreenChange(callback?: boolean | any): void;
   /**
-   * [fn.pollingEl] 轮询获取异步出现的HTML元素
-   * @param selector 选择器
-   * @param timeout 超时时间
-   * @param options {duration: number = 250; isSelectAll: boolean = false}
-   * @param callback
-   */
-  pollingEl(selector: string | string[], timeout: number | boolean, options?: Object, callback?: Function): void;
-  /**
    * [fn.noAutoComplete] 防止input密码自动填充
    * @param input [HTMLInputElement]
    * @param type ['username'|'password']
    */
-  noAutoComplete(input: any, type: 'username' | 'password'): void;
+  noAutoComplete(input: any, type: 'username' | 'password'): void | { off: () => void };
   /**
    * [fn.setCookie] 设置Cookie
    * @param name 
@@ -458,14 +455,14 @@ interface Funclib {
   /**
    * [fn.log] 控制台格式化打印值
    * @param value 
+   * @param title 
    * @param configs 
    * {title: string, width: number [20-100], isFmt: boolean
    * pre: boolean = false, end: boolean = false
    * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
    * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
-   * @param isFmt 
    */
-  log(value: any, configs?: Object | string, isFmt?: boolean): void;
+  log(value: any, title?: any, configs?: any): any;
   /**
    * [fn.rd] 读文件
    * @param file
