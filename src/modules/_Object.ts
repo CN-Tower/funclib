@@ -35,7 +35,12 @@ export class FnObject {
    */
   public static get(obj: Object, path: string, ...types: Types[]): any {
     if (!obj || !FnType.typeOf(path, 'str')) return undefined;
-    const paths = FnArray.drop(path.split('/'));
+    let paths;
+    if (path.indexOf('.') > -1) {
+      paths = FnArray.drop(path.split('.'));
+    } else {
+      paths = FnArray.drop(path.split('/'));
+    }
     const key = paths.shift();
     if (!key) return types.length ? FnType.typeVal(obj, ...types) : obj;
     if (paths.length) {
