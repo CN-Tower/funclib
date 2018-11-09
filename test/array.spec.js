@@ -4,6 +4,14 @@ describe('Array Methods:', function () {
       const tmpArr = fn.array(5);
       assert(tmpArr.length === 5 && tmpArr.join('' === '01234'));
     });
+    it(`fn.array(5, 'x') should return a Array filled by 'x'.`, function () {
+      const tmpArr = fn.array(5, 'x');
+      assert.deepEqual(tmpArr, ['x', 'x', 'x', 'x', 'x']);
+    });
+    it(`fn.array(5, i => i + i) should return a range.`, function () {
+      const tmpArr = fn.array(5, i => i + i);
+      assert.deepEqual(tmpArr, [0, 2, 4, 6, 8]);
+    });
   });
   describe('#fn.toArray()', function () {
     it(`fn.toArray('funclib') should return an Array.`, function () {
@@ -126,11 +134,14 @@ describe('Array Methods:', function () {
     });
   });
   describe('#fn.sortBy()', function () {
-    it(`fn.sortBy(5) should return a sorted strArr.`, function () {
-      const person = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
-      const person1 = fn.deepCopy(fn.sortBy(person, 'age'));
+    const person = [{ name: 'Tom', age: 22 }, { name: 'Bob', age: null }, { name: 'Jerry', age: 18 }];
+    it(`fn.sortBy(person, 'age') should return a sorted strArr.`, function () {
+      const person1 = fn.sortBy(person, 'age');
+      assert(person1[0].name === 'Bob' && person1[person1.length - 1].name === 'Tom');
+    });
+    it(`fn.sortBy(person, 'age', true) should return a sorted strArr.`, function () {
       const person2 = fn.sortBy(person, 'age', true);
-      assert(person1[0].name === 'Jerry' && person2[0].name === 'Tom');
+      assert(person2[0].name === 'Tom' && person2[person2.length - 1].name === 'Bob');
     });
   });
 });
