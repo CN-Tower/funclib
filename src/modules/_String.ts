@@ -18,11 +18,18 @@ export class FnString {
     let type_;
     if (FnObject.has(cases, source)) {
       type_ = source;
+    } else if (FnObject.has(cases, '@dft')) {
+      type_ = '@dft';
     } else if (FnObject.has(cases, '@default')) {
       type_ = '@default';
     }
     if (type_) {
-      if (isExec && typeof cases[type_] === 'function') {
+      if (cases[type_] === '@pass') {
+        const keys = Object.keys(cases);
+        const idx = keys.indexOf(type_);
+        if (idx + 1 === keys.length) return undefined;
+        return FnString.match(keys[idx + 1], cases, isExec);
+      } else if (isExec && typeof cases[type_] === 'function') {
         return FnObject.len(cases[type_]) > 0 ? cases[type_](source) : cases[type_]()
       } else {
         return cases[type_];
