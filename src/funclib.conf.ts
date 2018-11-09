@@ -1,4 +1,4 @@
-export const VERSION = 'v2.2.9';
+export const VERSION = 'v2.2.10';
 
 export type Types = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | string | string[];
 
@@ -9,6 +9,7 @@ export const MAIN_METHODS = [
 
   /* Array */
   'array',
+  'toArr',
   'toArray',
   'find',
   'filter',
