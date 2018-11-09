@@ -23,7 +23,6 @@ const methods = [
   'exitFullScreen',
   'isFullScreen',
   'fullScreenChange',
-  'pollingEl',
   'noAutoComplete',
   'setCookie',
   'getCookie',
