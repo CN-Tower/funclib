@@ -2,16 +2,14 @@ describe('Time Methods:', function () {
   describe('#fn.interval()', function () {
     it.skip(`fn.interval(timerId, duration, callback) should create a interval timer.`, function (done) {
       let count = 0;
-      fn.interval('test', 1000, () => {
+      fn.interval(() => {
         count++
-        if (count === 5) {
-          fn.interval('test', false);
-        }
-      });
-      fn.timeout(5500, () => {
+        if (count === 5) fn.interval('test').stop();
+      }, 1000, 'test');
+      fn.timeout(() => {
         assert(count === 5);
         done();
-      });
+      }, 5500);
     });
   });
   describe('#fn.time()', function () {
