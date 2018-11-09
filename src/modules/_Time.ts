@@ -1,52 +1,96 @@
+import { FnType } from './_Type';
+
 const intervalTimers: any = {};
 const timeoutTimers: any = {};
 
 export class FnTime {
   /**
    * [fn.interval] 循环定时器
-   * @param timerId
-   * @param duration
    * @param callback
+   * @param duration
+   * @param timerId
    */
-  public static interval(timerId: any, duration?: any, callback?: Function) {
-    if (duration === false) {
-      clearInterval(intervalTimers[timerId]);
+  public static interval(callback: any, duration?: any, timerId?: string) {
+    if (FnType.typeOf(callback, 'udf')) {
+      return { stop: timerId => clearInterval(intervalTimers[timerId]) };
     }
-    else if (typeof duration === 'number' && typeof callback === 'function') {
-      clearInterval(intervalTimers[timerId]);
-      intervalTimers[timerId] = setInterval(() => callback(), duration);
-      return intervalTimers[timerId];
+    else if (FnType.typeVal(callback, 'str')) {
+      timerId = callback;
+      if (duration === false) {
+        return clearInterval(intervalTimers[timerId]);
+      } else {
+        return { stop: () => clearInterval(intervalTimers[timerId]) };
+      }
     }
-    else if (typeof timerId === 'number' && typeof duration === 'function') {
-      callback = duration;
-      duration = timerId;
-      return setInterval(() => callback(), duration);
+    else if (FnType.typeOf(callback, 'fun')) {
+      const initTimer = () => {
+        clearInterval(intervalTimers[timerId]);
+        intervalTimers[timerId] = setInterval(() => callback(), duration);
+        return intervalTimers[timerId];
+      }
+      if (FnType.typeOf(duration, 'num') && FnType.typeVal(timerId, 'str')) {
+        return initTimer();
+      }
+      else if (FnType.typeVal(duration, 'str') && FnType.typeOf(timerId, 'num')) {
+        [duration, timerId] = [timerId, duration];
+        return initTimer();
+      }
+      else if (FnType.typeVal(duration, 'str')) {
+        timerId = duration;
+        duration = 0;
+        return initTimer();
+      }
+      else if (FnType.typeOf(duration, 'num')) {
+        return setInterval(() => callback(), duration);
+      }
+      else {
+        return setInterval(() => callback());
+      }
     }
   }
 
   /**
    * [fn.timeout] 延时定时器
-   * @param timerId 
-   * @param duration 
-   * @param callback 
+   * @param callback
+   * @param duration
+   * @param timerId
    */
-  public static timeout(timerId: any, duration?: any, callback?: Function) {
-    if (duration === false) {
-      clearTimeout(timeoutTimers[timerId]);
+  public static timeout(callback: any, duration?: any, timerId?: string) {
+    if (FnType.typeOf(callback, 'udf')) {
+      return { stop: timerId => clearTimeout(timeoutTimers[timerId]) };
     }
-    else if (typeof duration === 'number' && typeof callback === 'function') {
-      clearTimeout(timeoutTimers[timerId]);
-      timeoutTimers[timerId] = setTimeout(() => callback(), duration);
-      return timeoutTimers[timerId];
+    else if (FnType.typeVal(callback, 'str')) {
+      timerId = callback;
+      if (duration === false) {
+        return clearTimeout(timeoutTimers[timerId]);
+      } else {
+        return { stop: () => clearTimeout(timeoutTimers[timerId]) };
+      }
     }
-    else if (typeof timerId === 'number' && typeof duration === 'function') {
-      callback = duration;
-      duration = timerId;
-      return setTimeout(() => callback(), duration);
-    }
-    else if (typeof timerId === 'function') {
-      callback = timerId;
-      return setTimeout(() => callback());
+    else if (FnType.typeOf(callback, 'fun')) {
+      const initTimer = () => {
+        clearTimeout(timeoutTimers[timerId]);
+        timeoutTimers[timerId] = setTimeout(() => callback(), duration);
+        return timeoutTimers[timerId];
+      }
+      if (FnType.typeOf(duration, 'num') && FnType.typeVal(timerId, 'str')) {
+        return initTimer();
+      }
+      else if (FnType.typeVal(duration, 'str') && FnType.typeOf(timerId, 'num')) {
+        [duration, timerId] = [timerId, duration];
+        return initTimer();
+      }
+      else if (FnType.typeVal(duration, 'str')) {
+        timerId = duration;
+        duration = 0;
+        return initTimer();
+      }
+      else if (FnType.typeOf(duration, 'num')) {
+        return setTimeout(() => callback(), duration);
+      }
+      else {
+        return setTimeout(() => callback());
+      }
     }
   }
 
@@ -55,7 +99,7 @@ export class FnTime {
    * @param func 
    */
   public static defer(func: Function) {
-    FnTime.timeout(func);
+    return setTimeout(func);
   }
 
   /**
