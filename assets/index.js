@@ -177,7 +177,13 @@ var FnObject = /** @class */ (function () {
         }
         if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
             return undefined;
-        var paths = _Array_1.FnArray.drop(path.split('/'));
+        var paths;
+        if (path.indexOf('.') > -1) {
+            paths = _Array_1.FnArray.drop(path.split('.'));
+        }
+        else {
+            paths = _Array_1.FnArray.drop(path.split('/'));
+        }
         var key = paths.shift();
         if (!key)
             return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj].concat(types)) : obj;
@@ -351,8 +357,8 @@ var FnArray = /** @class */ (function () {
                 tmpArr.push(tmpVal);
                 tmpVal++;
             }
-            else if (typeof value === 'function') {
-                tmpArr.push(value());
+            else if (_Type_1.FnType.typeOf(value, 'fun')) {
+                tmpArr.push(value.length > 0 ? value(i) : value());
             }
             else {
                 tmpArr.push(value);
@@ -368,6 +374,32 @@ var FnArray = /** @class */ (function () {
         return value instanceof Array ? value : [value];
     };
     /**
+     * [fn.indexOf] 寻找值在数组中的索引
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.indexOf = function (srcArr, predicate) {
+        var _loop_1 = function (i) {
+            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
+                var isInSrc = Object.keys(predicate).every(function (k) {
+                    return srcArr[i][k] === predicate[k];
+                });
+                if (isInSrc)
+                    return { value: i };
+            }
+            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
+                if (predicate(srcArr[i]))
+                    return { value: i };
+            }
+        };
+        for (var i = 0; i < srcArr.length; i++) {
+            var state_1 = _loop_1(i);
+            if (typeof state_1 === "object")
+                return state_1.value;
+        }
+        return srcArr.indexOf(predicate);
+    };
+    /**
      * [fn.find] 根据条件取值
      * @param srcArr
      * @param predicate
@@ -375,22 +407,6 @@ var FnArray = /** @class */ (function () {
     FnArray.find = function (srcArr, predicate) {
         var idx = FnArray.indexOf(srcArr, predicate);
         return idx > -1 ? srcArr[idx] : undefined;
-    };
-    /**
-     * [fn.filter] 根据条件取过滤值
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.filter = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, true);
-    };
-    /**
-     * [fn.reject] 根据条件过滤值
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.reject = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, false);
     };
     /**
      * 过滤函数
@@ -414,6 +430,22 @@ var FnArray = /** @class */ (function () {
             }
         });
         return isFlt ? ftItems : rjItems;
+    };
+    /**
+     * [fn.filter] 根据条件取过滤值
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.filter = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, true);
+    };
+    /**
+     * [fn.reject] 根据条件过滤值
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.reject = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, false);
     };
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
@@ -507,32 +539,6 @@ var FnArray = /** @class */ (function () {
         return tmpArr;
     };
     /**
-     * [fn.indexOf] 寻找值在数组中的索引
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.indexOf = function (srcArr, predicate) {
-        var _loop_1 = function (i) {
-            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
-                var isInSrc = Object.keys(predicate).every(function (k) {
-                    return srcArr[i][k] === predicate[k];
-                });
-                if (isInSrc)
-                    return { value: i };
-            }
-            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-                if (predicate(srcArr[i]))
-                    return { value: i };
-            }
-        };
-        for (var i = 0; i < srcArr.length; i++) {
-            var state_1 = _loop_1(i);
-            if (typeof state_1 === "object")
-                return state_1.value;
-        }
-        return srcArr.indexOf(predicate);
-    };
-    /**
      * [fn.forEach] 遍历数组或类数组
      * @param obj
      * @param iteratee
@@ -562,7 +568,13 @@ var FnArray = /** @class */ (function () {
         if (isDesc === void 0) { isDesc = false; }
         return srcArr.slice().sort(function (row1, row2) {
             var _a = [_Object_1.FnObject.get(row1, field), _Object_1.FnObject.get(row2, field)], rst1 = _a[0], rst2 = _a[1];
-            if ([rst1, rst2].some(function (x) { return x !== 0 && !x; }) || rst1 === rst2) {
+            if (rst1 !== 0 && !rst1) {
+                return isDesc ? 1 : -1;
+            }
+            else if (rst2 !== 0 && !rst2) {
+                return isDesc ? -1 : 1;
+            }
+            else if (rst1 === rst2) {
                 return 0;
             }
             else {
@@ -572,6 +584,7 @@ var FnArray = /** @class */ (function () {
             }
         });
     };
+    FnArray.toArr = FnArray.toArray;
     return FnArray;
 }());
 exports.FnArray = FnArray;
@@ -584,6 +597,7 @@ exports.FnArray = FnArray;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var _Type_1 = __webpack_require__(0);
 var intervalTimers = {};
 var timeoutTimers = {};
 var FnTime = /** @class */ (function () {
@@ -591,56 +605,102 @@ var FnTime = /** @class */ (function () {
     }
     /**
      * [fn.interval] 循环定时器
-     * @param timerId
-     * @param duration
      * @param callback
+     * @param duration
+     * @param timerId
      */
-    FnTime.interval = function (timerId, duration, callback) {
-        if (duration === false) {
-            clearInterval(intervalTimers[timerId]);
+    FnTime.interval = function (callback, duration, timerId) {
+        if (_Type_1.FnType.typeOf(callback, 'udf')) {
+            return { stop: function (timerId) { return clearInterval(intervalTimers[timerId]); } };
         }
-        else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearInterval(intervalTimers[timerId]);
-            intervalTimers[timerId] = setInterval(function () { return callback(); }, duration);
-            return intervalTimers[timerId];
+        else if (_Type_1.FnType.typeVal(callback, 'str')) {
+            timerId = callback;
+            if (duration === false) {
+                return clearInterval(intervalTimers[timerId]);
+            }
+            else {
+                return { stop: function () { return clearInterval(intervalTimers[timerId]); } };
+            }
         }
-        else if (typeof timerId === 'number' && typeof duration === 'function') {
-            callback = duration;
-            duration = timerId;
-            return setInterval(function () { return callback(); }, duration);
+        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
+            var initTimer = function () {
+                clearInterval(intervalTimers[timerId]);
+                intervalTimers[timerId] = setInterval(function () { return callback(); }, duration);
+                return intervalTimers[timerId];
+            };
+            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
+                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str')) {
+                timerId = duration;
+                duration = 0;
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeOf(duration, 'num')) {
+                return setInterval(function () { return callback(); }, duration);
+            }
+            else {
+                return setInterval(function () { return callback(); });
+            }
         }
+        var _a;
     };
     /**
      * [fn.timeout] 延时定时器
-     * @param timerId
-     * @param duration
      * @param callback
+     * @param duration
+     * @param timerId
      */
-    FnTime.timeout = function (timerId, duration, callback) {
-        if (duration === false) {
-            clearTimeout(timeoutTimers[timerId]);
+    FnTime.timeout = function (callback, duration, timerId) {
+        if (_Type_1.FnType.typeOf(callback, 'udf')) {
+            return { stop: function (timerId) { return clearTimeout(timeoutTimers[timerId]); } };
         }
-        else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearTimeout(timeoutTimers[timerId]);
-            timeoutTimers[timerId] = setTimeout(function () { return callback(); }, duration);
-            return timeoutTimers[timerId];
+        else if (_Type_1.FnType.typeVal(callback, 'str')) {
+            timerId = callback;
+            if (duration === false) {
+                return clearTimeout(timeoutTimers[timerId]);
+            }
+            else {
+                return { stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
+            }
         }
-        else if (typeof timerId === 'number' && typeof duration === 'function') {
-            callback = duration;
-            duration = timerId;
-            return setTimeout(function () { return callback(); }, duration);
+        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
+            var initTimer = function () {
+                clearTimeout(timeoutTimers[timerId]);
+                timeoutTimers[timerId] = setTimeout(function () { return callback(); }, duration);
+                return timeoutTimers[timerId];
+            };
+            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
+                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str')) {
+                timerId = duration;
+                duration = 0;
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeOf(duration, 'num')) {
+                return setTimeout(function () { return callback(); }, duration);
+            }
+            else {
+                return setTimeout(function () { return callback(); });
+            }
         }
-        else if (typeof timerId === 'function') {
-            callback = timerId;
-            return setTimeout(function () { return callback(); });
-        }
+        var _a;
     };
     /**
      * [fn.defer] 延迟执行函数
      * @param func
      */
     FnTime.defer = function (func) {
-        FnTime.timeout(func);
+        return setTimeout(func);
     };
     /**
      * [fn.time] 返回一个当前时间戳
@@ -696,75 +756,6 @@ exports.FnTime = FnTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.9';
-exports.MAIN_METHODS = [
-    /* Type */
-    'typeOf',
-    'typeVal',
-    /* Array */
-    'array',
-    'toArray',
-    'find',
-    'filter',
-    'reject',
-    'contains',
-    'drop',
-    'flatten',
-    'pluck',
-    'uniq',
-    'indexOf',
-    'forEach',
-    'sortBy',
-    /* Object */
-    'len',
-    'has',
-    'get',
-    'pick',
-    'forIn',
-    'extend',
-    'deepCopy',
-    'isEmpty',
-    'isDeepEqual',
-    /* Math */
-    'random',
-    'rdid',
-    'rdcolor',
-    /* Time */
-    'interval',
-    'timeout',
-    'defer',
-    'time',
-    'fmtDate',
-    /* String */
-    'match',
-    'pretty',
-    'escape',
-    'unescape',
-    'encodeHtml',
-    'decodeHtml',
-    'capitalize',
-    'fmtCurrency',
-    'cutString',
-    'parseQueryStr',
-    'stringifyQueryStr',
-    /* RegExp */
-    'getPattern',
-    'matchPattern',
-    /* Function */
-    'throttle',
-    'debounce',
-    /* Log */
-    'log'
-];
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var _Type_1 = __webpack_require__(0);
 var _RegExp_1 = __webpack_require__(6);
 var _Object_1 = __webpack_require__(1);
@@ -787,11 +778,21 @@ var FnString = /** @class */ (function () {
         if (_Object_1.FnObject.has(cases, source)) {
             type_ = source;
         }
+        else if (_Object_1.FnObject.has(cases, '@dft')) {
+            type_ = '@dft';
+        }
         else if (_Object_1.FnObject.has(cases, '@default')) {
             type_ = '@default';
         }
         if (type_) {
-            if (isExec && typeof cases[type_] === 'function') {
+            if (cases[type_] === '@pass') {
+                var keys = Object.keys(cases);
+                var idx = keys.indexOf(type_);
+                if (idx + 1 === keys.length)
+                    return undefined;
+                return FnString.match(keys[idx + 1], cases, isExec);
+            }
+            else if (isExec && typeof cases[type_] === 'function') {
                 return _Object_1.FnObject.len(cases[type_]) > 0 ? cases[type_](source) : cases[type_]();
             }
             else {
@@ -923,6 +924,76 @@ var FnString = /** @class */ (function () {
     return FnString;
 }());
 exports.FnString = FnString;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VERSION = 'v2.2.10';
+exports.MAIN_METHODS = [
+    /* Type */
+    'typeOf',
+    'typeVal',
+    /* Array */
+    'array',
+    'toArr',
+    'toArray',
+    'find',
+    'filter',
+    'reject',
+    'contains',
+    'drop',
+    'flatten',
+    'pluck',
+    'uniq',
+    'indexOf',
+    'forEach',
+    'sortBy',
+    /* Object */
+    'len',
+    'has',
+    'get',
+    'pick',
+    'forIn',
+    'extend',
+    'deepCopy',
+    'isEmpty',
+    'isDeepEqual',
+    /* Math */
+    'random',
+    'rdid',
+    'rdcolor',
+    /* Time */
+    'interval',
+    'timeout',
+    'defer',
+    'time',
+    'fmtDate',
+    /* String */
+    'match',
+    'pretty',
+    'escape',
+    'unescape',
+    'encodeHtml',
+    'decodeHtml',
+    'capitalize',
+    'fmtCurrency',
+    'cutString',
+    'parseQueryStr',
+    'stringifyQueryStr',
+    /* RegExp */
+    'getPattern',
+    'matchPattern',
+    /* Function */
+    'throttle',
+    'debounce',
+    /* Log */
+    'log'
+];
 
 
 /***/ }),
@@ -1119,10 +1190,10 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", { value: true });
 var _Array_1 = __webpack_require__(2);
 var _Object_1 = __webpack_require__(1);
-var _String_1 = __webpack_require__(5);
+var _String_1 = __webpack_require__(4);
 var _Time_1 = __webpack_require__(3);
 var _Type_1 = __webpack_require__(0);
-var funclib_conf_1 = __webpack_require__(4);
+var funclib_conf_1 = __webpack_require__(5);
 var COLOR_LIST = {
     'grey': '\x1B[90m%s\x1B[0m',
     'blue': '\x1B[34m%s\x1B[0m',
@@ -1133,6 +1204,8 @@ var COLOR_LIST = {
     'yellow': '\x1B[33m%s\x1B[0m',
     'default': '%s\x1B[0m'
 };
+var getIsFmt = function (configs) { return _Object_1.FnObject.has(configs, 'isFmt') ? configs.isFmt : true; };
+var getTitle = function (configs) { return _Object_1.FnObject.get(configs, '/title') || "funclib(" + funclib_conf_1.VERSION + ")"; };
 var FnLog = /** @class */ (function () {
     function FnLog() {
     }
@@ -1149,27 +1222,42 @@ var FnLog = /** @class */ (function () {
     /**
      * [fn.log] 控制台格式化打印值
      * @param value
+     * @param title
      * @param configs
      * {title: string, width: number [20-100], isFmt: boolean
      * pre: boolean = false, end: boolean = false
      * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
-     * @param isFmt
      */
-    FnLog.log = function (value, configs, isFmt) {
-        if (isFmt === void 0) { isFmt = true; }
-        if (configs && typeof configs.isFmt === 'boolean')
-            isFmt = configs.isFmt;
-        if (typeof configs === 'boolean') {
-            isFmt = configs;
-            configs = undefined;
+    FnLog.log = function (value, title, configs) {
+        var isFmt;
+        if (_Type_1.FnType.typeVal(title, 'str')) {
+            if (_Type_1.FnType.typeOf(configs, 'bol')) {
+                isFmt = configs;
+                configs = undefined;
+            }
+            else {
+                isFmt = getIsFmt(configs);
+            }
+        }
+        else if (_Type_1.FnType.typeOf(title, 'bol')) {
+            isFmt = title;
+            title = getTitle(configs);
+        }
+        else if (_Type_1.FnType.typeOf(title, 'obj')) {
+            configs = title;
+            isFmt = getIsFmt(configs);
+            title = getTitle(configs);
+        }
+        else {
+            isFmt = true;
+            title = "funclib(" + funclib_conf_1.VERSION + ")";
         }
         // Value
         value = _String_1.FnString.pretty(value);
         // Title
         var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
-        var title = (_Type_1.FnType.typeVal(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
-            || "funclib(" + funclib_conf_1.VERSION + ")").replace(/\n/mg, '');
+        title = title.replace(/\n/mg, '');
         var originTtLength = (time + title + '[] ').length;
         if (!isFmt)
             title = "( " + title + " )";
@@ -1234,7 +1322,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _Type_1 = __webpack_require__(0);
 var _Array_1 = __webpack_require__(2);
 var _Object_1 = __webpack_require__(1);
-var _String_1 = __webpack_require__(5);
+var _String_1 = __webpack_require__(4);
 var _Time_1 = __webpack_require__(3);
 var _RegExp_1 = __webpack_require__(6);
 var _Math_1 = __webpack_require__(10);
@@ -1242,7 +1330,7 @@ var _Function_1 = __webpack_require__(11);
 var _FileSys_1 = __webpack_require__(12);
 var _Progress_1 = __webpack_require__(13);
 var _Logs_1 = __webpack_require__(8);
-var funclib_conf_1 = __webpack_require__(4);
+var funclib_conf_1 = __webpack_require__(5);
 var fnModules = [
     _Type_1.FnType, _Array_1.FnArray, _Object_1.FnObject, _String_1.FnString, _Time_1.FnTime,
     _RegExp_1.FnRegExp, _Math_1.FnMath, _Function_1.FnFunction, _FileSys_1.FnFileSys, _Logs_1.FnLog
@@ -1571,8 +1659,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _Type_1 = __webpack_require__(0);
 var _Object_1 = __webpack_require__(1);
 var _Time_1 = __webpack_require__(3);
+var _String_1 = __webpack_require__(4);
 var _Logs_1 = __webpack_require__(8);
-var funclib_conf_1 = __webpack_require__(4);
+var funclib_conf_1 = __webpack_require__(5);
 var progress;
 var duration;
 var pgType;
@@ -1590,8 +1679,8 @@ var FnProgress = /** @class */ (function () {
             options = title;
             title = undefined;
         }
-        _Time_1.FnTime.interval('pg_sping', false);
-        _Time_1.FnTime.timeout('pg_Bar', false);
+        _Time_1.FnTime.interval('pg_sping').stop();
+        _Time_1.FnTime.timeout('pg_Bar').stop();
         title = _Type_1.FnType.typeVal(title, 'str')
             || _Object_1.FnObject.get(options, 'title', 'str') || "funclib " + funclib_conf_1.VERSION;
         pgType = _Object_1.FnObject.get(options, '/type', 'str');
@@ -1629,11 +1718,11 @@ var FnProgress = /** @class */ (function () {
      * 翻转
      */
     FnProgress.startSping = function (message) {
-        _Time_1.FnTime.interval('pg_sping', false);
+        _Time_1.FnTime.interval('pg_sping').stop();
         FnProgress.spingFun(message);
     };
     FnProgress.stopSping = function () {
-        _Time_1.FnTime.interval('pg_sping', false);
+        _Time_1.FnTime.interval('pg_sping').stop();
     };
     FnProgress.spingFun = function (msg) {
         var stream = process.stderr;
@@ -1643,32 +1732,22 @@ var FnProgress = /** @class */ (function () {
             stream.write(frame);
         };
         var s = '/';
-        _Time_1.FnTime.interval('pg_sping', 180, function () {
+        _Time_1.FnTime.interval(function () {
             interrupt(_Logs_1.FnLog.chalk(s, 'cyan') + " " + msg);
-            switch (s) {
-                case '/':
-                    s = '-';
-                    break;
-                case '-':
-                    s = '\\';
-                    break;
-                case '\\':
-                    s = '|';
-                    break;
-                case '|':
-                    s = '/';
-                    break;
-                default:
-                    s = '-';
-                    break;
-            }
-        });
+            s = _String_1.FnString.match(s, {
+                '/': '-',
+                '-': '\\',
+                '\\': '|',
+                '|': '/',
+                '@dft': '-'
+            });
+        }, 180, 'pg_sping');
     };
     /**
      * 进度条
      */
     FnProgress.startPgbar = function (options) {
-        _Time_1.FnTime.timeout('pg_Bar', false);
+        _Time_1.FnTime.timeout('pg_Bar').stop();
         var Pgbar = eval('require("progress")');
         var prog = (options.title || '[fn.progress]') + " [:bar] :percent";
         progress = new Pgbar(prog, {
@@ -1684,7 +1763,7 @@ var FnProgress = /** @class */ (function () {
         FnProgress.tickFun('-', onStopped);
     };
     FnProgress.tickFun = function (type, onStopped) {
-        _Time_1.FnTime.timeout('pg_Bar', duration, function () {
+        _Time_1.FnTime.timeout(function () {
             progress.tick();
             switch (type) {
                 case '+':
@@ -1700,7 +1779,7 @@ var FnProgress = /** @class */ (function () {
             else if (onStopped) {
                 onStopped();
             }
-        });
+        }, duration, 'pg_Bar');
     };
     return FnProgress;
 }());

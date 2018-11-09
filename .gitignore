@@ -10,3 +10,4 @@ coverage/*
 # Editor directories and files
 .vscode
 .idea
+package-lock.json

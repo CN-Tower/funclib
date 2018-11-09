@@ -153,8 +153,8 @@ var FnArray = /** @class */ (function () {
                 tmpArr.push(tmpVal);
                 tmpVal++;
             }
-            else if (typeof value === 'function') {
-                tmpArr.push(value());
+            else if (_Type_1.FnType.typeOf(value, 'fun')) {
+                tmpArr.push(value.length > 0 ? value(i) : value());
             }
             else {
                 tmpArr.push(value);
@@ -170,6 +170,32 @@ var FnArray = /** @class */ (function () {
         return value instanceof Array ? value : [value];
     };
     /**
+     * [fn.indexOf] 寻找值在数组中的索引
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.indexOf = function (srcArr, predicate) {
+        var _loop_1 = function (i) {
+            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
+                var isInSrc = Object.keys(predicate).every(function (k) {
+                    return srcArr[i][k] === predicate[k];
+                });
+                if (isInSrc)
+                    return { value: i };
+            }
+            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
+                if (predicate(srcArr[i]))
+                    return { value: i };
+            }
+        };
+        for (var i = 0; i < srcArr.length; i++) {
+            var state_1 = _loop_1(i);
+            if (typeof state_1 === "object")
+                return state_1.value;
+        }
+        return srcArr.indexOf(predicate);
+    };
+    /**
      * [fn.find] 根据条件取值
      * @param srcArr
      * @param predicate
@@ -177,22 +203,6 @@ var FnArray = /** @class */ (function () {
     FnArray.find = function (srcArr, predicate) {
         var idx = FnArray.indexOf(srcArr, predicate);
         return idx > -1 ? srcArr[idx] : undefined;
-    };
-    /**
-     * [fn.filter] 根据条件取过滤值
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.filter = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, true);
-    };
-    /**
-     * [fn.reject] 根据条件过滤值
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.reject = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, false);
     };
     /**
      * 过滤函数
@@ -216,6 +226,22 @@ var FnArray = /** @class */ (function () {
             }
         });
         return isFlt ? ftItems : rjItems;
+    };
+    /**
+     * [fn.filter] 根据条件取过滤值
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.filter = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, true);
+    };
+    /**
+     * [fn.reject] 根据条件过滤值
+     * @param srcArr
+     * @param predicate
+     */
+    FnArray.reject = function (srcArr, predicate) {
+        return FnArray._filter(srcArr, predicate, false);
     };
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
@@ -309,32 +335,6 @@ var FnArray = /** @class */ (function () {
         return tmpArr;
     };
     /**
-     * [fn.indexOf] 寻找值在数组中的索引
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.indexOf = function (srcArr, predicate) {
-        var _loop_1 = function (i) {
-            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
-                var isInSrc = Object.keys(predicate).every(function (k) {
-                    return srcArr[i][k] === predicate[k];
-                });
-                if (isInSrc)
-                    return { value: i };
-            }
-            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-                if (predicate(srcArr[i]))
-                    return { value: i };
-            }
-        };
-        for (var i = 0; i < srcArr.length; i++) {
-            var state_1 = _loop_1(i);
-            if (typeof state_1 === "object")
-                return state_1.value;
-        }
-        return srcArr.indexOf(predicate);
-    };
-    /**
      * [fn.forEach] 遍历数组或类数组
      * @param obj
      * @param iteratee
@@ -364,7 +364,13 @@ var FnArray = /** @class */ (function () {
         if (isDesc === void 0) { isDesc = false; }
         return srcArr.slice().sort(function (row1, row2) {
             var _a = [_Object_1.FnObject.get(row1, field), _Object_1.FnObject.get(row2, field)], rst1 = _a[0], rst2 = _a[1];
-            if ([rst1, rst2].some(function (x) { return x !== 0 && !x; }) || rst1 === rst2) {
+            if (rst1 !== 0 && !rst1) {
+                return isDesc ? 1 : -1;
+            }
+            else if (rst2 !== 0 && !rst2) {
+                return isDesc ? -1 : 1;
+            }
+            else if (rst1 === rst2) {
                 return 0;
             }
             else {
@@ -374,6 +380,7 @@ var FnArray = /** @class */ (function () {
             }
         });
     };
+    FnArray.toArr = FnArray.toArray;
     return FnArray;
 }());
 exports.FnArray = FnArray;
@@ -428,7 +435,13 @@ var FnObject = /** @class */ (function () {
         }
         if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
             return undefined;
-        var paths = _Array_1.FnArray.drop(path.split('/'));
+        var paths;
+        if (path.indexOf('.') > -1) {
+            paths = _Array_1.FnArray.drop(path.split('.'));
+        }
+        else {
+            paths = _Array_1.FnArray.drop(path.split('/'));
+        }
         var key = paths.shift();
         if (!key)
             return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj].concat(types)) : obj;
@@ -584,6 +597,7 @@ exports.FnObject = FnObject;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var _Type_1 = __webpack_require__(0);
 var intervalTimers = {};
 var timeoutTimers = {};
 var FnTime = /** @class */ (function () {
@@ -591,56 +605,102 @@ var FnTime = /** @class */ (function () {
     }
     /**
      * [fn.interval] 循环定时器
-     * @param timerId
-     * @param duration
      * @param callback
+     * @param duration
+     * @param timerId
      */
-    FnTime.interval = function (timerId, duration, callback) {
-        if (duration === false) {
-            clearInterval(intervalTimers[timerId]);
+    FnTime.interval = function (callback, duration, timerId) {
+        if (_Type_1.FnType.typeOf(callback, 'udf')) {
+            return { stop: function (timerId) { return clearInterval(intervalTimers[timerId]); } };
         }
-        else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearInterval(intervalTimers[timerId]);
-            intervalTimers[timerId] = setInterval(function () { return callback(); }, duration);
-            return intervalTimers[timerId];
+        else if (_Type_1.FnType.typeVal(callback, 'str')) {
+            timerId = callback;
+            if (duration === false) {
+                return clearInterval(intervalTimers[timerId]);
+            }
+            else {
+                return { stop: function () { return clearInterval(intervalTimers[timerId]); } };
+            }
         }
-        else if (typeof timerId === 'number' && typeof duration === 'function') {
-            callback = duration;
-            duration = timerId;
-            return setInterval(function () { return callback(); }, duration);
+        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
+            var initTimer = function () {
+                clearInterval(intervalTimers[timerId]);
+                intervalTimers[timerId] = setInterval(function () { return callback(); }, duration);
+                return intervalTimers[timerId];
+            };
+            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
+                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str')) {
+                timerId = duration;
+                duration = 0;
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeOf(duration, 'num')) {
+                return setInterval(function () { return callback(); }, duration);
+            }
+            else {
+                return setInterval(function () { return callback(); });
+            }
         }
+        var _a;
     };
     /**
      * [fn.timeout] 延时定时器
-     * @param timerId
-     * @param duration
      * @param callback
+     * @param duration
+     * @param timerId
      */
-    FnTime.timeout = function (timerId, duration, callback) {
-        if (duration === false) {
-            clearTimeout(timeoutTimers[timerId]);
+    FnTime.timeout = function (callback, duration, timerId) {
+        if (_Type_1.FnType.typeOf(callback, 'udf')) {
+            return { stop: function (timerId) { return clearTimeout(timeoutTimers[timerId]); } };
         }
-        else if (typeof duration === 'number' && typeof callback === 'function') {
-            clearTimeout(timeoutTimers[timerId]);
-            timeoutTimers[timerId] = setTimeout(function () { return callback(); }, duration);
-            return timeoutTimers[timerId];
+        else if (_Type_1.FnType.typeVal(callback, 'str')) {
+            timerId = callback;
+            if (duration === false) {
+                return clearTimeout(timeoutTimers[timerId]);
+            }
+            else {
+                return { stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
+            }
         }
-        else if (typeof timerId === 'number' && typeof duration === 'function') {
-            callback = duration;
-            duration = timerId;
-            return setTimeout(function () { return callback(); }, duration);
+        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
+            var initTimer = function () {
+                clearTimeout(timeoutTimers[timerId]);
+                timeoutTimers[timerId] = setTimeout(function () { return callback(); }, duration);
+                return timeoutTimers[timerId];
+            };
+            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
+                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeVal(duration, 'str')) {
+                timerId = duration;
+                duration = 0;
+                return initTimer();
+            }
+            else if (_Type_1.FnType.typeOf(duration, 'num')) {
+                return setTimeout(function () { return callback(); }, duration);
+            }
+            else {
+                return setTimeout(function () { return callback(); });
+            }
         }
-        else if (typeof timerId === 'function') {
-            callback = timerId;
-            return setTimeout(function () { return callback(); });
-        }
+        var _a;
     };
     /**
      * [fn.defer] 延迟执行函数
      * @param func
      */
     FnTime.defer = function (func) {
-        FnTime.timeout(func);
+        return setTimeout(func);
     };
     /**
      * [fn.time] 返回一个当前时间戳
@@ -718,11 +778,21 @@ var FnString = /** @class */ (function () {
         if (_Object_1.FnObject.has(cases, source)) {
             type_ = source;
         }
+        else if (_Object_1.FnObject.has(cases, '@dft')) {
+            type_ = '@dft';
+        }
         else if (_Object_1.FnObject.has(cases, '@default')) {
             type_ = '@default';
         }
         if (type_) {
-            if (isExec && typeof cases[type_] === 'function') {
+            if (cases[type_] === '@pass') {
+                var keys = Object.keys(cases);
+                var idx = keys.indexOf(type_);
+                if (idx + 1 === keys.length)
+                    return undefined;
+                return FnString.match(keys[idx + 1], cases, isExec);
+            }
+            else if (isExec && typeof cases[type_] === 'function') {
                 return _Object_1.FnObject.len(cases[type_]) > 0 ? cases[type_](source) : cases[type_]();
             }
             else {
@@ -1021,13 +1091,14 @@ exports.FnRegExp = FnRegExp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.9';
+exports.VERSION = 'v2.2.10';
 exports.MAIN_METHODS = [
     /* Type */
     'typeOf',
     'typeVal',
     /* Array */
     'array',
+    'toArr',
     'toArray',
     'find',
     'filter',
@@ -1112,7 +1183,6 @@ var methods = funclib_conf_1.MAIN_METHODS.concat([
     'exitFullScreen',
     'isFullScreen',
     'fullScreenChange',
-    'pollingEl',
     'noAutoComplete',
     'setCookie',
     'getCookie',
@@ -1363,9 +1433,14 @@ exports.FnCookie = FnCookie;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var _Type_1 = __webpack_require__(0);
-var _Object_1 = __webpack_require__(2);
-var _Array_1 = __webpack_require__(1);
-var _Time_1 = __webpack_require__(3);
+var event = 'fullscreenchange';
+var events = [event, "webkit" + event, "moz" + event, "MS" + event];
+var addFsChangeEvent = function () { return events.forEach(function (e) {
+    document.addEventListener(e, window['onfullscreen']);
+}); };
+var removeFsChangeEvent = function () { return events.forEach(function (e) {
+    document.removeEventListener(e, window['onfullscreen']);
+}); };
 var FnDom = /** @class */ (function () {
     function FnDom() {
     }
@@ -1375,16 +1450,20 @@ var FnDom = /** @class */ (function () {
      * @returns {any}
      */
     FnDom.fullScreen = function (el) {
-        var rfs = el['requestFullScreen']
-            || el['webkitRequestFullScreen']
-            || el['mozRequestFullScreen']
-            || el['msRequestFullScreen'];
-        if (rfs)
-            return rfs.call(el);
-        if (window['ActiveXObject']) {
-            var ws = new window['ActiveXObject']("WScript.Shell");
-            if (ws) {
-                ws.SendKeys("{F11}");
+        if (typeof el === 'string')
+            el = document.querySelector(el);
+        if (el && el.tagName) {
+            var rfs = el['requestFullScreen']
+                || el['webkitRequestFullScreen']
+                || el['mozRequestFullScreen']
+                || el['msRequestFullScreen'];
+            if (rfs)
+                return rfs.call(el);
+            if (window['ActiveXObject']) {
+                var ws = new window['ActiveXObject']("WScript.Shell");
+                if (ws) {
+                    ws.SendKeys("{F11}");
+                }
             }
         }
     };
@@ -1419,62 +1498,21 @@ var FnDom = /** @class */ (function () {
             || false;
     };
     /**
-     * [fn.fullScreenChange] 检测是否全屏状态
+     * [fn.fullScreenChange] 全屏状态变化事件
      * @param callback
      */
     FnDom.fullScreenChange = function (callback) {
-        var e = 'fullscreenchange';
-        var events = [e, "webkit" + e, "moz" + e, "MS" + e];
-        var eventHandler = function (event, isAdd) {
-            var fullFunc = window['fullScreenFunc'];
-            isAdd ? document.addEventListener(event, fullFunc)
-                : document.removeEventListener(event, fullFunc);
-        };
-        if (window.addEventListener) {
-            if (typeof callback === 'function') {
-                this.fullScreenChange(false);
-                window['fullScreenFunc'] = callback;
-                events.forEach(function (e) { return eventHandler(e, true); });
-            }
-            else if (window['fullScreenFunc']) {
-                events.forEach(function (e) { return eventHandler(e, false); });
-            }
+        if (_Type_1.FnType.typeOf(callback, 'fun')) {
+            window['onfullscreen'] = callback;
+            addFsChangeEvent();
         }
-    };
-    /**
-     * [fn.pollingEl] 轮询获取异步出现的HTML元素
-     * @param selector 选择器
-     * @param timeout 超时时间
-     * @param options {duration: number = 250; isSelectAll: boolean = false}
-     * @param callback
-     */
-    FnDom.pollingEl = function (selector, timeout, options, callback) {
-        if ((_Type_1.FnType.typeOf(selector, ['str', 'arr'])) && typeof timeout === 'number') {
-            var duration_1 = _Object_1.FnObject.get(options, 'duration', 'num') || 250;
-            var isSelectAll_1 = !!(options && options['isSelectAll']);
-            callback = _Type_1.FnType.typeVal(callback, 'func') || _Type_1.FnType.typeVal(options, 'func');
-            var count_1 = 0;
-            _Time_1.FnTime.interval(selector, duration_1, function (eles) {
-                parseInt(String(timeout / duration_1), 10) > count_1
-                    ? count_1++ : _Time_1.FnTime.interval(selector, false);
-                var tmpArr = [];
-                var selectors = _Array_1.FnArray.toArray(selector);
-                selectors.forEach(function (slt) {
-                    var elements = isSelectAll_1
-                        ? document.querySelectorAll(slt)
-                        : document.querySelector(slt);
-                    if (elements.length > 0)
-                        tmpArr.push(elements);
-                });
-                if (tmpArr.length === selectors.length) {
-                    _Time_1.FnTime.interval(selector, false);
-                    if (callback)
-                        callback(tmpArr);
-                }
-            });
-        }
-        else {
-            _Time_1.FnTime.interval(selector, false);
+        else if (window['onfullscreen']) {
+            if (callback === false) {
+                removeFsChangeEvent();
+            }
+            else {
+                return { off: removeFsChangeEvent };
+            }
         }
     };
     /**
@@ -1483,17 +1521,21 @@ var FnDom = /** @class */ (function () {
      * @param type ['username'|'password']
      */
     FnDom.noAutoComplete = function (input, type) {
-        switch (type) {
-            case 'username':
-                input.setAttribute('autocomplete', 'off');
-                var ipt = document.createElement('input');
-                ipt.setAttribute('type', 'password');
-                ipt.style.display = 'none';
-                input.parentNode.insertBefore(ipt, input);
-                break;
-            case 'password':
-                input.setAttribute('autocomplete', 'new-password');
-                break;
+        if (typeof input === 'string')
+            input = document.querySelector(input);
+        if (input && input.tagName === 'INPUT') {
+            switch (type) {
+                case 'username':
+                    input.setAttribute('autocomplete', 'off');
+                    var ipt = document.createElement('input');
+                    ipt.setAttribute('type', 'password');
+                    ipt.style.display = 'none';
+                    input.parentNode.insertBefore(ipt, input);
+                    break;
+                case 'password':
+                    input.setAttribute('autocomplete', 'new-password');
+                    break;
+            }
         }
     };
     return FnDom;
@@ -1544,30 +1586,47 @@ var _String_1 = __webpack_require__(4);
 var _Time_1 = __webpack_require__(3);
 var _Type_1 = __webpack_require__(0);
 var funclib_conf_1 = __webpack_require__(6);
+var getIsFmt = function (configs) { return _Object_1.FnObject.has(configs, 'isFmt') ? configs.isFmt : true; };
+var getTitle = function (configs) { return _Object_1.FnObject.get(configs, '/title') || "funclib(" + funclib_conf_1.VERSION + ")"; };
 var FnLog = /** @class */ (function () {
     function FnLog() {
     }
     /**
      * [fn.log] 控制台格式化打印值
      * @param value
+     * @param title
      * @param configs
      * {title: string, width: number [20-100], isFmt: boolean}
-     * @param isFmt
      */
-    FnLog.log = function (value, configs, isFmt) {
-        if (isFmt === void 0) { isFmt = true; }
-        if (configs && typeof configs.isFmt === 'boolean')
-            isFmt = configs.isFmt;
-        if (typeof configs === 'boolean') {
-            isFmt = configs;
-            configs = undefined;
+    FnLog.log = function (value, title, configs) {
+        var isFmt;
+        if (_Type_1.FnType.typeVal(title, 'str')) {
+            if (_Type_1.FnType.typeOf(configs, 'bol')) {
+                isFmt = configs;
+                configs = undefined;
+            }
+            else {
+                isFmt = getIsFmt(configs);
+            }
+        }
+        else if (_Type_1.FnType.typeOf(title, 'bol')) {
+            isFmt = title;
+            title = getTitle(configs);
+        }
+        else if (_Type_1.FnType.typeOf(title, 'obj')) {
+            configs = title;
+            isFmt = getIsFmt(configs);
+            title = getTitle(configs);
+        }
+        else {
+            isFmt = true;
+            title = "funclib(" + funclib_conf_1.VERSION + ")";
         }
         // Value
         value = _String_1.FnString.pretty(value);
         // Title
         var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
-        var title = (_Type_1.FnType.typeVal(configs, 'str') || _Object_1.FnObject.get(configs, '/title')
-            || "funclib(" + funclib_conf_1.VERSION + ")").replace(/\n/mg, '');
+        title = title.replace(/\n/mg, '');
         var originTtLength = (time + title + '[] ').length;
         if (!isFmt)
             title = "( " + title + " )";
