@@ -14,8 +14,8 @@ export class FnArray {
       if (value === undefined) {
         tmpArr.push(tmpVal);
         tmpVal++;
-      } else if (typeof value === 'function') {
-        tmpArr.push(value());
+      } else if (FnType.typeOf(value, 'fun')) {
+        tmpArr.push(value.length > 0 ? value(i) : value());
       } else {
         tmpArr.push(value);
       }
@@ -30,6 +30,26 @@ export class FnArray {
   public static toArray(value: any): any[] {
     return value instanceof Array ? value : [value];
   }
+  public static toArr = FnArray.toArray;
+
+  /**
+   * [fn.indexOf] 寻找值在数组中的索引
+   * @param srcArr 
+   * @param predicate 
+   */
+  public static indexOf(srcArr: any[], predicate: any): number {
+    for (let i = 0; i < srcArr.length; i++) {
+      if (FnType.typeOf(predicate, 'obj')) {
+        let isInSrc = Object.keys(predicate).every(k => {
+          return srcArr[i][k] === predicate[k];
+        });
+        if (isInSrc) return i;
+      } else if (FnType.typeOf(predicate, 'fun')) {
+        if (predicate(srcArr[i])) return i;
+      }
+    }
+    return srcArr.indexOf(predicate);
+  }
 
   /**
    * [fn.find] 根据条件取值
@@ -39,24 +59,6 @@ export class FnArray {
   public static find(srcArr: any[], predicate: any): any {
     const idx = FnArray.indexOf(srcArr, predicate);
     return idx > -1 ? srcArr[idx] : undefined;
-  }
-
-  /**
-   * [fn.filter] 根据条件取过滤值
-   * @param srcArr 
-   * @param predicate 
-   */
-  public static filter(srcArr: any[], predicate: any): any[] {
-    return FnArray._filter(srcArr, predicate, true);
-  }
-
-  /**
-   * [fn.reject] 根据条件过滤值
-   * @param srcArr 
-   * @param predicate 
-   */
-  public static reject(srcArr: any[], predicate: any): any[] {
-    return FnArray._filter(srcArr, predicate, false);
   }
 
   /**
@@ -79,6 +81,24 @@ export class FnArray {
       }
     });
     return isFlt ? ftItems : rjItems;
+  }
+
+  /**
+   * [fn.filter] 根据条件取过滤值
+   * @param srcArr 
+   * @param predicate 
+   */
+  public static filter(srcArr: any[], predicate: any): any[] {
+    return FnArray._filter(srcArr, predicate, true);
+  }
+
+  /**
+   * [fn.reject] 根据条件过滤值
+   * @param srcArr 
+   * @param predicate 
+   */
+  public static reject(srcArr: any[], predicate: any): any[] {
+    return FnArray._filter(srcArr, predicate, false);
   }
 
   /**
@@ -172,25 +192,6 @@ export class FnArray {
   }
 
   /**
-   * [fn.indexOf] 寻找值在数组中的索引
-   * @param srcArr 
-   * @param predicate 
-   */
-  public static indexOf(srcArr: any[], predicate: any): number {
-    for (let i = 0; i < srcArr.length; i++) {
-      if (FnType.typeOf(predicate, 'obj')) {
-        let isInSrc = Object.keys(predicate).every(k => {
-          return srcArr[i][k] === predicate[k];
-        });
-        if (isInSrc) return i;
-      } else if (FnType.typeOf(predicate, 'fun')) {
-        if (predicate(srcArr[i])) return i;
-      }
-    }
-    return srcArr.indexOf(predicate);
-  }
-
-  /**
    * [fn.forEach] 遍历数组或类数组
    * @param obj
    * @param iteratee
@@ -219,7 +220,11 @@ export class FnArray {
   public static sortBy(srcArr: any, field: string, isDesc: boolean = false) {
     return [...srcArr].sort((row1, row2) => {
       const [rst1, rst2] = [FnObject.get(row1, field), FnObject.get(row2, field)];
-      if ([rst1, rst2].some(x => x !== 0 && !x) || rst1 === rst2) {
+      if (rst1 !== 0 && !rst1) {
+        return isDesc ? 1 : -1;
+      } else if (rst2 !== 0 && !rst2) {
+        return isDesc ? -1 : 1;
+      } else if (rst1 === rst2) {
         return 0;
       } else {
         return rst1 > rst2
