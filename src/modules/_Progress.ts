@@ -1,6 +1,7 @@
 import { FnType } from './_Type';
 import { FnObject } from './_Object';
 import { FnTime } from './_Time';
+import { FnString } from './_String';
 import { FnLog } from './_Logs';
 import { VERSION } from '../funclib.conf';
 
@@ -20,8 +21,8 @@ export class FnProgress {
       options = title;
       title = undefined;
     }
-    FnTime.interval('pg_sping', false);
-    FnTime.timeout('pg_Bar', false);
+    FnTime.interval('pg_sping').stop();
+    FnTime.timeout('pg_Bar').stop();
     title = FnType.typeVal(title, 'str')
       || FnObject.get(options, 'title', 'str') || `funclib ${VERSION}`;
     pgType = FnObject.get(options, '/type', 'str');
@@ -56,12 +57,12 @@ export class FnProgress {
    * 翻转
    */
   private static startSping(message: string) {
-    FnTime.interval('pg_sping', false);
+    FnTime.interval('pg_sping').stop();
     FnProgress.spingFun(message);
   }
 
   private static stopSping() {
-    FnTime.interval('pg_sping', false);
+    FnTime.interval('pg_sping').stop();
   }
 
   private static spingFun(msg: string) {
@@ -72,23 +73,23 @@ export class FnProgress {
       stream.write(frame);
     };
     let s = '/'
-    FnTime.interval('pg_sping', 180, () => {
+    FnTime.interval(() => {
       interrupt(`${FnLog.chalk(s, 'cyan')} ${msg}`);
-      switch (s) {
-        case '/': s = '-'; break;
-        case '-': s = '\\'; break;
-        case '\\': s = '|'; break;
-        case '|': s = '/'; break;
-        default: s = '-'; break;
-      }
-    });
+      s = FnString.match(s, {
+        '/' : '-',
+        '-' : '\\',
+        '\\': '|',
+        '|' : '/',
+        '@dft': '-'
+      });
+    }, 180, 'pg_sping');
   }
 
   /**
    * 进度条
    */
   private static startPgbar(options: any) {
-    FnTime.timeout('pg_Bar', false);
+    FnTime.timeout('pg_Bar').stop();
     const Pgbar = eval('require("progress")');
     const prog = `${options.title || '[fn.progress]'} [:bar] :percent`;
     progress = new Pgbar(prog, {
@@ -106,7 +107,7 @@ export class FnProgress {
   }
 
   private static tickFun(type, onStopped?) {
-    FnTime.timeout('pg_Bar', duration, () => {
+    FnTime.timeout(() => {
       progress.tick();
       switch (type) {
         case '+': duration += 300; break;
@@ -117,6 +118,6 @@ export class FnProgress {
       } else if (onStopped) {
         onStopped();
       }
-    });
+    }, duration, 'pg_Bar');
   }
 }
