@@ -30,8 +30,8 @@
      */
     function typeOf(value, _type) {
       var types = [];
-      for (var _i = 2; _i < arguments.length; _i++) {
-        types[_i - 2] = arguments[_i];
+      for (var i = 2; i < arguments.length; i++) {
+        types[i - 2] = arguments[i];
       }
       if (!_type) return false;
       _type instanceof Array ? types = _type : types.unshift(_type);
@@ -52,15 +52,15 @@
     /**
      * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
      * @param value
-     * @param type_
+     * @param _type
      * @param types
      */
-    function typeVal(value, type_) {
+    function typeVal(value, _type) {
       var types = [];
-      for (var _i = 2; _i < arguments.length; _i++) {
-        types[_i - 2] = arguments[_i];
+      for (var i = 2; i < arguments.length; i++) {
+        types[i - 2] = arguments[i];
       }
-      return typeOf.apply(void 0, [value, type_].concat(types)) && value;
+      return typeOf.apply(void 0, [value, _type].concat(types)) && value;
     }
 
     /**
@@ -280,9 +280,9 @@
         }
       }
       else {
-        var keys_1 = Object.keys(srcObj);
-        for (var i = 0; i < keys_1.length; i++) {
-          iteratee(srcObj[keys_1[i]], keys_1[i]);
+        var _keys = keys(srcObj);
+        for (var i = 0; i < _keys.length; i++) {
+          iteratee(srcObj[_keys[i]], _keys[i]);
         }
       }
       return srcObj;
@@ -348,8 +348,8 @@
      */
     function get(srcObj, path) {
       var types = [];
-      for (var _a = 2; _a < arguments.length; _a++) {
-        types[_a - 2] = arguments[_a];
+      for (var i = 2; i < arguments.length; i++) {
+        types[i - 2] = arguments[i];
       }
       if (!srcObj || !typeOf(path, 'str'))
         return undefined;
@@ -390,8 +390,8 @@
      */
     function pick(srcObj, predicate) {
       var propList = [];
-      for (var _a = 2; _a < arguments.length; _a++) {
-        propList[_a - 2] = arguments[_a];
+      for (var i = 2; i < arguments.length; i++) {
+        propList[i - 2] = arguments[i];
       }
       return propsTraversal({}, srcObj, predicate, propList, false);
     }
@@ -405,8 +405,8 @@
      */
     function extend(target, srcObj, predicate) {
       var propList = [];
-      for (var _a = 3; _a < arguments.length; _a++) {
-        propList[_a - 3] = arguments[_a];
+      for (var i = 3; i < arguments.length; i++) {
+        propList[i - 3] = arguments[i];
       }
       if (typeVal(srcObj, 'object')) {
         propsTraversal(target, srcObj, predicate, propList, true);
@@ -574,7 +574,7 @@
      * @param callback
      */
     function interval(timerId, duration, callback) {
-      var _b, _c, _d;
+      var _a, _b, _c;
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined)
         return { id: intervalTimers[timerId], stop: function () { return clearInterval(intervalTimers[timerId]); } };
@@ -583,11 +583,11 @@
         return intervalTimers[timerId] = null;
       }
       if (isIdStr && typeOf(duration, 'fun'))
-        _b = [duration, 0], callback = _b[0], duration = _b[1];
+        _a = [duration, 0], callback = _a[0], duration = _a[1];
       if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
-        _c = [undefined, timerId, duration], timerId = _c[0], duration = _c[1], callback = _c[2];
+        _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
       if (typeOf(timerId, 'fun'))
-        _d = [undefined, 0, timerId], timerId = _d[0], duration = _d[1], callback = _d[2];
+        _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
@@ -608,7 +608,7 @@
      * @param callback
      */
     function timeout(timerId, duration, callback) {
-      var _b, _c, _d;
+      var _a, _b, _c;
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
         return { id: timeoutTimers[timerId], stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
@@ -618,11 +618,11 @@
         return timeoutTimers[timerId] = null;
       }
       if (isIdStr && typeOf(duration, 'fun'))
-        _b = [duration, 0], callback = _b[0], duration = _b[1];
+        _a = [duration, 0], callback = _a[0], duration = _a[1];
       if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
-        _c = [undefined, timerId, duration], timerId = _c[0], duration = _c[1], callback = _c[2];
+        _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
       if (typeOf(timerId, 'fun'))
-        _d = [undefined, 0, timerId], timerId = _d[0], duration = _d[1], callback = _d[2];
+        _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
