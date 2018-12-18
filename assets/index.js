@@ -1,1792 +1,1408 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["fn"] = factory();
-	else
-		root["fn"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/**
+ * @license
+ * FuncLib <https://www.funclib.net/>
+ * GitHub Repository <https://github.com/CN-Tower/funclib.js>
+ * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
+ */
+; (function () {
 
-"use strict";
+  var VERSION = '3.1.1';
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var FnType = /** @class */ (function () {
-    function FnType() {
-    }
+  var _global = typeof global == 'object' && global && global.Object === Object && global;
+
+  var _self = typeof self == 'object' && self && self.Object === Object && self;
+
+  var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+  var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
+
+  var root = _global || _self || Function('return this')();
+
+  var fn = (function () {
+
+    var originalFn = root.fn;
+
     /**
      * [fn.typeOf] 检查值的类型
      * @param value
-     * @param type_
+     * @param _type
      * @param types
      */
-    FnType.typeOf = function (value, type_) {
-        var types = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            types[_i - 2] = arguments[_i];
+    function typeOf(value, _type) {
+      var types = [];
+      for (var _i = 2; _i < arguments.length; _i++) {
+        types[_i - 2] = arguments[_i];
+      }
+      if (!_type) return false;
+      _type instanceof Array ? types = _type : types.unshift(_type);
+      return types.some(function (type_) {
+        switch (type_) {
+          case 'arr': return value && value instanceof Array;
+          case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
+          case 'fun': return value && typeof value === 'function';
+          case 'str': return typeof value === 'string';
+          case 'num': return typeof value === 'number';
+          case 'bol': return typeof value === 'boolean';
+          case 'udf': return typeof value === 'undefined';
+          default: return typeof value === type_;
         }
-        if (!type_)
-            return false;
-        type_ instanceof Array ? types = type_ : types.unshift(type_);
-        return types.some(function (type) {
-            switch (type) {
-                case 'arr': return value && value instanceof Array;
-                case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
-                case 'fun': return value && typeof value === 'function';
-                case 'str': return typeof value === 'string';
-                case 'num': return typeof value === 'number';
-                case 'bol': return typeof value === 'boolean';
-                case 'udf': return typeof value === 'undefined';
-                default: return typeof value === type;
-            }
-        });
-    };
+      });
+    }
+
     /**
      * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
      * @param value
      * @param type_
      * @param types
      */
-    FnType.typeVal = function (value, type_) {
-        var types = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            types[_i - 2] = arguments[_i];
-        }
-        return FnType.typeOf.apply(FnType, [value, type_].concat(types)) && value;
-    };
-    return FnType;
-}());
-exports.FnType = FnType;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _Array_1 = __webpack_require__(2);
-var FnObject = /** @class */ (function () {
-    function FnObject() {
+    function typeVal(value, type_) {
+      var types = [];
+      for (var _i = 2; _i < arguments.length; _i++) {
+        types[_i - 2] = arguments[_i];
+      }
+      return typeOf.apply(void 0, [value, type_].concat(types)) && value;
     }
-    /**
-     * [fn.len] 获取对象自有属性的个数
-     * @arg obj
-     */
-    FnObject.len = function (obj) {
-        if (_Type_1.FnType.typeOf(obj, 'obj')) {
-            return Object.keys(obj).length;
-        }
-        else if (_Type_1.FnType.typeOf(obj, ['str', 'arr', 'fun'])
-            || FnObject.get(obj, '/length', 'num')) {
-            return obj.length;
-        }
-        else {
-            return -1;
-        }
-    };
-    /**
-     * [fn.has] 判断对象是否存在某自有属性
-     * @param obj
-     * @param property
-     */
-    FnObject.has = function (obj, property) {
-        return obj && obj.hasOwnProperty(property) || false;
-    };
-    /**
-     * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param obj [Object]
-     * @param path [string]
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
-     */
-    FnObject.get = function (obj, path) {
-        var types = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            types[_i - 2] = arguments[_i];
-        }
-        if (!obj || !_Type_1.FnType.typeOf(path, 'str'))
-            return undefined;
-        var paths;
-        if (path.indexOf('.') > -1) {
-            paths = _Array_1.FnArray.drop(path.split('.'));
-        }
-        else {
-            paths = _Array_1.FnArray.drop(path.split('/'));
-        }
-        var key = paths.shift();
-        if (!key)
-            return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj].concat(types)) : obj;
-        if (paths.length) {
-            if (!_Type_1.FnType.typeOf(obj[key], 'obj', 'arr'))
-                return undefined;
-            return FnObject.get.apply(FnObject, [obj[key], paths.join('/')].concat(types));
-        }
-        else {
-            return types.length ? _Type_1.FnType.typeVal.apply(_Type_1.FnType, [obj[key]].concat(types)) : obj[key];
-        }
-    };
-    /**
-     * [fn.pick] 获取对象的部分属性
-     * @param srcObj
-     * @param predicate
-     * @param propList
-     */
-    FnObject.pick = function (srcObj, predicate) {
-        var propList = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            propList[_i - 2] = arguments[_i];
-        }
-        return FnObject.propsTraversal({}, srcObj, predicate, propList, false);
-    };
-    /**
-     * [fn.extend] 给对象赋值
-     * @param tarObj
-     * @param srcObj
-     * @param predicate
-     * @param propList
-     */
-    FnObject.extend = function (target, srcObj, predicate) {
-        var propList = [];
-        for (var _i = 3; _i < arguments.length; _i++) {
-            propList[_i - 3] = arguments[_i];
-        }
-        if (_Type_1.FnType.typeVal(srcObj, 'object')) {
-            FnObject.propsTraversal(target, srcObj, predicate, propList, true);
-        }
-        return target;
-    };
-    FnObject.propsTraversal = function (tarObj, srcObj, predicate, propList, isDoTraDft) {
-        if (_Type_1.FnType.typeOf(predicate, 'str')) {
-            propList.unshift(predicate);
-            FnObject.doTraversal(tarObj, srcObj, propList);
-        }
-        else if (_Type_1.FnType.typeOf(predicate, 'arr')) {
-            FnObject.doTraversal(tarObj, srcObj, predicate);
-        }
-        else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-            FnObject.forIn(srcObj, function (k, v) {
-                if (predicate(k, v))
-                    tarObj[k] = v;
-            });
-        }
-        else if (isDoTraDft) {
-            FnObject.doTraversal(tarObj, srcObj, Object.keys(srcObj));
-        }
-        return tarObj;
-    };
-    FnObject.doTraversal = function (tarObj, srcObj, propList) {
-        propList.forEach(function (prop) {
-            if (FnObject.has(srcObj, prop))
-                tarObj[prop] = srcObj[prop];
-        });
-    };
-    /**
-     * [fn.forIn] 遍历对象的可数自有属性
-     * @arg obj
-     * @arg iteratee
-     */
-    FnObject.forIn = function (obj, iteratee) {
-        return _Array_1.FnArray.forEach(obj, function (v, k) { return iteratee(k, v); });
-    };
-    /**
-     * [fn.deepCopy] 深拷贝对象或数组
-     * @param data
-     */
-    FnObject.deepCopy = function (data) {
-        if (typeof data !== 'object')
-            return data;
-        var tmpData;
-        if (data instanceof Array) {
-            tmpData = [];
-            for (var i = 0; i < data.length; i++) {
-                tmpData.push(FnObject.deepCopy(data[i]));
-            }
-        }
-        else {
-            tmpData = {};
-            for (var key in data) {
-                if (data.hasOwnProperty(key)) {
-                    tmpData[key] = FnObject.deepCopy(data[key]);
-                }
-            }
-        }
-        return tmpData;
-    };
-    /**
-     * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param srcObj
-     */
-    FnObject.isEmpty = function (srcObj) {
-        return FnObject.len(srcObj) === 0;
-    };
-    /**
-     * [fn.isDeepEqual] 判断数组或对象是否相等
-     * @param obj1
-     * @param obj2
-     * @param isStrict
-     */
-    FnObject.isDeepEqual = function (obj1, obj2, isStrict) {
-        if (isStrict === void 0) { isStrict = false; }
-        if (typeof obj1 !== typeof obj2)
-            return false;
-        if (_Type_1.FnType.typeOf(obj1, 'arr') && _Type_1.FnType.typeOf(obj2, 'arr')) {
-            if (obj1.length !== obj2.length)
-                return false;
-            for (var i = 0; i < obj1.length; i++) {
-                if (!FnObject.isDeepEqual(obj1[i], obj2[i], isStrict))
-                    return false;
-            }
-            return true;
-        }
-        else if (_Type_1.FnType.typeOf(obj1, 'obj') && _Type_1.FnType.typeOf(obj2, 'obj')) {
-            if (FnObject.len(obj1) !== FnObject.len(obj2))
-                return false;
-            var keys = Object.keys(obj1);
-            if (isStrict && !FnObject.isDeepEqual(keys, Object.keys(obj2)))
-                return false;
-            for (var i = 0; i < keys.length; i++) {
-                if (!obj2.hasOwnProperty(keys[i]))
-                    return false;
-                if (!FnObject.isDeepEqual(obj1[keys[i]], obj2[keys[i]], isStrict))
-                    return false;
-            }
-            return true;
-        }
-        else {
-            return obj1 === obj2;
-        }
-    };
-    return FnObject;
-}());
-exports.FnObject = FnObject;
 
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _Object_1 = __webpack_require__(1);
-var FnArray = /** @class */ (function () {
-    function FnArray() {
-    }
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length [number]
      * @param value  [any, function]
      */
-    FnArray.array = function (length, value) {
-        var tmpArr = [];
-        var tmpVal = 0;
-        for (var i = 0; i < length; i++) {
-            if (value === undefined) {
-                tmpArr.push(tmpVal);
-                tmpVal++;
-            }
-            else if (_Type_1.FnType.typeOf(value, 'fun')) {
-                tmpArr.push(value.length > 0 ? value(i) : value());
-            }
-            else {
-                tmpArr.push(value);
-            }
+    function array(length, value) {
+      var tmpArr = [];
+      var tmpVal = 0;
+      for (var i = 0; i < length; i++) {
+        if (value === undefined) {
+          tmpArr.push(tmpVal);
+          tmpVal++;
         }
-        return tmpArr;
-    };
+        else if (typeOf(value, 'fun')) {
+          tmpArr.push(value.length > 0 ? value(i) : value());
+        }
+        else {
+          tmpArr.push(value);
+        }
+      }
+      return tmpArr;
+    }
+
+    /**
+     * [fn.range] 返回一个指定长度的区间
+     * @param length [number]
+     */
+    function range(length) {
+      if (length >= 0)
+        return array(length);
+      if (length < 0)
+        return array(-length).reverse();
+    }
+
     /**
      * [fn.toArray] 值数组化
      * @param value
      */
-    FnArray.toArray = function (value) {
-        return value instanceof Array ? value : [value];
-    };
+    function toArr(value) {
+      return typeOf(value, 'arr') ? value : [value];
+    }
+
     /**
      * [fn.indexOf] 寻找值在数组中的索引
      * @param srcArr
      * @param predicate
      */
-    FnArray.indexOf = function (srcArr, predicate) {
-        var _loop_1 = function (i) {
-            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
-                var isInSrc = Object.keys(predicate).every(function (k) {
-                    return srcArr[i][k] === predicate[k];
-                });
-                if (isInSrc)
-                    return { value: i };
-            }
-            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-                if (predicate(srcArr[i]))
-                    return { value: i };
-            }
-        };
-        for (var i = 0; i < srcArr.length; i++) {
-            var state_1 = _loop_1(i);
-            if (typeof state_1 === "object")
-                return state_1.value;
+    function indexOf(srcArr, predicate) {
+      for (var i = 0; i < srcArr.length; i++) {
+        if (typeOf(predicate, 'obj')) {
+          if (keys(predicate).every(function (k) { return srcArr[i][k] === predicate[k]; }))
+            return i;
         }
-        return srcArr.indexOf(predicate);
-    };
+        else if (typeOf(predicate, 'fun')) {
+          if (predicate(srcArr[i]))
+            return i;
+        }
+      }
+      return srcArr.indexOf(predicate);
+    }
+
     /**
      * [fn.find] 根据条件取值
      * @param srcArr
      * @param predicate
      */
-    FnArray.find = function (srcArr, predicate) {
-        var idx = FnArray.indexOf(srcArr, predicate);
-        return idx > -1 ? srcArr[idx] : undefined;
-    };
-    /**
-     * 过滤函数
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray._filter = function (srcArr, predicate, isFlt) {
-        var ftItems = [];
-        var rjItems = [];
-        srcArr.forEach(function (item) {
-            if (_Type_1.FnType.typeOf(predicate, 'obj')) {
-                if (Object.keys(predicate).every(function (k) { return predicate[k] === item[k]; })) {
-                    ftItems.push(item);
-                }
-                else {
-                    rjItems.push(item);
-                }
-            }
-            else if (_Type_1.FnType.typeOf(predicate, 'fun')) {
-                predicate(item) ? ftItems.push(item) : rjItems.push(item);
-            }
-        });
-        return isFlt ? ftItems : rjItems;
-    };
+    function find(srcArr, predicate) {
+      var idx = indexOf(srcArr, predicate);
+      return idx > -1 ? srcArr[idx] : undefined;
+    }
+
     /**
      * [fn.filter] 根据条件取过滤值
      * @param srcArr
      * @param predicate
      */
-    FnArray.filter = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, true);
-    };
+    function filter(srcArr, predicate) {
+      return doFilter(srcArr, predicate, true);
+    }
+
     /**
-     * [fn.reject] 根据条件过滤值
-     * @param srcArr
-     * @param predicate
-     */
-    FnArray.reject = function (srcArr, predicate) {
-        return FnArray._filter(srcArr, predicate, false);
-    };
+      * [fn.reject] 根据条件过滤值
+      * @param srcArr
+      * @param predicate
+      */
+    function reject(srcArr, predicate) {
+      return doFilter(srcArr, predicate, false);
+    }
+
+    function doFilter(srcArr, predicate, isFlt) {
+      var ftItems = [];
+      var rjItems = [];
+      srcArr.forEach(function (item) {
+        if (typeOf(predicate, 'obj')) {
+          if (keys(predicate).every(function (k) { return predicate[k] === item[k]; })) {
+            ftItems.push(item);
+          }
+          else {
+            rjItems.push(item);
+          }
+        }
+        else if (typeOf(predicate, 'fun')) {
+          predicate(item) ? ftItems.push(item) : rjItems.push(item);
+        }
+      });
+      return isFlt ? ftItems : rjItems;
+    }
+
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
-     * @param srcArr
-     * @param predicate
+     * @param srcArr 
+     * @param predicate 
      */
-    FnArray.contains = function (srcArr, predicate) {
-        var idx = FnArray.indexOf(srcArr, predicate);
-        return idx > -1;
-    };
+    function contains(srcArr, predicate) {
+      var idx = indexOf(srcArr, predicate);
+      return idx > -1;
+    }
+
     /**
      * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
-     * @param srcArr
-     * @param isDrop0
+     * @param srcArr 
+     * @param isDrop0 
      */
-    FnArray.drop = function (srcArr, isDrop0) {
-        if (isDrop0 === void 0) { isDrop0 = false; }
-        var tmpArr = [];
-        srcArr.forEach(function (val) {
-            var isLen0 = _Type_1.FnType.typeOf(val, ['arr', 'obj']) && _Object_1.FnObject.len(val) === 0;
-            if ((val && !isLen0) || (!isDrop0 && val === 0))
-                tmpArr.push(val);
-        });
-        return tmpArr;
-    };
+    function drop(srcArr, isDrop0) {
+      if (isDrop0 === void 0) { isDrop0 = false; }
+      var tmpArr = [];
+      srcArr.forEach(function (val) {
+        var isLen0 = typeOf(val, ['arr', 'obj']) && len(val) === 0;
+        if ((val && !isLen0) || (!isDrop0 && val === 0))
+          tmpArr.push(val);
+      });
+      return tmpArr;
+    }
+
     /**
      * [fn.flatten] 把有结构的数组打散，减少层数
-     * @param srcArr
-     * @param isDeep
+     * @param srcArr 
+     * @param isDeep 
      */
-    FnArray.flatten = function (srcArr, isDeep) {
-        if (isDeep === void 0) { isDeep = false; }
-        var tmpArr = [];
-        srcArr.forEach(function (val) {
-            if (_Type_1.FnType.typeOf(val, 'arr')) {
-                isDeep ? tmpArr.push.apply(tmpArr, FnArray.flatten(val, true)) : tmpArr.push.apply(tmpArr, val);
-            }
-            else {
-                tmpArr.push(val);
-            }
-        });
-        return tmpArr;
-    };
+    function flatten(srcArr, isDeep) {
+      if (isDeep === void 0) { isDeep = false; }
+      var tmpArr = [];
+      srcArr.forEach(function (val) {
+        if (typeOf(val, 'arr')) {
+          isDeep ? tmpArr.push.apply(tmpArr, flatten(val, true)) : tmpArr.push.apply(tmpArr, val);
+        }
+        else {
+          tmpArr.push(val);
+        }
+      });
+      return tmpArr;
+    }
+
     /**
      * [fn.pluck] 把结构中的字段取出合并到一个数组中
-     * @param obj
-     * @param path
-     * @param isUniq
+     * @param srcArr 
+     * @param path 
      */
-    FnArray.pluck = function (srcArr, path) {
-        var tmpArr = [];
-        if (_Type_1.FnType.typeVal(path, 'str')) {
-            srcArr.forEach(function (val) { return tmpArr.push(_Object_1.FnObject.get(val, path)); });
-        }
-        return tmpArr;
-    };
+    function pluck(srcArr, path) {
+      var tmpArr = [];
+      if (typeVal(path, 'str')) {
+        srcArr.forEach(function (val) { return tmpArr.push(get(val, path)); });
+      }
+      return tmpArr;
+    }
+
     /**
      * [fn.uniq] 去重或根据字段去重
      * @param srcArr : any[]
      * @param path?  : string
      * @param isDeep : boolean = true
      */
-    FnArray.uniq = function (srcArr, path, isDeep) {
-        if (isDeep === void 0) { isDeep = true; }
-        if (typeof path === 'boolean') {
-            isDeep = path;
-            path = undefined;
+    function uniq(srcArr, path, isDeep) {
+      if (isDeep === void 0) { isDeep = true; }
+      if (typeof path === 'boolean') {
+        isDeep = path;
+        path = undefined;
+      }
+      path = typeVal(path, 'str');
+      var tmpArr = srcArr.slice();
+      for (var i = 0; i < tmpArr.length - 1; i++) {
+        for (var j = i + 1; j < tmpArr.length; j++) {
+          var isDuplicate = void 0;
+          if (path) {
+            var val1 = get(tmpArr[i], path);
+            var val2 = get(tmpArr[j], path);
+            isDuplicate = isDeep
+              ? isDeepEqual(val1, val2)
+              : val1 === val2;
+          }
+          else {
+            isDuplicate = isDeep
+              ? isDeepEqual(tmpArr[i], tmpArr[j])
+              : tmpArr[i] === tmpArr[j];
+          }
+          if (isDuplicate) {
+            tmpArr.splice(j, 1);
+            j--;
+          }
         }
-        path = _Type_1.FnType.typeVal(path, 'str');
-        var tmpArr = srcArr.slice();
-        for (var i = 0; i < tmpArr.length - 1; i++) {
-            for (var j = i + 1; j < tmpArr.length; j++) {
-                var isDuplicate = void 0;
-                if (path) {
-                    var val1 = _Object_1.FnObject.get(tmpArr[i], path);
-                    var val2 = _Object_1.FnObject.get(tmpArr[j], path);
-                    isDuplicate = isDeep
-                        ? _Object_1.FnObject.isDeepEqual(val1, val2) : val1 === val2;
-                }
-                else {
-                    isDuplicate = isDeep
-                        ? _Object_1.FnObject.isDeepEqual(tmpArr[i], tmpArr[j])
-                        : tmpArr[i] === tmpArr[j];
-                }
-                if (isDuplicate) {
-                    tmpArr.splice(j, 1);
-                    j--;
-                }
-            }
-        }
-        return tmpArr;
-    };
+      }
+      return tmpArr;
+    }
+
     /**
      * [fn.forEach] 遍历数组或类数组
-     * @param obj
+     * @param srcObj
      * @param iteratee
      */
-    FnArray.forEach = function (obj, iteratee) {
-        var length = _Object_1.FnObject.get(obj, '/length', 'num');
-        if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
-            for (var i = 0; i < length; i++) {
-                iteratee(obj[i], i);
-            }
+    function forEach(srcObj, iteratee) {
+      var length = get(srcObj, '/length', 'num');
+      if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
+        for (var i = 0; i < length; i++) {
+          iteratee(srcObj[i], i);
         }
-        else {
-            var keys = Object.keys(obj);
-            for (var i = 0; i < keys.length; i++) {
-                iteratee(obj[keys[i]], keys[i]);
-            }
+      }
+      else {
+        var keys_1 = Object.keys(srcObj);
+        for (var i = 0; i < keys_1.length; i++) {
+          iteratee(srcObj[keys_1[i]], keys_1[i]);
         }
-        return obj;
-    };
+      }
+      return srcObj;
+    }
+
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
      * @param srcArr
      * @param field
      * @param isDesc
      */
-    FnArray.sortBy = function (srcArr, field, isDesc) {
-        if (isDesc === void 0) { isDesc = false; }
-        return srcArr.slice().sort(function (row1, row2) {
-            var _a = [_Object_1.FnObject.get(row1, field), _Object_1.FnObject.get(row2, field)], rst1 = _a[0], rst2 = _a[1];
-            if (rst1 !== 0 && !rst1) {
-                return isDesc ? 1 : -1;
-            }
-            else if (rst2 !== 0 && !rst2) {
-                return isDesc ? -1 : 1;
-            }
-            else if (rst1 === rst2) {
-                return 0;
-            }
-            else {
-                return rst1 > rst2
-                    ? isDesc ? -1 : 1
-                    : isDesc ? 1 : -1;
-            }
-        });
-    };
-    FnArray.toArr = FnArray.toArray;
-    return FnArray;
-}());
-exports.FnArray = FnArray;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var intervalTimers = {};
-var timeoutTimers = {};
-var FnTime = /** @class */ (function () {
-    function FnTime() {
-    }
-    /**
-     * [fn.interval] 循环定时器
-     * @param callback
-     * @param duration
-     * @param timerId
-     */
-    FnTime.interval = function (callback, duration, timerId) {
-        if (_Type_1.FnType.typeOf(callback, 'udf')) {
-            return { stop: function (timerId) { return clearInterval(intervalTimers[timerId]); } };
+    function sortBy(srcArr, field, isDesc) {
+      if (isDesc === void 0) { isDesc = false; }
+      return srcArr.slice().sort(function (row1, row2) {
+        var _a = [get(row1, field), get(row2, field)], rst1 = _a[0], rst2 = _a[1];
+        if (rst1 !== 0 && !rst1) {
+          return isDesc ? 1 : -1;
         }
-        else if (_Type_1.FnType.typeVal(callback, 'str')) {
-            timerId = callback;
-            if (duration === false) {
-                return clearInterval(intervalTimers[timerId]);
-            }
-            else {
-                return { stop: function () { return clearInterval(intervalTimers[timerId]); } };
-            }
+        else if (rst2 !== 0 && !rst2) {
+          return isDesc ? -1 : 1;
         }
-        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
-            var initTimer = function () {
-                clearInterval(intervalTimers[timerId]);
-                intervalTimers[timerId] = setInterval(function () { return callback(); }, duration);
-                return intervalTimers[timerId];
-            };
-            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
-                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeVal(duration, 'str')) {
-                timerId = duration;
-                duration = 0;
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeOf(duration, 'num')) {
-                return setInterval(function () { return callback(); }, duration);
-            }
-            else {
-                return setInterval(function () { return callback(); });
-            }
-        }
-        var _a;
-    };
-    /**
-     * [fn.timeout] 延时定时器
-     * @param callback
-     * @param duration
-     * @param timerId
-     */
-    FnTime.timeout = function (callback, duration, timerId) {
-        if (_Type_1.FnType.typeOf(callback, 'udf')) {
-            return { stop: function (timerId) { return clearTimeout(timeoutTimers[timerId]); } };
-        }
-        else if (_Type_1.FnType.typeVal(callback, 'str')) {
-            timerId = callback;
-            if (duration === false) {
-                return clearTimeout(timeoutTimers[timerId]);
-            }
-            else {
-                return { stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
-            }
-        }
-        else if (_Type_1.FnType.typeOf(callback, 'fun')) {
-            var initTimer = function () {
-                clearTimeout(timeoutTimers[timerId]);
-                timeoutTimers[timerId] = setTimeout(function () { return callback(); }, duration);
-                return timeoutTimers[timerId];
-            };
-            if (_Type_1.FnType.typeOf(duration, 'num') && _Type_1.FnType.typeVal(timerId, 'str')) {
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeVal(duration, 'str') && _Type_1.FnType.typeOf(timerId, 'num')) {
-                _a = [timerId, duration], duration = _a[0], timerId = _a[1];
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeVal(duration, 'str')) {
-                timerId = duration;
-                duration = 0;
-                return initTimer();
-            }
-            else if (_Type_1.FnType.typeOf(duration, 'num')) {
-                return setTimeout(function () { return callback(); }, duration);
-            }
-            else {
-                return setTimeout(function () { return callback(); });
-            }
-        }
-        var _a;
-    };
-    /**
-     * [fn.defer] 延迟执行函数
-     * @param func
-     */
-    FnTime.defer = function (func) {
-        return setTimeout(func);
-    };
-    /**
-     * [fn.time] 返回一个当前时间戳
-     * @param time
-     */
-    FnTime.time = function (time) {
-        if (time instanceof Date) {
-            return time.getTime();
+        else if (rst1 === rst2) {
+          return 0;
         }
         else {
-            return (new Date(String(time)).getTime() || (new Date()).getTime());
+          return rst1 > rst2
+            ? isDesc ? -1 : 1
+            : isDesc ? 1 : -1;
         }
-    };
+      });
+    }
+
+    /**
+     * [fn.len] 获取对象自有属性的个数
+     * @arg srcObj
+     */
+    function len(srcObj) {
+      if (typeOf(srcObj, 'obj')) {
+        return keys(srcObj).length;
+      }
+      else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, '/length', 'num')) {
+        return srcObj.length;
+      }
+      else {
+        return -1;
+      }
+    }
+
+    /**
+     * [fn.has] 判断对象是否存在某自有属性
+     * @param srcObj 
+     * @param property 
+     */
+    function has(srcObj, property) {
+      return srcObj && srcObj.hasOwnProperty(property) || false;
+    }
+
+    /**
+     * [fn.get] 返回对象或子孙对象的属性，可判断类型
+     * @param srcObj [Object]
+     * @param path [string]
+     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     */
+    function get(srcObj, path) {
+      var types = [];
+      for (var _a = 2; _a < arguments.length; _a++) {
+        types[_a - 2] = arguments[_a];
+      }
+      if (!srcObj || !typeOf(path, 'str'))
+        return undefined;
+      var paths;
+      if (contains(path, '.')) {
+        paths = drop(path.split('.'));
+      }
+      else {
+        paths = drop(path.split('/'));
+      }
+      var key = paths.shift();
+      if (!key)
+        return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
+      if (paths.length) {
+        if (!typeOf(srcObj[key], 'obj', 'arr'))
+          return undefined;
+        return get.apply(void 0, [srcObj[key], paths.join('/')].concat(types));
+      }
+      else {
+        return types.length ? typeVal.apply(void 0, [srcObj[key]].concat(types)) : srcObj[key];
+      }
+    }
+
+    /**
+     * [fn.keys] 获取对象的键数组
+     * @param srcObj 
+     * @param property 
+     */
+    function keys(srcObj) {
+      return Object.keys(srcObj);
+    }
+
+    /**
+     * [fn.pick] 获取对象的部分属性
+     * @param srcObj
+     * @param predicate
+     * @param propList
+     */
+    function pick(srcObj, predicate) {
+      var propList = [];
+      for (var _a = 2; _a < arguments.length; _a++) {
+        propList[_a - 2] = arguments[_a];
+      }
+      return propsTraversal({}, srcObj, predicate, propList, false);
+    }
+
+    /**
+     * [fn.extend] 给对象赋值
+     * @param tarObj 
+     * @param srcObj 
+     * @param predicate 
+     * @param propList
+     */
+    function extend(target, srcObj, predicate) {
+      var propList = [];
+      for (var _a = 3; _a < arguments.length; _a++) {
+        propList[_a - 3] = arguments[_a];
+      }
+      if (typeVal(srcObj, 'object')) {
+        propsTraversal(target, srcObj, predicate, propList, true);
+      }
+      return target;
+    }
+
+    function propsTraversal(tarObj, srcObj, predicate, propList, isDoTraDft) {
+      if (typeOf(predicate, 'str')) {
+        propList.unshift(predicate);
+        doTraversal(tarObj, srcObj, propList);
+      }
+      else if (typeOf(predicate, 'arr')) {
+        doTraversal(tarObj, srcObj, predicate);
+      }
+      else if (typeOf(predicate, 'fun')) {
+        forIn(srcObj, function (key, val) {
+          if (predicate(key, val))
+            tarObj[key] = val;
+        });
+      }
+      else if (isDoTraDft) {
+        doTraversal(tarObj, srcObj, Object.keys(srcObj));
+      }
+      return tarObj;
+    }
+
+    function doTraversal(tarObj, srcObj, propList) {
+      propList.forEach(function (prop) {
+        if (has(srcObj, prop))
+          tarObj[prop] = srcObj[prop];
+      });
+    }
+
+    /**
+     * [fn.forIn] 遍历对象的可数自有属性
+     * @arg srcObj
+     * @arg iteratee
+     */
+    function forIn(srcObj, iteratee) {
+      return forEach(srcObj, function (val, key) { return iteratee(key, val); });
+    }
+
+    /**
+     * [fn.deepCopy] 深拷贝对象或数组
+     * @param srcObj
+     */
+    function deepCopy(srcObj) {
+      if (typeof srcObj !== 'object')
+        return srcObj;
+      var tmpObj;
+      if (srcObj instanceof Array) {
+        tmpObj = [];
+        for (var i = 0; i < srcObj.length; i++) {
+          tmpObj.push(deepCopy(srcObj[i]));
+        }
+      }
+      else {
+        tmpObj = {};
+        for (var key in srcObj) {
+          if (srcObj.hasOwnProperty(key)) {
+            tmpObj[key] = deepCopy(srcObj[key]);
+          }
+        }
+      }
+      return tmpObj;
+    }
+
+    /**
+     * [fn.isEmpty] 判断对象是否为空对象或数组
+     * @param srcObj
+     */
+    function isEmpty(srcObj) {
+      return len(srcObj) === 0;
+    }
+
+    /**
+     * [fn.isDeepEqual] 判断数组或对象是否相等
+     * @param obj1
+     * @param obj2
+     * @param isStrict
+     */
+    function isDeepEqual(obj1, obj2, isStrict) {
+      if (isStrict === void 0) {
+        isStrict = false;
+      }
+      if (typeof obj1 !== typeof obj2)
+        return false;
+      if (typeOf(obj1, 'arr') && typeOf(obj2, 'arr')) {
+        if (obj1.length !== obj2.length)
+          return false;
+        for (var i = 0; i < obj1.length; i++) {
+          if (!isDeepEqual(obj1[i], obj2[i], isStrict))
+            return false;
+        }
+        return true;
+      }
+      else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
+        if (len(obj1) !== len(obj2))
+          return false;
+        var _keys = keys(obj1);
+        if (isStrict && !isDeepEqual(_keys, keys(obj2)))
+          return false;
+        for (var i = 0; i < _keys.length; i++) {
+          if (!obj2.hasOwnProperty(_keys[i]))
+            return false;
+          if (!isDeepEqual(obj1[_keys[i]], obj2[_keys[i]], isStrict))
+            return false;
+        }
+        return true;
+      }
+      else {
+        return obj1 === obj2;
+      }
+    }
+
+    /**
+     * [fn.random] 返回一个指定范围内的随机数
+     * @param start
+     * @param end 
+     */
+    function random(start, end) {
+      if (start === undefined && end === undefined) {
+        return Math.random();
+      }
+      else if (end === undefined || start === end) {
+        return Math.floor(Math.random() * start);
+      }
+      else {
+        if (start > end) {
+          var tmpSta = start;
+          start = end;
+          end = tmpSta;
+        }
+        return Math.floor(Math.random() * (end - start) + start);
+      }
+    }
+
+    /**
+     * [fn.gid] 返回一个指定长度的随机ID
+     * @param length 
+     */
+    function gid(length) {
+      if (length === void 0) { length = 12; }
+      var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var id = '';
+      array(length).forEach(function (x) { return id += charSet[random(charSet.length)]; });
+      return id;
+    }
+
+    /**
+     * [fn.gcolor] 返回一个随机颜色色值
+     */
+    function gcolor() {
+      return '#' + ("00000" + (random(0x1000000) << 0).toString(16)).slice(-6);
+    }
+
+    var intervalTimers = {};
+    var timeoutTimers = {};
+
+    /**
+     * [fn.interval] 循环定时器
+     * @param timerId
+     * @param duration
+     * @param callback
+     */
+    function interval(timerId, duration, callback) {
+      var _b, _c, _d;
+      var isIdStr = typeVal(timerId, 'str');
+      if (isIdStr && duration === undefined)
+        return { id: intervalTimers[timerId], stop: function () { return clearInterval(intervalTimers[timerId]); } };
+      if (isIdStr && contains([null, false], duration)) {
+        clearInterval(intervalTimers[timerId]);
+        return intervalTimers[timerId] = null;
+      }
+      if (isIdStr && typeOf(duration, 'fun'))
+        _b = [duration, 0], callback = _b[0], duration = _b[1];
+      if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
+        _c = [undefined, timerId, duration], timerId = _c[0], duration = _c[1], callback = _c[2];
+      if (typeOf(timerId, 'fun'))
+        _d = [undefined, 0, timerId], timerId = _d[0], duration = _d[1], callback = _d[2];
+      if (typeOf(callback, 'fun')) {
+        if (typeOf(duration, 'num') && duration >= 0) {
+          if (isIdStr) {
+            clearInterval(intervalTimers[timerId]);
+            return intervalTimers[timerId] = setInterval(callback, duration);
+          }
+          if (timerId === undefined) {
+            return setInterval(callback, duration);
+          }
+        }
+      }
+    }
+
+    /**
+     * [fn.timeout] 延时定时器
+     * @param timerId
+     * @param duration
+     * @param callback
+     */
+    function timeout(timerId, duration, callback) {
+      var _b, _c, _d;
+      var isIdStr = typeVal(timerId, 'str');
+      if (isIdStr && duration === undefined) {
+        return { id: timeoutTimers[timerId], stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
+      }
+      if (isIdStr && contains([null, false], duration)) {
+        clearTimeout(timeoutTimers[timerId]);
+        return timeoutTimers[timerId] = null;
+      }
+      if (isIdStr && typeOf(duration, 'fun'))
+        _b = [duration, 0], callback = _b[0], duration = _b[1];
+      if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
+        _c = [undefined, timerId, duration], timerId = _c[0], duration = _c[1], callback = _c[2];
+      if (typeOf(timerId, 'fun'))
+        _d = [undefined, 0, timerId], timerId = _d[0], duration = _d[1], callback = _d[2];
+      if (typeOf(callback, 'fun')) {
+        if (typeOf(duration, 'num') && duration >= 0) {
+          if (isIdStr) {
+            clearTimeout(timeoutTimers[timerId]);
+            return timeoutTimers[timerId] = setTimeout(callback, duration);
+          }
+          if (timerId === undefined) {
+            return setTimeout(callback, duration);
+          }
+        }
+      }
+    }
+
+    /**
+     * [fn.defer] 延迟执行函数
+     * @param func 
+     */
+    function defer(func) {
+      return setTimeout(func);
+    }
+
+    /**
+     * [fn.timestamp] 返回一个当前时间戳
+     * @param time 
+     */
+    function timestamp(time) {
+      if (time instanceof Date) {
+        return time.getTime();
+      }
+      else {
+        return (new Date(String(time)).getTime() || (new Date()).getTime());
+      }
+    }
+
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr
      * @param time
      */
-    FnTime.fmtDate = function (fmtStr, time) {
-        var _date = new Date(String(time));
-        var date = _date.getTime() ? _date : new Date();
-        var obj = {
-            'M+': date.getMonth() + 1,
-            'd+': date.getDate(),
-            'h+': date.getHours(),
-            'm+': date.getMinutes(),
-            's+': date.getSeconds(),
-            'q+': Math.floor((date.getMonth() + 3) / 3),
-            'S': date.getMilliseconds()
-        };
-        if (/(y+)/.test(fmtStr)) {
-            fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    function fmtDate(fmtStr, time) {
+      var _date = new Date(String(time));
+      var date = _date.getTime() ? _date : new Date();
+      var obj = {
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds(),
+        'q+': Math.floor((date.getMonth() + 3) / 3),
+        'S': date.getMilliseconds()
+      };
+      if (/(y+)/.test(fmtStr)) {
+        fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+      }
+      for (var k in obj) {
+        if (obj.hasOwnProperty(k)) {
+          if (new RegExp("(" + k + ")").test(fmtStr)) {
+            fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
+              ? obj[k] : ("00" + obj[k]).substr((obj[k] + '').length));
+          }
         }
-        for (var k in obj) {
-            if (obj.hasOwnProperty(k)) {
-                if (new RegExp("(" + k + ")").test(fmtStr)) {
-                    fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
-                        ? obj[k] : ("00" + obj[k]).substr((obj[k] + '').length));
-                }
-            }
-        }
-        return fmtStr;
-    };
-    return FnTime;
-}());
-exports.FnTime = FnTime;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _RegExp_1 = __webpack_require__(6);
-var _Object_1 = __webpack_require__(1);
-var htmlMap = {
-    src: ['&', '<', '>', ' ', '\'', '"'],
-    map: ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;']
-};
-var FnString = /** @class */ (function () {
-    function FnString() {
+      }
+      return fmtStr;
     }
+
     /**
      * [fn.match] 类型匹配，默认情况还可以写表达式
      * @param source
      * @param cases
      * @param isExec
      */
-    FnString.match = function (source, cases, isExec) {
-        if (isExec === void 0) { isExec = true; }
-        var type_;
-        if (_Object_1.FnObject.has(cases, source)) {
-            type_ = source;
+    function match(source, cases, isExec) {
+      if (isExec === void 0) { isExec = true; }
+      var _type;
+      if (has(cases, source)) {
+        _type = source;
+      }
+      else if (has(cases, '@dft')) {
+        _type = '@dft';
+      }
+      else if (has(cases, '@default')) {
+        _type = '@default';
+      }
+      if (_type) {
+        if (cases[_type] === '@pass') {
+          var _keys = keys(cases);
+          var idx = _keys.indexOf(_type);
+          if (idx + 1 === _keys.length)
+            return undefined;
+          return match(_keys[idx + 1], cases, isExec);
         }
-        else if (_Object_1.FnObject.has(cases, '@dft')) {
-            type_ = '@dft';
+        else if (isExec && typeof cases[_type] === 'function') {
+          return len(cases[_type]) > 0 ? cases[_type](source) : cases[_type]();
         }
-        else if (_Object_1.FnObject.has(cases, '@default')) {
-            type_ = '@default';
+        else {
+          return cases[_type];
         }
-        if (type_) {
-            if (cases[type_] === '@pass') {
-                var keys = Object.keys(cases);
-                var idx = keys.indexOf(type_);
-                if (idx + 1 === keys.length)
-                    return undefined;
-                return FnString.match(keys[idx + 1], cases, isExec);
-            }
-            else if (isExec && typeof cases[type_] === 'function') {
-                return _Object_1.FnObject.len(cases[type_]) > 0 ? cases[type_](source) : cases[type_]();
-            }
-            else {
-                return cases[type_];
-            }
-        }
-        return undefined;
-    };
+      }
+      return undefined;
+    }
+
     /**
      * [fn.pretty] 转换成格式化字符串
-     * @param obj
+     * @param srcObj
      */
-    FnString.pretty = function (obj) {
-        return typeof obj === 'object' ? JSON.stringify(obj, null, 2) : String(obj);
-    };
+    function pretty(srcObj) {
+      return typeof srcObj === 'object' ? JSON.stringify(srcObj, null, 2) : String(srcObj);
+    }
+
+    var deCodes = ['&', '<', '>', ' ', '\'', '"'];
+    var enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
+
     /**
-     * [fn.encodeHtml] 编码HTML字符串 同: fn.escape
-     * @param html
+     * [fn.escape] 编码HTML字符串
+     * @param srcStr 
      */
-    FnString.encodeHtml = function (html) {
-        htmlMap.src.forEach(function (src, i) {
-            html = html.replace(new RegExp(src, 'g'), htmlMap.map[i]);
-        });
-        return html;
-    };
+    function escape(srcStr) {
+      deCodes.forEach(function (str, i) {
+        srcStr = srcStr.replace(new RegExp(str, 'g'), enCodes[i]);
+      });
+      return srcStr;
+    }
+
     /**
-     * [fn.decodeHtml] 解码HTML字符串 同: fn.unescape
-     * @param html
+     * [fn.unescape] 解码HTML字符串
+     * @param srcStr 
      */
-    FnString.decodeHtml = function (html) {
-        htmlMap.map.forEach(function (map, i) {
-            html = html.replace(new RegExp(map, 'g'), htmlMap.src[i]);
-        });
-        return html;
-    };
+    function unescape(srcStr) {
+      enCodes.forEach(function (str, i) {
+        srcStr = srcStr.replace(new RegExp(str, 'g'), deCodes[i]);
+      });
+      return srcStr;
+    }
+
     /**
      * [fn.capitalize] 字符串首字母大写
-     * @param str
+     * @param srcStr 
      */
-    FnString.capitalize = function (str) {
-        return str && typeof str === 'string'
-            ? str[0].toUpperCase() + str.substr(1) : str;
-    };
+    function capitalize(srcStr) {
+      return srcStr && typeof srcStr === 'string'
+        ? srcStr[0].toUpperCase() + srcStr.substr(1) : srcStr;
+    }
+
     /**
-   * [fn.fmtCurrency] 格式化显示货币
-   * @param number
-   * @param digit
-   * @returns {string}
-   */
-    FnString.fmtCurrency = function (number, digit) {
-        if (digit === void 0) { digit = 2; }
-        var nbArr = String(number.toFixed(digit)).split('.');
-        var integer = nbArr[0];
-        var decimal = nbArr.length > 1 ? nbArr[1] : '';
-        var integerStr, spn, sti, i;
-        spn = Math.floor(integer.length / 3);
-        sti = integer.length % 3;
-        integerStr = integer.substr(0, sti);
-        for (i = 0; i < spn; i++) {
-            integerStr += i === 0 && !integerStr
-                ? integer.substr(sti, 3)
-                : ',' + integer.substr(sti, 3);
-            sti += 3;
-        }
-        return decimal ? integerStr + '.' + decimal : integerStr;
-    };
-    /**
-     * [fn.cutString] 裁切字符串到指定长度
-     * @param str
-     * @param len
+     * [fn.fmtCurrency] 格式化显示货币
+     * @param number
+     * @param digit
      * @returns {string}
      */
-    FnString.cutString = function (str, len) {
-        var tmpStr = '';
-        var count = 0;
-        var tmpChar;
-        for (var i = 0; i < str.length; i++) {
-            if (count >= len)
-                break;
-            tmpChar = str.substr(i, 1);
-            tmpStr += tmpChar;
-            count += _RegExp_1.FnRegExp.matchPattern(tmpChar, 'cnChar') ? 2 : 1;
-        }
-        return tmpStr + '...';
-    };
+    function fmtCurrency(number, digit) {
+      if (digit === void 0) { digit = 2; }
+      var nbArr = String(number.toFixed(digit)).split('.');
+      var integer = nbArr[0];
+      var decimal = nbArr.length > 1 ? nbArr[1] : '';
+      var integerStr, spn, sti, i;
+      spn = Math.floor(integer.length / 3);
+      sti = integer.length % 3;
+      integerStr = integer.substr(0, sti);
+      for (i = 0; i < spn; i++) {
+        integerStr += i === 0 && !integerStr
+          ? integer.substr(sti, 3)
+          : ',' + integer.substr(sti, 3);
+        sti += 3;
+      }
+      return decimal ? integerStr + '.' + decimal : integerStr;
+    }
+
+    /**
+     * [fn.cutString] 裁切字符串到指定长度
+     * @param srcStr
+     * @param length
+     * @returns {string}
+     */
+    function cutString(srcStr, length) {
+      var tmpStr = '';
+      var count = 0;
+      var tmpChar;
+      for (var i = 0; i < srcStr.length; i++) {
+        if (count >= length)
+          break;
+        tmpChar = srcStr.substr(i, 1);
+        tmpStr += tmpChar;
+        count += matchPattern(tmpChar, 'cnChar') ? 2 : 1;
+      }
+      return tmpStr + '...';
+    }
+
     /**
      * [fn.parseQueryStr] 解析Url参数成对象
      * @param url [string]
      */
-    FnString.parseQueryStr = function (url) {
-        if (url.indexOf('?') === -1)
-            return {};
-        var queryStr = url.substring(url.lastIndexOf('?') + 1);
-        if (queryStr === '')
-            return {};
-        var querys = queryStr.split('&');
-        var params = {};
-        for (var i = 0; i < querys.length; i++) {
-            var kw = querys[i].split('=');
-            params[decodeURIComponent(kw[0])] = decodeURIComponent(kw[1] || '');
-        }
-        return params;
-    };
+    function parseQueryStr(url) {
+      if (!contains(url, '?'))
+        return {};
+      var queryStr = url.substring(url.lastIndexOf('?') + 1);
+      if (queryStr === '')
+        return {};
+      var querys = queryStr.split('&');
+      var params = {};
+      for (var i = 0; i < querys.length; i++) {
+        var kw = querys[i].split('=');
+        params[decodeURIComponent(kw[0])] = decodeURIComponent(kw[1] || '');
+      }
+      return params;
+    }
+
     /**
      * [fn.stringifyQueryStr] 把对象编译成Url参数
      * @param obj [string]
      */
-    FnString.stringifyQueryStr = function (obj) {
-        if (!_Type_1.FnType.typeOf(obj, ['obj', 'arr']))
-            return '';
-        obj = JSON.parse(JSON.stringify(obj));
-        var pairs = [];
-        _Object_1.FnObject.forIn(obj, function (key, value) {
-            if (_Type_1.FnType.typeOf(value, 'arr')) {
-                value.forEach(function (v, i) {
-                    var _k = encodeURIComponent(key + "[" + i + "]");
-                    pairs.push(_k + "=" + encodeURIComponent(v));
-                });
-            }
-            else {
-                var _v = encodeURIComponent(value);
-                pairs.push(encodeURIComponent(key) + "=" + _v);
-            }
-        });
-        return '?' + pairs.join('&');
-    };
-    FnString.escape = FnString.encodeHtml;
-    FnString.unescape = FnString.decodeHtml;
-    return FnString;
-}());
-exports.FnString = FnString;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERSION = 'v2.2.10';
-exports.MAIN_METHODS = [
-    /* Type */
-    'typeOf',
-    'typeVal',
-    /* Array */
-    'array',
-    'toArr',
-    'toArray',
-    'find',
-    'filter',
-    'reject',
-    'contains',
-    'drop',
-    'flatten',
-    'pluck',
-    'uniq',
-    'indexOf',
-    'forEach',
-    'sortBy',
-    /* Object */
-    'len',
-    'has',
-    'get',
-    'pick',
-    'forIn',
-    'extend',
-    'deepCopy',
-    'isEmpty',
-    'isDeepEqual',
-    /* Math */
-    'random',
-    'rdid',
-    'rdcolor',
-    /* Time */
-    'interval',
-    'timeout',
-    'defer',
-    'time',
-    'fmtDate',
-    /* String */
-    'match',
-    'pretty',
-    'escape',
-    'unescape',
-    'encodeHtml',
-    'decodeHtml',
-    'capitalize',
-    'fmtCurrency',
-    'cutString',
-    'parseQueryStr',
-    'stringifyQueryStr',
-    /* RegExp */
-    'getPattern',
-    'matchPattern',
-    /* Function */
-    'throttle',
-    'debounce',
-    /* Log */
-    'log'
-];
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var FnRegExp = /** @class */ (function () {
-    function FnRegExp() {
+    function stringifyQueryStr(obj) {
+      if (!typeOf(obj, ['obj', 'arr']))
+        return '';
+      obj = JSON.parse(JSON.stringify(obj));
+      var pairs = [];
+      forIn(obj, function (key, value) {
+        if (typeOf(value, 'arr')) {
+          value.forEach(function (v, i) {
+            var _k = encodeURIComponent(key + "[" + i + "]");
+            pairs.push(_k + "=" + encodeURIComponent(v));
+          });
+        }
+        else {
+          var _v = encodeURIComponent(value);
+          pairs.push(encodeURIComponent(key) + "=" + _v);
+        }
+      });
+      return '?' + pairs.join('&');
     }
+
+    // 匹配汉字
+    var cnCharPattern = /[\u4e00-\u9fa5]+/;
+    // 匹配双字节字符
+    var dblBitCharPattern = /[^x00-xff]/;
+    // 匹配Email
+    var emailPattern = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+    // 匹配中国大陆手机号码
+    var mobPhonePattern = /(\+?0?86\-?)?1[3456789]\d{9}/;
+    // 匹配中国大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
+    var telPhonePattern = /((d{3,4})|d{3,4}-)?d{7,8}/;
+    // 匹配中国大陆身份证
+    var idCardPattern = /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/;
+    // 匹配Base64编码格式
+    var base64CodePattern = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
+    // 匹配域名
+    var domainPattern = /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/;
+    // 匹配端口号
+    var portPattern = /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/;
+    // 匹配IP
+    var ipPattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/;
+    // 匹配IP Url
+    var ipUrlPattern = new RegExp("http(s)?://" + ipPattern.source + "(:" + portPattern.source + ")?");
+    // 匹配Domain Url
+    var domainUrlPattern = new RegExp("http(s)?://" + domainPattern.source + "(:" + portPattern.source + ")?");
+    // 匹配Url
+    var urlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + ")(:" + portPattern.source + ")?");
+    // 匹配必需带端口的IP Url
+    var ipWithPortUrlPattern = new RegExp("http(s)?://" + ipPattern.source + ":" + portPattern.source);
+    // 匹配必需带端口的Domain Url
+    var domainWithPortUrlPattern = new RegExp("http(s)?://" + domainPattern.source + ":" + portPattern.source);
+    // 匹配必需带端口的Url
+    var withPortUrlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + "):" + portPattern.source);
+
     /**
-     * 与一个或几个通用正则匹配
+     * [fn.getPattern]与一个或几个通用正则匹配
      * @param type
      * @param isNoLimit
      * @returns {pattern|undefined}
      */
-    FnRegExp.getPattern = function (type, isNoLimit) {
-        if (isNoLimit === void 0) { isNoLimit = false; }
-        if (!type)
-            return;
-        var patternObj = {
-            cnChar: FnRegExp.cnCharPattern,
-            dblBitChar: FnRegExp.dblBitCharPattern,
-            mobPhone: FnRegExp.mobPhonePattern,
-            telPhone: FnRegExp.telPhonePattern,
-            email: FnRegExp.emailPattern,
-            idCard: FnRegExp.idCardPattern,
-            base64Code: FnRegExp.base64CodePattern,
-            mac: FnRegExp.macPattern,
-            domain: FnRegExp.domainPattern,
-            port: FnRegExp.portPattern,
-            ip: FnRegExp.ipPattern,
-            ipv4: FnRegExp.ipv4Pattern,
-            ipv6: FnRegExp.ipv6Pattern,
-            ipv4IpRange: FnRegExp.ipv4IpRangePattern,
-            ipv6IpRange: FnRegExp.ipv6IpRangePattern,
-            ipv4Cidr: FnRegExp.ipv4CidrPattern,
-            ipv6Cidr: FnRegExp.ipv6CidrPattern,
-            ipv4Url: FnRegExp.ipv4UrlPattern,
-            ipv6Url: FnRegExp.ipv6UrlPattern,
-            domainUrl: FnRegExp.domainUrlPattern,
-            url: FnRegExp.urlPattern,
-            ipv4WithPortUrl: FnRegExp.ipv4WithPortUrlPattern,
-            ipv6WithPortUrl: FnRegExp.ipv6WithPortUrlPattern,
-            domainWithPortUrl: FnRegExp.domainWithPortUrlPattern,
-            withPortUrl: FnRegExp.withPortUrlPattern
-        };
-        patternObj['patternList'] = Object.keys(patternObj);
-        return patternObj.hasOwnProperty(type) && patternObj[type]
-            ? type === 'patternList'
-                ? patternObj[type]
-                : isNoLimit
-                    ? new RegExp(patternObj[type].source)
-                    : new RegExp("^(" + patternObj[type].source + ")$")
-            : undefined;
-    };
+    function getPattern(type, isNoLimit) {
+      if (isNoLimit === void 0) { isNoLimit = false; }
+      if (!type)
+        return;
+      var patternObj = {
+        cnChar: cnCharPattern,
+        dblBitChar: dblBitCharPattern,
+        mobPhone: mobPhonePattern,
+        telPhone: telPhonePattern,
+        email: emailPattern,
+        idCard: idCardPattern,
+        base64Code: base64CodePattern,
+        domain: domainPattern,
+        port: portPattern,
+        ip: ipPattern,
+        ipUrl: ipUrlPattern,
+        domainUrl: domainUrlPattern,
+        url: urlPattern,
+        ipWithPortUrl: ipWithPortUrlPattern,
+        domainWithPortUrl: domainWithPortUrlPattern,
+        withPortUrl: withPortUrlPattern
+      };
+      patternObj['patternList'] = Object.keys(patternObj);
+      return patternObj.hasOwnProperty(type) && patternObj[type]
+        ? type === 'patternList'
+          ? patternObj[type]
+          : isNoLimit
+            ? new RegExp(patternObj[type].source)
+            : new RegExp("^(" + patternObj[type].source + ")$")
+        : undefined;
+    }
+
     /**
-     * 获取一个通用的正则表达式
+     * [fn.matchPattern]获取一个通用的正则表达式
      * @param src
      * @param type
      * @param isNoLimit
      */
-    FnRegExp.matchPattern = function (src, type, isNoLimit) {
-        if (!src || !type)
-            return null;
-        if (type instanceof Array) {
-            var matchRst_1 = null;
-            type.forEach(function (item) {
-                var pattern = FnRegExp.getPattern(item, isNoLimit);
-                if (!matchRst_1 && pattern)
-                    matchRst_1 = src.match(pattern);
-            });
-            return matchRst_1;
-        }
-        else if (typeof type === 'string') {
-            var pattern = FnRegExp.getPattern(type, isNoLimit);
-            return pattern && src.match(pattern) || null;
-        }
-    };
-    /* tslint:disable */
-    // 匹配汉字
-    FnRegExp.cnCharPattern = /[\u4e00-\u9fa5]+/;
-    // 匹配双字节字符
-    FnRegExp.dblBitCharPattern = /[^x00-xff]/;
-    // 匹配Email
-    FnRegExp.emailPattern = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-    // 匹配中国大陆手机号码
-    FnRegExp.mobPhonePattern = /(\+?0?86\-?)?1[3456789]\d{9}/;
-    // 匹配中国大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
-    FnRegExp.telPhonePattern = /((d{3,4})|d{3,4}-)?d{7,8}/;
-    // 匹配中国大陆身份证
-    FnRegExp.idCardPattern = /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/;
-    // 匹配Base64编码格式
-    FnRegExp.base64CodePattern = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
-    // 匹配Mac地址
-    FnRegExp.macPattern = /[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}/;
-    // 匹配域名
-    FnRegExp.domainPattern = /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/;
-    // 匹配端口号
-    FnRegExp.portPattern = /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/;
-    // 匹配IPv4地址
-    FnRegExp.ipv4Pattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/;
-    // 匹配IPv6地址
-    FnRegExp.ipv6Pattern = new RegExp('' +
-        '([\\da-fA-F]{1,4}:){6}((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|::([\\da-fA-F]{1,4}:){0,4}((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|([\\da-fA-F]{1,4}:):([\\da-fA-F]{1,4}:){0,3}((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|([\\da-fA-F]{1,4}:){2}:([\\da-fA-F]{1,4}:){0,2}((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|([\\da-fA-F]{1,4}:){3}:([\\da-fA-F]{1,4}:){0,1}((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|([\\da-fA-F]{1,4}:){4}:((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' +
-        '|([\\da-fA-F]{1,4}:){7}[\\da-fA-F]{1,4}' +
-        '|:((:[\\da-fA-F]{1,4}){1,6}|:)' +
-        '|[\\da-fA-F]{1,4}:((:[\\da-fA-F]{1,4}){1,5}|:)' +
-        '|([\\da-fA-F]{1,4}:){2}((:[\\da-fA-F]{1,4}){1,4}|:)' +
-        '|([\\da-fA-F]{1,4}:){3}((:[\\da-fA-F]{1,4}){1,3}|:)' +
-        '|([\\da-fA-F]{1,4}:){4}((:[\\da-fA-F]{1,4}){1,2}|:)' +
-        '|([\\da-fA-F]{1,4}:){5}:([\\da-fA-F]{1,4})?' +
-        '|([\\da-fA-F]{1,4}:){6}:');
-    // 匹配IP
-    FnRegExp.ipPattern = new RegExp("(" + FnRegExp.ipv4Pattern.source + "|" + FnRegExp.ipv6Pattern.source + ")");
-    // 匹配IPv4 cidr
-    FnRegExp.ipv4CidrPattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)(\/([1-9]|1[0-9]|2[0-9]|3[0-2]))/;
-    // 匹配IPV6 cidr
-    FnRegExp.ipv6CidrPattern = new RegExp('s*(' +
-        '(([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))' +
-        '|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))' +
-        '|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))' +
-        ')(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))');
-    // 匹配IPv4范围
-    FnRegExp.ipv4IpRangePattern = new RegExp("((" + FnRegExp.ipv4Pattern.source + ")-(" + FnRegExp.ipv4Pattern.source + ");)*(" + FnRegExp.ipv4Pattern.source + ")-(" + FnRegExp.ipv4Pattern.source + ")");
-    // 匹配IPv6范围
-    FnRegExp.ipv6IpRangePattern = new RegExp("((" + FnRegExp.ipv6Pattern.source + ")-(" + FnRegExp.ipv6Pattern.source + ");)*(" + FnRegExp.ipv6Pattern.source + ")-(" + FnRegExp.ipv6Pattern.source + ")");
-    // 匹配IPv4 Url
-    FnRegExp.ipv4UrlPattern = new RegExp("http(s)?://" + FnRegExp.ipv4Pattern.source + "(:" + FnRegExp.portPattern.source + ")?");
-    // 匹配IPv6 Url
-    FnRegExp.ipv6UrlPattern = new RegExp("http(s)?://\\[(" + FnRegExp.ipv6Pattern.source + ")\\](:" + FnRegExp.portPattern.source + ")?");
-    // 匹配Domain Url
-    FnRegExp.domainUrlPattern = new RegExp("http(s)?://" + FnRegExp.domainPattern.source + "(:" + FnRegExp.portPattern.source + ")?");
-    // 匹配Url
-    FnRegExp.urlPattern = new RegExp("http(s)?://(" + FnRegExp.ipv4Pattern.source + "|\\[(" + FnRegExp.ipv6Pattern.source + ")\\]|" + FnRegExp.domainPattern.source + ")(:" + FnRegExp.portPattern.source + ")?");
-    // 匹配必需带端口的IPv4 Url
-    FnRegExp.ipv4WithPortUrlPattern = new RegExp("http(s)?://" + FnRegExp.ipv4Pattern.source + ":" + FnRegExp.portPattern.source);
-    // 匹配必需带端口的IPv6 Url
-    FnRegExp.ipv6WithPortUrlPattern = new RegExp("http(s)?://\\[(" + FnRegExp.ipv6Pattern.source + ")\\]:" + FnRegExp.portPattern.source);
-    // 匹配必需带端口的Domain Url
-    FnRegExp.domainWithPortUrlPattern = new RegExp("http(s)?://" + FnRegExp.domainPattern.source + ":" + FnRegExp.portPattern.source);
-    // 匹配必需带端口的Url
-    FnRegExp.withPortUrlPattern = new RegExp("http(s)?://(" + FnRegExp.ipv4Pattern.source + "|\\[(" + FnRegExp.ipv6Pattern.source + ")\\]|" + FnRegExp.domainPattern.source + "):" + FnRegExp.portPattern.source);
-    return FnRegExp;
-}());
-exports.FnRegExp = FnRegExp;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Array_1 = __webpack_require__(2);
-var _Object_1 = __webpack_require__(1);
-var _String_1 = __webpack_require__(4);
-var _Time_1 = __webpack_require__(3);
-var _Type_1 = __webpack_require__(0);
-var funclib_conf_1 = __webpack_require__(5);
-var COLOR_LIST = {
-    'grey': '\x1B[90m%s\x1B[0m',
-    'blue': '\x1B[34m%s\x1B[0m',
-    'cyan': '\x1B[36m%s\x1B[0m',
-    'green': '\x1B[32m%s\x1B[0m',
-    'magenta': '\x1B[35m%s\x1B[0m',
-    'red': '\x1B[31m%s\x1B[0m',
-    'yellow': '\x1B[33m%s\x1B[0m',
-    'default': '%s\x1B[0m'
-};
-var getIsFmt = function (configs) { return _Object_1.FnObject.has(configs, 'isFmt') ? configs.isFmt : true; };
-var getTitle = function (configs) { return _Object_1.FnObject.get(configs, '/title') || "funclib(" + funclib_conf_1.VERSION + ")"; };
-var FnLog = /** @class */ (function () {
-    function FnLog() {
+    function matchPattern(src, type, isNoLimit) {
+      if (!src || !type)
+        return null;
+      if (type instanceof Array) {
+        var matchRst_1 = null;
+        type.forEach(function (item) {
+          var pattern = getPattern(item, isNoLimit);
+          if (!matchRst_1 && pattern)
+            matchRst_1 = src.match(pattern);
+        });
+        return matchRst_1;
+      }
+      else if (typeof type === 'string') {
+        var pattern = getPattern(type, isNoLimit);
+        return pattern && src.match(pattern) || null;
+      }
     }
-    /**
-     * [fn.chalk] 在控制台打印有颜色的字符串
-     * @param value
-     * @param color
-     */
-    FnLog.chalk = function (value, color) {
-        if (!(color in COLOR_LIST))
-            color = 'grey';
-        return COLOR_LIST[color].replace(/%s/, value);
-    };
-    /**
-     * [fn.log] 控制台格式化打印值
-     * @param value
-     * @param title
-     * @param configs
-     * {title: string, width: number [20-100], isFmt: boolean
-     * pre: boolean = false, end: boolean = false
-     * color: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
-     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'}
-     */
-    FnLog.log = function (value, title, configs) {
-        var isFmt;
-        if (_Type_1.FnType.typeVal(title, 'str')) {
-            if (_Type_1.FnType.typeOf(configs, 'bol')) {
-                isFmt = configs;
-                configs = undefined;
-            }
-            else {
-                isFmt = getIsFmt(configs);
-            }
-        }
-        else if (_Type_1.FnType.typeOf(title, 'bol')) {
-            isFmt = title;
-            title = getTitle(configs);
-        }
-        else if (_Type_1.FnType.typeOf(title, 'obj')) {
-            configs = title;
-            isFmt = getIsFmt(configs);
-            title = getTitle(configs);
-        }
-        else {
-            isFmt = true;
-            title = "funclib(" + funclib_conf_1.VERSION + ")";
-        }
-        // Value
-        value = _String_1.FnString.pretty(value);
-        // Title
-        var time = "[" + _Time_1.FnTime.fmtDate('hh:mm:ss') + "] ";
-        title = title.replace(/\n/mg, '');
-        var originTtLength = (time + title + '[] ').length;
-        if (!isFmt)
-            title = "( " + title + " )";
-        time = FnLog.chalk(time);
-        var titlec = _Object_1.FnObject.get(configs, '/ttColor');
-        var valuec = _Object_1.FnObject.get(configs, '/color');
-        title = FnLog.chalk(title, titlec in COLOR_LIST && titlec || 'green');
-        value = FnLog.chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
-        title = time + title;
-        // Line width
-        var width = _Object_1.FnObject.get(configs, '/width');
-        if (!width || width < 30 || width > 100)
-            width = 66;
-        // Fix title width
-        if (originTtLength > width) {
-            var colorEnd = '\x1B[0m';
-            var fixLength = title.length - originTtLength - colorEnd.length;
-            title = _String_1.FnString.cutString(title, width + fixLength - 3) + colorEnd;
-        }
-        else if (isFmt) {
-            title = _Array_1.FnArray.array((width - originTtLength) / 2, ' ').join('') + title;
-        }
-        // Do log
-        if (!isFmt) {
-            console.log(title + ":\n" + value);
-        }
-        else {
-            var sgLine_1 = '', dbLine_1 = '';
-            _Array_1.FnArray.array(width).forEach(function (x) {
-                sgLine_1 += '-';
-                dbLine_1 += '=';
-            });
-            if (_Object_1.FnObject.get(configs, '/pre', 'bol')) {
-                console.log('\n' + dbLine_1);
-                console.log(title);
-                console.log(sgLine_1);
-            }
-            else if (_Object_1.FnObject.get(configs, '/end', 'bol')) {
-                console.log(dbLine_1 + '\n');
-            }
-            else {
-                console.log('\n' + dbLine_1);
-                console.log(title);
-                console.log(sgLine_1);
-                console.log(value);
-                console.log(dbLine_1 + '\n');
-            }
-        }
-    };
-    return FnLog;
-}());
-exports.FnLog = FnLog;
 
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _Array_1 = __webpack_require__(2);
-var _Object_1 = __webpack_require__(1);
-var _String_1 = __webpack_require__(4);
-var _Time_1 = __webpack_require__(3);
-var _RegExp_1 = __webpack_require__(6);
-var _Math_1 = __webpack_require__(10);
-var _Function_1 = __webpack_require__(11);
-var _FileSys_1 = __webpack_require__(12);
-var _Progress_1 = __webpack_require__(13);
-var _Logs_1 = __webpack_require__(8);
-var funclib_conf_1 = __webpack_require__(5);
-var fnModules = [
-    _Type_1.FnType, _Array_1.FnArray, _Object_1.FnObject, _String_1.FnString, _Time_1.FnTime,
-    _RegExp_1.FnRegExp, _Math_1.FnMath, _Function_1.FnFunction, _FileSys_1.FnFileSys, _Logs_1.FnLog
-];
-var methods = funclib_conf_1.MAIN_METHODS.concat(['chalk', 'rd', 'wt', 'cp', 'mv', 'rm', 'mk']);
-var _fn = {};
-fnModules.forEach(function (fnModule) {
-    _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
-        if (methods.indexOf(mtd) > -1)
-            _fn[mtd] = function () {
-                var args = arguments;
-                args = Object.keys(args).map(function (key) { return args[key]; });
-                return _fn.data !== undefined ? method.apply(void 0, [_fn.data].concat(args)) : method.apply(void 0, args);
-            };
-    });
-});
-var fn = function (data) {
-    _fn.data = data;
-    return _fn;
-};
-fnModules.forEach(function (fnModule) {
-    _Object_1.FnObject.forIn(fnModule, function (mtd, method) {
-        if (methods.indexOf(mtd) > -1)
-            fn[mtd] = method;
-    });
-});
-fn.version = funclib_conf_1.VERSION;
-fn.progress = {
-    start: _Progress_1.FnProgress.start,
-    stop: _Progress_1.FnProgress.stop
-};
-module.exports = fn;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Array_1 = __webpack_require__(2);
-var FnMath = /** @class */ (function () {
-    function FnMath() {
-    }
-    /**
-     * [fn.random] 返回一个指定范围内的随机数
-     * @param sta
-     * @param end
-     */
-    FnMath.random = function (sta, end) {
-        if (sta === undefined && end === undefined) {
-            return Math.random();
-        }
-        else if (end === undefined || sta === end) {
-            return Math.floor(Math.random() * sta);
-        }
-        else {
-            if (sta > end) {
-                var tmpSta = sta;
-                sta = end;
-                end = tmpSta;
-            }
-            return Math.floor(Math.random() * (end - sta) + sta);
-        }
-    };
-    /**
-     * [fn.rdid] 返回一个指定长度的随机ID
-     * @param len
-     */
-    FnMath.rdid = function (len) {
-        if (len === void 0) { len = 12; }
-        var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var id = '';
-        _Array_1.FnArray.array(len).forEach(function (x) { return id += charSet[FnMath.random(charSet.length)]; });
-        return id;
-    };
-    /**
-     * [fn.rdColor] 返回一个随机颜色色值
-     */
-    FnMath.rdcolor = function () {
-        return '#' + ("00000" + (FnMath.random(0x1000000) << 0).toString(16)).slice(-6);
-    };
-    return FnMath;
-}());
-exports.FnMath = FnMath;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Time_1 = __webpack_require__(3);
-var FnFunction = /** @class */ (function () {
-    function FnFunction() {
-    }
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
      * @param  func
      * @param  wait
      * @param  options
      */
-    FnFunction.throttle = function (func, wait, options) {
-        var timeout, context, args, result;
-        var previous = 0;
-        if (!options)
-            options = {};
-        var throttled = function () {
-            var now = _Time_1.FnTime.time();
-            if (!previous && options.leading === false)
-                previous = now;
-            var remaining = wait - (now - previous);
-            context = this;
-            args = arguments;
-            if (remaining <= 0 || remaining > wait) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                previous = now;
-                result = func.apply(context, args);
-                if (!timeout)
-                    context = args = null;
-            }
-            else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(function () {
-                    previous = options.leading === false ? 0 : _Time_1.FnTime.time();
-                    timeout = null;
-                    result = func.apply(context, args);
-                    if (!timeout)
-                        context = args = null;
-                }, remaining);
-            }
-            return result;
-        };
-        throttled.cancel = function () {
-            clearTimeout(timeout);
-            previous = 0;
-            timeout = context = args = null;
-        };
-        return throttled;
-    };
+    function throttle(func, wait, options) {
+      var leading = true,
+          trailing = true;
+
+      if (typeof func != 'function') {
+        throw new TypeError('Expected a function');
+      }
+      if (typeOf(options, 'obj')) {
+        leading = 'leading' in options ? !!options.leading : leading;
+        trailing = 'trailing' in options ? !!options.trailing : trailing;
+      }
+      return debounce(func, wait, {
+        'leading': leading,
+        'maxWait': wait,
+        'trailing': trailing
+      });
+    }
+
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
      * @param func
      * @param wait
      * @param immediate
      */
-    FnFunction.debounce = function (func, wait, immediate) {
-        if (immediate === void 0) { immediate = false; }
-        var timeout, result;
-        var later = function (context, args) {
-            timeout = null;
-            if (args)
-                result = func.apply(context, args);
-        };
-        var delay = function (func, wait) {
-            var args = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                args[_i - 2] = arguments[_i];
-            }
-            return setTimeout(function () {
-                return func.apply(null, args);
-            }, wait);
-        };
-        var debounced = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (timeout)
-                clearTimeout(timeout);
-            if (immediate) {
-                var callNow = !timeout;
-                timeout = setTimeout(later, wait);
-                if (callNow)
-                    result = func.apply(this, args);
-            }
-            else {
-                timeout = delay(later, wait, this, args);
-            }
-            return result;
-        };
-        debounced.cancel = function () {
-            clearTimeout(timeout);
-            timeout = null;
-        };
-        return debounced;
-    };
-    return FnFunction;
-}());
-exports.FnFunction = FnFunction;
+    function debounce(func, wait, options) {
+      var lastArgs,
+          lastThis,
+          maxWait,
+          result,
+          timerId,
+          lastCallTime,
+          lastInvokeTime = 0,
+          leading = false,
+          maxing = false,
+          trailing = true;
 
+      if (typeof func != 'function') {
+        throw new TypeError('Expected a function');
+      }
+      wait = Number(wait) || 0;
 
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
+      if (typeOf(options, 'obj')) {
+        leading = !!options.leading;
+        maxing = 'maxWait' in options;
+        maxWait = maxing ? Math.max(Number(options.maxWait) || 0, wait) : maxWait;
+        trailing = 'trailing' in options ? !!options.trailing : trailing;
+      }
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var fs = eval('require("fs")');
-var path = eval('require("path")');
-var execSync = eval('require("child_process").execSync');
-var process = global.process;
-var FnFileSys = /** @class */ (function () {
-    function FnFileSys() {
+      function invokeFunc(time) {
+        var args = lastArgs,
+            thisArg = lastThis;
+
+        lastArgs = lastThis = undefined;
+        lastInvokeTime = time;
+        result = func.apply(thisArg, args);
+        return result;
+      }
+
+      function leadingEdge(time) {
+        lastInvokeTime = time;
+        timerId = setTimeout(timerExpired, wait);
+        return leading ? invokeFunc(time) : result;
+      }
+
+      function remainingWait(time) {
+        var timeSinceLastCall = time - lastCallTime,
+            timeSinceLastInvoke = time - lastInvokeTime,
+            timeWaiting = wait - timeSinceLastCall;
+
+        return maxing
+          ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+          : timeWaiting;
+      }
+
+      function shouldInvoke(time) {
+        var timeSinceLastCall = time - lastCallTime,
+            timeSinceLastInvoke = time - lastInvokeTime;
+
+        return lastCallTime === undefined
+          || timeSinceLastCall >= wait
+          || timeSinceLastCall < 0
+          || maxing && timeSinceLastInvoke >= maxWait;
+      }
+
+      function timerExpired() {
+        var time = Date.now();
+        if (shouldInvoke(time))
+          return trailingEdge(time);
+        timerId = setTimeout(timerExpired, remainingWait(time));
+      }
+
+      function trailingEdge(time) {
+        timerId = undefined;
+        if (trailing && lastArgs)
+          return invokeFunc(time);
+        lastArgs = lastThis = undefined;
+        return result;
+      }
+
+      function debounced() {
+        var time = Date.now(),
+            isInvoking = shouldInvoke(time);
+
+        lastArgs = arguments;
+        lastThis = this;
+        lastCallTime = time;
+
+        if (isInvoking) {
+          if (timerId === undefined) return leadingEdge(lastCallTime);
+          if (maxing) {
+            // Handle invocations in a tight loop.
+            timerId = setTimeout(timerExpired, wait);
+            return invokeFunc(lastCallTime);
+          }
+        }
+        if (timerId === undefined)
+          timerId = setTimeout(timerExpired, wait);
+        return result;
+      }
+
+      debounced.cancel = function () {
+        if (timerId !== undefined)
+          clearTimeout(timerId);
+        lastInvokeTime = 0;
+        lastArgs = lastCallTime = lastThis = timerId = undefined;
+      };
+
+      debounced.flush = function () {
+        return timerId === undefined ? result : trailingEdge(Date.now());
+      };
+
+      return debounced;
     }
-    /**
-     * [fn.cp] 复制文件或文件夹
-     * @param src
-     * @param dist
-     */
-    FnFileSys.cp = function (src, dist) {
-        if (fs.existsSync(src)) {
-            if (fs.statSync(src).isFile()) {
-                fs.createReadStream(src).pipe(fs.createWriteStream(dist));
-            }
-            else if (fs.statSync(src).isDirectory()) {
-                FnFileSys.mk(dist);
-                var subSrcs = fs.readdirSync(src);
-                subSrcs.forEach(function (file) {
-                    var subSrc = path.join(src, file);
-                    var subDist = path.join(dist, file);
-                    FnFileSys.cp(subSrc, subDist);
-                });
-            }
-        }
-    };
-    /**
-     * [fn.mv] 移动文件或文件夹
-     * @param src
-     * @param dist
-     */
-    FnFileSys.mv = function (src, dist) {
-        try {
-            fs.renameSync(src, dist);
-        }
-        catch (e) {
-            FnFileSys.cp(src, dist);
-            FnFileSys.rm(src);
-        }
-    };
-    /**
-     * [fn.rm] 删除文件或文件夹
-     * @param src
-     */
-    FnFileSys.rm = function (src) {
-        if (fs.existsSync(src)) {
-            if (fs.statSync(src).isFile()) {
-                fs.unlinkSync(src);
-            }
-            else if (fs.statSync(src).isDirectory()) {
-                var subSrcs = fs.readdirSync(src);
-                subSrcs.forEach(function (file) {
-                    var subSrc = path.join(src, file);
-                    FnFileSys.rm(subSrc);
-                });
-                try {
-                    fs.rmdirSync(src);
-                }
-                catch (e) {
-                    setTimeout(function () {
-                        if (/win/.test(process.platform)) {
-                            var absSrc = path.resolve(src);
-                            execSync("rd /s /q " + absSrc);
-                        }
-                        else {
-                            execSync("rm -rf " + src);
-                        }
-                    }, 500);
-                }
-            }
-        }
-    };
-    /**
-     * [fn.mk] 创建文件夹
-     * @param dist
-     */
-    FnFileSys.mk = function (dist) {
-        var absDist = path.resolve(dist);
-        if (!fs.existsSync(absDist)) {
-            try {
-                fs.mkdirSync(absDist);
-            }
-            catch (e) {
-                FnFileSys.mk(path.dirname(absDist));
-                fs.mkdirSync(absDist);
-            }
-        }
-        ;
-    };
-    /**
-     * [fn.rd] 读文件
-     * @param file
-     */
-    FnFileSys.rd = function (file) {
-        return fs.existsSync(file) ? fs.readFileSync(file, { encoding: 'utf8' }) : '';
-    };
-    /**
-     * [fn.wt] 写文件
-     * @param file
-     * @param text
-     * @param flag ['w'|'a'] default: 'w'
-     */
-    FnFileSys.wt = function (file, text, flag) {
-        if (flag === void 0) { flag = 'w'; }
-        fs.writeFileSync(file, text, { encoding: 'utf8', flag: flag });
-    };
-    return FnFileSys;
-}());
-exports.FnFileSys = FnFileSys;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+    var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
+    var getTitle = function (configs) { return get(configs, '/title') || "funclib(" + VERSION + ")"; };
 
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Type_1 = __webpack_require__(0);
-var _Object_1 = __webpack_require__(1);
-var _Time_1 = __webpack_require__(3);
-var _String_1 = __webpack_require__(4);
-var _Logs_1 = __webpack_require__(8);
-var funclib_conf_1 = __webpack_require__(5);
-var progress;
-var duration;
-var pgType;
-var process = global.process;
-var FnProgress = /** @class */ (function () {
-    function FnProgress() {
-    }
     /**
-     * [fn.progress.start] 开启进度条，并传入参数
-     * @param title: string
-     * @param options {{title?: string, width?: number = 40, type?: 'bar'|'spi' = 'bar'}}
+     * [fn.log] 控制台格式化打印值
+     * @param value
+     * @param title
+     * @param configs
+     * {title: string, width: number [20-100], isFmt: boolean}
      */
-    FnProgress.start = function (title, options) {
-        if (_Type_1.FnType.typeOf(title, 'obj')) {
-            options = title;
-            title = undefined;
-        }
-        _Time_1.FnTime.interval('pg_sping').stop();
-        _Time_1.FnTime.timeout('pg_Bar').stop();
-        title = _Type_1.FnType.typeVal(title, 'str')
-            || _Object_1.FnObject.get(options, 'title', 'str') || "funclib " + funclib_conf_1.VERSION;
-        pgType = _Object_1.FnObject.get(options, '/type', 'str');
-        if (!options)
-            options = {};
-        options.title = title;
-        if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
-            pgType = 'bar';
-            FnProgress.startPgbar(options);
+    function log(value, title, configs) {
+      var isFmt;
+      if (typeVal(title, 'str')) {
+        if (typeOf(configs, 'bol')) {
+          isFmt = configs;
+          configs = undefined;
         }
         else {
-            FnProgress.startSping(title);
+          isFmt = getIsFmt(configs);
         }
-    };
-    /**
-     * [fn.progress.stop] 结束进度条，结束后触发回调
-     * @param onStopped
-     */
-    FnProgress.stop = function (onStopped) {
-        if (pgType === 'bar') {
-            FnProgress.stopPgbar(function () {
-                pgType = null;
-                if (_Type_1.FnType.typeOf(onStopped, 'fun'))
-                    onStopped();
-            });
-        }
-        else {
-            FnProgress.stopSping();
-            pgType = null;
-            if (_Type_1.FnType.typeOf(onStopped, 'fun'))
-                onStopped();
-        }
-    };
-    /**
-     * 翻转
-     */
-    FnProgress.startSping = function (message) {
-        _Time_1.FnTime.interval('pg_sping').stop();
-        FnProgress.spingFun(message);
-    };
-    FnProgress.stopSping = function () {
-        _Time_1.FnTime.interval('pg_sping').stop();
-    };
-    FnProgress.spingFun = function (msg) {
-        var stream = process.stderr;
-        var interrupt = function (frame) {
-            stream.clearLine();
-            stream.cursorTo(0);
-            stream.write(frame);
-        };
-        var s = '/';
-        _Time_1.FnTime.interval(function () {
-            interrupt(_Logs_1.FnLog.chalk(s, 'cyan') + " " + msg);
-            s = _String_1.FnString.match(s, {
-                '/': '-',
-                '-': '\\',
-                '\\': '|',
-                '|': '/',
-                '@dft': '-'
-            });
-        }, 180, 'pg_sping');
-    };
-    /**
-     * 进度条
-     */
-    FnProgress.startPgbar = function (options) {
-        _Time_1.FnTime.timeout('pg_Bar').stop();
-        var Pgbar = eval('require("progress")');
-        var prog = (options.title || '[fn.progress]') + " [:bar] :percent";
-        progress = new Pgbar(prog, {
-            complete: '=', incomplete: ' ',
-            width: options['width'] || 40,
-            total: options['total'] || 20
+      }
+      else if (typeOf(title, 'bol')) {
+        isFmt = title;
+        title = getTitle(configs);
+      }
+      else if (typeOf(title, 'obj')) {
+        configs = title;
+        isFmt = getIsFmt(configs);
+        title = getTitle(configs);
+      }
+      else {
+        isFmt = true;
+        title = "funclib(" + VERSION + ")";
+      }
+      // Value
+      value = pretty(value);
+      // Title
+      var time = "[" + fmtDate('hh:mm:ss') + "] ";
+      title = title.replace(/\n/mg, '');
+      var originTtLength = (time + title + '[] ').length;
+      if (!isFmt)
+        title = "( " + title + " )";
+      title = time + title;
+      // Line width
+      var width = get(configs, '/width');
+      if (!width || width < 30 || width > 100)
+        width = 66;
+      // Fix title width
+      if (originTtLength > width) {
+        title = cutString(title, width - 3);
+      }
+      else if (isFmt) {
+        title = array((width - originTtLength) / 2, ' ').join('') + title;
+      }
+      // Do log
+      if (!isFmt) {
+        console.log(title + ":\n" + value);
+      }
+      else {
+        var sgLine_1 = '', dbLine_1 = '';
+        array(width).forEach(function (x) {
+          sgLine_1 += '-';
+          dbLine_1 += '=';
         });
-        duration = 250;
-        FnProgress.tickFun('+');
-    };
-    FnProgress.stopPgbar = function (onStopped) {
-        duration = 600;
-        FnProgress.tickFun('-', onStopped);
-    };
-    FnProgress.tickFun = function (type, onStopped) {
-        _Time_1.FnTime.timeout(function () {
-            progress.tick();
-            switch (type) {
-                case '+':
-                    duration += 300;
-                    break;
-                case '-':
-                    duration -= duration * 0.2;
-                    break;
-            }
-            if (!progress.complete) {
-                FnProgress.tickFun(type, onStopped);
-            }
-            else if (onStopped) {
-                onStopped();
-            }
-        }, duration, 'pg_Bar');
-    };
-    return FnProgress;
-}());
-exports.FnProgress = FnProgress;
+        console.log("\n" + dbLine_1 + "\n" + title + "\n" + sgLine_1 + "\n" + value + "\n" + dbLine_1 + "\n");
+      }
+    }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+    var event = 'fullscreenchange';
+    var events = [event, "webkit" + event, "moz" + event, "MS" + event];
+    var addFsChangeEvent = function () {
+      return events.forEach(function (e) {
+        document.addEventListener(e, window['onfullscreen']);
+      });
+    };
+    var removeFsChangeEvent = function () { 
+      return events.forEach(function (e) {
+        document.removeEventListener(e, window['onfullscreen']);
+      }); 
+    };
+  
+    /**
+     * [fn.fullScreen] 全屏显示HTML元素
+     * @param el
+     * @returns {any}
+     */
+    function fullScreen(el) {
+      if (typeof el === 'string')
+        el = document.querySelector(el);
+      if (el && el.tagName) {
+        var rfs = el['requestFullScreen']
+          || el['webkitRequestFullScreen']
+          || el['mozRequestFullScreen']
+          || el['msRequestFullScreen'];
+        if (rfs)
+          return rfs.call(el);
+        if (window['ActiveXObject']) {
+          var ws = new window['ActiveXObject']("WScript.Shell");
+          if (ws) {
+            ws.SendKeys("{F11}");
+          }
+        }
+      }
+    }
 
-/***/ })
-/******/ ]);
-});
+    /**
+     * [fn.exitFullScreen] 退出全屏显示
+     * @returns {any}
+     */
+    function exitFullScreen() {
+      var cfs = document['cancelFullScreen']
+        || document['webkitCancelFullScreen']
+        || document['mozCancelFullScreen']
+        || document['exitFullScreen'];
+      if (cfs)
+        return cfs.call(document);
+      if (window['ActiveXObject']) {
+        var ws = new window['ActiveXObject']("WScript.Shell");
+        if (ws != null) {
+          ws.SendKeys("{F11}");
+        }
+      }
+    }
+
+    /**
+     * [fn.isFullScreen] 检测是否全屏状态
+     * @returns {boolean}
+     */
+    function isFullScreen() {
+      return document['fullscreenEnabled']
+        || window['fullScreen']
+        || document['mozFullscreenEnabled']
+        || document['webkitIsFullScreen']
+        || document['msIsFullScreen']
+        || false;
+    }
+
+    /**
+     * [fn.fullScreenChange] 全屏状态变化事件
+     * @param callback
+     */
+    function fullScreenChange(callback) {
+      if (typeOf(callback, 'fun')) {
+        window['onfullscreen'] = callback;
+        addFsChangeEvent();
+      }
+      else if (window['onfullscreen']) {
+        if (callback === false) {
+          removeFsChangeEvent();
+        }
+        else {
+          return { off: removeFsChangeEvent };
+        }
+      }
+    }
+
+    /**
+     * [fn.setCookie] 设置Cookie
+     * @param name 
+     * @param value 
+     * @param days 
+     */
+    function setCookie(name, value, days) {
+      if (days === void 0) { days = 0; }
+      var date = new Date();
+      date.setDate(date.getDate() + days);
+      document.cookie = name + "=" + value + ";expires=" + date;
+    }
+
+    /**
+     * [fn.getCookie] 根据name读取cookie
+     * @param  name 
+     * @return {String}
+     */
+    function getCookie(name) {
+      var cks = document.cookie.replace(/\s/g, "").split(';');
+      for (var i = 0; i < cks.length; i++) {
+        var tempArr = cks[i].split('=');
+        if (tempArr[0] == name)
+          return decodeURIComponent(tempArr[1]);
+      }
+      return '';
+    }
+
+    /**
+     * [fn.removeCookie] 根据name删除cookie
+     * @param name 
+     */
+    function removeCookie(name) {
+      setCookie(name, '1', -1);
+    }
+
+    /**
+     * [fn.copyText] 复制文本到粘贴板
+     * @param text [string]
+     */
+    function copyText(text) {
+      if (text === void 0) { text = ''; }
+      var textarea = document.createElement('textarea');
+      textarea.style.position = 'fixed';
+      textarea.style.left = '200%';
+      document.body.appendChild(textarea);
+      textarea.value = text;
+      textarea.select();
+      document.execCommand('Copy');
+      document.body.removeChild(textarea);
+    }
+
+    /**
+     * [fn.noConflict] 释放fn变量
+     * @param text [string]
+     */
+    function noConflict() {
+      if (root._ === this)
+        root._ = originalFn;
+      return this;
+    }
+
+    var _fn = {};
+
+    function funclib(data) {
+      _fn.data = data;
+      return _fn;
+    }
+
+    funclib.typeOf = typeOf;
+    funclib.typeVal = typeVal;
+
+    funclib.array = array;
+    funclib.range = range;
+    funclib.toArr = toArr;
+    funclib.indexOf = indexOf;
+    funclib.find = find;
+    funclib.filter = filter;
+    funclib.reject = reject;
+    funclib.contains = contains;
+    funclib.drop = drop;
+    funclib.flatten = flatten;
+    funclib.pluck = pluck;
+    funclib.uniq = uniq;
+    funclib.forEach = forEach;
+    funclib.sortBy = sortBy;
+
+    funclib.len = len;
+    funclib.has = has;
+    funclib.get = get;
+    funclib.keys = keys;
+    funclib.pick = pick;
+    funclib.extend = extend;
+    funclib.forIn = forIn;
+    funclib.deepCopy = deepCopy;
+    funclib.isEmpty = isEmpty;
+    funclib.isDeepEqual = isDeepEqual;
+
+    funclib.random = random;
+    funclib.gid = gid;
+    funclib.gcolor = gcolor;
+
+    funclib.interval = interval;
+    funclib.timeout = timeout;
+    funclib.defer = defer;
+    funclib.timestamp = timestamp;
+    funclib.fmtDate = fmtDate;
+
+    funclib.match = match;
+    funclib.pretty = pretty;
+    funclib.escape = escape;
+    funclib.unescape = unescape;
+    funclib.capitalize = capitalize;
+    funclib.fmtCurrency = fmtCurrency;
+    funclib.cutString = cutString;
+    funclib.parseQueryStr = parseQueryStr;
+    funclib.stringifyQueryStr = stringifyQueryStr;
+
+    funclib.getPattern = getPattern;
+    funclib.matchPattern = matchPattern;
+    funclib.throttle = throttle;
+    funclib.debounce = debounce;
+
+    funclib.log = log;
+
+    funclib.fullScreen = fullScreen;
+    funclib.exitFullScreen = exitFullScreen;
+    funclib.isFullScreen = isFullScreen;
+    funclib.fullScreenChange = fullScreenChange;
+    funclib.setCookie = setCookie;
+    funclib.getCookie = getCookie;
+    funclib.removeCookie = removeCookie;
+    funclib.copyText = copyText;
+    funclib.noConflict = noConflict;
+
+    keys(funclib).forEach(function (mtd) {
+      _fn[mtd] = function () {
+        var args = arguments;
+        args = keys(args).map(function (key) { return args[key]; });
+        return _fn.data !== undefined ? fn[mtd].apply(void 0, [_fn.data].concat(args)) : fn[mtd].apply(void 0, args);
+      };
+    });
+
+    funclib.VERSION = VERSION;
+
+    return funclib;
+  })();
+
+  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+    root.fn = fn;
+    define(function () {
+      return fn;
+    });
+  }
+  else if (_module) {
+    (_module.exports = fn).fn = fn;
+    _module.fn = fn;
+  }
+  else {
+    root.fn = fn;
+  }
+}.call(this));

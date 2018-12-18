@@ -12,9 +12,9 @@ describe('Time Methods:', function () {
       }, 5500);
     });
   });
-  describe('#fn.time()', function () {
-    it(`fn.time() should return a time stamp.`, function () {
-      assert(/^[0-9]{13}$/.test(fn.time()) === true);
+  describe('#fn.timestamp()', function () {
+    it(`fn.timestamp() should return a timestamp.`, function () {
+      assert(/^[0-9]{13}$/.test(fn.timestamp()) === true);
     });
   });
   describe('#fn.fmtDate()', function () {

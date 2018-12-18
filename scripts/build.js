@@ -1,58 +1,39 @@
 const fn = require('funclib');
+const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
-const config = require('./webpack.conf');
+
 
 const root = path.dirname(__dirname);
+
 const rdmeDist = path.join(root, 'assets/README.md');
+const fnDist = path.join(root, 'assets/funclib.js');
+const fnMinDist = path.join(root, 'assets/funclib.min.js');
+const idxDist = path.join(root, 'assets/index.js');
+
 const rdmeSrc = path.join(root, 'README.md');
+const fnSrc = path.join(root, 'src/funclib.js');
+const fnMinSrc = path.join(root, 'src/funclib.min.js');
+const idxSrc = path.join(root, 'src/index.js');
 
-fn.progress.start('Replacing README.md', {type: 'spi'});
-fn.rm(rdmeDist);
+fn.progress.start('Building FuncLib', {width: 42});
+
+[rdmeDist, fnDist, fnMinDist, idxDist].forEach(fl => fn.rm(fl));
 fn.cp(rdmeSrc, rdmeDist);
-fn.progress.stop();
+fn.cp(fnSrc, fnDist);
+fn.cp(idxSrc, idxDist);
+fn.mv(fnMinSrc, fnMinDist);
+const liscence = fn.rd(fnSrc).split(/;\s?\(function\s?\(\)\s?\{/)[0];
+const fnMinDistStr = fn.rd(fnMinDist);
+fn.wt(fnMinDist, liscence + ';' + fnMinDistStr);
 
-fn.progress.start('Building FunclibJs');
-webpack(config.funclibJsConf, function (err, stats) {
-  if (err) throw (err);
-  fn.progress.stop(() => {
-    fn.log('', {pre: true, title: 'Building FunclibJs'});
-    process.stdout.write(stats.toString({
-      colors: true, modules: false,
-      children: false, chunks: false, chunkModules: false
-    }) + '\n');
-    fn.log('', {end: true});
-    buidFunclibJs();
-  });
-});
+fn.progress.stop(() => fn.log(`\
+funclib.js      ${getFilesizeInBytes(fnDist)} kb
+funclib.min.js  ${getFilesizeInBytes(fnMinDist)} kb
+index.js        ${getFilesizeInBytes(idxDist)} kb`,
+  'Build Success!'
+));
 
-function buidFunclibJs() {
-  fn.progress.start('Building FunclibMinJs', {width: 37});
-  webpack(config.funclibMinJsConf, function (err, stats) {
-    if (err) throw (err);
-    fn.progress.stop(() => {
-      fn.log('', {pre: true, title: 'Building FunclibMinJs'});
-      process.stdout.write(stats.toString({
-        colors: true, modules: false,
-        children: false, chunks: false, chunkModules: false
-      }) + '\n');
-      fn.log('', {end: true});
-      buildIndexJs();
-    });
-  });
-}
-
-function buildIndexJs() {
-  fn.progress.start('Building IndexJs', {width: 42});
-  webpack(config.indexJsConf, function (err, stats) {
-    if (err) throw (err);
-    fn.progress.stop(() => {
-      fn.log('', {pre: true, title: 'Building IndexJs'});
-      process.stdout.write(stats.toString({
-        colors: true, modules: false,
-        children: false, chunks: false, chunkModules: false
-      }) + '\n');
-      fn.log('', {end: true});
-    });
-  });
+function getFilesizeInBytes(src, digit) {
+  if (digit === void 0) { digit = 2; }
+  return (fs.statSync(src)["size"] / 1024).toFixed(2)
 }

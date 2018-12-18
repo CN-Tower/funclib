@@ -1,7 +1,8 @@
 /**==============================================================
- * funclib.js
- * Document: http://funclib.net 
- * Github: http://github.com/CN-Tower/funclib.js
+ * @license
+ * FuncLib <https://www.funclib.net/>
+ * GitHub Repository: <https://github.com/CN-Tower/funclib.js>
+ * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  ----------------------------------------------------------------
  ## Type
  * fn.typeOf                 检查值的类型，返回布尔值

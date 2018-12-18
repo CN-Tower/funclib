@@ -1,9 +1,9 @@
-// const fn = require('./assets/funclib');
-const fn = require('./assets');
+const fn = require('./assets/funclib');
+// const fn = require('./assets');
 
 // fn.interval(() => console.log(1), 1000, 'abc');
 
-fn.log(fn.interval());
+// fn.log(fn.interval());
 // fn.timeout(() => fn.interval(), 3000)
 // fn.timeout(() => fn.interval('abc', false), 2000);
 
@@ -47,20 +47,21 @@ fn.log(fn.interval());
 //     i ++;
 //     log();
 // });
-
-// let i = 0;
-// const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
-// fn.interval(500, () => {
-//     i ++
-//     log();
-// });
+// fn.interval(500, () => console.log(111));
+let i = 0;
+const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
+fn.interval('test', 500, () => {
+    if(i < 10) i ++
+    else fn.interval('test').stop();
+    log();
+});
 
 /**
  * Array
  * =======================================================================
  */
 // const persons = [{name:'Tom', age: 22}, {name:'Jerry', age: 18}];
-// fn.log(fn.find(persons, {name: 'Tom'}), 'fn.find');
+// fn.log(fn(persons).find({name: 'Tom'}), 'fn.find');
 // fn.log(fn.find(persons, ps => ps.name === 'Tom'), 'fn.find');
 // fn.log(fn.filter(persons, {name: 'Tom'}), 'fn.filter');
 // fn.log(fn.filter(persons, ps => ps.name === 'Tom'), 'fn.filter');
@@ -85,13 +86,13 @@ fn.log(fn.interval());
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
 // fn.log(val1, 'val1');
 // fn.log(val2, 'val2');
-const persons = [{name:'LiLi', age: 22, indexes: {height: 180, weight: 70}},
-                 {name:'Mari', age: undefined, indexes: {height: 180, weight: 72}},
-                 {name:'Enn', age: null, indexes: {height: 180, weight: 70}},
-                 {name:'Bob', age: '', indexes: {height: 180, weight: 70}},
-                 {name:'Tom', indexes: {height: 180, weight: 70}},
-                 {name:'Jerry', age: 18, indexes: {height: 175, weight: 70}}]
-fn.log(fn.get(persons, '.1.indexes.weight'), 'weight')
+// const persons = [{name:'LiLi', age: 22, indexes: {height: 180, weight: 70}},
+//                  {name:'Mari', age: undefined, indexes: {height: 180, weight: 72}},
+//                  {name:'Enn', age: null, indexes: {height: 180, weight: 70}},
+//                  {name:'Bob', age: '', indexes: {height: 180, weight: 70}},
+//                  {name:'Tom', indexes: {height: 180, weight: 70}},
+//                  {name:'Jerry', age: 18, indexes: {height: 175, weight: 70}}]
+// fn.log(fn.get(persons, '.1.indexes.weight'), 'weight')
                  // const a = fn.sortBy(persons, 'age'); 
 // const b = fn.sortBy(persons, 'age', true);
 // const c = fn.sortBy(persons, '/indexes/height');

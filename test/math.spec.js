@@ -13,17 +13,17 @@ describe('Math Methods:', function () {
       assert(fn.typeOf(rdnum, 'num') && 5 <= rdnum && rdnum < 10);
     });
   });
-  describe('#fn.rdid()', function () {
-    it(`fn.rdid() should return an random ID with a length of 12.`, function () {
-      assert(/^[0-9A-Z]{12}$/.test(fn.rdid()));
+  describe('#fn.gid()', function () {
+    it(`fn.gid() should return an random ID with a length of 12.`, function () {
+      assert(/^[0-9A-Z]{12}$/.test(fn.gid()));
     });
-    it(`fn.rdid(6) should return an random ID with a length of 6.`, function () {
-      assert(/^[0-9A-Z]{6}$/.test(fn.rdid(6)));
+    it(`fn.gid(6) should return an random ID with a length of 6.`, function () {
+      assert(/^[0-9A-Z]{6}$/.test(fn.gid(6)));
     });
   });
-  describe('#fn.rdcolor()', function () {
-    it(`fn.rdcolor() should return an random color.`, function () {
-      assert(/^#[0-9a-fA-F]{6}$/.test(fn.rdcolor()));
+  describe('#fn.gcolor()', function () {
+    it(`fn.gcolor() should return an random color.`, function () {
+      assert(/^#[0-9a-fA-F]{6}$/.test(fn.gcolor()));
     });
   });
 });

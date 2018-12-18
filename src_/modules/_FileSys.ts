@@ -102,4 +102,14 @@ export class FnFileSys {
       }
     };
   }
+
+ /**
+   * [fn.mk] 创建文件夹
+   * @param src
+   * @param digit
+   */
+  public static size(src, digit) {
+    if (digit === void 0) { digit = 2; }
+    return (fs.statSync(src)["size"] / 1024).toFixed(2)
+  }
 }

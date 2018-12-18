@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
-    "build": "node ./scripts/build.js",
+    "build": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js && node ./scripts/build.js",
     "usage": "node usages.js",
     "test": "karma start scripts/karma.conf.js"
   },
@@ -44,6 +44,7 @@
     "power-assert": "^1.5.0",
     "progress": "^2.0.0",
     "ts-loader": "^3.1.1",
+    "uglify-js": "^3.4.9",
     "webpack": "^3.8.1"
   }
 }

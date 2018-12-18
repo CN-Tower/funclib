@@ -35,16 +35,6 @@ describe('String Methods:', function () {
       assert(fn.unescape(htmlStr) === html);
     });
   });
-  describe('#fn.encodeHtml()', function () {
-    it(`fn.encodeHtml(html) should return a encoded string.`, function () {
-      assert(fn.encodeHtml(html) === htmlStr);
-    });
-  });
-  describe('#fn.decodeHtml()', function () {
-    it(`fn.decodeHtml(htmlStr) should return a html tag.`, function () {
-      assert(fn.decodeHtml(htmlStr) === html);
-    });
-  });
   describe('#fn.pretty()', function () {
     it(`fn.pretty([{}]) should return a fmted str.`, function () {
       assert(fn.pretty([{}]).match(/\n\s*/));

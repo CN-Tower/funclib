@@ -13,12 +13,12 @@ describe('Array Methods:', function () {
       assert.deepEqual(tmpArr, [0, 2, 4, 6, 8]);
     });
   });
-  describe('#fn.toArray()', function () {
-    it(`fn.toArray('funclib') should return an Array.`, function () {
-      assert.deepEqual(fn.toArray('funclib')[0], fn.toArray(['funclib'])[0]);
+  describe('#fn.toArr()', function () {
+    it(`fn.toArr('funclib') should return an Array.`, function () {
+      assert.deepEqual(fn.toArr('funclib')[0], fn.toArr(['funclib'])[0]);
     });
-    it(`fn('funclib').toArray() should return an Array.`, function () {
-      assert.deepEqual(fn('funclib').toArray(), ['funclib']);
+    it(`fn('funclib').toArr() should return an Array.`, function () {
+      assert.deepEqual(fn('funclib').toArr(), ['funclib']);
     });
   });
   describe('#fn.find()', function () {
