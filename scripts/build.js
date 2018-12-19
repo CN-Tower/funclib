@@ -2,38 +2,29 @@ const fn = require('funclib');
 const fs = require('fs');
 const path = require('path');
 
-
 const root = path.dirname(__dirname);
+const rdm = path.join(root, 'README.md');
+const rdmSrc = path.join(root, 'src/README.md');
+const fnJs = path.join(root, 'src/funclib.js');
+const fnMinJs = path.join(root, 'src/funclib.min.js');
+const indexJs = path.join(root, 'src/index.js');
 
-const rdmeDist = path.join(root, 'assets/README.md');
-const fnDist = path.join(root, 'assets/funclib.js');
-const fnMinDist = path.join(root, 'assets/funclib.min.js');
-const idxDist = path.join(root, 'assets/index.js');
+fn.progress.start('Building FuncLib Assets', {width: 36});
 
-const rdmeSrc = path.join(root, 'README.md');
-const fnSrc = path.join(root, 'src/funclib.js');
-const fnMinSrc = path.join(root, 'src/funclib.min.js');
-const idxSrc = path.join(root, 'src/index.js');
+fn.rm(rdmSrc)
+fn.cp(rdm, rdmSrc);
 
-fn.progress.start('Building FuncLib', {width: 42});
-
-[rdmeDist, fnDist, fnMinDist, idxDist].forEach(fl => fn.rm(fl));
-fn.cp(rdmeSrc, rdmeDist);
-fn.cp(fnSrc, fnDist);
-fn.cp(idxSrc, idxDist);
-fn.mv(fnMinSrc, fnMinDist);
-const liscence = fn.rd(fnSrc).split(/;\s?\(function\s?\(\)\s?\{/)[0];
-const fnMinDistStr = fn.rd(fnMinDist);
-fn.wt(fnMinDist, liscence + ';' + fnMinDistStr);
+const liscence = fn.rd(fnJs).split(/;\s?\(function\s?\(\)\s?\{/)[0];
+const fnMinJsStr = fn.rd(fnMinJs);
+fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
 fn.progress.stop(() => fn.log(`\
-funclib.js      ${getFilesizeInBytes(fnDist)} kb
-funclib.min.js  ${getFilesizeInBytes(fnMinDist)} kb
-index.js        ${getFilesizeInBytes(idxDist)} kb`,
+funclib.js      ${getSize(fnJs)} kb
+funclib.min.js  ${getSize(fnMinJs)} kb
+index.js        ${getSize(indexJs)} kb`,
   'Build Success!'
 ));
 
-function getFilesizeInBytes(src, digit) {
-  if (digit === void 0) { digit = 2; }
+function getSize(src) {
   return (fs.statSync(src)["size"] / 1024).toFixed(2)
 }

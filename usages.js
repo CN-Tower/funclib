@@ -1,5 +1,7 @@
-const fn = require('./assets/funclib');
-// const fn = require('./assets');
+// const fn = require('./src');
+const fn = require('./src/funclib.min');
+// const fn = require('./src/funclib');
+
 
 // fn.interval(() => console.log(1), 1000, 'abc');
 
@@ -41,20 +43,19 @@ const fn = require('./assets/funclib');
  * Function
  * =======================================================================
  */
-// let i = 0;
-// const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
-// fn.interval(500, () => {
-//     i ++;
-//     log();
-// });
-// fn.interval(500, () => console.log(111));
 let i = 0;
-const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
-fn.interval('test', 500, () => {
-    if(i < 10) i ++
-    else fn.interval('test').stop();
+const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
+fn.interval(500, () => {
+    i ++;
     log();
 });
+// let i = 0;
+// const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
+// fn.interval('test', 500, () => {
+//     if(i < 10) i ++
+//     else fn.interval('test').stop();
+//     log();
+// });
 
 /**
  * Array

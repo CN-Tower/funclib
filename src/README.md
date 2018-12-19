@@ -47,37 +47,17 @@ $ npm run test
 ```
 funclib.js
 ├── node_modules/           # You know the drill...
-├── assets                  # 构建目录
+├── script                  # 脚本
+│   ├── build.js            # 编译脚本
+│   ├── karma.conf.js       # Karma配置
+│   └── webpack.conf.js     # Webpack配置
+├── src                     # Source code
 │   ├── funclib.js          # 未压缩版
 │   ├── funclib.min.js      # 压缩版
 │   ├── index.d.ts          # 定义文件
 │   ├── index.js            # 索引文件
 │   ├── package.json        # 库模块定义
 │   └── README.md           # Read this FIRST :)
-├── script                  # 脚本
-│   ├── build.js            # 编译脚本
-│   ├── karma.conf.js       # Karma配置
-│   └── webpack.conf.js     # Webpack配置
-├── src                     # Source code
-│   ├── modules             # 模块
-│   │   ├── _Array.ts       # Array
-│   │   ├── _Cookie.ts      # Cookie
-│   │   ├── _Dom.ts         # Element
-│   │   ├── _FileSys.ts     # FileSystem
-│   │   ├── _Function.ts    # Function
-│   │   ├── _Math.ts        # Mathematic
-│   │   ├── _Object.ts      # Object
-│   │   ├── _Pattern.ts     # RegExp
-│   │   ├── _Progress.ts    # Progress
-│   │   ├── _String.ts      # String
-│   │   ├── _Time.ts        # Time
-│   │   ├── _Trick.ts       # Trick
-│   │   ├── _Type.ts        # Type
-│   │   ├── _Logc.ts        # ClientLog
-│   │   └── _Logs.ts        # ServerLog
-│   ├── funclib.conf.ts     # 配置文件
-│   ├── funclib.ts          # ClientMain
-│   └── index.ts            # ServerMain
 ├── test                    # 测试
 │   ├── client-methods      # 客户端方法测试用例
 │   ├── server-methods      # 服务端方法测试用例

@@ -18,15 +18,15 @@
 
   var root = _global || _self || Function('return this')();
 
-  var fn = (function () {
+  var originalFn = root.fn;
 
-    var originalFn = root.fn;
+  var fn = (function () {
 
     /**
      * [fn.typeOf] 检查值的类型
-     * @param value
-     * @param _type
-     * @param types
+     * @param value : any
+     * @param _type : string
+     * @param types : ...string[]|string[]
      */
     function typeOf(value, _type) {
       var types = [];
@@ -43,7 +43,8 @@
           case 'str': return typeof value === 'string';
           case 'num': return typeof value === 'number';
           case 'bol': return typeof value === 'boolean';
-          case 'udf': return typeof value === 'undefined';
+          case 'udf': return value === undefined;
+          case 'nul': return value === null;
           default: return typeof value === type_;
         }
       });
@@ -51,9 +52,9 @@
 
     /**
      * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
-     * @param value
-     * @param _type
-     * @param types
+     * @param value : any
+     * @param _type : string
+     * @param types : ...string[]|string[]
      */
     function typeVal(value, _type) {
       var types = [];
@@ -65,8 +66,8 @@
 
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
-     * @param length [number]
-     * @param value  [any, function]
+     * @param length : number
+     * @param value  : any|function
      */
     function array(length, value) {
       var tmpArr = [];
@@ -87,8 +88,8 @@
     }
 
     /**
-     * [fn.range] 返回一个指定长度的区间
-     * @param length [number]
+     * [fn.range] 返回一个范围数组
+     * @param length : number
      */
     function range(length) {
       if (length >= 0)
@@ -98,8 +99,8 @@
     }
 
     /**
-     * [fn.toArray] 值数组化
-     * @param value
+     * [fn.toArr] 值数组化
+     * @param value : any
      */
     function toArr(value) {
       return typeOf(value, 'arr') ? value : [value];
@@ -107,8 +108,8 @@
 
     /**
      * [fn.indexOf] 寻找值在数组中的索引
-     * @param srcArr
-     * @param predicate
+     * @param srcArr    : array
+     * @param predicate : object|function|any
      */
     function indexOf(srcArr, predicate) {
       for (var i = 0; i < srcArr.length; i++) {
@@ -126,8 +127,8 @@
 
     /**
      * [fn.find] 根据条件取值
-     * @param srcArr
-     * @param predicate
+     * @param srcArr    : array
+     * @param predicate : object|function|any
      */
     function find(srcArr, predicate) {
       var idx = indexOf(srcArr, predicate);
@@ -136,8 +137,8 @@
 
     /**
      * [fn.filter] 根据条件取过滤值
-     * @param srcArr
-     * @param predicate
+     * @param srcArr    : array
+     * @param predicate : object|function|any
      */
     function filter(srcArr, predicate) {
       return doFilter(srcArr, predicate, true);
@@ -145,8 +146,8 @@
 
     /**
       * [fn.reject] 根据条件过滤值
-      * @param srcArr
-      * @param predicate
+     * @param srcArr    : array
+     * @param predicate : object|function|any
       */
     function reject(srcArr, predicate) {
       return doFilter(srcArr, predicate, false);
@@ -173,8 +174,8 @@
 
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
-     * @param srcArr 
-     * @param predicate 
+     * @param srcArr    : array
+     * @param predicate : object|function|any
      */
     function contains(srcArr, predicate) {
       var idx = indexOf(srcArr, predicate);
@@ -183,8 +184,8 @@
 
     /**
      * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
-     * @param srcArr 
-     * @param isDrop0 
+     * @param srcArr  : array
+     * @param isDrop0 : boolean = false
      */
     function drop(srcArr, isDrop0) {
       if (isDrop0 === void 0) { isDrop0 = false; }
@@ -199,8 +200,8 @@
 
     /**
      * [fn.flatten] 把有结构的数组打散，减少层数
-     * @param srcArr 
-     * @param isDeep 
+     * @param srcArr : array
+     * @param isDeep : boolean = false
      */
     function flatten(srcArr, isDeep) {
       if (isDeep === void 0) { isDeep = false; }
@@ -218,8 +219,8 @@
 
     /**
      * [fn.pluck] 把结构中的字段取出合并到一个数组中
-     * @param srcArr 
-     * @param path 
+     * @param srcArr : array
+     * @param path   : string
      */
     function pluck(srcArr, path) {
       var tmpArr = [];
@@ -231,8 +232,8 @@
 
     /**
      * [fn.uniq] 去重或根据字段去重
-     * @param srcArr : any[]
-     * @param path?  : string
+     * @param srcArr : array
+     * @param path   : string [?]
      * @param isDeep : boolean = true
      */
     function uniq(srcArr, path, isDeep) {
@@ -269,8 +270,8 @@
 
     /**
      * [fn.forEach] 遍历数组或类数组
-     * @param srcObj
-     * @param iteratee
+     * @param srcObj   : array|object
+     * @param iteratee : function
      */
     function forEach(srcObj, iteratee) {
       var length = get(srcObj, '/length', 'num');
@@ -290,9 +291,9 @@
 
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
-     * @param srcArr
-     * @param field
-     * @param isDesc
+     * @param srcArr : array
+     * @param field  : string
+     * @param isDesc : boolean = false
      */
     function sortBy(srcArr, field, isDesc) {
       if (isDesc === void 0) { isDesc = false; }
@@ -317,7 +318,7 @@
 
     /**
      * [fn.len] 获取对象自有属性的个数
-     * @arg srcObj
+     * @arg srcObj : any
      */
     function len(srcObj) {
       if (typeOf(srcObj, 'obj')) {
@@ -333,8 +334,8 @@
 
     /**
      * [fn.has] 判断对象是否存在某自有属性
-     * @param srcObj 
-     * @param property 
+     * @param srcObj   : object
+     * @param property : string
      */
     function has(srcObj, property) {
       return srcObj && srcObj.hasOwnProperty(property) || false;
@@ -342,9 +343,9 @@
 
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param srcObj [Object]
-     * @param path [string]
-     * @param type ['arr'|'obj'|'fun'|string|string[]]
+     * @param srcObj : object
+     * @param path   : string
+     * @param type   : ...string[]|string[] [?]
      */
     function get(srcObj, path) {
       var types = [];
@@ -375,8 +376,7 @@
 
     /**
      * [fn.keys] 获取对象的键数组
-     * @param srcObj 
-     * @param property 
+     * @param srcObj : object
      */
     function keys(srcObj) {
       return Object.keys(srcObj);
@@ -384,9 +384,8 @@
 
     /**
      * [fn.pick] 获取对象的部分属性
-     * @param srcObj
-     * @param predicate
-     * @param propList
+     * @param srcObj    : object
+     * @param predicate : ...string[]|string|function
      */
     function pick(srcObj, predicate) {
       var propList = [];
@@ -398,20 +397,19 @@
 
     /**
      * [fn.extend] 给对象赋值
-     * @param tarObj 
-     * @param srcObj 
-     * @param predicate 
-     * @param propList
+     * @param tarObj    : object
+     * @param srcObj    : object
+     * @param predicate : ...string[]|string|function
      */
-    function extend(target, srcObj, predicate) {
+    function extend(tarObj, srcObj, predicate) {
       var propList = [];
       for (var i = 3; i < arguments.length; i++) {
         propList[i - 3] = arguments[i];
       }
       if (typeVal(srcObj, 'object')) {
-        propsTraversal(target, srcObj, predicate, propList, true);
+        propsTraversal(tarObj, srcObj, predicate, propList, true);
       }
-      return target;
+      return tarObj;
     }
 
     function propsTraversal(tarObj, srcObj, predicate, propList, isDoTraDft) {
@@ -443,8 +441,8 @@
 
     /**
      * [fn.forIn] 遍历对象的可数自有属性
-     * @arg srcObj
-     * @arg iteratee
+     * @arg srcObj   : object
+     * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
       return forEach(srcObj, function (val, key) { return iteratee(key, val); });
@@ -452,7 +450,7 @@
 
     /**
      * [fn.deepCopy] 深拷贝对象或数组
-     * @param srcObj
+     * @param srcObj : object
      */
     function deepCopy(srcObj) {
       if (typeof srcObj !== 'object')
@@ -477,7 +475,7 @@
 
     /**
      * [fn.isEmpty] 判断对象是否为空对象或数组
-     * @param srcObj
+     * @param srcObj : object
      */
     function isEmpty(srcObj) {
       return len(srcObj) === 0;
@@ -485,14 +483,12 @@
 
     /**
      * [fn.isDeepEqual] 判断数组或对象是否相等
-     * @param obj1
-     * @param obj2
-     * @param isStrict
+     * @param obj1     : object|array
+     * @param obj2     : object|array
+     * @param isStrict : boolean = false
      */
     function isDeepEqual(obj1, obj2, isStrict) {
-      if (isStrict === void 0) {
-        isStrict = false;
-      }
+      if (isStrict === void 0) { isStrict = false; }
       if (typeof obj1 !== typeof obj2)
         return false;
       if (typeOf(obj1, 'arr') && typeOf(obj2, 'arr')) {
@@ -525,8 +521,8 @@
 
     /**
      * [fn.random] 返回一个指定范围内的随机数
-     * @param start
-     * @param end 
+     * @param start : number
+     * @param end   : number [?]
      */
     function random(start, end) {
       if (start === undefined && end === undefined) {
@@ -547,7 +543,7 @@
 
     /**
      * [fn.gid] 返回一个指定长度的随机ID
-     * @param length 
+     * @param length : number
      */
     function gid(length) {
       if (length === void 0) { length = 12; }
@@ -569,9 +565,9 @@
 
     /**
      * [fn.interval] 循环定时器
-     * @param timerId
-     * @param duration
-     * @param callback
+     * @param timerId  : string [?]
+     * @param duration : number|false|null [?]
+     * @param callback : function
      */
     function interval(timerId, duration, callback) {
       var _a, _b, _c;
@@ -588,6 +584,7 @@
         _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
       if (typeOf(timerId, 'fun'))
         _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
+
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
@@ -603,9 +600,9 @@
 
     /**
      * [fn.timeout] 延时定时器
-     * @param timerId
-     * @param duration
-     * @param callback
+     * @param timerId  : string [?]
+     * @param duration : number|false|null [?]
+     * @param callback : function
      */
     function timeout(timerId, duration, callback) {
       var _a, _b, _c;
@@ -623,6 +620,7 @@
         _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
       if (typeOf(timerId, 'fun'))
         _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
+
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
@@ -638,7 +636,7 @@
 
     /**
      * [fn.defer] 延迟执行函数
-     * @param func 
+     * @param func : function
      */
     function defer(func) {
       return setTimeout(func);
@@ -646,25 +644,24 @@
 
     /**
      * [fn.timestamp] 返回一个当前时间戳
-     * @param time 
+     * @param time : date|string|number [?]
      */
     function timestamp(time) {
-      if (time instanceof Date) {
-        return time.getTime();
-      }
-      else {
-        return (new Date(String(time)).getTime() || (new Date()).getTime());
-      }
+      var date = new Date(String(time));
+      if (!date.getTime())
+        date = new Date();
+      return date.getTime();
     }
 
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
-     * @param fmtStr
-     * @param time
+     * @param fmtStr : string
+     * @param time   : date|string|number [?]
      */
     function fmtDate(fmtStr, time) {
-      var _date = new Date(String(time));
-      var date = _date.getTime() ? _date : new Date();
+      var date = new Date(String(time));
+      if (!date.getTime())
+        date = new Date();
       var obj = {
         'M+': date.getMonth() + 1,
         'd+': date.getDate(),
@@ -689,16 +686,16 @@
     }
 
     /**
-     * [fn.match] 类型匹配，默认情况还可以写表达式
-     * @param source
-     * @param cases
-     * @param isExec
+     * [fn.match] 字符串匹配
+     * @param srcStr : string
+     * @param cases  ：object
+     * @param isExec : boolean = true
      */
-    function match(source, cases, isExec) {
+    function match(srcStr, cases, isExec) {
       if (isExec === void 0) { isExec = true; }
       var _type;
-      if (has(cases, source)) {
-        _type = source;
+      if (has(cases, srcStr)) {
+        _type = srcStr;
       }
       else if (has(cases, '@dft')) {
         _type = '@dft';
@@ -715,7 +712,7 @@
           return match(_keys[idx + 1], cases, isExec);
         }
         else if (isExec && typeof cases[_type] === 'function') {
-          return len(cases[_type]) > 0 ? cases[_type](source) : cases[_type]();
+          return len(cases[_type]) > 0 ? cases[_type](srcStr) : cases[_type]();
         }
         else {
           return cases[_type];
@@ -726,7 +723,7 @@
 
     /**
      * [fn.pretty] 转换成格式化字符串
-     * @param srcObj
+     * @param srcObj : any
      */
     function pretty(srcObj) {
       return typeof srcObj === 'object' ? JSON.stringify(srcObj, null, 2) : String(srcObj);
@@ -737,7 +734,7 @@
 
     /**
      * [fn.escape] 编码HTML字符串
-     * @param srcStr 
+     * @param srcStr : string
      */
     function escape(srcStr) {
       deCodes.forEach(function (str, i) {
@@ -748,7 +745,7 @@
 
     /**
      * [fn.unescape] 解码HTML字符串
-     * @param srcStr 
+     * @param srcStr : string
      */
     function unescape(srcStr) {
       enCodes.forEach(function (str, i) {
@@ -759,7 +756,7 @@
 
     /**
      * [fn.capitalize] 字符串首字母大写
-     * @param srcStr 
+     * @param srcStr : string
      */
     function capitalize(srcStr) {
       return srcStr && typeof srcStr === 'string'
@@ -768,9 +765,8 @@
 
     /**
      * [fn.fmtCurrency] 格式化显示货币
-     * @param number
-     * @param digit
-     * @returns {string}
+     * @param number : number
+     * @param digit  : number = 2
      */
     function fmtCurrency(number, digit) {
       if (digit === void 0) { digit = 2; }
@@ -792,9 +788,8 @@
 
     /**
      * [fn.cutString] 裁切字符串到指定长度
-     * @param srcStr
-     * @param length
-     * @returns {string}
+     * @param srcStr : string
+     * @param length : number
      */
     function cutString(srcStr, length) {
       var tmpStr = '';
@@ -812,7 +807,7 @@
 
     /**
      * [fn.parseQueryStr] 解析Url参数成对象
-     * @param url [string]
+     * @param url : string
      */
     function parseQueryStr(url) {
       if (!contains(url, '?'))
@@ -831,7 +826,7 @@
 
     /**
      * [fn.stringifyQueryStr] 把对象编译成Url参数
-     * @param obj [string]
+     * @param obj : object
      */
     function stringifyQueryStr(obj) {
       if (!typeOf(obj, ['obj', 'arr']))
@@ -887,14 +882,13 @@
     var withPortUrlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + "):" + portPattern.source);
 
     /**
-     * [fn.getPattern]与一个或几个通用正则匹配
-     * @param type
-     * @param isNoLimit
-     * @returns {pattern|undefined}
+     * [fn.getPattern]获取一个通用的正则表达式
+     * @param _type     : string
+     * @param isNoLimit : boolean = false
      */
-    function getPattern(type, isNoLimit) {
+    function getPattern(_type, isNoLimit) {
       if (isNoLimit === void 0) { isNoLimit = false; }
-      if (!type)
+      if (!_type)
         return;
       var patternObj = {
         cnChar: cnCharPattern,
@@ -915,48 +909,51 @@
         withPortUrl: withPortUrlPattern
       };
       patternObj['patternList'] = Object.keys(patternObj);
-      return patternObj.hasOwnProperty(type) && patternObj[type]
-        ? type === 'patternList'
-          ? patternObj[type]
+      return patternObj.hasOwnProperty(_type) && patternObj[_type]
+        ? _type === 'patternList'
+          ? patternObj[_type]
           : isNoLimit
-            ? new RegExp(patternObj[type].source)
-            : new RegExp("^(" + patternObj[type].source + ")$")
+            ? new RegExp(patternObj[_type].source)
+            : new RegExp("^(" + patternObj[_type].source + ")$")
         : undefined;
     }
 
     /**
-     * [fn.matchPattern]获取一个通用的正则表达式
-     * @param src
-     * @param type
-     * @param isNoLimit
+     * [fn.matchPattern]与一个或几个通用正则匹配
+     * @param srcStr    : string
+     * @param _type     : string|string[]
+     * @param isNoLimit : boolean = false
      */
-    function matchPattern(src, type, isNoLimit) {
-      if (!src || !type)
+    function matchPattern(srcStr, _type, isNoLimit) {
+      if (isNoLimit === void 0) { isNoLimit = false; }
+      if (!srcStr || !_type)
         return null;
-      if (type instanceof Array) {
-        var matchRst_1 = null;
-        type.forEach(function (item) {
+      if (_type instanceof Array) {
+        var matchs = null;
+        _type.forEach(function (item) {
           var pattern = getPattern(item, isNoLimit);
-          if (!matchRst_1 && pattern)
-            matchRst_1 = src.match(pattern);
+          if (!matchs && pattern)
+            matchs = srcStr.match(pattern);
         });
-        return matchRst_1;
+        return matchs;
       }
-      else if (typeof type === 'string') {
-        var pattern = getPattern(type, isNoLimit);
-        return pattern && src.match(pattern) || null;
+      else if (typeof _type === 'string') {
+        var pattern = getPattern(_type, isNoLimit);
+        return pattern && srcStr.match(pattern) || null;
       }
     }
 
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-     * @param  func
-     * @param  wait
-     * @param  options
+     * @param  func    : function
+     * @param  wait    : number
+     * @param  options : object [?]
+     * leading: boolean = true
+     * trailing: boolean = true
      */
     function throttle(func, wait, options) {
       var leading = true,
-          trailing = true;
+        trailing = true;
 
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
@@ -974,21 +971,25 @@
 
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
-     * @param func
-     * @param wait
-     * @param immediate
+     * @param  func    : function
+     * @param  wait    : number
+     * @param  options : object [?]
+     * leading: boolean = false
+     * maxing: boolean = false
+     * maxWait: number = Math.max(0, wait)
+     * trailing: boolean = true
      */
     function debounce(func, wait, options) {
       var lastArgs,
-          lastThis,
-          maxWait,
-          result,
-          timerId,
-          lastCallTime,
-          lastInvokeTime = 0,
-          leading = false,
-          maxing = false,
-          trailing = true;
+        lastThis,
+        maxWait,
+        result,
+        timerId,
+        lastCallTime,
+        lastInvokeTime = 0,
+        leading = false,
+        maxing = false,
+        trailing = true;
 
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
@@ -1004,7 +1005,7 @@
 
       function invokeFunc(time) {
         var args = lastArgs,
-            thisArg = lastThis;
+          thisArg = lastThis;
 
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
@@ -1020,8 +1021,8 @@
 
       function remainingWait(time) {
         var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime,
-            timeWaiting = wait - timeSinceLastCall;
+          timeSinceLastInvoke = time - lastInvokeTime,
+          timeWaiting = wait - timeSinceLastCall;
 
         return maxing
           ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
@@ -1030,7 +1031,7 @@
 
       function shouldInvoke(time) {
         var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime;
+          timeSinceLastInvoke = time - lastInvokeTime;
 
         return lastCallTime === undefined
           || timeSinceLastCall >= wait
@@ -1055,7 +1056,7 @@
 
       function debounced() {
         var time = Date.now(),
-            isInvoking = shouldInvoke(time);
+          isInvoking = shouldInvoke(time);
 
         lastArgs = arguments;
         lastThis = this;
@@ -1064,7 +1065,6 @@
         if (isInvoking) {
           if (timerId === undefined) return leadingEdge(lastCallTime);
           if (maxing) {
-            // Handle invocations in a tight loop.
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -1088,15 +1088,40 @@
       return debounced;
     }
 
+    var COLOR_LIST = {
+      'grey': '\x1B[90m%s\x1B[0m',
+      'blue': '\x1B[34m%s\x1B[0m',
+      'cyan': '\x1B[36m%s\x1B[0m',
+      'green': '\x1B[32m%s\x1B[0m',
+      'magenta': '\x1B[35m%s\x1B[0m',
+      'red': '\x1B[31m%s\x1B[0m',
+      'yellow': '\x1B[33m%s\x1B[0m',
+      'default': '%s\x1B[0m'
+    };
     var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
     var getTitle = function (configs) { return get(configs, '/title') || "funclib(" + VERSION + ")"; };
 
     /**
+     * [fn.chalk] 在控制台打印有颜色的字符串
+     * @param srcStr : string
+     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
+     */
+    function chalk(srcStr, color) {
+      if (!(color in COLOR_LIST)) color = 'grey';
+      return COLOR_LIST[color].replace(/%s/, srcStr);
+    }
+
+    /**
      * [fn.log] 控制台格式化打印值
-     * @param value
-     * @param title
-     * @param configs
-     * {title: string, width: number [20-100], isFmt: boolean}
+     * @param value   : any
+     * @param title   : string|boolean [?]
+     * @param configs : object [?]
+     * title: string, width: number [20-100],
+     * isFmt: boolean [?]
+     * pre:   boolean = false,
+     * end:   boolean = false
+     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+     * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
     function log(value, title, configs) {
       var isFmt;
@@ -1122,27 +1147,29 @@
         isFmt = true;
         title = "funclib(" + VERSION + ")";
       }
-      // Value
       value = pretty(value);
-      // Title
       var time = "[" + fmtDate('hh:mm:ss') + "] ";
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
       if (!isFmt)
         title = "( " + title + " )";
+      time = chalk(time);
+      var titlec = get(configs, '/ttColor');
+      var valuec = get(configs, '/color');
+      title = chalk(title, titlec in COLOR_LIST && titlec || 'green');
+      value = chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
       title = time + title;
-      // Line width
       var width = get(configs, '/width');
       if (!width || width < 30 || width > 100)
         width = 66;
-      // Fix title width
       if (originTtLength > width) {
-        title = cutString(title, width - 3);
+        var colorEnd = '\x1B[0m';
+        var fixLength = title.length - originTtLength - colorEnd.length;
+        title = cutString(title, width + fixLength - 3) + colorEnd;
       }
       else if (isFmt) {
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
-      // Do log
       if (!isFmt) {
         console.log(title + ":\n" + value);
       }
@@ -1152,153 +1179,283 @@
           sgLine_1 += '-';
           dbLine_1 += '=';
         });
-        console.log("\n" + dbLine_1 + "\n" + title + "\n" + sgLine_1 + "\n" + value + "\n" + dbLine_1 + "\n");
+        if (get(configs, '/pre', 'bol')) {
+          console.log('\n' + dbLine_1);
+          console.log(title);
+          console.log(sgLine_1);
+        }
+        else if (get(configs, '/end', 'bol')) {
+          console.log(dbLine_1 + '\n');
+        }
+        else {
+          console.log('\n' + dbLine_1);
+          console.log(title);
+          console.log(sgLine_1);
+          console.log(value);
+          console.log(dbLine_1 + '\n');
+        }
       }
     }
 
-    var event = 'fullscreenchange';
-    var events = [event, "webkit" + event, "moz" + event, "MS" + event];
-    var addFsChangeEvent = function () {
-      return events.forEach(function (e) {
-        document.addEventListener(e, window['onfullscreen']);
+    var progressBar;
+    var duration;
+    var pgType;
+    var process = global.process;
+
+    var progress = {
+      /**
+       * [fn.progress.start] 开启进度条，并传入参数
+       * @param title: string
+       * @param options: object [?]
+       * title: string
+       * width: number = 40
+       * type : 'bar'|'spi' = 'bar'}}
+       */
+      start: function (title, options) {
+        if (typeOf(title, 'obj')) {
+          options = title;
+          title = undefined;
+        }
+        interval('pg_sping').stop();
+        timeout('pg_Bar').stop();
+        title = typeVal(title, 'str')
+          || get(options, 'title', 'str') || "funclib " + VERSION;
+        pgType = get(options, '/type', 'str');
+        if (!options)
+          options = {};
+        options.title = title;
+        if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
+          pgType = 'bar';
+          startPgbar(options);
+        }
+        else {
+          startSping(title);
+        }
+      },
+      /**
+       * [fn.progress.stop] 结束进度条，结束后触发回调
+       * @param onStopped : function [?]
+       */
+      stop: function (onStopped) {
+        if (pgType === 'bar') {
+          stopPgbar(function () {
+            pgType = null;
+            if (typeOf(onStopped, 'fun'))
+              onStopped();
+          });
+        }
+        else {
+          stopSping();
+          pgType = null;
+          if (typeOf(onStopped, 'fun'))
+            onStopped();
+        }
+      }
+    };
+    function startPgbar(options) {
+      timeout('pg_Bar').stop();
+      var Pgbar = eval('require("progress")');
+      var prog = (options.title || '[fn.progress]') + " [:bar] :percent";
+      progressBar = new Pgbar(prog, {
+        complete: '=', incomplete: ' ',
+        width: options['width'] || 40,
+        total: options['total'] || 20
       });
-    };
-    var removeFsChangeEvent = function () { 
-      return events.forEach(function (e) {
-        document.removeEventListener(e, window['onfullscreen']);
-      }); 
-    };
-  
+      duration = 250;
+      tickFun('+');
+    }
+    function stopPgbar(onStopped) {
+      duration = 600;
+      tickFun('-', onStopped);
+    }
+    function startSping(message) {
+      interval('pg_sping').stop();
+      spingFun(message);
+    }
+    function stopSping() {
+      interval('pg_sping').stop();
+    }
+    function spingFun(msg) {
+      var stream = process.stderr;
+      var interrupt = function (frame) {
+        stream.clearLine();
+        stream.cursorTo(0);
+        stream.write(frame);
+      };
+      var s = '/';
+      interval('pg_sping', 180, function () {
+        interrupt(chalk(s, 'cyan') + " " + msg);
+        s = match(s, {
+          '/': '-',
+          '-': '\\',
+          '\\': '|',
+          '|': '/',
+          '@dft': '-'
+        });
+      });
+    }
+    function tickFun(type, onStopped) {
+      timeout('pg_Bar', duration, function () {
+        progressBar.tick();
+        switch (type) {
+          case '+':
+            duration += 300;
+            break;
+          case '-':
+            duration -= duration * 0.2;
+            break;
+        }
+        if (!progressBar.complete) {
+          tickFun(type, onStopped);
+        }
+        else if (onStopped) {
+          onStopped();
+        }
+      });
+    }
+
+    var fs = eval('require("fs")');
+    var path = eval('require("path")');
+    var execSync = eval('require("child_process").execSync');
+
     /**
-     * [fn.fullScreen] 全屏显示HTML元素
-     * @param el
-     * @returns {any}
+     * [fn.rd] 读文件
+     * @param file : string
      */
-    function fullScreen(el) {
-      if (typeof el === 'string')
-        el = document.querySelector(el);
-      if (el && el.tagName) {
-        var rfs = el['requestFullScreen']
-          || el['webkitRequestFullScreen']
-          || el['mozRequestFullScreen']
-          || el['msRequestFullScreen'];
-        if (rfs)
-          return rfs.call(el);
-        if (window['ActiveXObject']) {
-          var ws = new window['ActiveXObject']("WScript.Shell");
-          if (ws) {
-            ws.SendKeys("{F11}");
+    function rd(file) {
+      return fs.existsSync(file) ? fs.readFileSync(file, { encoding: 'utf8' }) : '';
+    }
+
+    /**
+     * [fn.wt] 写文件
+     * @param file : string
+     * @param text : string
+     * @param flag : 'w'|'a' = 'w'
+     */
+    function wt(file, text, flag) {
+      if (flag === void 0) { flag = 'w'; }
+      fs.writeFileSync(file, text, { encoding: 'utf8', flag: flag });
+    }
+
+    /**
+     * [fn.cp] 复制文件或文件夹
+     * @param src  : string
+     * @param dist : string
+     */
+    function cp(src, dist) {
+      if (fs.existsSync(src)) {
+        var stat = fs.statSync(src);
+        if (stat.isFile()) {
+          fs.createReadStream(src).pipe(fs.createWriteStream(dist));
+        }
+        else if (stat.isDirectory()) {
+          mk(dist);
+          var subSrcs = fs.readdirSync(src);
+          subSrcs.forEach(function (file) {
+            var subSrc = path.join(src, file);
+            var subDist = path.join(dist, file);
+            cp(subSrc, subDist);
+          });
+        }
+      }
+    }
+
+    /**
+     * [fn.mv] 移动文件或文件夹
+     * @param src  : string
+     * @param dist : string
+     */
+    function mv(src, dist) {
+      try {
+        fs.renameSync(src, dist);
+      }
+      catch (e) {
+        cp(src, dist);
+        rm(src);
+      }
+    }
+
+    /**
+     * [fn.rm] 删除文件或文件夹
+     * @param src : string
+     */
+    function rm(src) {
+      if (fs.existsSync(src)) {
+        var stat = fs.statSync(src);
+        if (stat.isFile()) {
+          fs.unlinkSync(src);
+        }
+        else if (stat.isDirectory()) {
+          var subSrcs = fs.readdirSync(src);
+          subSrcs.forEach(function (file) {
+            var subSrc = path.join(src, file);
+            rm(subSrc);
+          });
+          try {
+            fs.rmdirSync(src);
+          }
+          catch (e) {
+            setTimeout(function () {
+              if (/win/.test(process.platform)) {
+                var absSrc = path.resolve(src);
+                execSync("rd /s /q " + absSrc);
+              }
+              else {
+                execSync("rm -rf " + src);
+              }
+            }, 500);
           }
         }
       }
     }
 
     /**
-     * [fn.exitFullScreen] 退出全屏显示
-     * @returns {any}
+     * [fn.mk] 创建文件夹
+     * @param dir : string
      */
-    function exitFullScreen() {
-      var cfs = document['cancelFullScreen']
-        || document['webkitCancelFullScreen']
-        || document['mozCancelFullScreen']
-        || document['exitFullScreen'];
-      if (cfs)
-        return cfs.call(document);
-      if (window['ActiveXObject']) {
-        var ws = new window['ActiveXObject']("WScript.Shell");
-        if (ws != null) {
-          ws.SendKeys("{F11}");
+    function mk(dir) {
+      var absDir = path.resolve(dir);
+      if (!fs.existsSync(absDir)) {
+        try {
+          fs.mkdirSync(absDir);
+        }
+        catch (e) {
+          mk(path.dirname(absDir));
+          fs.mkdirSync(absDir);
         }
       }
     }
 
     /**
-     * [fn.isFullScreen] 检测是否全屏状态
-     * @returns {boolean}
+     * [fn.size] 获取文件的大小(kb)
+     * @param src   : string
+     * @param unit  : 'b'|'kb'|'mb'|'gb'|'tb' = 'kb'
+     * @param digit : number = 2
      */
-    function isFullScreen() {
-      return document['fullscreenEnabled']
-        || window['fullScreen']
-        || document['mozFullscreenEnabled']
-        || document['webkitIsFullScreen']
-        || document['msIsFullScreen']
-        || false;
-    }
-
-    /**
-     * [fn.fullScreenChange] 全屏状态变化事件
-     * @param callback
-     */
-    function fullScreenChange(callback) {
-      if (typeOf(callback, 'fun')) {
-        window['onfullscreen'] = callback;
-        addFsChangeEvent();
-      }
-      else if (window['onfullscreen']) {
-        if (callback === false) {
-          removeFsChangeEvent();
+    function size(src, unit, digit) {
+      if (fs.existsSync(src)) {
+        if (typeOf(unit, 'num')) {
+          digit = unit;
+          unit = undefined;
         }
-        else {
-          return { off: removeFsChangeEvent };
+        if (unit === undefined || digit === undefined) {
+          digit = 2;
         }
+        var flSize = fs.statSync(src)["size"];
+        var rlSize = match(unit, {
+          'b' : flSize,
+          'kb': flSize / 1024,
+          'mb': flSize / 1024 / 1024,
+          'gb': flSize / 1024 / 1024 /1024,
+          'tb': flSize / 1024 / 1024 /1024 /1024,
+          '@dft': flSize / 1024
+        });
+        return rlSize.toFixed(digit);
       }
     }
 
     /**
-     * [fn.setCookie] 设置Cookie
-     * @param name 
-     * @param value 
-     * @param days 
-     */
-    function setCookie(name, value, days) {
-      if (days === void 0) { days = 0; }
-      var date = new Date();
-      date.setDate(date.getDate() + days);
-      document.cookie = name + "=" + value + ";expires=" + date;
-    }
-
-    /**
-     * [fn.getCookie] 根据name读取cookie
-     * @param  name 
-     * @return {String}
-     */
-    function getCookie(name) {
-      var cks = document.cookie.replace(/\s/g, "").split(';');
-      for (var i = 0; i < cks.length; i++) {
-        var tempArr = cks[i].split('=');
-        if (tempArr[0] == name)
-          return decodeURIComponent(tempArr[1]);
-      }
-      return '';
-    }
-
-    /**
-     * [fn.removeCookie] 根据name删除cookie
-     * @param name 
-     */
-    function removeCookie(name) {
-      setCookie(name, '1', -1);
-    }
-
-    /**
-     * [fn.copyText] 复制文本到粘贴板
-     * @param text [string]
-     */
-    function copyText(text) {
-      if (text === void 0) { text = ''; }
-      var textarea = document.createElement('textarea');
-      textarea.style.position = 'fixed';
-      textarea.style.left = '200%';
-      document.body.appendChild(textarea);
-      textarea.value = text;
-      textarea.select();
-      document.execCommand('Copy');
-      document.body.removeChild(textarea);
-    }
-
-    /**
-     * [fn.noConflict] 释放fn变量
-     * @param text [string]
+     * [fn.noConflict] 释放fn变量占用权
      */
     function noConflict() {
       if (root._ === this)
@@ -1367,17 +1524,16 @@
     funclib.throttle = throttle;
     funclib.debounce = debounce;
 
+    funclib.chalk = chalk;
     funclib.log = log;
 
-    funclib.fullScreen = fullScreen;
-    funclib.exitFullScreen = exitFullScreen;
-    funclib.isFullScreen = isFullScreen;
-    funclib.fullScreenChange = fullScreenChange;
-    funclib.setCookie = setCookie;
-    funclib.getCookie = getCookie;
-    funclib.removeCookie = removeCookie;
-    funclib.copyText = copyText;
-    funclib.noConflict = noConflict;
+    funclib.rd = rd;
+    funclib.wt = wt;
+    funclib.cp = cp;
+    funclib.mv = mv;
+    funclib.rm = rm;
+    funclib.mk = mk;
+    funclib.size = size;
 
     keys(funclib).forEach(function (mtd) {
       _fn[mtd] = function () {
@@ -1387,7 +1543,9 @@
       };
     });
 
+    funclib.progress = progress;
     funclib.VERSION = VERSION;
+    funclib.noConflict = noConflict;
 
     return funclib;
   })();
