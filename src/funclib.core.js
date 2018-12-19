@@ -98,26 +98,22 @@
         if (length === void 0) {
           length = start;
           start = undefined;
+          loopFn(false);
+        }
+        else if (typeOf(length, 'num')) {
+          loopFn(true);
+        }
+        function loopFn(isAdd) {
           if (length >= 0) {
             for (var i = 0; i < length; i ++) {
-              _range.push(i);
+              _range.push(isAdd ? i + start : i);
             }
           }
           else if (length < 0) {
             for (var i = 0; i > length; i --) {
-              _range.push(i);
+              _range.push(isAdd ? i + start : i);
             }
           }
-        }
-        else if (typeOf(length, 'num')) {
-          if (length >= 0)
-            for (var i = 0; i < length; i ++) {
-              _range.push(i + start);
-            }
-          if (length < 0)
-            for (var i = 0; i > length; i --) {
-              _range.push(i + start);
-            }
         }
       }
       return _range;
