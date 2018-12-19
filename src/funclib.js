@@ -561,8 +561,11 @@
           var tmpSta = start;
           start = end;
           end = tmpSta;
+          return Math.ceil(Math.random() * (end - start) + start);
         }
-        return Math.floor(Math.random() * (end - start) + start);
+        else {
+          return Math.floor(Math.random() * (end - start) + start);
+        }
       }
     }
 
