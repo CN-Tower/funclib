@@ -1298,6 +1298,8 @@
       return this;
     }
 
+    /* istanbul ignore next */
+
     var _fn = {};
 
     function funclib(data) {
@@ -1383,7 +1385,8 @@
 
     return funclib;
   })();
-
+ 
+  /* istanbul ignore next */
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
     root.fn = fn;
     define(function () {
