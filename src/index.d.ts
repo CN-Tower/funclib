@@ -100,7 +100,7 @@ interface Progress {
    * @param options: object [?]
    * title: string
    * width: number = 40
-   * type : 'bar'|'spi' = 'bar'}}
+   * type : 'bar'|'spi' = 'bar'
    */
   start(title: string, options?: any): void;
   /**
