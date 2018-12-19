@@ -5,9 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
-    "build": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js && node ./scripts/build.js",
+    "build": "node ./scripts/pre-build.js && npm run uglify && node ./scripts/build.js",
+    "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
     "usage": "node usages.js",
-    "test": "karma start scripts/karma.conf.js"
+    "test": "npm run test:server && npm run test:client",
+    "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",
+    "test:client": "node scripts/test.js -c && npm run karma:fun && npm run karma:min && npm run karma:core",
+    "karma:fun": "karma start scripts/karma.conf.js fun",
+    "karma:min": "karma start scripts/karma.conf.js min",
+    "karma:core": "karma start scripts/karma.conf.js core"
   },
   "repository": {
     "type": "git",

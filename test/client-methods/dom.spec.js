@@ -1,7 +1,7 @@
 describe('Dom Methods:', function () {
   describe('#fn.fullScreen()', function () {
     before(function () {
-      fn.fullScreen($('html')[0]);
+      fn.fullScreen(document.querySelector('html'));
     });
     it(`fn.fullScreen() should make the element full screen.`, function () {
       fn.defer(() => assert(fn.isFullScreen()));

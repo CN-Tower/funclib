@@ -46,22 +46,26 @@ $ npm run test
 ## Structure
 ```
 funclib.js
-├── node_modules/           # You know the drill...
-├── script                  # 脚本
-│   ├── build.js            # 编译脚本
-│   ├── karma.conf.js       # Karma配置
-│   └── webpack.conf.js     # Webpack配置
-├── src                     # Source code
-│   ├── funclib.js          # 未压缩版
-│   ├── funclib.min.js      # 压缩版
+├── node_modules/           ### You know the drill...
+├── script                  ### 脚本
+│   ├── build.js            # 构建脚本
+│   ├── karma.conf.js       # Karma测试框架配置
+│   ├── pre-build.js        # 构建配置脚本
+│   └── test.js             # 测试配置脚本
+├── src                     ### Source code
+│   ├── funclib.core.js     # 通用版
+│   ├── funclib.js          # 未压缩版客户端版
+│   ├── funclib.min.js      # 压缩版客户端版
 │   ├── index.d.ts          # 定义文件
-│   ├── index.js            # 索引文件
+│   ├── index.js            # 服务端版
 │   ├── package.json        # 库模块定义
 │   └── README.md           # Read this FIRST :)
-├── test                    # 测试
-│   ├── client-methods      # 客户端方法测试用例
-│   ├── server-methods      # 服务端方法测试用例
-│   └── *.spec.js           # 通用方法测试用例
+├── test                    ### 测试
+│   ├── client-methods/     # 客户端版测试用例
+│   ├── core-methods/       # 通用版测试用例
+│   ├── server-methods/     # 服务端版测试用例
+│   ├── fn-core.js          # 通用版测试文件
+│   └── fn-index.js         # 服务端版测试文件
 ├── .coveralls.yml          # 测试覆盖率
 ├── .editorconfig           # Set coding style (indents, charset, etc.)
 ├── .gitignore              # You know the drill...

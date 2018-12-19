@@ -620,7 +620,7 @@
         _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
       if (typeOf(timerId, 'fun'))
         _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
-  
+
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
@@ -933,7 +933,7 @@
         _type.forEach(function (item) {
           var pattern = getPattern(item, isNoLimit);
           if (!matchs && pattern)
-          matchs = srcStr.match(pattern);
+            matchs = srcStr.match(pattern);
         });
         return matchs;
       }
@@ -953,7 +953,7 @@
      */
     function throttle(func, wait, options) {
       var leading = true,
-          trailing = true;
+        trailing = true;
 
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
@@ -981,15 +981,15 @@
      */
     function debounce(func, wait, options) {
       var lastArgs,
-          lastThis,
-          maxWait,
-          result,
-          timerId,
-          lastCallTime,
-          lastInvokeTime = 0,
-          leading = false,
-          maxing = false,
-          trailing = true;
+        lastThis,
+        maxWait,
+        result,
+        timerId,
+        lastCallTime,
+        lastInvokeTime = 0,
+        leading = false,
+        maxing = false,
+        trailing = true;
 
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
@@ -1005,7 +1005,7 @@
 
       function invokeFunc(time) {
         var args = lastArgs,
-            thisArg = lastThis;
+          thisArg = lastThis;
 
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
@@ -1021,8 +1021,8 @@
 
       function remainingWait(time) {
         var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime,
-            timeWaiting = wait - timeSinceLastCall;
+          timeSinceLastInvoke = time - lastInvokeTime,
+          timeWaiting = wait - timeSinceLastCall;
 
         return maxing
           ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
@@ -1031,7 +1031,7 @@
 
       function shouldInvoke(time) {
         var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime;
+          timeSinceLastInvoke = time - lastInvokeTime;
 
         return lastCallTime === undefined
           || timeSinceLastCall >= wait
@@ -1056,7 +1056,7 @@
 
       function debounced() {
         var time = Date.now(),
-            isInvoking = shouldInvoke(time);
+          isInvoking = shouldInvoke(time);
 
         lastArgs = arguments;
         lastThis = this;
@@ -1087,6 +1087,9 @@
 
       return debounced;
     }
+
+    /**@spliter*/
+    /**=================================================================== */
 
     var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
     var getTitle = function (configs) { return get(configs, '/title') || "funclib(" + VERSION + ")"; };
@@ -1160,12 +1163,12 @@
         document.addEventListener(e, window['onfullscreen']);
       });
     };
-    var removeFsChangeEvent = function () { 
+    var removeFsChangeEvent = function () {
       return events.forEach(function (e) {
         document.removeEventListener(e, window['onfullscreen']);
-      }); 
+      });
     };
-  
+
     /**
      * [fn.fullScreen] 全屏显示HTML元素
      * @param el : HTMLElement
@@ -1289,6 +1292,9 @@
       document.body.removeChild(textarea);
     }
 
+    /**=================================================================== */
+    /**@spliter*/
+
     /**
      * [fn.noConflict] 释放fn变量占用权
      */
@@ -1359,8 +1365,10 @@
     funclib.throttle = throttle;
     funclib.debounce = debounce;
 
-    funclib.log = log;
+    /**@spliter*/
+    /**=================================================================== */
 
+    funclib.log = log;
     funclib.fullScreen = fullScreen;
     funclib.exitFullScreen = exitFullScreen;
     funclib.isFullScreen = isFullScreen;
@@ -1369,6 +1377,9 @@
     funclib.getCookie = getCookie;
     funclib.removeCookie = removeCookie;
     funclib.copyText = copyText;
+
+    /**=================================================================== */
+    /**@spliter*/
 
     keys(funclib).forEach(function (mtd) {
       _fn[mtd] = function () {
@@ -1383,8 +1394,7 @@
 
     return funclib;
   })();
- 
-  /* istanbul ignore next */
+
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
     root.fn = fn;
     define(function () {

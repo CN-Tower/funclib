@@ -1,3 +1,0 @@
-describe('Trick Methods:', function () {
-   
-});
