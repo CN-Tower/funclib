@@ -89,13 +89,38 @@
 
     /**
      * [fn.range] 返回一个范围数组
+     * @param start  : number [?]
      * @param length : number
      */
-    function range(length) {
-      if (length >= 0)
-        return array(length);
-      if (length < 0)
-        return array(-length).reverse();
+    function range(start, length) {
+      var _range = [];
+      if (typeOf(start, 'num')) {
+        if (length === void 0) {
+          length = start;
+          start = undefined;
+          if (length >= 0) {
+            for (var i = 0; i < length; i ++) {
+              _range.push(i);
+            }
+          }
+          else if (length < 0) {
+            for (var i = 0; i > length; i --) {
+              _range.push(i);
+            }
+          }
+        }
+        else if (typeOf(length, 'num')) {
+          if (length >= 0)
+            for (var i = 0; i < length; i ++) {
+              _range.push(i + start);
+            }
+          if (length < 0)
+            for (var i = 0; i > length; i --) {
+              _range.push(i + start);
+            }
+        }
+      }
+      return _range;
     }
 
     /**

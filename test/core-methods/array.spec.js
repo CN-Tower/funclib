@@ -8,12 +8,24 @@ module.exports = function (fn, assert) {
         assert(tmpArr.length === 5 && tmpArr.join('' === '01234'));
       });
       it(`fn.array(5, 'x') should return a Array filled by 'x'.`, function () {
-        const tmpArr = fn.array(5, 'x');
-        assert.deepEqual(tmpArr, ['x', 'x', 'x', 'x', 'x']);
+        assert.deepEqual(fn.array(5, 'x'), ['x', 'x', 'x', 'x', 'x']);
       });
       it(`fn.array(5, i => i + i) should return a range.`, function () {
-        const tmpArr = fn.array(5, i => i + i);
-        assert.deepEqual(tmpArr, [0, 2, 4, 6, 8]);
+        assert.deepEqual(fn.array(5, i => i + i), [0, 2, 4, 6, 8]);
+      });
+    });
+    describe('#fn.range()', function () {
+      it(`fn.range(5) should return a range.`, function () {
+        assert.deepEqual(fn.range(5), [0, 1, 2, 3, 4]);
+      });
+      it(`fn.range(-5) should return a range.`, function () {
+        assert.deepEqual(fn.range(-5), [0, -1, -2, -3, -4]);
+      });
+      it(`fn.range(0, 5) should return a range.`, function () {
+        assert.deepEqual(fn.range(2, 5), [2, 3, 4, 5, 6]);
+      });
+      it(`fn.range(0, -5) should return a range.`, function () {
+        assert.deepEqual(fn.range(2, -5), [2, 1, 0, -1, -2]);
       });
     });
     describe('#fn.toArr()', function () {
@@ -27,55 +39,46 @@ module.exports = function (fn, assert) {
     describe('#fn.find()', function () {
       var persons = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
       it(`fn.find(persons, {name: 'Jerry'}) should return Jerry's info.`, function () {
-        var tom = fn.find(persons, { name: 'Jerry' });
-        assert.deepEqual(tom, { name: 'Jerry', age: 18 });
+        assert.deepEqual(fn.find(persons, { name: 'Jerry' }), { name: 'Jerry', age: 18 });
       });
       it(`fn(persons).find({name: 'Tom'}) should return Tom's info.`, function () {
-        var tom = fn(persons).find({ name: 'Tom' });
-        assert.deepEqual(tom, { name: 'Tom', age: 22 });
+        assert.deepEqual(fn(persons).find({ name: 'Tom' }), { name: 'Tom', age: 22 });
       });
       it(`fn.find(persons, ps => ps.name === 'Tom') should return Tom's info.`, function () {
-        var tom = fn.find(persons, ps => ps.name === 'Tom');
-        assert.deepEqual(tom, { name: 'Tom', age: 22 });
+        assert.deepEqual(fn.find(persons, ps => ps.name === 'Tom'), { name: 'Tom', age: 22 });
       });
       it(`fn(persons).find(ps => ps.name === 'Tom') should return Tom's info.`, function () {
-        var tom = fn(persons).find(ps => ps.name === 'Tom');
-        assert.deepEqual(tom, { name: 'Tom', age: 22 });
+        assert.deepEqual(fn(persons).find(ps => ps.name === 'Tom'), { name: 'Tom', age: 22 });
       });
     });
     describe('#fn.filter()', function () {
       var persons = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
       it(`fn.filter(persons, {name: 'Tom'}) should return Toms's info.`, function () {
-        var toms = fn.filter(persons, { name: 'Tom' });
-        assert.deepEqual(toms, [{ name: 'Tom', age: 22 }]);
+        assert.deepEqual(fn.filter(persons, { name: 'Tom' }), [{ name: 'Tom', age: 22 }]);
       });
       it(`fn.filter(persons, ps => ps.name === 'Tom') should return Tom's info.`, function () {
-        var toms = fn.filter(persons, ps => ps.name === 'Tom');
-        assert.deepEqual(toms, [{ name: 'Tom', age: 22 }]);
+        assert.deepEqual(fn.filter(persons, ps => ps.name === 'Tom'), [{ name: 'Tom', age: 22 }]);
       });
     });
     describe('#fn.reject()', function () {
       var persons = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
       it(`fn.reject(persons, {name: 'Tom'}) should return not Toms's info.`, function () {
-        var tom = fn.reject(persons, { name: 'Tom' });
-        assert.deepEqual(tom, [{ name: 'Jerry', age: 18 }]);
+        assert.deepEqual(fn.reject(persons, { name: 'Tom' }), [{ name: 'Jerry', age: 18 }]);
       });
       it(`fn.reject(persons, ps => ps.name === 'Tom') should return not Tom's info.`, function () {
-        var tom = fn.reject(persons, ps => ps.name === 'Tom');
-        assert.deepEqual(tom, [{ name: 'Jerry', age: 18 }]);
+        assert.deepEqual(fn.reject(persons, ps => ps.name === 'Tom'), [{ name: 'Jerry', age: 18 }]);
       });
     });
     describe('#fn.contains()', function () {
       var persons = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
       it(`fn.contains(persons, {name: 'Tom'}) should return is Tom in persons.`, function () {
-        assert(fn.contains(persons, { name: 'Tom' }) === true);
+        assert(fn.contains(persons, { name: 'Tom' }));
       });
       it(`fn.contains(persons, ps => ps.name === 'Tom') should return is Tom in persons.`, function () {
-        var tom = fn.contains(persons, ps => ps.name === 'Tom');
-        assert(fn.contains(persons, ps => ps.name === 'Tom') === true);
+        assert(fn.contains(persons, ps => ps.name === 'Tom'));
       });
       it(`fn.contains(persons, ps => ps.name === 'Tom') should return is Tom in persons.`, function () {
-        assert(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom') === true);
+        assert(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom'));
       });
     });
     describe('#fn.drop()', function () {
@@ -121,12 +124,10 @@ module.exports = function (fn, assert) {
     describe('#fn.indexOf()', function () {
       var persons = [{ name: 'Tom', age: 22 }, { name: 'Jerry', age: 18 }];
       it(`fn.indexOf(persons, {name: 'Tom'}) should return Tom's index in persons.`, function () {
-        var tomIdx = fn.indexOf(persons, { name: 'Tom' });
-        assert(tomIdx === 0);
+        assert(fn.indexOf(persons, { name: 'Tom' }) === 0);
       });
       it(`fn.indexOf(persons, ps => ps.name === 'Tom') should return Tom's index in persons.`, function () {
-        var tomIdx = fn.indexOf(persons, ps => ps.name === 'Tom');
-        assert(tomIdx === 0);
+        assert(fn.indexOf(persons, ps => ps.name === 'Tom') === 0);
       });
     });
     describe('#fn.forEach()', function () {
@@ -145,6 +146,10 @@ module.exports = function (fn, assert) {
       it(`fn.sortBy(person, 'age', true) should return a sorted strArr.`, function () {
         const person2 = fn.sortBy(person, 'age', true);
         assert(person2[0].name === 'Tom' && person2[person2.length - 1].name === 'Bob');
+      });
+      it(`fn.sortBy(person, 'name') should return a sorted strArr.`, function () {
+        const person2 = fn.sortBy([{ name: 'Tom', age: 22 }, { name: 'Tom', age: 18 }], 'name');
+        assert(person2[0].age === 22 && person2[1].age === 18);
       });
     });
   });

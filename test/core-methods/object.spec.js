@@ -47,6 +47,9 @@ module.exports = function (fn, assert) {
       it(`fn.get(obj, '/metadata/subObj/name', 'arr', 'str') should return 'subOjb'.`, function () {
         assert(fn.get(obj, '/metadata/subObj/name', 'arr', 'str') === 'subOjb');
       });
+      it(`fn.get(obj, '.metadata.subObj.name', 'arr', 'str') should return 'subOjb'.`, function () {
+        assert(fn.get(obj, '.metadata.subObj.name', 'arr', 'str') === 'subOjb');
+      });
     });
     describe('#fn.pick()', function () {
       it(`fn.pick({name: 'Tom', age: 28}) should return {}.`, function () {
@@ -94,10 +97,10 @@ module.exports = function (fn, assert) {
     });
     describe('#fn.deepCopy()', function () {
       it(`fn.deepCopy(obj) should return a duplicate of obj.`, function () {
-        const tom = { name: 'Tom', age: 28 };
+        const tom = [{ name: 'Tom', age: 28 }];
         const tom2 = fn.deepCopy(tom);
-        tom2.age = 22;
-        assert(tom.age === 28 && tom2.age === 22);
+        tom2[0].age = 22;
+        assert(tom[0].age === 28 && tom2[0].age === 22);
       });
     });
     describe('#fn.isEmpty()', function () {

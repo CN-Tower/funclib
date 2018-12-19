@@ -1,5 +1,8 @@
 const assert = require('power-assert');
-const fn = require('../src/funclib.core');
+const fn = require('funclib');
+const _fn = require('../src/funclib.core');
+
+fn.log('Testing funclib.core.js', 'Server Test');
 
 const specs = [
   './core-methods/array.spec',
@@ -13,5 +16,5 @@ const specs = [
 ];
 
 specs.forEach(spec => {
-  require(spec)(fn, assert);
+  require(spec)(_fn, assert);
 });

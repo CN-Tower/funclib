@@ -6,6 +6,7 @@ let files, exclude, preprocessors, reporters;
 
 fn.match(process.argv[4], {
   'fun': () => {
+    fn.log('Testing funclib.js', 'Client Test');
     files = [
       'src/funclib.js',
       'test/**/*.spec.js'
@@ -15,6 +16,7 @@ fn.match(process.argv[4], {
     reporters = ['mocha'];
   },
   'min': () => {
+    fn.log('Testing funclib.min.js', 'Client Test');
     files = [
       'src/funclib.min.js',
       'test/**/*.spec.js'
@@ -24,6 +26,7 @@ fn.match(process.argv[4], {
     reporters = ['mocha'];
   },
   'core': () => {
+    fn.log('Testing funclib.core.js', 'Client Test');
     files = [
       'src/funclib.core.js',
       'test/**/*.spec.js'

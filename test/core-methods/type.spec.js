@@ -9,6 +9,15 @@ module.exports = function (fn, assert) {
       it(`fn.typeOf([], 'obj') should return false.`, function () {
         assert(!fn.typeOf([], 'obj'));
       });
+      it(`fn.typeOf(undefined, 'udf') should return false.`, function () {
+        assert(fn.typeOf(undefined, 'udf'));
+      });
+      it(`fn.typeOf(null, 'nul') should return false.`, function () {
+        assert(fn.typeOf(null, 'nul'));
+      });
+      it(`fn.typeOf(false, 'bol') should return false.`, function () {
+        assert(fn.typeOf(false, 'bol'));
+      });
       it(`fn.typeOf({}, ['str', 'obj']) should return true.`, function () {
         assert(fn.typeOf({}, ['str', 'obj']));
       });

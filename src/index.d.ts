@@ -136,9 +136,10 @@ interface Funclib {
   array(length: number, value?: any): any[];
   /**
    * [fn.range] 返回一个范围数组
+   * @param start  : number [?]
    * @param length : number
    */
-  range(length): number[];
+  range(start, length?): number[];
   /**
    * [fn.toArr] 值数组化
    * @param value : any

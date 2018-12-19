@@ -2,7 +2,6 @@
 const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-
 // fn.interval(() => console.log(1), 1000, 'abc');
 
 // fn.log(fn.interval());
@@ -43,12 +42,12 @@ const fn = require('./src/funclib.min');
  * Function
  * =======================================================================
  */
-let i = 0;
-const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
-fn.interval(500, () => {
-    i ++;
-    log();
-});
+// let i = 0;
+// const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
+// fn.interval(500, () => {
+//     i ++;
+//     log();
+// });
 // let i = 0;
 // const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
 // fn.interval('test', 500, () => {
@@ -73,6 +72,10 @@ fn.interval(500, () => {
 // fn.log(fn.contains(['Tom', 'Jerry', 'Marry'], 'Tom'), 'fn.contains');
 // fn.log(fn.indexOf(persons, {name: 'Tom'}), 'fn.indexOf');
 // fn.log(fn.indexOf(persons, ps => ps.name === 'Tom'), 'fn.indexOf');
+// fn.log(fn.range(5));
+// fn.log(fn.range(-5));
+// fn.log(fn.range(2, 5));
+// fn.log(fn.range(2, -5));
 
 /**
  * Object

@@ -15,6 +15,10 @@ module.exports = function (fn, assert) {
         const rdnum = fn.random(5, 10);
         assert(fn.typeOf(rdnum, 'num') && 5 <= rdnum && rdnum < 10);
       });
+      it(`fn.random(10, 5) should return a Int between [10, 5).`, function () {
+        const rdnum = fn.random(10, 5);
+        assert(fn.typeOf(rdnum, 'num') && 5 < rdnum && rdnum <= 10);
+      });
     });
     describe('#fn.gid()', function () {
       it(`fn.gid() should return an random ID with a length of 12.`, function () {
