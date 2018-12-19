@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
 ## Brief Intro
-Javascript通用型UMD函数库，采用Typescript开发，Webpack打包编译!
+JavaScript通用型UMD函数库!
 > 目的：高效率完成前端业务代码！
 
 ### Documents:&nbsp;&nbsp;http://funclib.net

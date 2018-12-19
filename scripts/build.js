@@ -9,7 +9,7 @@ const fnJs = path.join(root, 'src/funclib.js');
 const fnMinJs = path.join(root, 'src/funclib.min.js');
 const indexJs = path.join(root, 'src/index.js');
 
-fn.progress.start('Building FuncLib Assets', {width: 36});
+fn.progress.start('Building FuncLib', {width: 42});
 
 fn.rm(rdmSrc)
 fn.cp(rdm, rdmSrc);
