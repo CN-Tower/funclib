@@ -18,7 +18,7 @@ $ npm install funclib
 # Use funclib
 $ node
 > var fn = require('funclib');
-> console.log(fn.rdid()) // => 8GH9IYO60MXQ
+> console.log(fn.gid()) // => 8GH9IYO60MXQ
 ```
 
 ## Clone Repo
