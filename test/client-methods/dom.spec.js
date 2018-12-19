@@ -4,20 +4,20 @@ describe('Dom Methods:', function () {
       fn.fullScreen($('html')[0]);
     });
     it(`fn.fullScreen() should make the element full screen.`, function () {
-      fn.defer(() => assert(fn.isFullScreen() === true));
+      fn.defer(() => assert(fn.isFullScreen()));
     });
   });
   describe('#fn.exitFullScreen()', function () {
     before(function () {
-      fn.exitFullScreen($('html')[0]);
+      fn.exitFullScreen();
     });
     it(`fn.exitFullScreen() should make the element exit full screen.`, function () {
-      fn.defer(() => assert(fn.isFullScreen() === false));
+      fn.defer(() => assert(!fn.isFullScreen()));
     });
   });
   describe('#fn.isFullScreen()', function () {
     it(`fn.isFullScreen() check is the element full screen.`, function () {
-      assert(fn.isFullScreen() === false);
+      assert(!fn.isFullScreen());
     });
   });
 });
