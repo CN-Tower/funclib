@@ -1298,8 +1298,6 @@
       return this;
     }
 
-    /* istanbul ignore next */
-
     var _fn = {};
 
     function funclib(data) {
