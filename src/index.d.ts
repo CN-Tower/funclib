@@ -246,7 +246,7 @@ interface Funclib {
    * [fn.extend] 给对象赋值
    * @param tarObj    : object
    * @param srcObj    : object
-   * @param predicate : ...string[]|string|function
+   * @param predicate : ...string[]|string|function  [?]
    */
   extend(tarObj: any, srcObj: any, predicate?: any, ...props: string[]): any;
   /**
