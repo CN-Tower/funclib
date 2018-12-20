@@ -504,7 +504,7 @@ interface Funclib {
    * @param unit  : 'b'|'kb'|'mb'|'gb'|'tb' = 'kb'
    * @param digit : number = 2
    */
-  size(src, unit, digit): number;
+  size(src: string, unit?: 'b'|'kb'|'mb'|'gb'|'tb', digit?: number): number;
   /**
    * [fn.noConflict] 释放fn变量占用权
    */
