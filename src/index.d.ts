@@ -215,7 +215,7 @@ interface Funclib {
   sortBy(srcArr: any[], field: string, isDesc?: boolean): any;
   /**
    * [fn.len] 获取对象自有属性的个数
-   * @arg srcObj : any
+   * @param srcObj : any
    */
   len(srcObj: any): number;
   /**
@@ -251,8 +251,8 @@ interface Funclib {
   extend(tarObj: any, srcObj: any, predicate?: any, ...props: string[]): any;
   /**
    * [fn.forIn] 遍历对象的可数自有属性
-   * @arg srcObj   : object
-   * @arg iteratee : function
+   * @param srcObj   : object
+   * @param iteratee : function
    */
   forIn(srcObj: any, iteratee: any): any;
   /**
