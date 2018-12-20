@@ -1124,7 +1124,7 @@
      * @param title   : string|boolean [?]
      * @param configs : object [?]
      * title: string
-     * width: number = 40 [20-100]
+     * width: number = 66 [30-100]
      * isFmt: boolean = true
      * isShowTime: boolean = true
      */

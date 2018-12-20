@@ -1143,7 +1143,8 @@
      * @param value   : any
      * @param title   : string|boolean [?]
      * @param configs : object [?]
-     * title: string, width: number [20-100],
+     * title: string,
+     * width: number = 66 [30-100],
      * isFmt: boolean [?]
      * isShowTime: boolean = true
      * pre:   boolean = false,
