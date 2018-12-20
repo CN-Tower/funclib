@@ -35,8 +35,8 @@
  * fn.isDeepEqual            判断数组或对象是否相等
  ## Math
  * fn.random                 返回指定范围的随机数
- * fn.gid                   返回指定长度的随机ID
- * fn.gcolor                返回一个随机色值
+ * fn.gid                    返回指定长度的随机ID
+ * fn.gcolor                 返回一个随机色值
  ## Time       
  * fn.interval               循环定时器
  * fn.timeout                延时定时器
