@@ -6,7 +6,7 @@
  */
 ; (function () {
 
-  var VERSION = '3.1.3';
+  var VERSION = '3.1.4';
 
   var _global = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -105,12 +105,12 @@
         }
         function loopFn(isAdd) {
           if (length >= 0) {
-            for (var i = 0; i < length; i ++) {
+            for (var i = 0; i < length; i++) {
               _range.push(isAdd ? i + start : i);
             }
           }
           else if (length < 0) {
-            for (var i = 0; i > length; i --) {
+            for (var i = 0; i > length; i--) {
               _range.push(isAdd ? i + start : i);
             }
           }
@@ -1184,7 +1184,7 @@
       var originTtLength = (time + title + '[] ').length;
       if (!isFmt)
         title = '( ' + title + ' )';
-      if(time)
+      if (time)
         time = '[' + chalk(_time) + '] ';
       var titlec = get(configs, '/ttColor');
       var valuec = get(configs, '/color');
@@ -1374,21 +1374,27 @@
      * @param dist : string
      */
     function cp(src, dist) {
-      if (fs.existsSync(src)) {
-        var stat = fs.statSync(src);
-        if (stat.isFile()) {
-          fs.createReadStream(src).pipe(fs.createWriteStream(dist));
-        }
-        else if (stat.isDirectory()) {
-          mk(dist);
-          var subSrcs = fs.readdirSync(src);
-          subSrcs.forEach(function (file) {
-            var subSrc = path.join(src, file);
-            var subDist = path.join(dist, file);
-            cp(subSrc, subDist);
-          });
+      function _cp(sr, di, isOnInit) {
+        if (fs.existsSync(sr)) {
+          var stat = fs.statSync(sr);
+          if (stat.isFile()) {
+            var wtStream = fs.createWriteStream(di);
+            fs.createReadStream(sr).pipe(wtStream);
+          }
+          else if (stat.isDirectory()) {
+            if (isOnInit)
+              di = path.join(di, path.basename(sr));
+            mk(di);
+            var subSrcs = fs.readdirSync(sr);
+            subSrcs.forEach(function (file) {
+              var subSrc = path.join(sr, file);
+              var subDist = path.join(di, file);
+              _cp(subSrc, subDist, false);
+            });
+          }
         }
       }
+      return _cp(src, dist, true);
     }
 
     /**

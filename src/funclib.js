@@ -6,7 +6,7 @@
  */
 ; (function () {
 
-  var VERSION = '3.1.3';
+  var VERSION = '3.1.4';
 
   var _global = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -105,12 +105,12 @@
         }
         function loopFn(isAdd) {
           if (length >= 0) {
-            for (var i = 0; i < length; i ++) {
+            for (var i = 0; i < length; i++) {
               _range.push(isAdd ? i + start : i);
             }
           }
           else if (length < 0) {
-            for (var i = 0; i > length; i --) {
+            for (var i = 0; i > length; i--) {
               _range.push(isAdd ? i + start : i);
             }
           }
