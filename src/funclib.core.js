@@ -6,7 +6,7 @@
  */
 ; (function () {
 
-  var VERSION = '3.1.2';
+  var VERSION = '3.1.3';
 
   var _global = typeof global == 'object' && global && global.Object === Object && global;
 

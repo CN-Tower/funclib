@@ -19,10 +19,10 @@ $ npm install funclib
 $ node
 > var fn = require('funclib');
 > var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-> fn.log(ps, '#fn.gid');
+> fn.log(ps, 'Persons');
 // =>
 ==================================================================
-                       [10:33:55] #fn.gid
+                       [10:33:55] Persons 
 ------------------------------------------------------------------
 [
   {
