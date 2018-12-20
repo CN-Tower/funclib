@@ -280,7 +280,7 @@ interface Funclib {
   random(start: number, end?: number): number;
   /**
    * [fn.gid] 返回一个指定长度的随机ID
-   * @param length : number
+   * @param length : number = 12
    */
   gid(length?: number): string;
   /**
@@ -452,6 +452,7 @@ interface Funclib {
    * @param configs : object [?]
    * title: string, width: number [20-100],
    * isFmt: boolean [?]
+   * isShowTime: boolean = true
    * pre:   boolean = false,
    * end:   boolean = false
    * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'

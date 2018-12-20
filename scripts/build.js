@@ -1,6 +1,6 @@
 const fn = require('funclib');
-const fs = require('fs');
 const path = require('path');
+const pkg = require('../src/package.json');
 
 const root = path.dirname(__dirname);
 const rdm = path.join(root, 'README.md');
@@ -14,17 +14,16 @@ fn.progress.start('Building FuncLib', {width: 42});
 fn.rm(rdmSrc)
 fn.cp(rdm, rdmSrc);
 
+// 给funclib.min.js增加licence信息
 const liscence = fn.rd(fnJs).split(/;\s?\(function\s?\(\)\s?\{/)[0];
 const fnMinJsStr = fn.rd(fnMinJs);
 fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
-fn.progress.stop(() => fn.log(`\
-funclib.js      ${getSize(fnJs)} kb
-funclib.min.js  ${getSize(fnMinJs)} kb
-index.js        ${getSize(indexJs)} kb`,
-  'Build Success!'
-));
+// 打印构建信息
+fn.progress.stop(() => fn.log(`
+Funclib Version: v${pkg.version}
 
-function getSize(src) {
-  return (fs.statSync(src)["size"] / 1024).toFixed(2)
-}
+funclib.js      ${fn.size(fnJs)} kb
+funclib.min.js  ${fn.size(fnMinJs)} kb
+index.js        ${fn.size(indexJs)} kb`, 'Build Success!'
+));

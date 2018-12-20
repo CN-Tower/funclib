@@ -6,7 +6,7 @@
  */
 ; (function () {
 
-  var VERSION = '3.1.1';
+  var VERSION = '3.1.2';
 
   var _global = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -567,7 +567,7 @@
 
     /**
      * [fn.gid] 返回一个指定长度的随机ID
-     * @param length : number
+     * @param length : number = 12
      */
     function gid(length) {
       if (length === void 0) { length = 12; }
@@ -581,7 +581,7 @@
      * [fn.gcolor] 返回一个随机颜色色值
      */
     function gcolor() {
-      return '#' + ("00000" + (random(0x1000000) << 0).toString(16)).slice(-6);
+      return '#' + ('00000' + (random(0x1000000) << 0).toString(16)).slice(-6);
     }
 
     var intervalTimers = {};
@@ -700,9 +700,9 @@
       }
       for (var k in obj) {
         if (obj.hasOwnProperty(k)) {
-          if (new RegExp("(" + k + ")").test(fmtStr)) {
+          if (new RegExp('(' + k + ')').test(fmtStr)) {
             fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
-              ? obj[k] : ("00" + obj[k]).substr((obj[k] + '').length));
+              ? obj[k] : ('00' + obj[k]).substr((obj[k] + '').length));
           }
         }
       }
@@ -860,13 +860,13 @@
       forIn(obj, function (key, value) {
         if (typeOf(value, 'arr')) {
           value.forEach(function (v, i) {
-            var _k = encodeURIComponent(key + "[" + i + "]");
-            pairs.push(_k + "=" + encodeURIComponent(v));
+            var _k = encodeURIComponent(key + '[' + i + ']');
+            pairs.push(_k + '=' + encodeURIComponent(v));
           });
         }
         else {
           var _v = encodeURIComponent(value);
-          pairs.push(encodeURIComponent(key) + "=" + _v);
+          pairs.push(encodeURIComponent(key) + '=' + _v);
         }
       });
       return '?' + pairs.join('&');
@@ -893,17 +893,17 @@
     // 匹配IP
     var ipPattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/;
     // 匹配IP Url
-    var ipUrlPattern = new RegExp("http(s)?://" + ipPattern.source + "(:" + portPattern.source + ")?");
+    var ipUrlPattern = new RegExp('http(s)?://' + ipPattern.source + '(:' + portPattern.source + ')?');
     // 匹配Domain Url
-    var domainUrlPattern = new RegExp("http(s)?://" + domainPattern.source + "(:" + portPattern.source + ")?");
+    var domainUrlPattern = new RegExp('http(s)?://' + domainPattern.source + '(:' + portPattern.source + ')?');
     // 匹配Url
-    var urlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + ")(:" + portPattern.source + ")?");
+    var urlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + ')(:' + portPattern.source + ')?');
     // 匹配必需带端口的IP Url
-    var ipWithPortUrlPattern = new RegExp("http(s)?://" + ipPattern.source + ":" + portPattern.source);
+    var ipWithPortUrlPattern = new RegExp('http(s)?://' + ipPattern.source + ':' + portPattern.source);
     // 匹配必需带端口的Domain Url
-    var domainWithPortUrlPattern = new RegExp("http(s)?://" + domainPattern.source + ":" + portPattern.source);
+    var domainWithPortUrlPattern = new RegExp('http(s)?://' + domainPattern.source + ':' + portPattern.source);
     // 匹配必需带端口的Url
-    var withPortUrlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + "):" + portPattern.source);
+    var withPortUrlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + '):' + portPattern.source);
 
     /**
      * [fn.getPattern]获取一个通用的正则表达式
@@ -938,7 +938,7 @@
           ? patternObj[_type]
           : isNoLimit
             ? new RegExp(patternObj[_type].source)
-            : new RegExp("^(" + patternObj[_type].source + ")$")
+            : new RegExp('^(' + patternObj[_type].source + ')$')
         : undefined;
     }
 
@@ -1126,7 +1126,7 @@
       'default': '%s\x1B[0m'
     };
     var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
-    var getTitle = function (configs) { return get(configs, '/title') || "funclib(" + VERSION + ")"; };
+    var getTitle = function (configs) { return get(configs, '/title') || 'funclib(' + VERSION + ')'; };
 
     /**
      * [fn.chalk] 在控制台打印有颜色的字符串
@@ -1134,7 +1134,7 @@
      * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
     function chalk(srcStr, color) {
-      if (!(color in COLOR_LIST)) color = 'grey';
+      if (!has(COLOR_LIST, color)) color = 'grey';
       return COLOR_LIST[color].replace(/%s/, srcStr);
     }
 
@@ -1145,6 +1145,7 @@
      * @param configs : object [?]
      * title: string, width: number [20-100],
      * isFmt: boolean [?]
+     * isShowTime: boolean = true
      * pre:   boolean = false,
      * end:   boolean = false
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
@@ -1172,15 +1173,18 @@
       }
       else {
         isFmt = true;
-        title = "funclib(" + VERSION + ")";
+        title = 'funclib(' + VERSION + ')';
       }
       value = pretty(value);
-      var time = "[" + fmtDate('hh:mm:ss') + "] ";
+      var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
+      var _time = fmtDate('hh:mm:ss');
+      var time = isShowTime ? '[' + _time + '] ' : '';
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
       if (!isFmt)
-        title = "( " + title + " )";
-      time = chalk(time);
+        title = '( ' + title + ' )';
+      if(time)
+        time = '[' + chalk(_time) + '] ';
       var titlec = get(configs, '/ttColor');
       var valuec = get(configs, '/color');
       title = chalk(title, titlec in COLOR_LIST && titlec || 'green');
@@ -1198,7 +1202,7 @@
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
       if (!isFmt) {
-        console.log(title + ":\n" + value);
+        console.log(title + ':\n' + value);
       }
       else {
         var sgLine_1 = '', dbLine_1 = '';
@@ -1245,7 +1249,7 @@
         interval('pg_sping').stop();
         timeout('pg_Bar').stop();
         title = typeVal(title, 'str')
-          || get(options, 'title', 'str') || "funclib " + VERSION;
+          || get(options, 'title', 'str') || 'funclib ' + VERSION;
         pgType = get(options, '/type', 'str');
         if (!options)
           options = {};
@@ -1281,7 +1285,7 @@
     function startPgbar(options) {
       timeout('pg_Bar').stop();
       var Pgbar = eval('require("progress")');
-      var prog = (options.title || '[fn.progress]') + " [:bar] :percent";
+      var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
       progressBar = new Pgbar(prog, {
         complete: '=', incomplete: ' ',
         width: options['width'] || 40,
@@ -1310,7 +1314,7 @@
       };
       var s = '/';
       interval('pg_sping', 180, function () {
-        interrupt(chalk(s, 'cyan') + " " + msg);
+        interrupt(chalk(s, 'cyan') + ' ' + msg);
         s = match(s, {
           '/': '-',
           '-': '\\',
@@ -1424,10 +1428,10 @@
             setTimeout(function () {
               if (/win/.test(process.platform)) {
                 var absSrc = path.resolve(src);
-                execSync("rd /s /q " + absSrc);
+                execSync('rd /s /q ' + absSrc);
               }
               else {
-                execSync("rm -rf " + src);
+                execSync('rm -rf ' + src);
               }
             }, 500);
           }
@@ -1467,7 +1471,7 @@
         if (unit === undefined || digit === undefined) {
           digit = 2;
         }
-        var flSize = fs.statSync(src)["size"];
+        var flSize = fs.statSync(src)['size'];
         var rlSize = match(unit, {
           'b': flSize,
           'kb': flSize / 1024,

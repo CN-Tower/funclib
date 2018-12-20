@@ -6,7 +6,7 @@
  */
 ; (function () {
 
-  var VERSION = '3.1.1';
+  var VERSION = '3.1.2';
 
   var _global = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -567,7 +567,7 @@
 
     /**
      * [fn.gid] 返回一个指定长度的随机ID
-     * @param length : number
+     * @param length : number = 12
      */
     function gid(length) {
       if (length === void 0) { length = 12; }
@@ -581,7 +581,7 @@
      * [fn.gcolor] 返回一个随机颜色色值
      */
     function gcolor() {
-      return '#' + ("00000" + (random(0x1000000) << 0).toString(16)).slice(-6);
+      return '#' + ('00000' + (random(0x1000000) << 0).toString(16)).slice(-6);
     }
 
     var intervalTimers = {};
@@ -700,9 +700,9 @@
       }
       for (var k in obj) {
         if (obj.hasOwnProperty(k)) {
-          if (new RegExp("(" + k + ")").test(fmtStr)) {
+          if (new RegExp('(' + k + ')').test(fmtStr)) {
             fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
-              ? obj[k] : ("00" + obj[k]).substr((obj[k] + '').length));
+              ? obj[k] : ('00' + obj[k]).substr((obj[k] + '').length));
           }
         }
       }
@@ -860,13 +860,13 @@
       forIn(obj, function (key, value) {
         if (typeOf(value, 'arr')) {
           value.forEach(function (v, i) {
-            var _k = encodeURIComponent(key + "[" + i + "]");
-            pairs.push(_k + "=" + encodeURIComponent(v));
+            var _k = encodeURIComponent(key + '[' + i + ']');
+            pairs.push(_k + '=' + encodeURIComponent(v));
           });
         }
         else {
           var _v = encodeURIComponent(value);
-          pairs.push(encodeURIComponent(key) + "=" + _v);
+          pairs.push(encodeURIComponent(key) + '=' + _v);
         }
       });
       return '?' + pairs.join('&');
@@ -893,17 +893,17 @@
     // 匹配IP
     var ipPattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/;
     // 匹配IP Url
-    var ipUrlPattern = new RegExp("http(s)?://" + ipPattern.source + "(:" + portPattern.source + ")?");
+    var ipUrlPattern = new RegExp('http(s)?://' + ipPattern.source + '(:' + portPattern.source + ')?');
     // 匹配Domain Url
-    var domainUrlPattern = new RegExp("http(s)?://" + domainPattern.source + "(:" + portPattern.source + ")?");
+    var domainUrlPattern = new RegExp('http(s)?://' + domainPattern.source + '(:' + portPattern.source + ')?');
     // 匹配Url
-    var urlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + ")(:" + portPattern.source + ")?");
+    var urlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + ')(:' + portPattern.source + ')?');
     // 匹配必需带端口的IP Url
-    var ipWithPortUrlPattern = new RegExp("http(s)?://" + ipPattern.source + ":" + portPattern.source);
+    var ipWithPortUrlPattern = new RegExp('http(s)?://' + ipPattern.source + ':' + portPattern.source);
     // 匹配必需带端口的Domain Url
-    var domainWithPortUrlPattern = new RegExp("http(s)?://" + domainPattern.source + ":" + portPattern.source);
+    var domainWithPortUrlPattern = new RegExp('http(s)?://' + domainPattern.source + ':' + portPattern.source);
     // 匹配必需带端口的Url
-    var withPortUrlPattern = new RegExp("http(s)?://(" + ipPattern.source + "|" + domainPattern.source + "):" + portPattern.source);
+    var withPortUrlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + '):' + portPattern.source);
 
     /**
      * [fn.getPattern]获取一个通用的正则表达式
@@ -938,7 +938,7 @@
           ? patternObj[_type]
           : isNoLimit
             ? new RegExp(patternObj[_type].source)
-            : new RegExp("^(" + patternObj[_type].source + ")$")
+            : new RegExp('^(' + patternObj[_type].source + ')$')
         : undefined;
     }
 
@@ -1116,16 +1116,17 @@
     /**=================================================================== */
 
     var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
-    var getTitle = function (configs) { return get(configs, '/title') || "funclib(" + VERSION + ")"; };
+    var getTitle = function (configs) { return get(configs, '/title') || 'funclib(' + VERSION + ')'; };
 
     /**
      * [fn.log] 控制台格式化打印值
      * @param value   : any
-     * @param title   : string [?]
+     * @param title   : string|boolean [?]
      * @param configs : object [?]
      * title: string
-     * width: number [20-100]
-     * isFmt: boolean
+     * width: number = 40 [20-100]
+     * isFmt: boolean = true
+     * isShowTime: boolean = true
      */
     function log(value, title, configs) {
       var isFmt;
@@ -1149,14 +1150,15 @@
       }
       else {
         isFmt = true;
-        title = "funclib(" + VERSION + ")";
+        title = 'funclib(' + VERSION + ')';
       }
       value = pretty(value);
-      var time = "[" + fmtDate('hh:mm:ss') + "] ";
+      var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
+      var time = isShowTime ? '[' + fmtDate('hh:mm:ss') + '] ' : '';
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
       if (!isFmt)
-        title = "( " + title + " )";
+        title = '( ' + title + ' )';
       title = time + title;
       var width = get(configs, '/width');
       if (!width || width < 30 || width > 100)
@@ -1168,7 +1170,7 @@
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
       if (!isFmt) {
-        console.log(title + ":\n" + value);
+        console.log(title + ':\n' + value);
       }
       else {
         var sgLine_1 = '', dbLine_1 = '';
@@ -1176,12 +1178,12 @@
           sgLine_1 += '-';
           dbLine_1 += '=';
         });
-        console.log("\n" + dbLine_1 + "\n" + title + "\n" + sgLine_1 + "\n" + value + "\n" + dbLine_1 + "\n");
+        console.log('\n' + dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1 + '\n');
       }
     }
 
     var event = 'fullscreenchange';
-    var events = [event, "webkit" + event, "moz" + event, "MS" + event];
+    var events = [event, 'webkit' + event, 'moz' + event, 'MS' + event];
     var addFsChangeEvent = function () {
       return events.forEach(function (e) {
         document.addEventListener(e, window['onfullscreen']);
@@ -1208,9 +1210,9 @@
         if (rfs)
           return rfs.call(el);
         if (window['ActiveXObject']) {
-          var ws = new window['ActiveXObject']("WScript.Shell");
+          var ws = new window['ActiveXObject']('WScript.Shell');
           if (ws) {
-            ws.SendKeys("{F11}");
+            ws.SendKeys('{F11}');
           }
         }
       }
@@ -1227,9 +1229,9 @@
       if (cfs)
         return cfs.call(document);
       if (window['ActiveXObject']) {
-        var ws = new window['ActiveXObject']("WScript.Shell");
+        var ws = new window['ActiveXObject']('WScript.Shell');
         if (ws != null) {
-          ws.SendKeys("{F11}");
+          ws.SendKeys('{F11}');
         }
       }
     }
@@ -1275,7 +1277,7 @@
       if (days === void 0) { days = 0; }
       var date = new Date();
       date.setDate(date.getDate() + days);
-      document.cookie = name + "=" + value + ";expires=" + date;
+      document.cookie = name + '=' + value + ';expires=' + date;
     }
 
     /**
@@ -1283,7 +1285,7 @@
      * @param  name : string
      */
     function getCookie(name) {
-      var cks = document.cookie.replace(/\s/g, "").split(';');
+      var cks = document.cookie.replace(/\s/g, '').split(';');
       for (var i = 0; i < cks.length; i++) {
         var tempArr = cks[i].split('=');
         if (tempArr[0] == name)

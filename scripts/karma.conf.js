@@ -4,6 +4,7 @@
 const fn = require('funclib');
 let files, exclude, preprocessors, reporters;
 
+// 根据测试文件进行Karma配置
 fn.match(process.argv[4], {
   'fun': () => {
     fn.log('Testing funclib.js', 'Client Test');
