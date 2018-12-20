@@ -1,7 +1,7 @@
 {
   "name": "funclib.js",
   "version": "3.1.0",
-  "description": "A Powerful javascript functions lib!",
+  "description": "A Powerful javaScript function library!",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
@@ -22,8 +22,8 @@
   "keywords": [
     "UMD",
     "funclib",
-    "javascript",
-    "functions"
+    "javaScript",
+    "library"
   ],
   "author": "CN-Tower",
   "license": "MIT",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "funclib": "^3.1.3",
+    "funclib": "^3.1.5",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
