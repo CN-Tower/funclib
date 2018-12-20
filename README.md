@@ -18,7 +18,7 @@ $ npm install funclib
 # Use funclib
 $ node
 > var fn = require('funclib');
-> fn.log(fn.gid(), '#fn.gid')
+> fn.log(fn.gid(), '#fn.gid');
 // =>
 ==================================================================
                        [08:56:45] #fn.gid
