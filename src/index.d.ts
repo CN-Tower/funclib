@@ -421,7 +421,7 @@ interface Funclib {
    * [fn.setCookie] 设置Cookie
    * @param name  : string
    * @param value : string
-   * @param days  : number
+   * @param days  : number [?]
    */
   setCookie(name: string, value: string, days?: number): void;
   /**
