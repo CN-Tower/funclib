@@ -130,8 +130,8 @@ interface Funclib {
   typeVal(value: any, _type: Type | Type[], ...types: Type[]): any;
   /**
    * [fn.array] 返回一个指定长度和默认值的数组
-   * @param length [number]
-   * @param value  [any, function]
+   * @param length : number
+   * @param value  : any|function
    */
   array(length: number, value?: any): any[];
   /**
