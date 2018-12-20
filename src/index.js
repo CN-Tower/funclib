@@ -1458,7 +1458,7 @@
     }
 
     /**
-     * [fn.size] 获取文件的大小(kb)
+     * [fn.size] 获取文件的大小
      * @param file   : string
      * @param unit  : 'b'|'kb'|'mb'|'gb'|'tb' = 'kb'
      * @param digit : number = 2
