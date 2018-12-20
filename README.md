@@ -8,7 +8,7 @@
 JavaScript通用型UMD函数库!
 > 目的：高效率完成业务代码！
 
-### Documents:&nbsp;&nbsp;http://funclib.net
+### Documents:&nbsp;&nbsp;https://www.funclib.net
 
 ## Quick start
 ```bash
