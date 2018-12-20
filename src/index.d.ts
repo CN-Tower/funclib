@@ -131,7 +131,7 @@ interface Funclib {
   /**
    * [fn.array] 返回一个指定长度和默认值的数组
    * @param length : number
-   * @param value  : any|function
+   * @param value  : any|function [?]
    */
   array(length: number, value?: any): any[];
   /**
