@@ -442,7 +442,7 @@ interface Funclib {
   /**
    * [fn.chalk] 在控制台打印有颜色的字符串
    * @param srcStr : string
-   * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
+   * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'grey'
    */
   chalk(srcStr: string, color?: Color): string;
   /**
