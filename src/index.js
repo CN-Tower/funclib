@@ -1459,12 +1459,12 @@
 
     /**
      * [fn.size] 获取文件的大小(kb)
-     * @param src   : string
+     * @param file   : string
      * @param unit  : 'b'|'kb'|'mb'|'gb'|'tb' = 'kb'
      * @param digit : number = 2
      */
-    function size(src, unit, digit) {
-      if (fs.existsSync(src)) {
+    function size(file, unit, digit) {
+      if (fs.existsSync(file)) {
         if (typeOf(unit, 'num')) {
           digit = unit;
           unit = undefined;
@@ -1472,7 +1472,7 @@
         if (unit === undefined || digit === undefined) {
           digit = 2;
         }
-        var flSize = fs.statSync(src)['size'];
+        var flSize = fs.statSync(file)['size'];
         var rlSize = match(unit, {
           'b': flSize,
           'kb': flSize / 1024,
