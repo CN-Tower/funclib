@@ -1085,7 +1085,7 @@
     /**@spliter*/
     /**=================================================================== */
 
-    var COLOR_LIST = {
+    var colorList = {
       'grey': '\x1B[90m%s\x1B[0m',
       'blue': '\x1B[34m%s\x1B[0m',
       'cyan': '\x1B[36m%s\x1B[0m',
@@ -1102,8 +1102,8 @@
      * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
     function chalk(srcStr, color) {
-      if (!has(COLOR_LIST, color)) color = 'grey';
-      return COLOR_LIST[color].replace(/%s/, srcStr);
+      if (!has(colorList, color)) color = 'grey';
+      return colorList[color].replace(/%s/, srcStr);
     }
 
     /**
@@ -1164,8 +1164,8 @@
       }
       var titlec = get(configs, '/ttColor');
       var valuec = get(configs, '/color');
-      title = chalk(title, titlec in COLOR_LIST && titlec || 'green');
-      value = chalk(value, valuec in COLOR_LIST && valuec || 'cyan');
+      title = chalk(title, titlec in colorList && titlec || 'green');
+      value = chalk(value, valuec in colorList && valuec || 'cyan');
       title = time + title;
       var width = get(configs, '/width');
       if (!width || width < 30 || width > 100)
