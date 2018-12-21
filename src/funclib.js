@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.7 <https://www.funclib.net>
+ * Funclib v3.1.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.7';
+  var version = '3.1.8';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -312,7 +312,7 @@
     function sortBy(srcArr, field, isDesc) {
       if (isDesc === void 0) isDesc = false;
       return srcArr.slice().sort(function (row1, row2) {
-        var _a = [get(row1, field), get(row2, field)], rst1 = _a[0], rst2 = _a[1];
+        var params = [get(row1, field), get(row2, field)], rst1 = params[0], rst2 = params[1];
         if (rst1 !== 0 && !rst1) {
           return isDesc ? 1 : -1;
         }
@@ -616,8 +616,7 @@
     }
 
     function timerBase(timerId, duration, callback, timerType) {
-      var paramsA, paramsB, paramsC,
-        timer, setTimer, clearTimer;
+      var params, timer, setTimer, clearTimer;
       match(timerType, {
         'interval': function () {
           timer = intervalTimers;
@@ -643,15 +642,15 @@
         return timer[timerId] = null;
       }
       if (isIdStr && typeOf(duration, 'fun')) {
-        paramsA = [duration, 0]; callback = paramsA[0]; duration = paramsA[1];
+        params = [duration, 0], callback = params[0], duration = params[1];
       }
       if (typeOf(timerId, 'num') && typeOf(duration, 'fun')) {
-        paramsB = [undefined, timerId, duration];
-        timerId = paramsB[0]; duration = paramsB[1]; callback = paramsB[2];
+        params = [undefined, timerId, duration],
+        timerId = params[0], duration = params[1], callback = params[2];
       }
       if (typeOf(timerId, 'fun')) {
-        paramsC = [undefined, 0, timerId];
-        timerId = paramsC[0]; duration = paramsC[1]; callback = paramsC[2];
+        params = [undefined, 0, timerId],
+        timerId = params[0], duration = params[1], callback = params[2];
       }
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
@@ -1304,11 +1303,11 @@
       return this;
     }
 
-    var _fn = {};
+    var shadowFn = {};
 
     function funclib(data) {
-      _fn.data = data;
-      return _fn;
+      shadowFn.data = data;
+      return shadowFn;
     }
 
     funclib.typeOf = typeOf;
@@ -1381,15 +1380,15 @@
     /**=================================================================== */
     /**@spliter*/
 
-    keys(funclib).forEach(function (mtd) {
-      _fn[mtd] = function () {
+    keys(funclib).forEach(function (method) {
+      shadowFn[method] = function () {
         var args = arguments;
         args = keys(args).map(function (key) {
           return args[key];
         });
-        return _fn.data !== undefined
-          ? fn[mtd].apply(void 0, [_fn.data].concat(args))
-          : fn[mtd].apply(void 0, args);
+        return shadowFn.data !== undefined
+          ? fn[method].apply(void 0, [shadowFn.data].concat(args))
+          : fn[method].apply(void 0, args);
       };
     });
 
