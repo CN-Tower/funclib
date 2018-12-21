@@ -82,7 +82,8 @@ $ npm run test
 * fn.flatten               [-] 把有结构的数组打散，减少层数
 * fn.pluck                 [-] 把结构中的字段取出合并到一个数组中
 * fn.uniq                  [-] 去重或根据字段去重
-* fn.forEach               [-] 遍历数组或类数组
+* fn.each                  [-] 遍历数组或类数组
+* fn.forEach               [-] 遍历数组或类数组, 同: fn.forEach
 * fn.sortBy                [-] 返回对象数组根据字段排序后的副本
 ## Object
 * fn.len                   [-] 获取对象自有属性的个数

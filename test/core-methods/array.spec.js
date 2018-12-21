@@ -130,6 +130,13 @@ module.exports = function (fn, assert) {
         assert(fn.indexOf(persons, ps => ps.name === 'Tom') === 0);
       });
     });
+    describe('#fn.each()', function () {
+      it(`fn.each(['a', 'b'], function(x) {}) should return 'ab'.`, function () {
+        var tmpStr = '';
+        fn.each(['a', 'b'], function (x) { tmpStr += x });
+        assert(tmpStr === 'ab');
+      });
+    });
     describe('#fn.forEach()', function () {
       it(`fn.forEach(['a', 'b'], function(x) {}) should return 'ab'.`, function () {
         var tmpStr = '';

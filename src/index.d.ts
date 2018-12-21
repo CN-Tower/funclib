@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.8 <https://www.funclib.net>
+ * Funclib v3.1.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -25,7 +25,8 @@
  * fn.flatten               [-] 把有结构的数组打散，减少层数
  * fn.pluck                 [-] 把结构中的字段取出合并到一个数组中
  * fn.uniq                  [-] 去重或根据字段去重
- * fn.forEach               [-] 遍历数组或类数组
+ * fn.each                  [-] 遍历数组或类数组
+ * fn.forEach               [-] 遍历数组或类数组, 同: fn.forEach
  * fn.sortBy                [-] 返回对象数组根据字段排序后的副本
  ## Object
  * fn.len                   [-] 获取对象自有属性的个数
@@ -213,6 +214,12 @@
       * @param isDeep : boolean = true
       */
      uniq(srcArr: any[], path?: string, isDeep?: boolean): any[];
+    /**
+      * [fn.each] 遍历数组或类数组
+      * @param srcObj   : array|object
+      * @param iteratee : function
+      */
+     each(srcObj: any, iteratee: any): any;
      /**
       * [fn.forEach] 遍历数组或类数组
       * @param srcObj   : array|object

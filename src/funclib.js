@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.8 <https://www.funclib.net>
+ * Funclib v3.1.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.8';
+  var version = '3.1.9';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -283,11 +283,12 @@
     }
 
     /**
-     * [fn.forEach] 遍历数组或类数组
+     * [fn.each] 遍历数组或类数组
+     * @alias fn.forEach
      * @param srcObj   : array|object
      * @param iteratee : function
      */
-    function forEach(srcObj, iteratee) {
+    function each(srcObj, iteratee) {
       var length = get(srcObj, '/length', 'num');
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
         for (var i = 0; i < length; i++) {
@@ -462,7 +463,7 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      return forEach(srcObj, function (val, key) {
+      return each(srcObj, function (val, key) {
         return iteratee(key, val);
       });
     }
@@ -1325,7 +1326,8 @@
     funclib.flatten = flatten;
     funclib.pluck = pluck;
     funclib.uniq = uniq;
-    funclib.forEach = forEach;
+    funclib.each = each;
+    funclib.forEach = each;
     funclib.sortBy = sortBy;
 
     funclib.len = len;
