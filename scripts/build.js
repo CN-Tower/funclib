@@ -6,17 +6,20 @@ const root = path.dirname(__dirname);
 const rdm = path.join(root, 'README.md');
 const rdmSrc = path.join(root, 'src/README.md');
 const fnJs = path.join(root, 'src/funclib.js');
+const fnDefTs = path.join(root, 'src/index.d.ts');
 const fnMinJs = path.join(root, 'src/funclib.min.js');
 const indexJs = path.join(root, 'src/index.js');
 
-fn.progress.start('Building FuncLib', {width: 42});
-
+fn.progress('Building FuncLib', {width: 42});
 fn.rm(rdmSrc)
 fn.cp(rdm, rdmSrc);
 
-// 给funclib.min.js增加licence信息
-const liscence = fn.rd(fnJs).split(/;\s?\(function\s?\(\)\s?\{/)[0];
+// 给funclib.d.ts和funclib.min.js增加licence信息
+const liscence = fn.rd(fnJs).split('; (function () {')[0];
+const fnDefTsStr = fn.rd(fnDefTs);
 const fnMinJsStr = fn.rd(fnMinJs);
+const spliter = '/**================================================================';
+fn.wt(fnDefTs, liscence + spliter + fnDefTsStr.split(spliter)[1]);
 fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
 // 打印构建信息

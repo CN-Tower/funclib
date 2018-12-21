@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.6 <https://www.funclib.net>
+ * Funclib v3.1.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.6';
+  var version = '3.1.7';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -1205,20 +1205,18 @@
       }
     }
 
-    var progressBar, duration, progressType;
-    var progress = { start: progressStart, stop: progressStop };
-
     /**
-     * [fn.progress.start] 开启进度条，并传入参数
+     * [fn.progress] 进度显示工具
      * @param title: string
      * @param options: object [?]
      * title: string
      * width: number = 40
-     * type : 'bar'|'spi' = 'bar'}}
+     * type : 'bar'|'spi' = 'bar'
      */
-    function progressStart(title, options) {
-      interval('pg_sping').stop();
-      timeout('pg_Bar').stop();
+    function progress(title, options) {
+      timeout('#fn_pg_Bar').stop();
+      interval('#fn_pg_spi').stop();
+      var progressBar, duration, pgType;
       if (typeOf(title, 'obj')) {
         options = title;
         title = undefined;
@@ -1226,67 +1224,62 @@
       if (!options) options = {};
       title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
       options.title = title;
-      progressType = get(options, '/type', 'str');
-      if (progressType === 'bar' || !contains(['bar', 'spi'], progressType)) {
-        progressType = 'bar';
+      pgType = get(options, '/type', 'str');
+      if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
         var Pgbar = eval('require("progress")');
         var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
+        pgType = 'bar';
+        duration = 250;
         progressBar = new Pgbar(prog, {
           complete: '=', incomplete: ' ',
           width: options['width'] || 40,
           total: options['total'] || 20
         });
-        duration = 250;
-        progressTick('+');
+        tick('+');
       }
       else {
         var stream = process.stderr;
-        var interrupt = function (frame) {
+        var flag = '/';
+        interval('#fn_pg_spi', 180, function () {
           stream.clearLine();
           stream.cursorTo(0);
-          stream.write(frame);
-        };
-        var flag = '/';
-        interval('pg_sping', 180, function () {
-          interrupt(chalk(flag, 'cyan') + ' ' + title);
+          stream.write(chalk(flag, 'cyan') + ' ' + title);
           flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
         });
       }
-    }
-
-    /**
-     * [fn.progress.stop] 结束进度条，结束后触发回调
-     * @param onStopped : function [?]
-     */
-    function progressStop(onStopped) {
-      if (progressType === 'bar') {
-        duration = 600;
-        progressTick('-', function () {
-          progressType = null;
+      /**
+       * [fn.progress.stop] 结束进度条，结束后触发回调
+       * @param onStopped : function [?]
+       */
+      progress.stop = function (onStopped) {
+        if (pgType === 'bar') {
+          duration = 600;
+          tick('-', function () {
+            pgType = null;
+            if (typeOf(onStopped, 'fun')) onStopped();
+          });
+        }
+        else {
+          interval('#fn_pg_spi').stop();
+          pgType = null;
           if (typeOf(onStopped, 'fun')) onStopped();
+        }
+      }
+      function tick(tickType, onStopped) {
+        timeout('#fn_pg_Bar', duration, function () {
+          progressBar.tick();
+          switch (tickType) {
+            case '+': duration += 300; break;
+            case '-': duration -= duration * 0.2; break;
+          };
+          if (!progressBar.complete) {
+            tick(tickType, onStopped);
+          }
+          else if (onStopped) {
+            onStopped();
+          }
         });
       }
-      else {
-        interval('pg_sping').stop();
-        progressType = null;
-        if (typeOf(onStopped, 'fun')) onStopped();
-      }
-    }
-
-    function progressTick(type, onStopped) {
-      timeout('pg_Bar', duration, function () {
-        progressBar.tick();
-        match(type, {
-          '+': duration += 300,
-          '-': duration -= duration * 0.2
-        });
-        if (!progressBar.complete) {
-          progressTick(type, onStopped);
-        }
-        else if (onStopped) {
-          onStopped();
-        }
-      });
     }
 
     var fs = eval('require("fs")'),
