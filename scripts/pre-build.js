@@ -8,7 +8,9 @@ const fnJs = path.join(root, 'src/funclib.js');
 const indexJs = path.join(root, 'src/index.js');
 
 // 同步funclib.core.js为package.json中的版本号
-let fnCoreStr = fn.rd(fnCore).replace(/var VERSION = '\d*\.\d*\.\d*';/, 'var VERSION = \'' + pkg.version + '\';');
+let fnCoreStr = fn.rd(fnCore)
+  .replace(/\* Funclib v\d*\.\d*\.\d*/, '* Funclib v' + pkg.version)
+  .replace(/var version = '\d*\.\d*\.\d*';/, 'var version = \'' + pkg.version + '\';');
 fn.wt(fnCore, fnCoreStr);
 
 // 更新funclib.js和index.js中funclib.core.js的内容

@@ -1,23 +1,19 @@
 /**
  * @license
- * FuncLib <https://www.funclib.net/>
+ * Funclib v3.1.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var VERSION = '3.1.5';
-
+  var undefined;
   var _global = typeof global == 'object' && global && global.Object === Object && global;
-
   var _self = typeof self == 'object' && self && self.Object === Object && self;
-
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
-
   var root = _global || _self || Function('return this')();
 
+  var version = '3.1.6';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -98,12 +94,12 @@
         if (length === void 0) {
           length = start;
           start = undefined;
-          loopFn(false);
+          rangeLoop(false);
         }
         else if (typeOf(length, 'num')) {
-          loopFn(true);
+          rangeLoop(true);
         }
-        function loopFn(isAdd) {
+        function rangeLoop(isAdd) {
           if (length >= 0) {
             for (var i = 0; i < length; i++) {
               _range.push(isAdd ? i + start : i);
@@ -135,12 +131,13 @@
     function indexOf(srcArr, predicate) {
       for (var i = 0; i < srcArr.length; i++) {
         if (typeOf(predicate, 'obj')) {
-          if (keys(predicate).every(function (k) { return srcArr[i][k] === predicate[k]; }))
-            return i;
+          var isMatched = keys(predicate).every(function (k) {
+            return srcArr[i][k] === predicate[k];
+          });
+          if (isMatched) return i;
         }
         else if (typeOf(predicate, 'fun')) {
-          if (predicate(srcArr[i]))
-            return i;
+          if (predicate(srcArr[i])) return i;
         }
       }
       return srcArr.indexOf(predicate);
@@ -162,7 +159,7 @@
      * @param predicate : object|function|any
      */
     function filter(srcArr, predicate) {
-      return doFilter(srcArr, predicate, true);
+      return filterBase(srcArr, predicate, true);
     }
 
     /**
@@ -171,20 +168,18 @@
      * @param predicate : object|function|any
       */
     function reject(srcArr, predicate) {
-      return doFilter(srcArr, predicate, false);
+      return filterBase(srcArr, predicate, false);
     }
 
-    function doFilter(srcArr, predicate, isFlt) {
+    function filterBase(srcArr, predicate, isFlt) {
       var ftItems = [];
       var rjItems = [];
       srcArr.forEach(function (item) {
         if (typeOf(predicate, 'obj')) {
-          if (keys(predicate).every(function (k) { return predicate[k] === item[k]; })) {
-            ftItems.push(item);
-          }
-          else {
-            rjItems.push(item);
-          }
+          var isMatched = keys(predicate).every(function (k) {
+            return predicate[k] === item[k];
+          });
+          isMatched ? ftItems.push(item) : rjItems.push(item);
         }
         else if (typeOf(predicate, 'fun')) {
           predicate(item) ? ftItems.push(item) : rjItems.push(item);
@@ -199,8 +194,7 @@
      * @param predicate : object|function|any
      */
     function contains(srcArr, predicate) {
-      var idx = indexOf(srcArr, predicate);
-      return idx > -1;
+      return indexOf(srcArr, predicate) > -1;
     }
 
     /**
@@ -209,12 +203,13 @@
      * @param isDrop0 : boolean = false
      */
     function drop(srcArr, isDrop0) {
-      if (isDrop0 === void 0) { isDrop0 = false; }
+      if (isDrop0 === void 0) isDrop0 = false;
       var tmpArr = [];
       srcArr.forEach(function (val) {
         var isLen0 = typeOf(val, ['arr', 'obj']) && len(val) === 0;
-        if ((val && !isLen0) || (!isDrop0 && val === 0))
+        if ((val && !isLen0) || (!isDrop0 && val === 0)) {
           tmpArr.push(val);
+        }
       });
       return tmpArr;
     }
@@ -225,7 +220,7 @@
      * @param isDeep : boolean = false
      */
     function flatten(srcArr, isDeep) {
-      if (isDeep === void 0) { isDeep = false; }
+      if (isDeep === void 0) isDeep = false;
       var tmpArr = [];
       srcArr.forEach(function (val) {
         if (typeOf(val, 'arr')) {
@@ -246,7 +241,9 @@
     function pluck(srcArr, path) {
       var tmpArr = [];
       if (typeVal(path, 'str')) {
-        srcArr.forEach(function (val) { return tmpArr.push(get(val, path)); });
+        srcArr.forEach(function (val) {
+          return tmpArr.push(get(val, path));
+        });
       }
       return tmpArr;
     }
@@ -258,7 +255,7 @@
      * @param isDeep : boolean = true
      */
     function uniq(srcArr, path, isDeep) {
-      if (isDeep === void 0) { isDeep = true; }
+      if (isDeep === void 0) isDeep = true;
       if (typeof path === 'boolean') {
         isDeep = path;
         path = undefined;
@@ -271,14 +268,10 @@
           if (path) {
             var val1 = get(tmpArr[i], path);
             var val2 = get(tmpArr[j], path);
-            isDuplicate = isDeep
-              ? isDeepEqual(val1, val2)
-              : val1 === val2;
+            isDuplicate = isDeep ? isDeepEqual(val1, val2) : val1 === val2;
           }
           else {
-            isDuplicate = isDeep
-              ? isDeepEqual(tmpArr[i], tmpArr[j])
-              : tmpArr[i] === tmpArr[j];
+            isDuplicate = isDeep ? isDeepEqual(tmpArr[i], tmpArr[j]) : tmpArr[i] === tmpArr[j];
           }
           if (isDuplicate) {
             tmpArr.splice(j, 1);
@@ -302,9 +295,9 @@
         }
       }
       else {
-        var _keys = keys(srcObj);
-        for (var i = 0; i < _keys.length; i++) {
-          iteratee(srcObj[_keys[i]], _keys[i]);
+        var ks = keys(srcObj);
+        for (var i = 0; i < ks.length; i++) {
+          iteratee(srcObj[ks[i]], ks[i]);
         }
       }
       return srcObj;
@@ -317,7 +310,7 @@
      * @param isDesc : boolean = false
      */
     function sortBy(srcArr, field, isDesc) {
-      if (isDesc === void 0) { isDesc = false; }
+      if (isDesc === void 0) isDesc = false;
       return srcArr.slice().sort(function (row1, row2) {
         var _a = [get(row1, field), get(row2, field)], rst1 = _a[0], rst2 = _a[1];
         if (rst1 !== 0 && !rst1) {
@@ -373,8 +366,9 @@
       for (var i = 2; i < arguments.length; i++) {
         types[i - 2] = arguments[i];
       }
-      if (!srcObj || !typeOf(path, 'str'))
+      if (!srcObj || !typeOf(path, 'str')) {
         return undefined;
+      }
       var paths;
       if (contains(path, '.')) {
         paths = drop(path.split('.'));
@@ -383,11 +377,13 @@
         paths = drop(path.split('/'));
       }
       var key = paths.shift();
-      if (!key)
+      if (!key) {
         return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
+      }
       if (paths.length) {
-        if (!typeOf(srcObj[key], 'obj', 'arr'))
+        if (!typeOf(srcObj[key], 'obj', 'arr')) {
           return undefined;
+        }
         return get.apply(void 0, [srcObj[key], paths.join('/')].concat(types));
       }
       else {
@@ -443,8 +439,7 @@
       }
       else if (typeOf(predicate, 'fun')) {
         forIn(srcObj, function (key, val) {
-          if (predicate(key, val))
-            tarObj[key] = val;
+          if (predicate(key, val)) tarObj[key] = val;
         });
       }
       else if (isDoTraDft) {
@@ -455,8 +450,9 @@
 
     function doTraversal(tarObj, srcObj, propList) {
       propList.forEach(function (prop) {
-        if (has(srcObj, prop))
+        if (has(srcObj, prop)) {
           tarObj[prop] = srcObj[prop];
+        }
       });
     }
 
@@ -466,7 +462,9 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      return forEach(srcObj, function (val, key) { return iteratee(key, val); });
+      return forEach(srcObj, function (val, key) {
+        return iteratee(key, val);
+      });
     }
 
     /**
@@ -474,8 +472,9 @@
      * @param srcObj : object
      */
     function deepCopy(srcObj) {
-      if (typeof srcObj !== 'object')
+      if (typeof srcObj !== 'object') {
         return srcObj;
+      }
       var tmpObj;
       if (srcObj instanceof Array) {
         tmpObj = [];
@@ -509,29 +508,36 @@
      * @param isStrict : boolean = false
      */
     function isDeepEqual(obj1, obj2, isStrict) {
-      if (isStrict === void 0) { isStrict = false; }
-      if (typeof obj1 !== typeof obj2)
+      if (isStrict === void 0) isStrict = false;
+      if (typeof obj1 !== typeof obj2) {
         return false;
+      }
       if (typeOf(obj1, 'arr') && typeOf(obj2, 'arr')) {
-        if (obj1.length !== obj2.length)
+        if (obj1.length !== obj2.length) {
           return false;
+        }
         for (var i = 0; i < obj1.length; i++) {
-          if (!isDeepEqual(obj1[i], obj2[i], isStrict))
+          if (!isDeepEqual(obj1[i], obj2[i], isStrict)) {
             return false;
+          }
         }
         return true;
       }
       else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
-        if (len(obj1) !== len(obj2))
+        if (len(obj1) !== len(obj2)) {
           return false;
-        var _keys = keys(obj1);
-        if (isStrict && !isDeepEqual(_keys, keys(obj2)))
+        }
+        var ks = keys(obj1);
+        if (isStrict && !isDeepEqual(ks, keys(obj2))) {
           return false;
-        for (var i = 0; i < _keys.length; i++) {
-          if (!obj2.hasOwnProperty(_keys[i]))
+        }
+        for (var i = 0; i < ks.length; i++) {
+          if (!obj2.hasOwnProperty(ks[i])) {
             return false;
-          if (!isDeepEqual(obj1[_keys[i]], obj2[_keys[i]], isStrict))
+          }
+          if (!isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)) {
             return false;
+          }
         }
         return true;
       }
@@ -573,7 +579,9 @@
       if (length === void 0) { length = 12; }
       var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var id = '';
-      array(length).forEach(function (x) { return id += charSet[random(charSet.length)]; });
+      array(length).forEach(function (x) {
+        return id += charSet[random(charSet.length)];
+      });
       return id;
     }
 
@@ -594,32 +602,7 @@
      * @param callback : function
      */
     function interval(timerId, duration, callback) {
-      var _a, _b, _c;
-      var isIdStr = typeVal(timerId, 'str');
-      if (isIdStr && duration === undefined)
-        return { id: intervalTimers[timerId], stop: function () { return clearInterval(intervalTimers[timerId]); } };
-      if (isIdStr && contains([null, false], duration)) {
-        clearInterval(intervalTimers[timerId]);
-        return intervalTimers[timerId] = null;
-      }
-      if (isIdStr && typeOf(duration, 'fun'))
-        _a = [duration, 0], callback = _a[0], duration = _a[1];
-      if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
-        _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
-      if (typeOf(timerId, 'fun'))
-        _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
-
-      if (typeOf(callback, 'fun')) {
-        if (typeOf(duration, 'num') && duration >= 0) {
-          if (isIdStr) {
-            clearInterval(intervalTimers[timerId]);
-            return intervalTimers[timerId] = setInterval(callback, duration);
-          }
-          if (timerId === undefined) {
-            return setInterval(callback, duration);
-          }
-        }
-      }
+      return timerBase(timerId, duration, callback, 'interval');
     }
 
     /**
@@ -629,30 +612,55 @@
      * @param callback : function
      */
     function timeout(timerId, duration, callback) {
-      var _a, _b, _c;
+      return timerBase(timerId, duration, callback, 'timeout');
+    }
+
+    function timerBase(timerId, duration, callback, timerType) {
+      var paramsA, paramsB, paramsC,
+        timer, setTimer, clearTimer;
+      match(timerType, {
+        'interval': function () {
+          timer = intervalTimers;
+          setTimer = setInterval;
+          clearTimer = clearInterval;
+        },
+        'timeout': function () {
+          timer = timeoutTimers;
+          setTimer = setTimeout;
+          clearTimer = clearTimeout;
+        }
+      });
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
-        return { id: timeoutTimers[timerId], stop: function () { return clearTimeout(timeoutTimers[timerId]); } };
+        return {
+          id: timer[timerId], stop: function () {
+            return clearTimer(timer[timerId]);
+          }
+        };
       }
       if (isIdStr && contains([null, false], duration)) {
-        clearTimeout(timeoutTimers[timerId]);
-        return timeoutTimers[timerId] = null;
+        clearTimer(timer[timerId]);
+        return timer[timerId] = null;
       }
-      if (isIdStr && typeOf(duration, 'fun'))
-        _a = [duration, 0], callback = _a[0], duration = _a[1];
-      if (typeOf(timerId, 'num') && typeOf(duration, 'fun'))
-        _b = [undefined, timerId, duration], timerId = _b[0], duration = _b[1], callback = _b[2];
-      if (typeOf(timerId, 'fun'))
-        _c = [undefined, 0, timerId], timerId = _c[0], duration = _c[1], callback = _c[2];
-
+      if (isIdStr && typeOf(duration, 'fun')) {
+        paramsA = [duration, 0]; callback = paramsA[0]; duration = paramsA[1];
+      }
+      if (typeOf(timerId, 'num') && typeOf(duration, 'fun')) {
+        paramsB = [undefined, timerId, duration];
+        timerId = paramsB[0]; duration = paramsB[1]; callback = paramsB[2];
+      }
+      if (typeOf(timerId, 'fun')) {
+        paramsC = [undefined, 0, timerId];
+        timerId = paramsC[0]; duration = paramsC[1]; callback = paramsC[2];
+      }
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
           if (isIdStr) {
-            clearTimeout(timeoutTimers[timerId]);
-            return timeoutTimers[timerId] = setTimeout(callback, duration);
+            clearTimer(timer[timerId]);
+            return timer[timerId] = setTimer(callback, duration);
           }
           if (timerId === undefined) {
-            return setTimeout(callback, duration);
+            return setTimer(callback, duration);
           }
         }
       }
@@ -672,8 +680,7 @@
      */
     function timestamp(time) {
       var date = new Date(String(time));
-      if (!date.getTime())
-        date = new Date();
+      if (!date.getTime()) date = new Date();
       return date.getTime();
     }
 
@@ -684,8 +691,7 @@
      */
     function fmtDate(fmtStr, time) {
       var date = new Date(String(time));
-      if (!date.getTime())
-        date = new Date();
+      if (!date.getTime()) date = new Date();
       var obj = {
         'M+': date.getMonth() + 1,
         'd+': date.getDate(),
@@ -698,14 +704,14 @@
       if (/(y+)/.test(fmtStr)) {
         fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
       }
-      for (var k in obj) {
-        if (obj.hasOwnProperty(k)) {
-          if (new RegExp('(' + k + ')').test(fmtStr)) {
-            fmtStr = fmtStr.replace(RegExp.$1, RegExp.$1.length === 1
-              ? obj[k] : ('00' + obj[k]).substr((obj[k] + '').length));
-          }
+      forIn(obj, function (k) {
+        if (new RegExp('(' + k + ')').test(fmtStr)) {
+          fmtStr = fmtStr.replace(
+            RegExp.$1,
+            RegExp.$1.length === 1 ? obj[k] : ('00' + obj[k]).substr((obj[k] + '').length)
+          );
         }
-      }
+      });
       return fmtStr;
     }
 
@@ -716,30 +722,31 @@
      * @param isExec : boolean = true
      */
     function match(srcStr, cases, isExec) {
-      if (isExec === void 0) { isExec = true; }
-      var _type;
+      if (isExec === void 0) isExec = true;
+      var ptn;
       if (has(cases, srcStr)) {
-        _type = srcStr;
+        ptn = srcStr;
       }
       else if (has(cases, '@dft')) {
-        _type = '@dft';
+        ptn = '@dft';
       }
       else if (has(cases, '@default')) {
-        _type = '@default';
+        ptn = '@default';
       }
-      if (_type) {
-        if (cases[_type] === '@pass') {
-          var _keys = keys(cases);
-          var idx = _keys.indexOf(_type);
-          if (idx + 1 === _keys.length)
+      if (ptn) {
+        if (cases[ptn] === '@pass') {
+          var ks = keys(cases);
+          var idx = ks.indexOf(ptn);
+          if (idx + 1 === ks.length) {
             return undefined;
-          return match(_keys[idx + 1], cases, isExec);
+          }
+          return match(ks[idx + 1], cases, isExec);
         }
-        else if (isExec && typeof cases[_type] === 'function') {
-          return len(cases[_type]) > 0 ? cases[_type](srcStr) : cases[_type]();
+        else if (isExec && typeof cases[ptn] === 'function') {
+          return len(cases[ptn]) > 0 ? cases[ptn](srcStr) : cases[ptn]();
         }
         else {
-          return cases[_type];
+          return cases[ptn];
         }
       }
       return undefined;
@@ -783,8 +790,7 @@
      * @param srcStr : string
      */
     function capitalize(srcStr) {
-      return srcStr && typeof srcStr === 'string'
-        ? srcStr[0].toUpperCase() + srcStr.substr(1) : srcStr;
+      return typeVal(srcStr, 'str') ? srcStr[0].toUpperCase() + srcStr.substr(1) : srcStr;
     }
 
     /**
@@ -802,9 +808,7 @@
       sti = integer.length % 3;
       integerStr = integer.substr(0, sti);
       for (i = 0; i < spn; i++) {
-        integerStr += i === 0 && !integerStr
-          ? integer.substr(sti, 3)
-          : ',' + integer.substr(sti, 3);
+        integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
         sti += 3;
       }
       return decimal ? integerStr + '.' + decimal : integerStr;
@@ -820,8 +824,7 @@
       var count = 0;
       var tmpChar;
       for (var i = 0; i < srcStr.length; i++) {
-        if (count >= length)
-          break;
+        if (count >= length) break;
         tmpChar = srcStr.substr(i, 1);
         tmpStr += tmpChar;
         count += matchPattern(tmpChar, 'cnChar') ? 2 : 1;
@@ -834,11 +837,9 @@
      * @param url : string
      */
     function parseQueryStr(url) {
-      if (!contains(url, '?'))
-        return {};
+      if (!contains(url, '?')) return {};
       var queryStr = url.substring(url.lastIndexOf('?') + 1);
-      if (queryStr === '')
-        return {};
+      if (queryStr === '') return {};
       var querys = queryStr.split('&');
       var params = {};
       for (var i = 0; i < querys.length; i++) {
@@ -853,20 +854,20 @@
      * @param obj : object
      */
     function stringifyQueryStr(obj) {
-      if (!typeOf(obj, ['obj', 'arr']))
-        return '';
+      if (!typeOf(obj, ['obj', 'arr'])) return '';
       obj = JSON.parse(JSON.stringify(obj));
       var pairs = [];
+      var encode = encodeURIComponent;
       forIn(obj, function (key, value) {
         if (typeOf(value, 'arr')) {
-          value.forEach(function (v, i) {
-            var _k = encodeURIComponent(key + '[' + i + ']');
-            pairs.push(_k + '=' + encodeURIComponent(v));
+          value.forEach(function (val, i) {
+            var _key = encode(key + '[' + i + ']');
+            pairs.push(_key + '=' + encode(val));
           });
         }
         else {
-          var _v = encodeURIComponent(value);
-          pairs.push(encodeURIComponent(key) + '=' + _v);
+          var val = encode(value);
+          pairs.push(encode(key) + '=' + val);
         }
       });
       return '?' + pairs.join('&');
@@ -911,9 +912,8 @@
      * @param isNoLimit : boolean = false
      */
     function getPattern(_type, isNoLimit) {
-      if (isNoLimit === void 0) { isNoLimit = false; }
-      if (!_type)
-        return;
+      if (!_type) return;
+      if (isNoLimit === void 0) isNoLimit = false;
       var patternObj = {
         cnChar: cnCharPattern,
         dblBitChar: dblBitCharPattern,
@@ -949,9 +949,8 @@
      * @param isNoLimit : boolean = false
      */
     function matchPattern(srcStr, _type, isNoLimit) {
-      if (isNoLimit === void 0) { isNoLimit = false; }
-      if (!srcStr || !_type)
-        return null;
+      if (!srcStr || !_type) return null;
+      if (isNoLimit === void 0) isNoLimit = false;
       if (_type instanceof Array) {
         var matchs = null;
         _type.forEach(function (item) {
@@ -976,15 +975,13 @@
      * trailing: boolean = true
      */
     function throttle(func, wait, options) {
-      var leading = true,
-        trailing = true;
-
+      var leading = true, trailing = true;
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
       }
       if (typeOf(options, 'obj')) {
-        leading = 'leading' in options ? !!options.leading : leading;
-        trailing = 'trailing' in options ? !!options.trailing : trailing;
+        leading = has(options, 'leading') ? !!options.leading : leading;
+        trailing = has(options, 'trailing') ? !!options.trailing : trailing;
       }
       return debounce(func, wait, {
         'leading': leading,
@@ -1004,88 +1001,64 @@
      * trailing: boolean = true
      */
     function debounce(func, wait, options) {
-      var lastArgs,
-        lastThis,
-        maxWait,
-        result,
-        timerId,
-        lastCallTime,
+      var lastArgs, lastThis, maxWait,
+        result, timerId, lastCallTime,
         lastInvokeTime = 0,
         leading = false,
         maxing = false,
         trailing = true;
-
       if (typeof func != 'function') {
         throw new TypeError('Expected a function');
       }
       wait = Number(wait) || 0;
-
       if (typeOf(options, 'obj')) {
         leading = !!options.leading;
         maxing = 'maxWait' in options;
         maxWait = maxing ? Math.max(Number(options.maxWait) || 0, wait) : maxWait;
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
-
       function invokeFunc(time) {
-        var args = lastArgs,
-          thisArg = lastThis;
-
+        var args = lastArgs, thisArg = lastThis;
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
         result = func.apply(thisArg, args);
         return result;
       }
-
       function leadingEdge(time) {
         lastInvokeTime = time;
         timerId = setTimeout(timerExpired, wait);
         return leading ? invokeFunc(time) : result;
       }
-
       function remainingWait(time) {
         var timeSinceLastCall = time - lastCallTime,
           timeSinceLastInvoke = time - lastInvokeTime,
           timeWaiting = wait - timeSinceLastCall;
-
-        return maxing
-          ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
-          : timeWaiting;
+        return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
       }
-
       function shouldInvoke(time) {
         var timeSinceLastCall = time - lastCallTime,
           timeSinceLastInvoke = time - lastInvokeTime;
-
         return lastCallTime === undefined
           || timeSinceLastCall >= wait
           || timeSinceLastCall < 0
           || maxing && timeSinceLastInvoke >= maxWait;
       }
-
       function timerExpired() {
         var time = Date.now();
-        if (shouldInvoke(time))
-          return trailingEdge(time);
+        if (shouldInvoke(time)) return trailingEdge(time);
         timerId = setTimeout(timerExpired, remainingWait(time));
       }
-
       function trailingEdge(time) {
         timerId = undefined;
-        if (trailing && lastArgs)
-          return invokeFunc(time);
+        if (trailing && lastArgs) return invokeFunc(time);
         lastArgs = lastThis = undefined;
         return result;
       }
-
       function debounced() {
-        var time = Date.now(),
-          isInvoking = shouldInvoke(time);
-
+        var time = Date.now(), isInvoking = shouldInvoke(time);
         lastArgs = arguments;
         lastThis = this;
         lastCallTime = time;
-
         if (isInvoking) {
           if (timerId === undefined) return leadingEdge(lastCallTime);
           if (maxing) {
@@ -1093,22 +1066,19 @@
             return invokeFunc(lastCallTime);
           }
         }
-        if (timerId === undefined)
+        if (timerId === undefined) {
           timerId = setTimeout(timerExpired, wait);
+        }
         return result;
       }
-
       debounced.cancel = function () {
-        if (timerId !== undefined)
-          clearTimeout(timerId);
+        if (timerId !== undefined) clearTimeout(timerId);
         lastInvokeTime = 0;
         lastArgs = lastCallTime = lastThis = timerId = undefined;
       };
-
       debounced.flush = function () {
         return timerId === undefined ? result : trailingEdge(Date.now());
       };
-
       return debounced;
     }
 
@@ -1125,8 +1095,6 @@
       'yellow': '\x1B[33m%s\x1B[0m',
       'default': '%s\x1B[0m'
     };
-    var getIsFmt = function (configs) { return has(configs, 'isFmt') ? configs.isFmt : true; };
-    var getTitle = function (configs) { return get(configs, '/title') || 'funclib(' + VERSION + ')'; };
 
     /**
      * [fn.chalk] 在控制台打印有颜色的字符串
@@ -1154,6 +1122,12 @@
      */
     function log(value, title, configs) {
       var isFmt;
+      function getIsFmt(configs) {
+        return has(configs, 'isFmt') ? configs.isFmt : true;
+      };
+      function getTitle(configs) {
+        return get(configs, '/title') || 'funclib(' + version + ')';
+      };
       if (typeVal(title, 'str')) {
         if (typeOf(configs, 'bol')) {
           isFmt = configs;
@@ -1174,7 +1148,7 @@
       }
       else {
         isFmt = true;
-        title = 'funclib(' + VERSION + ')';
+        title = 'funclib(' + version + ')';
       }
       value = pretty(value);
       var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
@@ -1182,10 +1156,12 @@
       var time = isShowTime ? '[' + _time + '] ' : '';
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
-      if (!isFmt)
+      if (!isFmt) {
         title = '( ' + title + ' )';
-      if (time)
+      }
+      if (time) {
         time = '[' + chalk(_time) + '] ';
+      }
       var titlec = get(configs, '/ttColor');
       var valuec = get(configs, '/color');
       title = chalk(title, titlec in COLOR_LIST && titlec || 'green');
@@ -1229,115 +1205,83 @@
       }
     }
 
-    var progressBar;
-    var duration;
-    var pgType;
+    var progressBar, duration, progressType;
+    var progress = { start: progressStart, stop: progressStop };
 
-    var progress = {
-      /**
-       * [fn.progress.start] 开启进度条，并传入参数
-       * @param title: string
-       * @param options: object [?]
-       * title: string
-       * width: number = 40
-       * type : 'bar'|'spi' = 'bar'}}
-       */
-      start: function (title, options) {
-        if (typeOf(title, 'obj')) {
-          options = title;
-          title = undefined;
-        }
-        interval('pg_sping').stop();
-        timeout('pg_Bar').stop();
-        title = typeVal(title, 'str')
-          || get(options, 'title', 'str') || 'funclib ' + VERSION;
-        pgType = get(options, '/type', 'str');
-        if (!options)
-          options = {};
-        options.title = title;
-        if (pgType === 'bar' || ['bar', 'spi'].indexOf(pgType) === -1) {
-          pgType = 'bar';
-          startPgbar(options);
-        }
-        else {
-          startSping(title);
-        }
-      },
-      /**
-       * [fn.progress.stop] 结束进度条，结束后触发回调
-       * @param onStopped : function [?]
-       */
-      stop: function (onStopped) {
-        if (pgType === 'bar') {
-          stopPgbar(function () {
-            pgType = null;
-            if (typeOf(onStopped, 'fun'))
-              onStopped();
-          });
-        }
-        else {
-          stopSping();
-          pgType = null;
-          if (typeOf(onStopped, 'fun'))
-            onStopped();
-        }
-      }
-    };
-    function startPgbar(options) {
+    /**
+     * [fn.progress.start] 开启进度条，并传入参数
+     * @param title: string
+     * @param options: object [?]
+     * title: string
+     * width: number = 40
+     * type : 'bar'|'spi' = 'bar'}}
+     */
+    function progressStart(title, options) {
+      interval('pg_sping').stop();
       timeout('pg_Bar').stop();
-      var Pgbar = eval('require("progress")');
-      var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
-      progressBar = new Pgbar(prog, {
-        complete: '=', incomplete: ' ',
-        width: options['width'] || 40,
-        total: options['total'] || 20
-      });
-      duration = 250;
-      tickFun('+');
-    }
-    function stopPgbar(onStopped) {
-      duration = 600;
-      tickFun('-', onStopped);
-    }
-    function startSping(message) {
-      interval('pg_sping').stop();
-      spingFun(message);
-    }
-    function stopSping() {
-      interval('pg_sping').stop();
-    }
-    function spingFun(msg) {
-      var stream = process.stderr;
-      var interrupt = function (frame) {
-        stream.clearLine();
-        stream.cursorTo(0);
-        stream.write(frame);
-      };
-      var s = '/';
-      interval('pg_sping', 180, function () {
-        interrupt(chalk(s, 'cyan') + ' ' + msg);
-        s = match(s, {
-          '/': '-',
-          '-': '\\',
-          '\\': '|',
-          '|': '/',
-          '@dft': '-'
+      if (typeOf(title, 'obj')) {
+        options = title;
+        title = undefined;
+      }
+      if (!options) options = {};
+      title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
+      options.title = title;
+      progressType = get(options, '/type', 'str');
+      if (progressType === 'bar' || !contains(['bar', 'spi'], progressType)) {
+        progressType = 'bar';
+        var Pgbar = eval('require("progress")');
+        var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
+        progressBar = new Pgbar(prog, {
+          complete: '=', incomplete: ' ',
+          width: options['width'] || 40,
+          total: options['total'] || 20
         });
-      });
+        duration = 250;
+        progressTick('+');
+      }
+      else {
+        var stream = process.stderr;
+        var interrupt = function (frame) {
+          stream.clearLine();
+          stream.cursorTo(0);
+          stream.write(frame);
+        };
+        var flag = '/';
+        interval('pg_sping', 180, function () {
+          interrupt(chalk(flag, 'cyan') + ' ' + title);
+          flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
+        });
+      }
     }
-    function tickFun(type, onStopped) {
+
+    /**
+     * [fn.progress.stop] 结束进度条，结束后触发回调
+     * @param onStopped : function [?]
+     */
+    function progressStop(onStopped) {
+      if (progressType === 'bar') {
+        duration = 600;
+        progressTick('-', function () {
+          progressType = null;
+          if (typeOf(onStopped, 'fun')) onStopped();
+        });
+      }
+      else {
+        interval('pg_sping').stop();
+        progressType = null;
+        if (typeOf(onStopped, 'fun')) onStopped();
+      }
+    }
+
+    function progressTick(type, onStopped) {
       timeout('pg_Bar', duration, function () {
         progressBar.tick();
-        switch (type) {
-          case '+':
-            duration += 300;
-            break;
-          case '-':
-            duration -= duration * 0.2;
-            break;
-        }
+        match(type, {
+          '+': duration += 300,
+          '-': duration -= duration * 0.2
+        });
         if (!progressBar.complete) {
-          tickFun(type, onStopped);
+          progressTick(type, onStopped);
         }
         else if (onStopped) {
           onStopped();
@@ -1345,9 +1289,9 @@
       });
     }
 
-    var fs = eval('require("fs")');
-    var path = eval('require("path")');
-    var execSync = eval('require("child_process").execSync');
+    var fs = eval('require("fs")'),
+      path = eval('require("path")'),
+      execSync = eval('require("child_process").execSync');
 
     /**
      * [fn.rd] 读文件
@@ -1374,7 +1318,7 @@
      * @param dist : string
      */
     function cp(src, dist) {
-      function _cp(sr, di, isOnInit) {
+      function copy(sr, di, isOnInit) {
         if (fs.existsSync(sr)) {
           var stat = fs.statSync(sr);
           if (stat.isFile()) {
@@ -1382,19 +1326,20 @@
             fs.createReadStream(sr).pipe(wtStream);
           }
           else if (stat.isDirectory()) {
-            if (isOnInit)
+            if (isOnInit) {
               di = path.join(di, path.basename(sr));
+            }
             mk(di);
             var subSrcs = fs.readdirSync(sr);
             subSrcs.forEach(function (file) {
               var subSrc = path.join(sr, file);
               var subDist = path.join(di, file);
-              _cp(subSrc, subDist, false);
+              copy(subSrc, subDist, false);
             });
           }
         }
       }
-      return _cp(src, dist, true);
+      return copy(src, dist, true);
     }
 
     /**
@@ -1498,8 +1443,7 @@
      * [fn.noConflict] 释放fn变量占用权
      */
     function noConflict() {
-      if (root._ === this)
-        root._ = originalFn;
+      if (root.fn === this) root.fn = originalFn;
       return this;
     }
 
@@ -1583,8 +1527,12 @@
     keys(funclib).forEach(function (mtd) {
       _fn[mtd] = function () {
         var args = arguments;
-        args = keys(args).map(function (key) { return args[key]; });
-        return _fn.data !== undefined ? fn[mtd].apply(void 0, [_fn.data].concat(args)) : fn[mtd].apply(void 0, args);
+        args = keys(args).map(function (key) {
+          return args[key];
+        });
+        return _fn.data !== undefined
+          ? fn[mtd].apply(void 0, [_fn.data].concat(args))
+          : fn[mtd].apply(void 0, args);
       };
     });
 
@@ -1596,7 +1544,7 @@
     /**=================================================================== */
     /**@spliter*/
 
-    funclib.VERSION = VERSION;
+    funclib.version = version;
     funclib.noConflict = noConflict;
 
     return funclib;
@@ -1615,4 +1563,5 @@
   else {
     root.fn = fn;
   }
+
 }.call(this));
