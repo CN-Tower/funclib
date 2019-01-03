@@ -928,8 +928,8 @@
 
     /**
      * [fn.setPattern]设置一个正则表达式
-     * @param patternMap : string|object
-     * @param pattern    : regexp [?]
+     * @param ptnMap  : string|object
+     * @param pattern : regexp [?]
      */
     function setPattern(patternMap, pattern) {
       if (typeVal(patternMap, 'str') && typeOf(pattern, 'ptn')) {

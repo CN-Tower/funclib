@@ -103,7 +103,7 @@ declare var fn: fn.Funclib;
 
 declare namespace fn {
 
-  type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | string | string[];
+  type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | 'ptn' | string | string[];
   type Color = 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow';
 
   interface Progress {
@@ -389,10 +389,10 @@ declare namespace fn {
     stringifyQueryStr(obj: Object): string;
     /**
      * [fn.setPattern]设置一个正则表达式
-     * @param patternMap : string|object
-     * @param pattern    : regexp [?]
+     * @param ptnMap  : string|object
+     * @param pattern : regexp [?]
      */
-    setPattern(patternMap: any, pattern: any): any;
+    setPattern(ptnMap: any, pattern: any): any;
     /**
      * [fn.getPattern]获取一个通用的正则表达式
      * @param _type     : string
