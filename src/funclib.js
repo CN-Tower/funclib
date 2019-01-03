@@ -931,12 +931,12 @@
      * @param ptnMap  : string|object
      * @param pattern : regexp [?]
      */
-    function setPattern(patternMap, pattern) {
-      if (typeVal(patternMap, 'str') && typeOf(pattern, 'ptn')) {
-        patternList[patternMap] = pattern;
+    function setPattern(ptnMap, pattern) {
+      if (typeVal(ptnMap, 'str') && typeOf(pattern, 'ptn')) {
+        patternList[ptnMap] = pattern;
       }
-      else if (typeOf(patternMap, 'obj')) {
-        extend(patternList, patternMap);
+      else if (typeOf(ptnMap, 'obj')) {
+        extend(patternList, ptnMap);
       };
     }
 
