@@ -405,7 +405,7 @@ declare namespace fn {
      * @param types  : ...string[]|string[]
      * @param limit  : boolean = true
      */
-    matchPattern(srcStr: string, _type: string | string[], isNoLimit?: boolean): any;
+    matchPattern(srcStr: string, types: string | string[], isNoLimit?: boolean): any;
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
      * @param  func    : function
