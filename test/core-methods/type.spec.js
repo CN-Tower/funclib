@@ -6,6 +6,9 @@ module.exports = function (fn, assert) {
       it(`fn.typeOf('string', 'str') should return true.`, function () {
         assert(fn.typeOf('string', 'str'));
       });
+      it(`fn.typeOf('string', 'str') should return true.`, function () {
+        assert(fn.typeOf('string', 'str'));
+      });
       it(`fn.typeOf([], 'obj') should return false.`, function () {
         assert(!fn.typeOf([], 'obj'));
       });

@@ -2,6 +2,16 @@
 module.exports = function (fn, assert) {
 /**@server=|*/
   describe('RegExp Methods:', function () {
+    describe('#fn.setPattern()', function () {
+      it(`fn.setPattern('myPtn', /test_/) should set A pattern.`, function () {
+        fn.setPattern('myPtn', /test_/);
+        test1 = fn.matchPattern('test', 'myPtn');
+        test2 = fn.matchPattern('test_', 'myPtn');
+        test3 = fn.matchPattern('test_x', 'myPtn');
+        test4 = fn.matchPattern('test_x', 'myPtn', false);
+        assert(!test1 && test2 && !test3 && test4);
+      });
+    });
     describe('#fn.getPattern()', function () {
       it(`fn.getPattern("email") should return a pattern.`, function () {
         const pattern = fn.getPattern("email");
@@ -12,6 +22,10 @@ module.exports = function (fn, assert) {
       it(`fn.matchPattern(email, 'email') should return true.`, function () {
         const email = 'cntower@yahoo.com'
         assert(fn.matchPattern(email, 'email'));
+      });
+      it(`fn.matchPattern(email, 'mobPhone', 'email') should return true.`, function () {
+        const email = 'cntower@yahoo.com'
+        assert(fn.matchPattern(email, 'mobPhone', 'email'));
       });
       it(`fn.matchPattern(mobPhone, 'email') should return false.`, function () {
         const mobPhone = '18770347138'

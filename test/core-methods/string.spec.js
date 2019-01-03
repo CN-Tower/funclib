@@ -6,21 +6,24 @@ module.exports = function (fn, assert) {
       it(`fn.match('b', {'a': 'aaa', 'b': 'bbb'}) should return 'bbb'.`, function () {
         assert(fn.match('b', { 'a': 'aaa', 'b': 'bbb' }) === 'bbb');
       });
-      it(`fn.match('a', {'a': '@pass', 'b': () => 'bbb'}) should return 'bbb'.`, function () {
-        assert(fn.match('a', { 'a': '@pass', 'b': () => 'bbb' }) === 'bbb');
+      it(`fn.match('a', {'a': '@next', 'b': () => 'bbb'}) should return 'bbb'.`, function () {
+        assert(fn.match('a', { 'a': '@next', 'b': () => 'bbb' }) === 'bbb');
+      });
+      it(`fn.match('a', {'a': '@next', 'b': () => 'bbb'}, false) should return a function.`, function () {
+        assert(fn.match('a', { 'a': '@next', 'b': () => 'bbb' }, false)() === 'bbb');
       });
       it(`fn.match('c', {'a': 'aaa', 'b': () => 'bbb'}) should return undefined.`, function () {
         assert(fn.match('c', { 'a': 'aaa', 'b': () => 'bbb' }) === undefined);
       });
-      it(`fn.match('c', {'a': 'aaa', '@dft': 'ddd'}) should return 'ddd'.`, function () {
-        assert(fn.match('c', { 'a': 'aaa', '@dft': 'ddd' }) === 'ddd');
+      it(`fn.match('c', {'a': 'aaa', '$dft': 'ddd'}) should return 'ddd'.`, function () {
+        assert(fn.match('c', { 'a': 'aaa', '$dft': 'ddd' }) === 'ddd');
       });
-      it(`fn.match('c', {'a': 'aaa', '@default': 'ddd'}) should return 'ddd'.`, function () {
-        assert(fn.match('c', { 'a': 'aaa', '@default': 'ddd' }) === 'ddd');
+      it(`fn.match('c', {'a': 'aaa', '$default': 'ddd'}) should return 'ddd'.`, function () {
+        assert(fn.match('c', { 'a': 'aaa', '$default': 'ddd' }) === 'ddd');
       });
-      it(`fn.match('c', {'a': 'aaa', '@default': 'ddd'}) should return 'ddd'.`, function () {
+      it(`fn.match('c', {'a': 'aaa', '$default': s => ccc }) should return 'ccc'.`, function () {
         assert(fn.match('c', {
-          'a': 'aaa', '@default': s => {
+          'a': 'aaa', '$default': s => {
             if (s === 'c') return 'ccc';
           }
         }) === 'ccc');

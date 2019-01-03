@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.9 <https://www.funclib.net>
+ * Funclib v3.1.10 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.9';
+  var version = '3.1.10';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -33,9 +33,10 @@
       _type instanceof Array ? types = _type : types.unshift(_type);
       return types.some(function (type_) {
         switch (type_) {
-          case 'arr': return value && value instanceof Array;
+          case 'ptn': return value instanceof RegExp;
+          case 'arr': return value instanceof Array;
           case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
-          case 'fun': return value && typeof value === 'function';
+          case 'fun': return typeof value === 'function';
           case 'str': return typeof value === 'string';
           case 'num': return typeof value === 'number';
           case 'bol': return typeof value === 'boolean';
@@ -577,7 +578,7 @@
      * @param length : number = 12
      */
     function gid(length) {
-      if (length === void 0) { length = 12; }
+      if (length === void 0) length = 12;
       var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var id = '';
       array(length).forEach(function (x) {
@@ -727,14 +728,14 @@
       if (has(cases, srcStr)) {
         ptn = srcStr;
       }
-      else if (has(cases, '@dft')) {
-        ptn = '@dft';
+      else if (has(cases, '$dft')) {
+        ptn = '$dft';
       }
-      else if (has(cases, '@default')) {
-        ptn = '@default';
+      else if (has(cases, '$default')) {
+        ptn = '$default';
       }
       if (ptn) {
-        if (cases[ptn] === '@pass') {
+        if (cases[ptn] === '@next') {
           var ks = keys(cases);
           var idx = ks.indexOf(ptn);
           if (idx + 1 === ks.length) {
@@ -799,7 +800,7 @@
      * @param digit  : number = 2
      */
     function fmtCurrency(number, digit) {
-      if (digit === void 0) { digit = 2; }
+      if (digit === void 0) digit = 2;
       var nbArr = String(number.toFixed(digit)).split('.');
       var integer = nbArr[0];
       var decimal = nbArr.length > 1 ? nbArr[1] : '';
@@ -906,64 +907,86 @@
     // 匹配必需带端口的Url
     var withPortUrlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + '):' + portPattern.source);
 
+    var patternList = {
+      cnChar: cnCharPattern,
+      dblBitChar: dblBitCharPattern,
+      mobPhone: mobPhonePattern,
+      telPhone: telPhonePattern,
+      email: emailPattern,
+      idCard: idCardPattern,
+      base64Code: base64CodePattern,
+      domain: domainPattern,
+      port: portPattern,
+      ip: ipPattern,
+      ipUrl: ipUrlPattern,
+      domainUrl: domainUrlPattern,
+      url: urlPattern,
+      ipWithPortUrl: ipWithPortUrlPattern,
+      domainWithPortUrl: domainWithPortUrlPattern,
+      withPortUrl: withPortUrlPattern
+    };
+
+    /**
+     * [fn.setPattern]设置一个正则表达式
+     * @param patternMap : string|object
+     * @param pattern    : regexp [?]
+     */
+    function setPattern(patternMap, pattern) {
+      if (typeVal(patternMap, 'str') && typeOf(pattern, 'ptn')) {
+        patternList[patternMap] = pattern;
+      }
+      else if (typeOf(patternMap, 'obj')) {
+        extend(patternList, patternMap);
+      };
+    }
+
     /**
      * [fn.getPattern]获取一个通用的正则表达式
-     * @param _type     : string
-     * @param isNoLimit : boolean = false
+     * @param _type : string
+     * @param limit : boolean = true
      */
-    function getPattern(_type, isNoLimit) {
+    function getPattern(_type, limit) {
       if (!_type) return;
-      if (isNoLimit === void 0) isNoLimit = false;
-      var patternObj = {
-        cnChar: cnCharPattern,
-        dblBitChar: dblBitCharPattern,
-        mobPhone: mobPhonePattern,
-        telPhone: telPhonePattern,
-        email: emailPattern,
-        idCard: idCardPattern,
-        base64Code: base64CodePattern,
-        domain: domainPattern,
-        port: portPattern,
-        ip: ipPattern,
-        ipUrl: ipUrlPattern,
-        domainUrl: domainUrlPattern,
-        url: urlPattern,
-        ipWithPortUrl: ipWithPortUrlPattern,
-        domainWithPortUrl: domainWithPortUrlPattern,
-        withPortUrl: withPortUrlPattern
-      };
-      patternObj['patternList'] = Object.keys(patternObj);
-      return patternObj.hasOwnProperty(_type) && patternObj[_type]
-        ? _type === 'patternList'
-          ? patternObj[_type]
-          : isNoLimit
-            ? new RegExp(patternObj[_type].source)
-            : new RegExp('^(' + patternObj[_type].source + ')$')
-        : undefined;
+      if (limit === void 0) limit = true;
+      patternList['list'] = keys(patternList);
+      if (!get(patternList, _type)) {
+        return undefined;
+      }
+      if (_type === 'list') {
+        return patternList[_type];
+      }
+      var source = patternList[_type].source;
+      if (limit) {
+        return new RegExp('^(' + source.replace(/^\^|\$$/mg, '') + ')$');
+      } else {
+        return source;
+      }
     }
 
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
-     * @param srcStr    : string
-     * @param _type     : string|string[]
-     * @param isNoLimit : boolean = false
+     * @param srcStr : string
+     * @param types  : ...string[]|string[]
+     * @param limit  : boolean = true
      */
-    function matchPattern(srcStr, _type, isNoLimit) {
-      if (!srcStr || !_type) return null;
-      if (isNoLimit === void 0) isNoLimit = false;
-      if (_type instanceof Array) {
-        var matchs = null;
-        _type.forEach(function (item) {
-          var pattern = getPattern(item, isNoLimit);
-          if (!matchs && pattern)
-            matchs = srcStr.match(pattern);
-        });
-        return matchs;
+    function matchPattern(srcStr) {
+      if (!srcStr) return null;
+      var types = [];
+      for (var i = 1; i < arguments.length; i++) {
+        types[i - 1] = arguments[i];
       }
-      else if (typeof _type === 'string') {
-        var pattern = getPattern(_type, isNoLimit);
-        return pattern && srcStr.match(pattern) || null;
+      if (types.length && typeOf(types[types.length - 1], 'bol')) {
+        limit = types.pop();
+      } else {
+        limit = true;
       }
+      var matchs = null;
+      types.forEach(function (item) {
+        var pattern = getPattern(item, limit);
+        if (!matchs && pattern)
+          matchs = srcStr.match(pattern);
+      });
+      return matchs;
     }
 
     /**
@@ -1497,6 +1520,7 @@
     funclib.parseQueryStr = parseQueryStr;
     funclib.stringifyQueryStr = stringifyQueryStr;
 
+    funclib.setPattern = setPattern;
     funclib.getPattern = getPattern;
     funclib.matchPattern = matchPattern;
     funclib.throttle = throttle;
