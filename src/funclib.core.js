@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.11 <https://www.funclib.net>
+ * Funclib v3.1.12 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.11';
+  var version = '3.1.12';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -734,23 +734,20 @@
       else if (has(cases, '$default')) {
         ptn = '$default';
       }
-      if (ptn) {
-        if (cases[ptn] === '@next') {
-          var ks = keys(cases);
-          var idx = ks.indexOf(ptn);
-          if (idx + 1 === ks.length) {
-            return undefined;
-          }
-          return match(ks[idx + 1], cases, isExec);
+      if (cases[ptn] === '@next') {
+        var ks = keys(cases);
+        var idx = ks.indexOf(ptn);
+        if (idx + 1 === ks.length) {
+          return undefined;
         }
-        else if (isExec && typeof cases[ptn] === 'function') {
-          return len(cases[ptn]) > 0 ? cases[ptn](srcStr) : cases[ptn]();
-        }
-        else {
-          return cases[ptn];
-        }
+        return match(ks[idx + 1], cases, isExec);
       }
-      return undefined;
+      else if (isExec && typeOf(cases[ptn], 'fun')) {
+        return len(cases[ptn]) > 0 ? cases[ptn](srcStr) : cases[ptn]();
+      }
+      else {
+        return cases[ptn];
+      }
     }
 
     /**
