@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.10 <https://www.funclib.net>
+ * Funclib v3.1.11 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.1.10';
+  var version = '3.1.11';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -1446,7 +1446,7 @@
           'mb': flSize / 1024 / 1024,
           'gb': flSize / 1024 / 1024 / 1024,
           'tb': flSize / 1024 / 1024 / 1024 / 1024,
-          '@dft': flSize / 1024
+          '$default': flSize / 1024
         });
         return rlSize.toFixed(digit);
       }
