@@ -1,6 +1,4 @@
-/**@server+*//*
-module.exports = function (fn, assert) {
-/**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('RegExp Methods:', function () {
     describe('#fn.setPattern()', function () {
       it(`fn.setPattern('myPtn', /test_/) should set A pattern.`, function () {
@@ -18,22 +16,26 @@ module.exports = function (fn, assert) {
         assert(pattern instanceof RegExp);
       });
     });
+    describe('#fn.testPattern()', function () {
+      it(`fn.testPattern(email, 'email') should return true.`, function () {
+        const email = 'cntower@yahoo.com';
+        assert(fn.testPattern(email, 'email') === true);
+      });
+    });
     describe('#fn.matchPattern()', function () {
       it(`fn.matchPattern(email, 'email') should return true.`, function () {
-        const email = 'cntower@yahoo.com'
-        assert(fn.matchPattern(email, 'email'));
+        const email = 'cntower@yahoo.com';
+        assert(fn.matchPattern(email, 'email')[0] === email);
       });
       it(`fn.matchPattern(email, 'mobPhone', 'email') should return true.`, function () {
-        const email = 'cntower@yahoo.com'
+        const email = 'cntower@yahoo.com';
         assert(fn.matchPattern(email, 'mobPhone', 'email'));
       });
       it(`fn.matchPattern(mobPhone, 'email') should return false.`, function () {
-        const mobPhone = '18770347138'
-        const email = 'cntower@yahoo.com'
+        const mobPhone = '18770347138';
+        const email = 'cntower@yahoo.com';
         assert(!fn.matchPattern(mobPhone, 'email'));
       });
     });
   });
-/**@server+*//*
-}
-/**@server=|*/
+/**@server+*//* } /**@server=|*/

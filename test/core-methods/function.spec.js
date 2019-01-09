@@ -1,7 +1,13 @@
-/**@server+*//*
-module.exports = function (fn, assert) {
-/**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Function Methods:', function () {
+    describe('#restArgs()', function () {
+      it(`fn.restArgs(function(args) {})(1,2) args should return [1, 2]`, function () {
+        fn.restArgs(function(args) {
+          assert.deepEqual(args, [1, 2]);
+        })(1, 2)
+      });
+    });
+
     describe('#debounce()', function () {
       it.skip(`fn.debounce(200,function(){return true}) should return true`, function (done) {
         let num = 0
@@ -33,6 +39,4 @@ module.exports = function (fn, assert) {
       });
     });
   });
-/**@server+*//*
-}
-/**@server=|*/
+/**@server+*//* } /**@server=|*/

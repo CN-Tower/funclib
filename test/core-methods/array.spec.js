@@ -1,6 +1,4 @@
-/**@server+*//*
-module.exports = function (fn, assert) {
-/**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Array Methods:', function () {
     describe('#fn.array()', function () {
       it(`fn.array(5) should return a range.`, function () {
@@ -160,6 +158,4 @@ module.exports = function (fn, assert) {
       });
     });
   });
-/**@server+*//*
-}
-/**@server=|*/
+/**@server+*//* } /**@server=|*/

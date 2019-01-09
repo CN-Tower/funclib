@@ -930,21 +930,23 @@
     });
 
     function patternBase(srcStr, types, type_) {
-      var limit = true;
-      var mtRst = null;
+      var limit = true,
+        ttRst = false, mtRst = null;
       if (types.length && typeOf(types[types.length - 1], 'bol')) {
         limit = types.pop();
       }
-      forEach(types, function (tp) {
-        var pattern = getPattern(tp, limit);
-        if (!mtRst && pattern) {
-          mtRst = match(type_, {
-            'test': pattern.test(srcStr),
-            'match': srcStr.match(pattern)
-          });
+      for (var i = 0; i < types.length; i++) {
+        var pattern = getPattern(types[i], limit);
+        if (pattern) {
+          if (type_ === 'test') {
+            ttRst = pattern.test(srcStr);
+          } else if (type_ === 'match') {
+            mtRst = srcStr.match(pattern);
+          }
+          if (ttRst || mtRst) break;
         }
-      });
-      return mtRst;
+      }
+      return match(type_, { 'test': ttRst, 'match': mtRst });
     }
 
     /**
@@ -1010,9 +1012,7 @@
       if (!typeOf(srcFunc, 'fun')) throw expFuncErr;
       var lastArgs, lastThis, maxWait, result, timerId, lastCallTime;
       var lastInvokeTime = 0;
-      var leading = false;
-      var maxing = false;
-      var trailing = true;
+      var leading = false, maxing = false, trailing = true;
       wait = Number(wait) || 0;
       if (typeOf(options, 'obj')) {
         leading = !!options.leading;

@@ -1,6 +1,4 @@
-/**@server+*//*
-module.exports = function (fn, assert) {
-/**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('String Methods:', function () {
     describe('#fn.match()', function () {
       it(`fn.match('b', {'a': 'aaa', 'b': 'bbb'}) should return 'bbb'.`, function () {
@@ -95,6 +93,4 @@ module.exports = function (fn, assert) {
         });
     });
   });
-/**@server+*//*
-}
-/**@server=|*/
+/**@server+*//* } /**@server=|*/

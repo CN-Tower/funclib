@@ -1,6 +1,4 @@
-/**@server+*//*
-module.exports = function (fn, assert) {
-/**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Math Methods:', function () {
     describe('#fn.random()', function () {
       it(`fn.random() should return a Int between (0, 1).`, function () {
@@ -34,6 +32,4 @@ module.exports = function (fn, assert) {
       });
     });
   });
-/**@server+*//*
-}
-/**@server=|*/
+/**@server+*//* } /**@server=|*/
