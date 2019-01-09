@@ -712,8 +712,6 @@
       var ptn = '__@fnMatch__';
       if (has(cases, source)) {
         ptn = source;
-      } else if (has(cases, 'dft')) {
-        ptn = 'dft';
       } else if (has(cases, 'default')) {
         ptn = 'default';
       }
@@ -1394,15 +1392,12 @@
     /**@spliter*/
 
     forEach(keys(funclib), function (method) {
-      shadowFn[method] = function () {
-        var args = arguments;
-        args = keys(args).map(function (key) {
-          return args[key];
-        });
-        return shadowFn.data !== undefined
-          ? fn[method].apply(void 0, [shadowFn.data].concat(args))
-          : fn[method].apply(void 0, args);
-      };
+      shadowFn[method] = restArgs(function (args) {
+        if (shadowFn.data !== void 0) {
+          args = [shadowFn.data].concat(args);
+        }
+        return fn[method].apply(void 0, args);
+      });
     });
 
     funclib.version = version;

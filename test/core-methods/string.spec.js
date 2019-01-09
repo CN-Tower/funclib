@@ -15,9 +15,6 @@ module.exports = function (fn, assert) {
       it(`fn.match('c', {'a': 'aaa', 'b': () => 'bbb'}) should return undefined.`, function () {
         assert(fn.match('c', { 'a': 'aaa', 'b': () => 'bbb' }) === undefined);
       });
-      it(`fn.match('c', {'a': 'aaa', 'dft': 'ddd'}) should return 'ddd'.`, function () {
-        assert(fn.match('c', { 'a': 'aaa', 'dft': 'ddd' }) === 'ddd');
-      });
       it(`fn.match('c', {'a': 'aaa', 'default': 'ddd'}) should return 'ddd'.`, function () {
         assert(fn.match('c', { 'a': 'aaa', 'default': 'ddd' }) === 'ddd');
       });
