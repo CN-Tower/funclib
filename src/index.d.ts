@@ -340,11 +340,11 @@ declare namespace fn {
     fmtDate(fmtStr: string, time?: Date | string | number): string;
     /**
      * [fn.match] 字符串匹配
-     * @param srcStr : string
+     * @param source : any
      * @param cases  ：object
      * @param isExec : boolean = true
      */
-    match(srcStr: string, cases: Object, isExec?: boolean): any;
+    match(source: any, cases: Object, isExec?: boolean): any;
     /**
      * [fn.pretty] 转换成格式化字符串
      * @param srcObj : any
