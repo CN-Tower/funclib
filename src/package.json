@@ -1,7 +1,7 @@
 {
   "name": "funclib",
-  "version": "3.2.1",
-  "description": "A powerful javaScript function library!",
+  "version": "3.2.2",
+  "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,8 +13,13 @@
   "keywords": [
     "UMD",
     "funclib",
-    "javaScript",
-    "library"
+    "javascript",
+    "library",
+    "js-library",
+    "javascript-library",
+    "js-functions",
+    "underscore",
+    "lodash"
   ],
   "author": "CN-Tower",
   "license": "MIT",

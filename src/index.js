@@ -1426,9 +1426,9 @@
           'mb': flSize / 1024 / 1024,
           'gb': flSize / 1024 / 1024 / 1024,
           'tb': flSize / 1024 / 1024 / 1024 / 1024,
-          '$default': flSize / 1024
+          'default': flSize / 1024
         });
-        return rlSize.toFixed(digit);
+        return Number(rlSize).toFixed(digit);
       }
     }
 
