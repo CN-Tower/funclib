@@ -20,41 +20,14 @@
   var fn = (function () {
 
     /**
-     * [fn.restArgs] 获取函数的剩余参数
-     * @param srcFunc : function
-     */
-    function restArgs(srcFunc) {
-      var start = srcFunc.length - 1;
-      return function () {
-        var length = Math.max(arguments.length - start, 0);
-        var rest = Array(length);
-        for (var index = 0; index < length; index++) {
-          rest[index] = arguments[index + start];
-        }
-        switch(start) {
-          case 0: return srcFunc.call(this, rest);
-          case 1: return srcFunc.call(this, arguments[0], rest);
-          case 2: return srcFunc.call(this, arguments[0], arguments[1], rest);
-          default:
-            var args = Array(start + 1);
-            for (index = 0; index < start; index++) {
-              args[index] = arguments[index];
-            }
-            args[start] = rest;
-            return srcFunc.apply(this, args);
-        };
-      };
-    }
-
-    /**
      * [fn.typeOf] 检查值的类型
      * @param value : any
-     * @param type_ : string
+     * @param type_ : string|string[]
      * @param types : ...string[]
      */
     var typeOf = restArgs(function (value, type_, types) {
       if (!type_) return false;
-      type_ instanceof Array ? types = type_ : types.unshift(type_);
+      types = toArr(type_).concat(types);
       return types.some(function (tp) {
         switch (tp) {
           case 'ptn': return value instanceof RegExp;
@@ -74,7 +47,7 @@
     /**
      * [fn.typeVal] 获取期望类型的值
      * @param value : any
-     * @param type_ : string
+     * @param type_ : string|string[]
      * @param types : ...string[]
      */
     var typeVal = restArgs(function (value, type_, types) {
@@ -84,7 +57,7 @@
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length : number
-     * @param value  : any|function
+     * @param value  : any|function [?]
      */
     function array(length, value) {
       var tmpArr = [];
@@ -137,12 +110,12 @@
      * @param value : any
      */
     function toArr(value) {
-      return typeOf(value, 'arr') ? value : [value];
+      return value && value instanceof Array ? value : [value];
     }
 
     /**
      * [fn.indexOf] 寻找值在数组中的索引
-     * @param srcArr    : array
+     * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
     function indexOf(srcArr, predicate) {
@@ -214,7 +187,7 @@
     }
 
     /**
-     * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
+     * [fn.drop] 去掉空数组、空对象及布尔化后为false的值
      * @param srcArr  : array
      * @param isDrop0 : boolean = false
      */
@@ -272,8 +245,7 @@
     function uniq(srcArr, pathStr, isDeep) {
       if (isDeep === void 0) isDeep = true;
       if (typeof pathStr === 'boolean') {
-        isDeep = pathStr;
-        pathStr = undefined;
+        isDeep = pathStr, pathStr = undefined;
       }
       pathStr = typeVal(pathStr, 'str');
       var tmpArr = srcArr.slice();
@@ -368,9 +340,9 @@
 
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param srcObj : object
-     * @param pathStr   : string
-     * @param types  : ...string[]
+     * @param srcObj  : object
+     * @param pathStr : string
+     * @param types   : ...string[]
      */
     var get = restArgs(function (srcObj, pathStr, types) {
       if (!srcObj || !typeOf(pathStr, 'str')) return undefined;
@@ -399,7 +371,7 @@
      * [fn.pick] 获取对象的部分属性
      * @param srcObj    : object
      * @param predicate : function
-     * @param props     :...string[]
+     * @param props     : ...string[]
      */
     var pick = restArgs(function (srcObj, predicate, props) {
       return extendBase({}, srcObj, predicate, props, false);
@@ -410,7 +382,7 @@
      * @param tarObj    : object
      * @param srcObj    : object
      * @param predicate : function
-     * @param props     :...string[]
+     * @param props     : ...string[]
      */
     var extend = restArgs(function (tarObj, srcObj, predicate, props) {
       if (typeVal(srcObj, 'object')) {
@@ -548,8 +520,7 @@
       else {
         if (start > end) {
           var tmpSta = start;
-          start = end;
-          end = tmpSta;
+          start = end, end = tmpSta;
           return Math.ceil(Math.random() * (end - start) + start);
         }
         else {
@@ -709,25 +680,25 @@
      */
     function match(source, cases, isExec) {
       if (isExec === void 0) isExec = true;
-      var ptn = '__@fnMatch__';
+      var matched = '__@fnMatch__';
       if (has(cases, source)) {
-        ptn = source;
+        matched = source;
       } else if (has(cases, 'default')) {
-        ptn = 'default';
+        matched = 'default';
       }
-      if (cases[ptn] === '@next') {
+      if (cases[matched] === '@next') {
         var ks = keys(cases);
-        var idx = ks.indexOf(ptn);
+        var idx = ks.indexOf(matched);
         if (idx + 1 === ks.length) {
           return undefined;
         }
         return match(ks[idx + 1], cases, isExec);
       }
-      else if (isExec && typeOf(cases[ptn], 'fun')) {
-        return len(cases[ptn]) > 0 ? cases[ptn](source) : cases[ptn]();
+      else if (isExec && typeOf(cases[matched], 'fun')) {
+        return len(cases[matched]) > 0 ? cases[matched](source) : cases[matched]();
       }
       else {
-        return cases[ptn];
+        return cases[matched];
       }
     }
 
@@ -883,11 +854,11 @@
     // 匹配Url
     patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + ')(:' + patterns.port.source + ')?');
     // 匹配必需带端口的IP Url
-    patterns['ipWithPortUrl']  = new RegExp('http(s)?://' + patterns.ip.source + ':' + patterns.port.source);
+    patterns['ipWithPortUrl'] = new RegExp('http(s)?://' + patterns.ip.source + ':' + patterns.port.source);
     // 匹配必需带端口的Domain Url
-    patterns['domainWithPortUrl']  = new RegExp('http(s)?://' + patterns.domain.source + ':' + patterns.port.source);
+    patterns['domainWithPortUrl'] = new RegExp('http(s)?://' + patterns.domain.source + ':' + patterns.port.source);
     // 匹配必需带端口的Url
-    patterns['withPortUrl']  = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + '):' + patterns.port.source);
+    patterns['withPortUrl'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + '):' + patterns.port.source);
 
     /**
      * [fn.setPattern]设置一个正则表达式
@@ -966,7 +937,6 @@
       }
       forEach(types, function (tp) {
         var pattern = getPattern(tp, limit);
-        console.log(limit, pattern);
         if (!mtRst && pattern) {
           mtRst = match(type_, {
             'test': pattern.test(srcStr),
@@ -975,6 +945,33 @@
         }
       });
       return mtRst;
+    }
+
+    /**
+     * [fn.restArgs] 获取函数的剩余参数
+     * @param srcFunc : function
+     */
+    function restArgs(srcFunc) {
+      var start = srcFunc.length - 1;
+      return function () {
+        var length = Math.max(arguments.length - start, 0);
+        var rest = Array(length);
+        for (var index = 0; index < length; index++) {
+          rest[index] = arguments[index + start];
+        }
+        switch (start) {
+          case 0: return srcFunc.call(this, rest);
+          case 1: return srcFunc.call(this, arguments[0], rest);
+          case 2: return srcFunc.call(this, arguments[0], arguments[1], rest);
+          default:
+            var args = Array(start + 1);
+            for (index = 0; index < start; index++) {
+              args[index] = arguments[index];
+            }
+            args[start] = rest;
+            return srcFunc.apply(this, args);
+        };
+      };
     }
 
     /**
@@ -1371,9 +1368,10 @@
     funclib.getPattern = getPattern;
     funclib.testPattern = testPattern;
     funclib.matchPattern = matchPattern;
+
+    funclib.restArgs = restArgs;
     funclib.throttle = throttle;
     funclib.debounce = debounce;
-    funclib.restArgs = restArgs;
 
     /**@spliter*/
     /**=================================================================== */

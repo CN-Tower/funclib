@@ -10,8 +10,8 @@
  * [-]: Common method      服务端和客户端通用的方法
  * ----------------------------------------------------------------
  ## Type
- * fn.typeOf                [-] 检查值的类型，返回布尔值
- * fn.typeVal               [-] 检查值的类型，是则返回该值，否则返回false
+ * fn.typeOf                [-] 检查值的类型
+ * fn.typeVal               [-] 获取期望类型的值
  ## Array
  * fn.array                 [-] 返回指定长度和默认值的数组
  * fn.range                 [-] 返回一个范围数组
@@ -21,7 +21,7 @@
  * fn.filter                [-] 根据条件取过滤值
  * fn.reject                [-] 根据条件过滤值
  * fn.contains              [-] 判断数组是否包含符合条件的值
- * fn.drop                  [-] 去掉Boolean()后为false和空数组或对象的值
+ * fn.drop                  [-] 去掉空数组、空对象及布尔化后为false的值
  * fn.flatten               [-] 把有结构的数组打散，减少层数
  * fn.pluck                 [-] 把结构中的字段取出合并到一个数组中
  * fn.uniq                  [-] 去重或根据字段去重
@@ -62,8 +62,10 @@
  ## RegExp
  * fn.setPattern            [-] 设置一个正则表达式
  * fn.getPattern            [-] 获取一个通用的正则表达式
+ * fn.testPattern           [-] 用一个或几个通用正则测试
  * fn.matchPattern          [-] 与一个或几个通用正则匹配
  ## Function
+ * fn.restArgs              [-] 获取函数的剩余参数
  * fn.throttle              [-] 节流函数
  * fn.debounce              [-] 防抖函数
  ## Loger
@@ -132,17 +134,17 @@ declare namespace fn {
     /**
      * [fn.typeOf] 检查值的类型
      * @param value : any
-     * @param _type : string
-     * @param types : ...string[]|string[]
+     * @param type_ : string|string[]
+     * @param types : ...string[]
      */
-    typeOf(value: any, _type: Type | Type[] | any, ...types: Type[]): boolean;
+    typeOf(value: any, type_: Type | Type[] | any, ...types: Type[]): boolean;
     /**
-     * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
+     * [fn.typeVal] 获取期望类型的值
      * @param value : any
-     * @param _type : string
-     * @param types : ...string[]|string[]
+     * @param type_ : string|string[]
+     * @param types : ...string[]
      */
-    typeVal(value: any, _type: Type | Type[], ...types: Type[]): any;
+    typeVal(value: any, type_: Type | Type[], ...types: Type[]): any;
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
      * @param length : number
@@ -154,7 +156,7 @@ declare namespace fn {
      * @param start  : number [?]
      * @param length : number
      */
-    range(start, length?): number[];
+    range(start: number, length?: number): number[];
     /**
      * [fn.toArr] 值数组化
      * @param value : any
@@ -162,10 +164,10 @@ declare namespace fn {
     toArr(value: any): any[];
     /**
      * [fn.indexOf] 寻找值在数组中的索引
-     * @param srcArr    : array
+     * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
-    indexOf(srcArr: any[], predicate: any): number;
+    indexOf(srcArr: any[]|string, predicate: any): number;
     /**
      * [fn.find] 根据条件取值
      * @param srcArr    : array
@@ -191,7 +193,7 @@ declare namespace fn {
      */
     contains(srcArr: any[], predicate: any): boolean;
     /**
-     * [fn.drop] 去掉Boolean()后为false和空数组或对象的值
+     * [fn.drop] 去掉空数组、空对象及布尔化后为false的值
      * @param srcArr  : array
      * @param isDrop0 : boolean = false
      */
@@ -204,17 +206,17 @@ declare namespace fn {
     flatten(srcArr: any[], isDeep?: boolean): any[];
     /**
      * [fn.pluck] 把结构中的字段取出合并到一个数组中
-     * @param srcArr : array
-     * @param path   : string
+     * @param srcArr  : array
+     * @param pathStr : string
      */
-    pluck(srcArr: any, path: string): any[];
+    pluck(srcArr: any, pathStr: string): any[];
     /**
      * [fn.uniq] 去重或根据字段去重
-     * @param srcArr : array
-     * @param path   : string [?]
-     * @param isDeep : boolean = true
+     * @param srcArr  : array
+     * @param pathStr : string [?]
+     * @param isDeep  : boolean = true
      */
-    uniq(srcArr: any[], path?: string, isDeep?: boolean): any[];
+    uniq(srcArr: any[], pathStr?: string, isDeep?: boolean): any[];
     /**
      * [fn.each] 遍历数组或类数组
      * @param srcObj   : array|object
@@ -247,11 +249,11 @@ declare namespace fn {
     has(srcObj: any, property: string): boolean;
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
-     * @param srcObj : object
-     * @param path   : string
-     * @param types  : ...string[]|string[]
+     * @param srcObj  : object
+     * @param pathStr : string
+     * @param types   : ...string[]
      */
-    get(srcObj: Object, path: string, ...types: Type[]): any;
+    get(srcObj: Object, pathStr: string, ...types: Type[]): any;
     /**
      * [fn.keys] 获取对象的键数组
      * @param srcObj : object
@@ -260,14 +262,16 @@ declare namespace fn {
     /**
      * [fn.pick] 获取对象的部分属性
      * @param srcObj    : object
-     * @param predicate : ...string[]|string|function
+     * @param predicate : function
+     * @param props     : ...string[]
      */
     pick(srcObj: Object, predicate: any, ...props: string[]): any;
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : ...string[]|string|function  [?]
+     * @param predicate : function
+     * @param props     : ...string[]
      */
     extend(tarObj: any, srcObj: any, predicate?: any, ...props: string[]): any;
     /**
@@ -395,17 +399,31 @@ declare namespace fn {
     setPattern(ptnMap: any, pattern: any): any;
     /**
      * [fn.getPattern]获取一个通用的正则表达式
-     * @param _type     : string
-     * @param isNoLimit : boolean = false
+     * @param type_ : string
+     * @param limit : boolean = true
      */
-    getPattern(_type: string, isNoLimit?: boolean): any;
+    getPattern(type_: string, limit?: boolean): any;
+    /**
+     * [fn.testPattern]用一个或几个通用正则测试
+     * @param srcStr : string
+     * @param type_  : string
+     * @param types  : ...string[]
+     * @param limit  : boolean = true
+     */
+    testPattern(srcStr: string, type_: string, ...types: string[]): boolean;
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
      * @param srcStr : string
-     * @param types  : ...string[]|string[]
+     * @param type_  : string
+     * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    matchPattern(srcStr: string, types: string | string[], isNoLimit?: boolean): any;
+    matchPattern(srcStr: string, type_: string, ...types: string[]): any;
+    /**
+     * [fn.restArgs] 获取函数的剩余参数
+     * @param srcFunc : function
+     */
+    restArgs(srcFunc: Function): Function;
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
      * @param  func    : function
