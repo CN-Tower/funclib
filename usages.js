@@ -1,11 +1,14 @@
-const fn = require('./src');
+const fn = require('./src/funclib.core');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-fn.progress.start('Testing...', {type: 'spi'});
-console.log(111);
-console.log(222);
-fn.timeout(1000, () => console.log(333));
+fn.setPattern('myPtn', /test_/);
+fn.matchPattern('test_x', 'myPtn', false);
+
+// fn.progress.start('Testing...', {type: 'spi'});
+// console.log(111);
+// console.log(222);
+// fn.timeout(1000, () => console.log(333));
 
 // fn.interval(() => console.log(1), 1000, 'abc');
 

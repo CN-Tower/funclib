@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.1.12 <https://www.funclib.net>
+ * Funclib v3.2.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -12,27 +12,51 @@
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
+  var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.1.12';
+  var version = '3.2.1';
   var originalFn = root.fn;
 
   var fn = (function () {
 
     /**
+     * [fn.restArgs] 获取函数的剩余参数
+     * @param srcFunc : function
+     */
+    function restArgs(srcFunc) {
+      var start = srcFunc.length - 1;
+      return function () {
+        var length = Math.max(arguments.length - start, 0);
+        var rest = Array(length);
+        for (var index = 0; index < length; index++) {
+          rest[index] = arguments[index + start];
+        }
+        switch(start) {
+          case 0: return srcFunc.call(this, rest);
+          case 1: return srcFunc.call(this, arguments[0], rest);
+          case 2: return srcFunc.call(this, arguments[0], arguments[1], rest);
+          default:
+            var args = Array(start + 1);
+            for (index = 0; index < start; index++) {
+              args[index] = arguments[index];
+            }
+            args[start] = rest;
+            return srcFunc.apply(this, args);
+        };
+      };
+    }
+
+    /**
      * [fn.typeOf] 检查值的类型
      * @param value : any
-     * @param _type : string
-     * @param types : ...string[]|string[]
+     * @param type_ : string
+     * @param types : ...string[]
      */
-    function typeOf(value, _type) {
-      var types = [];
-      for (var i = 2; i < arguments.length; i++) {
-        types[i - 2] = arguments[i];
-      }
-      if (!_type) return false;
-      _type instanceof Array ? types = _type : types.unshift(_type);
-      return types.some(function (type_) {
-        switch (type_) {
+    var typeOf = restArgs(function (value, type_, types) {
+      if (!type_) return false;
+      type_ instanceof Array ? types = type_ : types.unshift(type_);
+      return types.some(function (tp) {
+        switch (tp) {
           case 'ptn': return value instanceof RegExp;
           case 'arr': return value instanceof Array;
           case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
@@ -42,24 +66,20 @@
           case 'bol': return typeof value === 'boolean';
           case 'udf': return value === undefined;
           case 'nul': return value === null;
-          default: return typeof value === type_;
+          default: return typeof value === tp;
         }
       });
-    }
+    });
 
     /**
-     * [fn.typeVal] 检查是否为某类型的值，是则返回该值，不是则返回false
+     * [fn.typeVal] 获取期望类型的值
      * @param value : any
-     * @param _type : string
-     * @param types : ...string[]|string[]
+     * @param type_ : string
+     * @param types : ...string[]
      */
-    function typeVal(value, _type) {
-      var types = [];
-      for (var i = 2; i < arguments.length; i++) {
-        types[i - 2] = arguments[i];
-      }
-      return typeOf.apply(void 0, [value, _type].concat(types)) && value;
-    }
+    var typeVal = restArgs(function (value, type_, types) {
+      return typeOf.apply(void 0, [value, type_].concat(types)) && value;
+    });
 
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
@@ -73,11 +93,9 @@
         if (value === undefined) {
           tmpArr.push(tmpVal);
           tmpVal++;
-        }
-        else if (typeOf(value, 'fun')) {
+        } else if (typeOf(value, 'fun')) {
           tmpArr.push(value.length > 0 ? value(i) : value());
-        }
-        else {
+        } else {
           tmpArr.push(value);
         }
       }
@@ -90,30 +108,28 @@
      * @param length : number
      */
     function range(start, length) {
-      var _range = [];
+      var rgArr = [];
       if (typeOf(start, 'num')) {
+        var rangeLoop = function (isAdd) {
+          if (length >= 0) {
+            for (var i = 0; i < length; i++) {
+              rgArr.push(isAdd ? i + start : i);
+            }
+          } else if (length < 0) {
+            for (var i = 0; i > length; i--) {
+              rgArr.push(isAdd ? i + start : i);
+            }
+          }
+        };
         if (length === void 0) {
           length = start;
           start = undefined;
           rangeLoop(false);
-        }
-        else if (typeOf(length, 'num')) {
+        } else if (typeOf(length, 'num')) {
           rangeLoop(true);
         }
-        function rangeLoop(isAdd) {
-          if (length >= 0) {
-            for (var i = 0; i < length; i++) {
-              _range.push(isAdd ? i + start : i);
-            }
-          }
-          else if (length < 0) {
-            for (var i = 0; i > length; i--) {
-              _range.push(isAdd ? i + start : i);
-            }
-          }
-        }
       }
-      return _range;
+      return rgArr;
     }
 
     /**
@@ -136,8 +152,7 @@
             return srcArr[i][k] === predicate[k];
           });
           if (isMatched) return i;
-        }
-        else if (typeOf(predicate, 'fun')) {
+        } else if (typeOf(predicate, 'fun')) {
           if (predicate(srcArr[i])) return i;
         }
       }
@@ -160,7 +175,7 @@
      * @param predicate : object|function|any
      */
     function filter(srcArr, predicate) {
-      return filterBase(srcArr, predicate, true);
+      return filterBase(srcArr, predicate, 'filter');
     }
 
     /**
@@ -169,13 +184,13 @@
      * @param predicate : object|function|any
       */
     function reject(srcArr, predicate) {
-      return filterBase(srcArr, predicate, false);
+      return filterBase(srcArr, predicate, 'reject');
     }
 
-    function filterBase(srcArr, predicate, isFlt) {
+    function filterBase(srcArr, predicate, type_) {
       var ftItems = [];
       var rjItems = [];
-      srcArr.forEach(function (item) {
+      forEach(srcArr, function (item) {
         if (typeOf(predicate, 'obj')) {
           var isMatched = keys(predicate).every(function (k) {
             return predicate[k] === item[k];
@@ -186,7 +201,7 @@
           predicate(item) ? ftItems.push(item) : rjItems.push(item);
         }
       });
-      return isFlt ? ftItems : rjItems;
+      return match(type_, { 'filter': ftItems, 'reject': rjItems });
     }
 
     /**
@@ -206,7 +221,7 @@
     function drop(srcArr, isDrop0) {
       if (isDrop0 === void 0) isDrop0 = false;
       var tmpArr = [];
-      srcArr.forEach(function (val) {
+      forEach(srcArr, function (val) {
         var isLen0 = typeOf(val, ['arr', 'obj']) && len(val) === 0;
         if ((val && !isLen0) || (!isDrop0 && val === 0)) {
           tmpArr.push(val);
@@ -223,11 +238,10 @@
     function flatten(srcArr, isDeep) {
       if (isDeep === void 0) isDeep = false;
       var tmpArr = [];
-      srcArr.forEach(function (val) {
+      forEach(srcArr, function (val) {
         if (typeOf(val, 'arr')) {
           isDeep ? tmpArr.push.apply(tmpArr, flatten(val, true)) : tmpArr.push.apply(tmpArr, val);
-        }
-        else {
+        } else {
           tmpArr.push(val);
         }
       });
@@ -236,14 +250,14 @@
 
     /**
      * [fn.pluck] 把结构中的字段取出合并到一个数组中
-     * @param srcArr : array
-     * @param path   : string
+     * @param srcArr  : array
+     * @param pathStr : string
      */
-    function pluck(srcArr, path) {
+    function pluck(srcArr, pathStr) {
       var tmpArr = [];
-      if (typeVal(path, 'str')) {
-        srcArr.forEach(function (val) {
-          return tmpArr.push(get(val, path));
+      if (typeVal(pathStr, 'str')) {
+        forEach(srcArr, function (val) {
+          return tmpArr.push(get(val, pathStr));
         });
       }
       return tmpArr;
@@ -251,27 +265,26 @@
 
     /**
      * [fn.uniq] 去重或根据字段去重
-     * @param srcArr : array
-     * @param path   : string [?]
-     * @param isDeep : boolean = true
+     * @param srcArr  : array
+     * @param pathStr : string [?]
+     * @param isDeep  : boolean = true
      */
-    function uniq(srcArr, path, isDeep) {
+    function uniq(srcArr, pathStr, isDeep) {
       if (isDeep === void 0) isDeep = true;
-      if (typeof path === 'boolean') {
-        isDeep = path;
-        path = undefined;
+      if (typeof pathStr === 'boolean') {
+        isDeep = pathStr;
+        pathStr = undefined;
       }
-      path = typeVal(path, 'str');
+      pathStr = typeVal(pathStr, 'str');
       var tmpArr = srcArr.slice();
       for (var i = 0; i < tmpArr.length - 1; i++) {
         for (var j = i + 1; j < tmpArr.length; j++) {
           var isDuplicate = void 0;
-          if (path) {
-            var val1 = get(tmpArr[i], path);
-            var val2 = get(tmpArr[j], path);
+          if (pathStr) {
+            var val1 = get(tmpArr[i], pathStr);
+            var val2 = get(tmpArr[j], pathStr);
             isDuplicate = isDeep ? isDeepEqual(val1, val2) : val1 === val2;
-          }
-          else {
+          } else {
             isDuplicate = isDeep ? isDeepEqual(tmpArr[i], tmpArr[j]) : tmpArr[i] === tmpArr[j];
           }
           if (isDuplicate) {
@@ -284,13 +297,15 @@
     }
 
     /**
-     * [fn.each] 遍历数组或类数组
-     * @alias fn.forEach
+     * [fn.forEach] 遍历数组或类数组
+     * @alias fn.each
      * @param srcObj   : array|object
      * @param iteratee : function
      */
-    function each(srcObj, iteratee) {
-      var length = get(srcObj, '/length', 'num');
+    function forEach(srcObj, iteratee) {
+      if (!srcObj) return srcObj;
+      if (!typeOf(iteratee, 'fun')) throw expFuncErr;
+      var length = srcObj.length;
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
         for (var i = 0; i < length; i++) {
           iteratee(srcObj[i], i);
@@ -317,17 +332,12 @@
         var params = [get(row1, field), get(row2, field)], rst1 = params[0], rst2 = params[1];
         if (rst1 !== 0 && !rst1) {
           return isDesc ? 1 : -1;
-        }
-        else if (rst2 !== 0 && !rst2) {
+        } else if (rst2 !== 0 && !rst2) {
           return isDesc ? -1 : 1;
-        }
-        else if (rst1 === rst2) {
+        } else if (rst1 === rst2) {
           return 0;
-        }
-        else {
-          return rst1 > rst2
-            ? isDesc ? -1 : 1
-            : isDesc ? 1 : -1;
+        } else {
+          return (rst1 > rst2) ? (isDesc ? -1 : 1) : (isDesc ? 1 : -1);
         }
       });
     }
@@ -342,8 +352,7 @@
       }
       else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, '/length', 'num')) {
         return srcObj.length;
-      }
-      else {
+      } else {
         return -1;
       }
     }
@@ -360,38 +369,23 @@
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param srcObj : object
-     * @param path   : string
-     * @param type   : ...string[]|string[] [?]
+     * @param pathStr   : string
+     * @param types  : ...string[]
      */
-    function get(srcObj, path) {
-      var types = [];
-      for (var i = 2; i < arguments.length; i++) {
-        types[i - 2] = arguments[i];
-      }
-      if (!srcObj || !typeOf(path, 'str')) {
-        return undefined;
-      }
-      var paths;
-      if (contains(path, '.')) {
-        paths = drop(path.split('.'));
-      }
-      else {
-        paths = drop(path.split('/'));
-      }
-      var key = paths.shift();
-      if (!key) {
+    var get = restArgs(function (srcObj, pathStr, types) {
+      if (!srcObj || !typeOf(pathStr, 'str')) return undefined;
+      var paths = contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
+      var prop = paths.shift();
+      if (!prop) {
         return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
       }
       if (paths.length) {
-        if (!typeOf(srcObj[key], 'obj', 'arr')) {
-          return undefined;
-        }
-        return get.apply(void 0, [srcObj[key], paths.join('/')].concat(types));
+        if (!typeOf(srcObj[prop], 'obj', 'arr')) return undefined;
+        return get.apply(void 0, [srcObj[prop], paths.join('/')].concat(types));
+      } else {
+        return types.length ? typeVal.apply(void 0, [srcObj[prop]].concat(types)) : srcObj[prop];
       }
-      else {
-        return types.length ? typeVal.apply(void 0, [srcObj[key]].concat(types)) : srcObj[key];
-      }
-    }
+    });
 
     /**
      * [fn.keys] 获取对象的键数组
@@ -404,40 +398,41 @@
     /**
      * [fn.pick] 获取对象的部分属性
      * @param srcObj    : object
-     * @param predicate : ...string[]|string|function
+     * @param predicate : function
+     * @param props     :...string[]
      */
-    function pick(srcObj, predicate) {
-      var propList = [];
-      for (var i = 2; i < arguments.length; i++) {
-        propList[i - 2] = arguments[i];
-      }
-      return propsTraversal({}, srcObj, predicate, propList, false);
-    }
+    var pick = restArgs(function (srcObj, predicate, props) {
+      return extendBase({}, srcObj, predicate, props, false);
+    });
 
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : ...string[]|string|function
+     * @param predicate : function
+     * @param props     :...string[]
      */
-    function extend(tarObj, srcObj, predicate) {
-      var propList = [];
-      for (var i = 3; i < arguments.length; i++) {
-        propList[i - 3] = arguments[i];
-      }
+    var extend = restArgs(function (tarObj, srcObj, predicate, props) {
       if (typeVal(srcObj, 'object')) {
-        propsTraversal(tarObj, srcObj, predicate, propList, true);
+        extendBase(tarObj, srcObj, predicate, props, true);
       }
       return tarObj;
-    }
+    });
 
-    function propsTraversal(tarObj, srcObj, predicate, propList, isDoTraDft) {
+    function extendBase(tarObj, srcObj, predicate, propList, isDoTraDft) {
+      var traversal = function (tarObj, srcObj, propList) {
+        forEach(propList, function (prop) {
+          if (has(srcObj, prop)) {
+            tarObj[prop] = srcObj[prop];
+          }
+        });
+      }
       if (typeOf(predicate, 'str')) {
         propList.unshift(predicate);
-        doTraversal(tarObj, srcObj, propList);
+        traversal(tarObj, srcObj, propList);
       }
       else if (typeOf(predicate, 'arr')) {
-        doTraversal(tarObj, srcObj, predicate);
+        traversal(tarObj, srcObj, predicate);
       }
       else if (typeOf(predicate, 'fun')) {
         forIn(srcObj, function (key, val) {
@@ -445,17 +440,9 @@
         });
       }
       else if (isDoTraDft) {
-        doTraversal(tarObj, srcObj, Object.keys(srcObj));
+        traversal(tarObj, srcObj, Object.keys(srcObj));
       }
       return tarObj;
-    }
-
-    function doTraversal(tarObj, srcObj, propList) {
-      propList.forEach(function (prop) {
-        if (has(srcObj, prop)) {
-          tarObj[prop] = srcObj[prop];
-        }
-      });
     }
 
     /**
@@ -464,7 +451,8 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      return each(srcObj, function (val, key) {
+      if (!typeOf(iteratee, 'fun')) throw expFuncErr;
+      return forEach(srcObj, function (val, key) {
         return iteratee(key, val);
       });
     }
@@ -483,8 +471,7 @@
         for (var i = 0; i < srcObj.length; i++) {
           tmpObj.push(deepCopy(srcObj[i]));
         }
-      }
-      else {
+      } else {
         tmpObj = {};
         for (var key in srcObj) {
           if (srcObj.hasOwnProperty(key)) {
@@ -524,8 +511,7 @@
           }
         }
         return true;
-      }
-      else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
+      } else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
         if (len(obj1) !== len(obj2)) {
           return false;
         }
@@ -542,8 +528,7 @@
           }
         }
         return true;
-      }
-      else {
+      } else {
         return obj1 === obj2;
       }
     }
@@ -581,7 +566,7 @@
       if (length === void 0) length = 12;
       var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var id = '';
-      array(length).forEach(function (x) {
+      forEach(array(length), function (x) {
         return id += charSet[random(charSet.length)];
       });
       return id;
@@ -617,9 +602,9 @@
       return timerBase(timerId, duration, callback, 'timeout');
     }
 
-    function timerBase(timerId, duration, callback, timerType) {
+    function timerBase(timerId, duration, callback, type_) {
       var params, timer, setTimer, clearTimer;
-      match(timerType, {
+      match(type_, {
         'interval': function () {
           timer = intervalTimers;
           setTimer = setInterval;
@@ -648,11 +633,11 @@
       }
       if (typeOf(timerId, 'num') && typeOf(duration, 'fun')) {
         params = [undefined, timerId, duration],
-        timerId = params[0], duration = params[1], callback = params[2];
+          timerId = params[0], duration = params[1], callback = params[2];
       }
       if (typeOf(timerId, 'fun')) {
         params = [undefined, 0, timerId],
-        timerId = params[0], duration = params[1], callback = params[2];
+          timerId = params[0], duration = params[1], callback = params[2];
       }
       if (typeOf(callback, 'fun')) {
         if (typeOf(duration, 'num') && duration >= 0) {
@@ -669,10 +654,10 @@
 
     /**
      * [fn.defer] 延迟执行函数
-     * @param func : function
+     * @param srcFunc : function
      */
-    function defer(func) {
-      return setTimeout(func);
+    function defer(srcFunc) {
+      return setTimeout(srcFunc);
     }
 
     /**
@@ -707,9 +692,9 @@
       }
       forIn(obj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
-          fmtStr = fmtStr.replace(
-            RegExp.$1,
-            RegExp.$1.length === 1 ? obj[k] : ('00' + obj[k]).substr((obj[k] + '').length)
+          fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length === 1)
+            ? obj[k]
+            : (('00' + obj[k]).substr((obj[k] + '').length))
           );
         }
       });
@@ -718,21 +703,19 @@
 
     /**
      * [fn.match] 字符串匹配
-     * @param srcStr : string
+     * @param source : any
      * @param cases  ：object
      * @param isExec : boolean = true
      */
-    function match(srcStr, cases, isExec) {
+    function match(source, cases, isExec) {
       if (isExec === void 0) isExec = true;
-      var ptn;
-      if (has(cases, srcStr)) {
-        ptn = srcStr;
-      }
-      else if (has(cases, '$dft')) {
-        ptn = '$dft';
-      }
-      else if (has(cases, '$default')) {
-        ptn = '$default';
+      var ptn = '__@fnMatch__';
+      if (has(cases, source)) {
+        ptn = source;
+      } else if (has(cases, 'dft')) {
+        ptn = 'dft';
+      } else if (has(cases, 'default')) {
+        ptn = 'default';
       }
       if (cases[ptn] === '@next') {
         var ks = keys(cases);
@@ -743,7 +726,7 @@
         return match(ks[idx + 1], cases, isExec);
       }
       else if (isExec && typeOf(cases[ptn], 'fun')) {
-        return len(cases[ptn]) > 0 ? cases[ptn](srcStr) : cases[ptn]();
+        return len(cases[ptn]) > 0 ? cases[ptn](source) : cases[ptn]();
       }
       else {
         return cases[ptn];
@@ -766,7 +749,7 @@
      * @param srcStr : string
      */
     function escape(srcStr) {
-      deCodes.forEach(function (str, i) {
+      forEach(deCodes, function (str, i) {
         srcStr = srcStr.replace(new RegExp(str, 'g'), enCodes[i]);
       });
       return srcStr;
@@ -777,7 +760,7 @@
      * @param srcStr : string
      */
     function unescape(srcStr) {
-      enCodes.forEach(function (str, i) {
+      forEach(enCodes, function (str, i) {
         srcStr = srcStr.replace(new RegExp(str, 'g'), deCodes[i]);
       });
       return srcStr;
@@ -825,7 +808,7 @@
         if (count >= length) break;
         tmpChar = srcStr.substr(i, 1);
         tmpStr += tmpChar;
-        count += matchPattern(tmpChar, 'cnChar') ? 2 : 1;
+        count += matchPattern(tmpChar, 'dbChar') ? 2 : 1;
       }
       return tmpStr + '...';
     }
@@ -858,9 +841,9 @@
       var encode = encodeURIComponent;
       forIn(obj, function (key, value) {
         if (typeOf(value, 'arr')) {
-          value.forEach(function (val, i) {
-            var _key = encode(key + '[' + i + ']');
-            pairs.push(_key + '=' + encode(val));
+          forEach(value, function (val, i) {
+            var k = encode(key + '[' + i + ']');
+            pairs.push(k + '=' + encode(val));
           });
         }
         else {
@@ -871,57 +854,42 @@
       return '?' + pairs.join('&');
     }
 
-    // 匹配汉字
-    var cnCharPattern = /[\u4e00-\u9fa5]+/;
-    // 匹配双字节字符
-    var dblBitCharPattern = /[^x00-xff]/;
-    // 匹配Email
-    var emailPattern = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-    // 匹配中国大陆手机号码
-    var mobPhonePattern = /(\+?0?86\-?)?1[3456789]\d{9}/;
-    // 匹配中国大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
-    var telPhonePattern = /((d{3,4})|d{3,4}-)?d{7,8}/;
-    // 匹配中国大陆身份证
-    var idCardPattern = /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/;
-    // 匹配Base64编码格式
-    var base64CodePattern = /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/;
-    // 匹配域名
-    var domainPattern = /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/;
-    // 匹配端口号
-    var portPattern = /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/;
-    // 匹配IP
-    var ipPattern = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/;
-    // 匹配IP Url
-    var ipUrlPattern = new RegExp('http(s)?://' + ipPattern.source + '(:' + portPattern.source + ')?');
-    // 匹配Domain Url
-    var domainUrlPattern = new RegExp('http(s)?://' + domainPattern.source + '(:' + portPattern.source + ')?');
-    // 匹配Url
-    var urlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + ')(:' + portPattern.source + ')?');
-    // 匹配必需带端口的IP Url
-    var ipWithPortUrlPattern = new RegExp('http(s)?://' + ipPattern.source + ':' + portPattern.source);
-    // 匹配必需带端口的Domain Url
-    var domainWithPortUrlPattern = new RegExp('http(s)?://' + domainPattern.source + ':' + portPattern.source);
-    // 匹配必需带端口的Url
-    var withPortUrlPattern = new RegExp('http(s)?://(' + ipPattern.source + '|' + domainPattern.source + '):' + portPattern.source);
-
-    var patternList = {
-      cnChar: cnCharPattern,
-      dblBitChar: dblBitCharPattern,
-      mobPhone: mobPhonePattern,
-      telPhone: telPhonePattern,
-      email: emailPattern,
-      idCard: idCardPattern,
-      base64Code: base64CodePattern,
-      domain: domainPattern,
-      port: portPattern,
-      ip: ipPattern,
-      ipUrl: ipUrlPattern,
-      domainUrl: domainUrlPattern,
-      url: urlPattern,
-      ipWithPortUrl: ipWithPortUrlPattern,
-      domainWithPortUrl: domainWithPortUrlPattern,
-      withPortUrl: withPortUrlPattern
+    var patterns = {
+      // 匹配汉字
+      cnChar: /[\u4e00-\u9fa5]/,
+      // 匹配双字节字符
+      dbChar: /[^x00-xff]/,
+      // 匹配Email,
+      email: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
+      // 匹配中国大陆手机号码
+      mobPhone: /(\+?0?86\-?)?1[3456789]\d{9}/,
+      // 匹配中国大陆电话号码，格式为“XXXX-XXXXXXX”，“XXXX-XXXXXXXX”，“XXX-XXXXXXX”，“XXX-XXXXXXXX”，“XXXXXXX”，“XXXXXXXX”
+      telPhone: /((d{3,4})|d{3,4}-)?d{7,8}/,
+      // 匹配中国大陆身份证
+      idCard: /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/,
+      // 匹配uuid
+      uuid: /[0-9a-zA-Z]{8}-([0-9a-zA-Z]{4}-){3}[0-9a-zA-Z]{12}/,
+      // 匹配Base64编码格式
+      base64Code: /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/,
+      // 匹配域名
+      domain: /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/,
+      // 匹配端口号
+      port: /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/,
+      // 匹配IP
+      ip: /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/
     };
+    // 匹配IP Url
+    patterns['ipUrl'] = new RegExp('http(s)?://' + patterns.ip.source + '(:' + patterns.port.source + ')?');
+    // 匹配Domain Url
+    patterns['domainUrl'] = new RegExp('http(s)?://' + patterns.domain.source + '(:' + patterns.port.source + ')?');
+    // 匹配Url
+    patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + ')(:' + patterns.port.source + ')?');
+    // 匹配必需带端口的IP Url
+    patterns['ipWithPortUrl']  = new RegExp('http(s)?://' + patterns.ip.source + ':' + patterns.port.source);
+    // 匹配必需带端口的Domain Url
+    patterns['domainWithPortUrl']  = new RegExp('http(s)?://' + patterns.domain.source + ':' + patterns.port.source);
+    // 匹配必需带端口的Url
+    patterns['withPortUrl']  = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + '):' + patterns.port.source);
 
     /**
      * [fn.setPattern]设置一个正则表达式
@@ -929,81 +897,104 @@
      * @param pattern : regexp [?]
      */
     function setPattern(ptnMap, pattern) {
-      if (typeVal(ptnMap, 'str') && typeOf(pattern, 'ptn')) {
-        patternList[ptnMap] = pattern;
+      if (pattern && !typeOf(pattern, 'ptn')) {
+        throw new TypeError('Expected a RegExp pattern');
+      }
+      if (typeVal(ptnMap, 'str')) {
+        patterns[ptnMap] = pattern;
       }
       else if (typeOf(ptnMap, 'obj')) {
-        extend(patternList, ptnMap);
+        forIn(ptnMap, function (ptn, ptnVal) {
+          if (typeOf(ptnVal, 'ptn')) {
+            patterns[ptn] = ptnVal;
+          } else {
+            throw new TypeError('Expected RegExp pattern values');
+          }
+        });
       };
     }
 
     /**
      * [fn.getPattern]获取一个通用的正则表达式
-     * @param _type : string
+     * @param type_ : string
      * @param limit : boolean = true
      */
-    function getPattern(_type, limit) {
-      if (!_type) return;
+    function getPattern(type_, limit) {
+      if (!type_) return;
       if (limit === void 0) limit = true;
-      patternList['list'] = keys(patternList);
-      if (!get(patternList, _type)) {
+      if (contains(['all', 'list'], type_)) {
+        return keys(patterns);
+      };
+      if (!get(patterns, type_)) {
         return undefined;
       }
-      if (_type === 'list') {
-        return patternList[_type];
-      }
-      var source = patternList[_type].source;
+      var pattern = patterns[type_];
       if (limit) {
-        return new RegExp('^(' + source.replace(/^\^|\$$/mg, '') + ')$');
+        return new RegExp('^(' + pattern.source.replace(/^\^|\$$/mg, '') + ')$');
       } else {
-        return source;
+        return pattern;
       }
     }
+
+    /**
+     * [fn.testPattern]用一个或几个通用正则测试
+     * @param srcStr : string
+     * @param type_  : string
+     * @param types  : ...string[]
+     * @param limit  : boolean = true
+     */
+    var testPattern = restArgs(function (srcStr, type_, types) {
+      if (!srcStr || !type_) return false;
+      return patternBase(srcStr, [type_].concat(types), 'test');
+    });
 
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
      * @param srcStr : string
-     * @param types  : ...string[]|string[]
+     * @param type_  : string
+     * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    function matchPattern(srcStr) {
-      if (!srcStr) return null;
-      var types = [];
-      for (var i = 1; i < arguments.length; i++) {
-        types[i - 1] = arguments[i];
-      }
+    var matchPattern = restArgs(function (srcStr, type_, types) {
+      if (!srcStr || !type_) return null;
+      return patternBase(srcStr, [type_].concat(types), 'match');
+    });
+
+    function patternBase(srcStr, types, type_) {
+      var limit = true;
+      var mtRst = null;
       if (types.length && typeOf(types[types.length - 1], 'bol')) {
         limit = types.pop();
-      } else {
-        limit = true;
       }
-      var matchs = null;
-      types.forEach(function (item) {
-        var pattern = getPattern(item, limit);
-        if (!matchs && pattern)
-          matchs = srcStr.match(pattern);
+      forEach(types, function (tp) {
+        var pattern = getPattern(tp, limit);
+        console.log(limit, pattern);
+        if (!mtRst && pattern) {
+          mtRst = match(type_, {
+            'test': pattern.test(srcStr),
+            'match': srcStr.match(pattern)
+          });
+        }
       });
-      return matchs;
+      return mtRst;
     }
 
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
-     * @param  func    : function
+     * @param  srcFunc : function
      * @param  wait    : number
      * @param  options : object [?]
      * leading: boolean = true
      * trailing: boolean = true
      */
-    function throttle(func, wait, options) {
+    function throttle(srcFunc, wait, options) {
       var leading = true, trailing = true;
-      if (typeof func != 'function') {
-        throw new TypeError('Expected a function');
-      }
+      if (!typeOf(srcFunc, 'fun')) throw expFuncErr;
       if (typeOf(options, 'obj')) {
         leading = has(options, 'leading') ? !!options.leading : leading;
         trailing = has(options, 'trailing') ? !!options.trailing : trailing;
       }
-      return debounce(func, wait, {
+      return debounce(srcFunc, wait, {
         'leading': leading,
         'maxWait': wait,
         'trailing': trailing
@@ -1012,7 +1003,7 @@
 
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
-     * @param  func    : function
+     * @param  srcFunc : function
      * @param  wait    : number
      * @param  options : object [?]
      * leading: boolean = false
@@ -1020,16 +1011,13 @@
      * maxWait: number = Math.max(0, wait)
      * trailing: boolean = true
      */
-    function debounce(func, wait, options) {
-      var lastArgs, lastThis, maxWait,
-        result, timerId, lastCallTime,
-        lastInvokeTime = 0,
-        leading = false,
-        maxing = false,
-        trailing = true;
-      if (typeof func != 'function') {
-        throw new TypeError('Expected a function');
-      }
+    function debounce(srcFunc, wait, options) {
+      if (!typeOf(srcFunc, 'fun')) throw expFuncErr;
+      var lastArgs, lastThis, maxWait, result, timerId, lastCallTime;
+      var lastInvokeTime = 0;
+      var leading = false;
+      var maxing = false;
+      var trailing = true;
       wait = Number(wait) || 0;
       if (typeOf(options, 'obj')) {
         leading = !!options.leading;
@@ -1037,25 +1025,25 @@
         maxWait = maxing ? Math.max(Number(options.maxWait) || 0, wait) : maxWait;
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
-      function invokeFunc(time) {
+      var invokeFunc = function (time) {
         var args = lastArgs, thisArg = lastThis;
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
-        result = func.apply(thisArg, args);
+        result = srcFunc.apply(thisArg, args);
         return result;
       }
-      function leadingEdge(time) {
+      var leadingEdge = function (time) {
         lastInvokeTime = time;
         timerId = setTimeout(timerExpired, wait);
         return leading ? invokeFunc(time) : result;
       }
-      function remainingWait(time) {
+      var remainingWait = function (time) {
         var timeSinceLastCall = time - lastCallTime,
           timeSinceLastInvoke = time - lastInvokeTime,
           timeWaiting = wait - timeSinceLastCall;
         return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
       }
-      function shouldInvoke(time) {
+      var shouldInvoke = function (time) {
         var timeSinceLastCall = time - lastCallTime,
           timeSinceLastInvoke = time - lastInvokeTime;
         return lastCallTime === undefined
@@ -1346,8 +1334,8 @@
     funclib.flatten = flatten;
     funclib.pluck = pluck;
     funclib.uniq = uniq;
-    funclib.each = each;
-    funclib.forEach = each;
+    funclib.forEach = forEach;
+    funclib.each = forEach;
     funclib.sortBy = sortBy;
 
     funclib.len = len;
@@ -1383,9 +1371,11 @@
 
     funclib.setPattern = setPattern;
     funclib.getPattern = getPattern;
+    funclib.testPattern = testPattern;
     funclib.matchPattern = matchPattern;
     funclib.throttle = throttle;
     funclib.debounce = debounce;
+    funclib.restArgs = restArgs;
 
     /**@spliter*/
     /**=================================================================== */
@@ -1403,7 +1393,7 @@
     /**=================================================================== */
     /**@spliter*/
 
-    keys(funclib).forEach(function (method) {
+    forEach(keys(funclib), function (method) {
       shadowFn[method] = function () {
         var args = arguments;
         args = keys(args).map(function (key) {
