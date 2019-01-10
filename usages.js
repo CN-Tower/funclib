@@ -2,7 +2,7 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-fn.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
+console.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
 
 // fn.setPattern('myPtn', /test_/);
 // fn.matchPattern('test_x', 'myPtn', false);

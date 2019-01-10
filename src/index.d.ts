@@ -21,7 +21,7 @@
  * fn.filter                [-] 根据条件取过滤值
  * fn.reject                [-] 根据条件过滤值
  * fn.contains              [-] 判断数组是否包含符合条件的值
- * fn.drop                  [-] 去掉空数组、空对象及布尔化后为false的值
+ * fn.drop                  [-] 去掉空数组空对象及布尔化后为false的值
  * fn.flatten               [-] 把有结构的数组打散，减少层数
  * fn.pluck                 [-] 把结构中的字段取出合并到一个数组中
  * fn.uniq                  [-] 去重或根据字段去重
