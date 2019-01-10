@@ -1,7 +1,7 @@
 {
   "name": "funclib.js",
   "version": "3.2.0",
-  "description": "A powerful javaScript function library!",
+  "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
@@ -22,8 +22,13 @@
   "keywords": [
     "UMD",
     "funclib",
-    "javaScript",
-    "library"
+    "javascript",
+    "library",
+    "js-library",
+    "javascript-library",
+    "js-functions",
+    "underscore",
+    "lodash"
   ],
   "author": "CN-Tower",
   "license": "MIT",
