@@ -1,9 +1,11 @@
-const fn = require('./src/funclib.core');
+const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-fn.setPattern('myPtn', /test_/);
-fn.matchPattern('test_x', 'myPtn', false);
+fn.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
+
+// fn.setPattern('myPtn', /test_/);
+// fn.matchPattern('test_x', 'myPtn', false);
 
 // fn.progress.start('Testing...', {type: 'spi'});
 // console.log(111);

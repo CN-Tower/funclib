@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.2 <https://www.funclib.net>
+ * Funclib v3.2.3 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.2';
+  var version = '3.2.3';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -30,15 +30,15 @@
       types = toArr(type_).concat(types);
       return types.some(function (tp) {
         switch (tp) {
-          case 'ptn': return value instanceof RegExp;
-          case 'arr': return value instanceof Array;
-          case 'obj': return value && typeof value === 'object' && !(value instanceof Array);
-          case 'fun': return typeof value === 'function';
           case 'str': return typeof value === 'string';
           case 'num': return typeof value === 'number';
           case 'bol': return typeof value === 'boolean';
-          case 'udf': return value === undefined;
+          case 'fun': return typeof value === 'function';
           case 'nul': return value === null;
+          case 'udf': return value === undefined;
+          case 'arr': return value instanceof Array;
+          case 'ptn': return value instanceof RegExp;
+          case 'obj': return value && typeof value === 'object' && !(value instanceof Array || value instanceof RegExp);
           default: return typeof value === tp;
         }
       });
