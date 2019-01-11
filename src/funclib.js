@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.3 <https://www.funclib.net>
+ * Funclib v3.2.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.3';
+  var version = '3.2.4';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -38,7 +38,8 @@
           case 'udf': return value === undefined;
           case 'arr': return value instanceof Array;
           case 'ptn': return value instanceof RegExp;
-          case 'obj': return value && typeof value === 'object' && !(value instanceof Array || value instanceof RegExp);
+          case 'obj': return (value && typeof value === 'object')
+            && !(value instanceof Array || value instanceof RegExp);
           default: return typeof value === tp;
         }
       });
@@ -213,7 +214,7 @@
       var tmpArr = [];
       forEach(srcArr, function (val) {
         if (typeOf(val, 'arr')) {
-          isDeep ? tmpArr.push.apply(tmpArr, flatten(val, true)) : tmpArr.push.apply(tmpArr, val);
+          tmpArr.push.apply(tmpArr, isDeep ? flatten(val, true) : val);
         } else {
           tmpArr.push(val);
         }
@@ -301,7 +302,7 @@
     function sortBy(srcArr, field, isDesc) {
       if (isDesc === void 0) isDesc = false;
       return srcArr.slice().sort(function (row1, row2) {
-        var params = [get(row1, field), get(row2, field)], rst1 = params[0], rst2 = params[1];
+        var rst1 = get(row1, field), rst2 = get(row2, field);
         if (rst1 !== 0 && !rst1) {
           return isDesc ? 1 : -1;
         } else if (rst2 !== 0 && !rst2) {
@@ -680,25 +681,26 @@
      */
     function match(source, cases, isExec) {
       if (isExec === void 0) isExec = true;
-      var matched = '__@fnMatch__';
+      var symbol = '__@fnMatch__';
       if (has(cases, source)) {
-        matched = source;
+        symbol = source;
       } else if (has(cases, 'default')) {
-        matched = 'default';
+        symbol = 'default';
       }
-      if (cases[matched] === '@next') {
+      var matched = cases[symbol];
+      if (matched === '@next') {
         var ks = keys(cases);
-        var idx = ks.indexOf(matched);
-        if (idx + 1 === ks.length) {
-          return undefined;
+        for (var i = ks.indexOf(matched) + 1; i < ks.length; i++) {
+          if (cases[ks[i]] !== '@next') {
+            matched = cases[ks[i]];
+            break;
+          }
         }
-        return match(ks[idx + 1], cases, isExec);
       }
-      else if (isExec && typeOf(cases[matched], 'fun')) {
-        return len(cases[matched]) > 0 ? cases[matched](source) : cases[matched]();
-      }
-      else {
-        return cases[matched];
+      if (isExec && typeOf(matched, 'fun')) {
+        return len(matched) ? matched(source) : matched();
+      } else {
+        return matched === '@next' ? undefined : matched;
       }
     }
 
