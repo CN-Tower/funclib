@@ -13,14 +13,19 @@
         }, 5500);
       });
     });
+    describe('#fn.now()', function () {
+      it(`fn.now() should return a timestamp.`, function () {
+        assert(/^[0-9]{13}$/.test(fn.now()) === true);
+      });
+    });
     describe('#fn.timestamp()', function () {
-      it(`fn.timestamp() should return a timestamp.`, function () {
-        assert(/^[0-9]{13}$/.test(fn.timestamp()) === true);
+      it(`fn.timestamp(new Date()) should return a timestamp.`, function () {
+        assert(/^[0-9]{13}$/.test(fn.timestamp(new Date())) === true);
       });
     });
     describe('#fn.fmtDate()', function () {
-      it(`fn.fmtDate('yy-MM-dd hh:mm:ss') should return a fmted date string.`, function () {
-        const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss');
+      it(`fn.fmtDate('yy-MM-dd hh:mm:ss', new Date()) should return a fmted date string.`, function () {
+        const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss', new Date());
         assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
       });
       it.skip(`fn.fmtDate(yyyy-MM-dd hh:mm', time) should return a fmted date string.`, function () {

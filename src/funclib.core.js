@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.4 <https://www.funclib.net>
+ * Funclib v3.2.5 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.4';
+  var version = '3.2.5';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -633,12 +633,18 @@
     }
 
     /**
-     * [fn.timestamp] 返回一个当前时间戳
+     * [fn.now] 返回一个当前时间戳
+     */
+    function now() {
+      return (new Date()).getTime();
+    }
+
+    /**
+     * [fn.timestamp] 返回一个时间戳
      * @param time : date|string|number [?]
      */
     function timestamp(time) {
       var date = new Date(String(time));
-      if (!date.getTime()) date = new Date();
       return date.getTime();
     }
 
@@ -649,7 +655,7 @@
      */
     function fmtDate(fmtStr, time) {
       var date = new Date(String(time));
-      if (!date.getTime()) date = new Date();
+      if (!date.getTime()) return '';
       var obj = {
         'M+': date.getMonth() + 1,
         'd+': date.getDate(),
@@ -664,9 +670,8 @@
       }
       forIn(obj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
-          fmtStr = fmtStr.replace(RegExp.$1, (RegExp.$1.length === 1)
-            ? obj[k]
-            : (('00' + obj[k]).substr((obj[k] + '').length))
+          fmtStr = fmtStr.replace(
+            RegExp.$1, (RegExp.$1.length === 1) ? obj[k] : (('00' + obj[k]).substr((obj[k] + '').length))
           );
         }
       });
@@ -1141,6 +1146,7 @@
     funclib.interval = interval;
     funclib.timeout = timeout;
     funclib.defer = defer;
+    funclib.now = now;
     funclib.timestamp = timestamp;
     funclib.fmtDate = fmtDate;
 
