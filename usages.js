@@ -2,6 +2,8 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
+fn.log();
+
 // console.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
 
 // fn.setPattern('myPtn', /test_/);

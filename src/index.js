@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.5 <https://www.funclib.net>
+ * Funclib v3.2.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.5';
+  var version = '3.2.6';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -633,13 +633,6 @@
     }
 
     /**
-     * [fn.now] 返回一个当前时间戳
-     */
-    function now() {
-      return (new Date()).getTime();
-    }
-
-    /**
      * [fn.timestamp] 返回一个时间戳
      * @param time : date|string|number [?]
      */
@@ -1162,7 +1155,7 @@
       }
       value = pretty(value);
       var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
-      var _time = fmtDate('hh:mm:ss');
+      var _time = fmtDate('hh:mm:ss', new Date());
       var time = isShowTime ? '[' + _time + '] ' : '';
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
@@ -1494,7 +1487,6 @@
     funclib.interval = interval;
     funclib.timeout = timeout;
     funclib.defer = defer;
-    funclib.now = now;
     funclib.timestamp = timestamp;
     funclib.fmtDate = fmtDate;
 

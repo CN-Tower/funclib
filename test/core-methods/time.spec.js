@@ -13,11 +13,6 @@
         }, 5500);
       });
     });
-    describe('#fn.now()', function () {
-      it(`fn.now() should return a timestamp.`, function () {
-        assert(/^[0-9]{13}$/.test(fn.now()) === true);
-      });
-    });
     describe('#fn.timestamp()', function () {
       it(`fn.timestamp(new Date()) should return a timestamp.`, function () {
         assert(/^[0-9]{13}$/.test(fn.timestamp(new Date())) === true);
