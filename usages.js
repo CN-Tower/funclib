@@ -2,7 +2,9 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-fn.log();
+fn.log(fn.fmtDate('yyyy-MM-dd', '2012-2-3'));
+fn.log(fn.fmtDate('yyyy-MM-dd', new Date()));
+fn.log(fn.fmtDate('yyyy-MM-dd'));
 
 // console.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
 
