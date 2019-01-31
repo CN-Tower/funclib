@@ -20,7 +20,7 @@
   var fn = (function () {
 
     /**
-     * [fn.typeOf] 检查值的类型
+     * [fn.typeOf] Assert the type(s) of value 
      * @param value : any
      * @param type_ : string|string[]
      * @param types : ...string[]
@@ -46,7 +46,7 @@
     });
 
     /**
-     * [fn.typeVal] 获取期望类型的值
+     * [fn.typeVal] Get value by type(s) assertion
      * @param value : any
      * @param type_ : string|string[]
      * @param types : ...string[]
@@ -56,7 +56,7 @@
     });
 
     /**
-     * [fn.array] 返回一个指定长度和默认值的数组
+     * [fn.array] Returns an array of specified length and default values
      * @param length : number
      * @param value  : any|function [?]
      */
@@ -77,7 +77,7 @@
     }
 
     /**
-     * [fn.range] 返回一个范围数组
+     * [fn.range] Returns an array range
      * @param start  : number [?]
      * @param length : number
      */
@@ -106,7 +106,7 @@
     }
 
     /**
-     * [fn.toArr] 值数组化
+     * [fn.toArr] Value to array
      * @param value : any
      */
     function toArr(value) {
@@ -114,7 +114,7 @@
     }
 
     /**
-     * [fn.indexOf] 寻找值在数组中的索引
+     * [fn.indexOf] Find a value's index in array
      * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
@@ -133,7 +133,7 @@
     }
 
     /**
-     * [fn.find] 根据条件取值
+     * [fn.find] Find a value by condition
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
@@ -143,7 +143,7 @@
     }
 
     /**
-     * [fn.filter] 根据条件取过滤值
+     * [fn.filter] Filter value(s) by condition
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
@@ -152,7 +152,7 @@
     }
 
     /**
-      * [fn.reject] 根据条件过滤值
+      * [fn.reject] Reject value(s) by condition
      * @param srcArr    : array
      * @param predicate : object|function|any
       */
@@ -640,6 +640,23 @@
     }
 
     /**
+     * [fn.asUtcTime] 返回一个时间戳
+     * @param time : date|string|number [?]
+     */
+    function asUtcTime(time) {
+      var date = dateBase(time);
+      if (!date.getTime()) return NaN;
+      return Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+      );
+    }
+
+    /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number [?]
@@ -656,11 +673,11 @@
         'q+': Math.floor((date.getMonth() + 3) / 3),
         'S': date.getMilliseconds()
       };
-      if (/(y+)/.test(fmtStr)) {
+      if (/y+/.test(fmtStr)) {
         fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
       }
       forIn(obj, function (k) {
-        if (new RegExp('(' + k + ')').test(fmtStr)) {
+        if (new RegExp(k).test(fmtStr)) {
           fmtStr = fmtStr.replace(
             RegExp.$1, (RegExp.$1.length === 1) ? obj[k] : (('00' + obj[k]).substr((obj[k] + '').length))
           );
@@ -1139,6 +1156,7 @@
     funclib.timeout = timeout;
     funclib.defer = defer;
     funclib.timestamp = timestamp;
+    funclib.asUtcTime = asUtcTime;
     funclib.fmtDate = fmtDate;
 
     funclib.match = match;
