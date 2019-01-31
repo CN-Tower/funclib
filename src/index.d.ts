@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.7 <https://www.funclib.net>
+ * Funclib v3.2.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -48,6 +48,7 @@
  * fn.timeout               [-] 延时定时器
  * fn.defer                 [-] 延迟执行函数
  * fn.timestamp             [-] 返回一个时间戳
+ * fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
  * fn.fmtDate               [-] 获取格式化的时间字符串
  ## String
  * fn.match                 [-] 字符串匹配
@@ -105,6 +106,7 @@ declare var fn: fn.Funclib;
 
 declare namespace fn {
 
+  type Any = any;
   type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | 'ptn' | string | string[];
   type Color = 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow';
 
@@ -125,7 +127,7 @@ declare namespace fn {
     stop(onStopped?: Function): void;
   }
 
-  interface Funclib {
+  interface Funclib extends Any {
     /**
      * [fn().method] 使用OOP风格的调用
      * @param data : any 目标方法的第一个参数
@@ -336,6 +338,11 @@ declare namespace fn {
      * @param time : date|string|number
      */
     timestamp(time: Date | string | number): number;
+    /**
+     * [fn.asUtcTime] 转化为相同时间的零时区时间戳
+     * @param time : date|string|number
+     */
+    asUtcTime(time: Date | string | number): number;
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr : string

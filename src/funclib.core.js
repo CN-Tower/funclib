@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.7 <https://www.funclib.net>
+ * Funclib v3.2.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,13 +14,13 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.7';
+  var version = '3.2.8';
   var originalFn = root.fn;
 
   var fn = (function () {
 
     /**
-     * [fn.typeOf] Assert the type(s) of value 
+     * [fn.typeOf] 检查值的类型
      * @param value : any
      * @param type_ : string|string[]
      * @param types : ...string[]
@@ -46,7 +46,7 @@
     });
 
     /**
-     * [fn.typeVal] Get value by type(s) assertion
+     * [fn.typeVal] 获取期望类型的值
      * @param value : any
      * @param type_ : string|string[]
      * @param types : ...string[]
@@ -56,8 +56,7 @@
     });
 
     /**
-     * [fn.array] Returns an array of specified length and default values
-     * @param length : number
+     * [fn.array] 返回一个指定长度和默认值的数组
      * @param value  : any|function [?]
      */
     function array(length, value) {
@@ -77,7 +76,7 @@
     }
 
     /**
-     * [fn.range] Returns an array range
+     * [fn.range] 返回一个范围数组
      * @param start  : number [?]
      * @param length : number
      */
@@ -106,7 +105,7 @@
     }
 
     /**
-     * [fn.toArr] Value to array
+     * [fn.toArr] 值数组化
      * @param value : any
      */
     function toArr(value) {
@@ -114,7 +113,7 @@
     }
 
     /**
-     * [fn.indexOf] Find a value's index in array
+     * [fn.indexOf] 寻找值在数组中的索引
      * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
@@ -133,7 +132,7 @@
     }
 
     /**
-     * [fn.find] Find a value by condition
+     * [fn.find] 根据条件取一个值
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
@@ -143,7 +142,7 @@
     }
 
     /**
-     * [fn.filter] Filter value(s) by condition
+     * [fn.filter] 根据条件取过滤值
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
@@ -152,7 +151,7 @@
     }
 
     /**
-      * [fn.reject] Reject value(s) by condition
+      * [fn.reject] 根据条件过滤值
      * @param srcArr    : array
      * @param predicate : object|function|any
       */
@@ -640,7 +639,7 @@
     }
 
     /**
-     * [fn.asUtcTime] 返回一个时间戳
+     * [fn.asUtcTime] 转化为相同时间的零时区时间戳
      * @param time : date|string|number [?]
      */
     function asUtcTime(time) {
@@ -673,11 +672,11 @@
         'q+': Math.floor((date.getMonth() + 3) / 3),
         'S': date.getMilliseconds()
       };
-      if (/y+/.test(fmtStr)) {
+      if (/(y+)/.test(fmtStr)) {
         fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
       }
       forIn(obj, function (k) {
-        if (new RegExp(k).test(fmtStr)) {
+        if (new RegExp('(' + k + ')').test(fmtStr)) {
           fmtStr = fmtStr.replace(
             RegExp.$1, (RegExp.$1.length === 1) ? obj[k] : (('00' + obj[k]).substr((obj[k] + '').length))
           );

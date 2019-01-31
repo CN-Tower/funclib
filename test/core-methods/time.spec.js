@@ -18,6 +18,11 @@
         assert(/^[0-9]{13}$/.test(fn.timestamp(new Date())) === true);
       });
     });
+    describe('#fn.asUtcTime()', function () {
+      it(`fn.asUtcTime(new Date()) should return a timestamp.`, function () {
+        assert(/^[0-9]{13}$/.test(fn.asUtcTime(new Date())) === true);
+      });
+    });
     describe('#fn.fmtDate()', function () {
       it(`fn.fmtDate('yy-MM-dd hh:mm:ss', new Date()) should return a fmted date string.`, function () {
         const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss', new Date());

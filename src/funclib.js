@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.7 <https://www.funclib.net>
+ * Funclib v3.2.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.7';
+  var version = '3.2.8';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -57,7 +57,6 @@
 
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
-     * @param length : number
      * @param value  : any|function [?]
      */
     function array(length, value) {
@@ -133,7 +132,7 @@
     }
 
     /**
-     * [fn.find] 根据条件取值
+     * [fn.find] 根据条件取一个值
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
@@ -637,6 +636,23 @@
      */
     function timestamp(time) {
       return dateBase(time).getTime();
+    }
+
+    /**
+     * [fn.asUtcTime] 转化为相同时间的零时区时间戳
+     * @param time : date|string|number [?]
+     */
+    function asUtcTime(time) {
+      var date = dateBase(time);
+      if (!date.getTime()) return NaN;
+      return Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+      );
     }
 
     /**
@@ -1351,6 +1367,7 @@
     funclib.timeout = timeout;
     funclib.defer = defer;
     funclib.timestamp = timestamp;
+    funclib.asUtcTime = asUtcTime;
     funclib.fmtDate = fmtDate;
 
     funclib.match = match;
