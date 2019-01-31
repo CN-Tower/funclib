@@ -1283,6 +1283,22 @@
           if (typeOf(onStopped, 'fun')) onStopped();
         }
       }
+      /**
+       * [fn.progress.clear] 立即结束进度条，并触发回调
+       * @param onStopped : function [?]
+       */
+      progress.clear = function (onStopped) {
+        if (pgType === 'bar') {
+          pgType = null;
+          progressBar.complete = true;
+          timeout('#fn_pg_Bar').stop();
+        }
+        else {
+          pgType = null;
+          interval('#fn_pg_spi').stop();
+        }
+        if (typeOf(onStopped, 'fun')) onStopped();
+      }
       function tick(tickType, onStopped) {
         timeout('#fn_pg_Bar', duration, function () {
           progressBar.tick();
@@ -1553,6 +1569,7 @@
     /**@spliter*/
     /**=================================================================== */
 
+    progress.stop = new Function();
     funclib.progress = progress;
 
     /**=================================================================== */

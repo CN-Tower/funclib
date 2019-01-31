@@ -125,6 +125,11 @@ declare namespace fn {
      * @param onStopped : function [?]
      */
     stop(onStopped?: Function): void;
+    /**
+     * [fn.progress.stop] 立即结束进度条，并触发回调
+     * @param onStopped : function [?]
+     */
+    clear(onStopped?: Function): void;
   }
 
   interface Funclib extends Any {
