@@ -4,11 +4,13 @@ const fn = require('./src');
 
 // fn.progress.stop();
 // fn.progress('Hello', {type: 'spi'});
+// fn.progress.start('Hello_');
 // fn.timeout(5000, () => {
 //   fn.progress.clear();
 //   fn.progress('Nice');
 //   fn.timeout(5000, () => fn.progress.stop());
 // });
+
 
 
 // fn.log(fn.fmtDate('yyyy-MM-dd', '2012-2-3'));

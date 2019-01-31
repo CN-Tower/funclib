@@ -121,6 +121,15 @@ declare namespace fn {
      */
     (title: string, options?: any): void;
     /**
+     * [fn.progress.start] 进度显示工具
+     * @param title: string
+     * @param options: object [?]
+     * title: string
+     * width: number = 40
+     * type : 'bar'|'spi' = 'bar'
+     */
+    start(title: string, options?: any): void;
+    /**
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped : function [?]
      */
@@ -130,6 +139,17 @@ declare namespace fn {
      * @param onStopped : function [?]
      */
     clear(onStopped?: Function): void;
+  }
+
+  interface Timer extends Any {
+    /**
+     * 定时器ID
+     */
+    id: any;
+    /**
+     * 关闭定时器
+     */
+    stop: () => any;
   }
 
   interface Funclib extends Any {
@@ -325,14 +345,14 @@ declare namespace fn {
      * @param duration : number|false|null [?]
      * @param callback : function
      */
-    interval(timerId: any, duration?: any, callback?: any): any | { id: any, stop: () => any };
+    interval(timerId: any, duration?: any, callback?: any): Timer;
     /**
      * [fn.timeout] 延时定时器
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
      */
-    timeout(timerId: any, duration?: any, callback?: any): any | { id: any, stop: () => any };
+    timeout(timerId: any, duration?: any, callback?: any): Timer;
     /**
      * [fn.defer] 延迟执行函数
      * @param func : function
