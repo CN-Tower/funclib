@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
 ## Brief Intro
-JavaScript通用型UMD函数库!
+一个实用的JavaScript函数库!
 > 目的：高效率完成业务代码！
 
 ### Documents:&nbsp;&nbsp;https://www.funclib.net
@@ -41,7 +41,6 @@ $ node
 ```bash
 # Download funclib repo
 $ git clone https://github.com/CN-Tower/funclib.js.git
-# $ git clone http://gitlab.zte.com.cn/CN-Tower/funclib.js.git
 
 # Install dependency
 $ npm install
@@ -67,8 +66,8 @@ $ npm run test
 * [-]: Common method      服务端和客户端通用的方法
 ------------------------------------------------------------------
 ## Type
-* fn.typeOf                [-] 检查值的类型，返回布尔值
-* fn.typeVal               [-] 检查值的类型，是则返回该值，否则返回false
+* fn.typeOf                [-] 检查值的类型
+* fn.typeVal               [-] 获取期望类型的值
 ## Array
 * fn.array                 [-] 返回指定长度和默认值的数组
 * fn.range                 [-] 返回一个范围数组
@@ -78,12 +77,12 @@ $ npm run test
 * fn.filter                [-] 根据条件取过滤值
 * fn.reject                [-] 根据条件过滤值
 * fn.contains              [-] 判断数组是否包含符合条件的值
-* fn.drop                  [-] 去掉Boolean()后为false和空数组或对象的值
+* fn.drop                  [-] 去掉空数组空对象及布尔化后为false的值
 * fn.flatten               [-] 把有结构的数组打散，减少层数
 * fn.pluck                 [-] 把结构中的字段取出合并到一个数组中
 * fn.uniq                  [-] 去重或根据字段去重
-* fn.each                  [-] 遍历数组或类数组
-* fn.forEach               [-] 遍历数组或类数组, 同: fn.forEach
+* fn.each                  [-] 遍历数组或类数组, 同: fn.forEach
+* fn.forEach               [-] 遍历数组或类数组
 * fn.sortBy                [-] 返回对象数组根据字段排序后的副本
 ## Object
 * fn.len                   [-] 获取对象自有属性的个数
@@ -104,7 +103,8 @@ $ npm run test
 * fn.interval              [-] 循环定时器
 * fn.timeout               [-] 延时定时器
 * fn.defer                 [-] 延迟执行函数
-* fn.timestamp             [-] 返回一个当前时间戳
+* fn.timestamp             [-] 返回一个时间戳
+* fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
 * fn.fmtDate               [-] 获取格式化的时间字符串
 ## String
 * fn.match                 [-] 字符串匹配
@@ -117,9 +117,12 @@ $ npm run test
 * fn.parseQueryStr         [-] 解析Url参数成对象
 * fn.stringifyQueryStr     [-] 把对象编译成Url参数
 ## RegExp
+* fn.setPattern            [-] 设置一个正则表达式
 * fn.getPattern            [-] 获取一个通用的正则表达式
+* fn.testPattern           [-] 用一个或几个通用正则测试
 * fn.matchPattern          [-] 与一个或几个通用正则匹配
 ## Function
+* fn.restArgs              [-] 获取函数的剩余参数
 * fn.throttle              [-] 节流函数
 * fn.debounce              [-] 防抖函数
 ## Loger
@@ -130,11 +133,6 @@ $ npm run test
 * fn.exitFullScreen        [c] 退出全屏显示
 * fn.checkIsFullScreen     [c] 检测是否处理全屏状态
 * fn.fullScreenChange      [c] 检测是否全屏状态
-* fn.noAutoComplete        [c] 防止input密码自动填充
-## Cookie
-* fn.setCookie             [c] 设置cookie
-* fn.getCookie             [c] 根据name读取cookie
-* fn.removeCookie          [c] 根据name删除cookie
 ## Tools
 * fn.rd                    [s] 读文件
 * fn.wt                    [s] 写文件

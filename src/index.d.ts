@@ -77,11 +77,6 @@
  * fn.exitFullScreen        [c] 退出全屏显示
  * fn.checkIsFullScreen     [c] 检测是否处理全屏状态
  * fn.fullScreenChange      [c] 检测是否全屏状态
- * fn.noAutoComplete        [c] 防止input密码自动填充
- ## Cookie
- * fn.setCookie             [c] 设置cookie
- * fn.getCookie             [c] 根据name读取cookie
- * fn.removeCookie          [c] 根据name删除cookie
  ## Tools
  * fn.rd                    [s] 读文件
  * fn.wt                    [s] 写文件
@@ -494,23 +489,6 @@ declare namespace fn {
      * @param callback function|false [?]
      */
     fullScreenChange(callback?: any): void;
-    /**
-     * [fn.setCookie] 设置cookie
-     * @param name  : string
-     * @param value : string
-     * @param days  : number [?]
-     */
-    setCookie(name: string, value: string, days?: number): void;
-    /**
-     * [fn.getCookie] 根据name读取cookie
-     * @param  name : string
-     */
-    getCookie(name: string): string;
-    /**
-     * [fn.removeCookie] 根据name删除cookie
-     * @param name : string
-     */
-    removeCookie(name: string): void;
     /**
      * [fn.copyText] 复制文本到粘贴板
      * @param text : string

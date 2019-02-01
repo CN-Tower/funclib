@@ -11,15 +11,24 @@
     "url": "git+https://github.com/CN-Tower/funclib.js.git"
   },
   "keywords": [
-    "UMD",
+    "fn",
     "funclib",
+    "FuncLib",
+    "function",
+    "functions",
+    "js",
+    "ts",
+    "JavaScript",
+    "TypeScript",
     "javascript",
+    "typescript",
     "library",
     "js-library",
     "javascript-library",
     "js-functions",
     "underscore",
-    "lodash"
+    "lodash",
+    "jquery"
   ],
   "author": "CN-Tower",
   "license": "MIT",

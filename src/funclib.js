@@ -574,24 +574,15 @@
 
     function timerBase(timerId, duration, callback, type_) {
       var params, timer, setTimer, clearTimer;
-      match(type_, {
-        'interval': function () {
-          timer = intervalTimers;
-          setTimer = setInterval;
-          clearTimer = clearInterval;
-        },
-        'timeout': function () {
-          timer = timeoutTimers;
-          setTimer = setTimeout;
-          clearTimer = clearTimeout;
-        }
-      });
+      if (type_ === 'interval') {
+        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+      } else if (type_ === 'timeout') {
+        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+      }
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
         return {
-          id: timer[timerId], stop: function () {
-            return clearTimer(timer[timerId]);
-          }
+          id: timer[timerId], stop: function () { return clearTimer(timer[timerId]); }
         };
       }
       if (isIdStr && contains([null, false], duration)) {
@@ -609,16 +600,12 @@
         params = [undefined, 0, timerId];
         timerId = params[0], duration = params[1], callback = params[2];
       }
-      if (typeOf(callback, 'fun')) {
-        if (typeOf(duration, 'num') && duration >= 0) {
-          if (isIdStr) {
-            clearTimer(timer[timerId]);
-            return timer[timerId] = setTimer(callback, duration);
-          }
-          if (timerId === undefined) {
-            return setTimer(callback, duration);
-          }
+      if (typeOf(callback, 'fun') && typeOf(duration, 'num') && duration >= 0) {
+        if (isIdStr) {
+          clearTimer(timer[timerId]);
+          return timer[timerId] = setTimer(callback, duration);
         }
+        if (timerId === undefined) return setTimer(callback, duration);
       }
     }
 
@@ -1260,42 +1247,6 @@
     }
 
     /**
-     * [fn.setCookie] 设置Cookie
-     * @param name  : string
-     * @param value : string
-     * @param days  : number [?]
-     */
-    function setCookie(name, value, days) {
-      if (days === void 0) days = 0;
-      var date = new Date();
-      date.setDate(date.getDate() + days);
-      document.cookie = name + '=' + value + ';expires=' + date;
-    }
-
-    /**
-     * [fn.getCookie] 根据name读取cookie
-     * @param  name : string
-     */
-    function getCookie(name) {
-      var cks = document.cookie.replace(/\s/g, '').split(';');
-      for (var i = 0; i < cks.length; i++) {
-        var tempArr = cks[i].split('=');
-        if (tempArr[0] == name) {
-          return decodeURIComponent(tempArr[1]);
-        }
-      }
-      return '';
-    }
-
-    /**
-     * [fn.removeCookie] 根据name删除cookie
-     * @param name : string
-     */
-    function removeCookie(name) {
-      setCookie(name, '1', -1);
-    }
-
-    /**
      * [fn.copyText] 复制文本到粘贴板
      * @param text : string
      */
@@ -1397,9 +1348,6 @@
     funclib.exitFullScreen = exitFullScreen;
     funclib.isFullScreen = isFullScreen;
     funclib.fullScreenChange = fullScreenChange;
-    funclib.setCookie = setCookie;
-    funclib.getCookie = getCookie;
-    funclib.removeCookie = removeCookie;
     funclib.copyText = copyText;
 
     /**=================================================================== */

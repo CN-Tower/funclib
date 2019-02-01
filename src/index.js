@@ -574,24 +574,15 @@
 
     function timerBase(timerId, duration, callback, type_) {
       var params, timer, setTimer, clearTimer;
-      match(type_, {
-        'interval': function () {
-          timer = intervalTimers;
-          setTimer = setInterval;
-          clearTimer = clearInterval;
-        },
-        'timeout': function () {
-          timer = timeoutTimers;
-          setTimer = setTimeout;
-          clearTimer = clearTimeout;
-        }
-      });
+      if (type_ === 'interval') {
+        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+      } else if (type_ === 'timeout') {
+        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+      }
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
         return {
-          id: timer[timerId], stop: function () {
-            return clearTimer(timer[timerId]);
-          }
+          id: timer[timerId], stop: function () { return clearTimer(timer[timerId]); }
         };
       }
       if (isIdStr && contains([null, false], duration)) {
@@ -609,16 +600,12 @@
         params = [undefined, 0, timerId];
         timerId = params[0], duration = params[1], callback = params[2];
       }
-      if (typeOf(callback, 'fun')) {
-        if (typeOf(duration, 'num') && duration >= 0) {
-          if (isIdStr) {
-            clearTimer(timer[timerId]);
-            return timer[timerId] = setTimer(callback, duration);
-          }
-          if (timerId === undefined) {
-            return setTimer(callback, duration);
-          }
+      if (typeOf(callback, 'fun') && typeOf(duration, 'num') && duration >= 0) {
+        if (isIdStr) {
+          clearTimer(timer[timerId]);
+          return timer[timerId] = setTimer(callback, duration);
         }
+        if (timerId === undefined) return setTimer(callback, duration);
       }
     }
 
