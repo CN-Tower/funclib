@@ -619,7 +619,7 @@
 
     /**
      * [fn.timestamp] 返回一个时间戳
-     * @param time : date|string|number [?]
+     * @param time : date|string|number
      */
     function timestamp(time) {
       return dateBase(time).getTime();
@@ -627,7 +627,7 @@
 
     /**
      * [fn.asUtcTime] 转化为相同时间的零时区时间戳
-     * @param time : date|string|number [?]
+     * @param time : date|string|number
      */
     function asUtcTime(time) {
       var date = dateBase(time);
@@ -645,7 +645,7 @@
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr : string
-     * @param time   : date|string|number [?]
+     * @param time   : date|string|number
      */
     function fmtDate(fmtStr, time) {
       var date = dateBase(time);
