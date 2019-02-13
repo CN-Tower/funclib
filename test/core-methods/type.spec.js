@@ -1,4 +1,4 @@
-/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
+/**@server-*/ module.exports = function (fn, assert) { /**@server=|*/
   describe('Type Methods:', function () {
     describe('#fn.typeOf()', function () {
       it(`fn.typeOf('string', 'str') should return true.`, function () {
@@ -45,4 +45,4 @@
       });
     });
   });
-/**@server+*//* } /**@server=|*/
+/**@server-*/ } /**@server=|*/

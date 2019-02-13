@@ -1,4 +1,4 @@
-/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
+/**@server-*/ module.exports = function (fn, assert) { /**@server=|*/
   describe('Function Methods:', function () {
     describe('#restArgs()', function () {
       it(`fn.restArgs(function(args) {})(1,2) args should return [1, 2]`, function () {
@@ -39,4 +39,4 @@
       });
     });
   });
-/**@server+*//* } /**@server=|*/
+/**@server-*/ } /**@server=|*/
