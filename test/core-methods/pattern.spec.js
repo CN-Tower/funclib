@@ -1,4 +1,4 @@
-/**@server-*/ module.exports = function (fn, assert) { /**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('RegExp Methods:', function () {
     describe('#fn.setPattern()', function () {
       it(`fn.setPattern('myPtn', /test_/) should set A pattern.`, function () {
@@ -38,4 +38,4 @@
       });
     });
   });
-/**@server-*/ } /**@server=|*/
+/**@server+*//* } /**@server=|*/

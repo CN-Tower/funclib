@@ -1,4 +1,4 @@
-/**@server-*/ module.exports = function (fn, assert) { /**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Object Methods:', function () {
     describe('#fn.len()', function () {
       it(`fn.len(obj) should return length of the obj.`, function () {
@@ -124,4 +124,4 @@
       });
     });
   });
-/**@server-*/ } /**@server=|*/
+/**@server+*//* } /**@server=|*/

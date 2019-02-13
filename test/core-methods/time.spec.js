@@ -1,4 +1,4 @@
-/**@server-*/ module.exports = function (fn, assert) { /**@server=|*/
+/**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Time Methods:', function () {
     describe('#fn.interval()', function () {
       it.skip(`fn.interval(timerId, duration, callback) should create a interval timer.`, function (done) {
@@ -38,4 +38,4 @@
       });
     });
   });
-/**@server-*/ } /**@server=|*/
+/**@server+*//* } /**@server=|*/
