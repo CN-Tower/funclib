@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.8 <https://www.funclib.net>
+ * Funclib v3.2.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.8';
+  var version = '3.2.9';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -638,7 +638,8 @@
         date.getUTCDate(),
         date.getUTCHours(),
         date.getUTCMinutes(),
-        date.getUTCSeconds()
+        date.getUTCSeconds(),
+        date.getUTCMilliseconds()
       );
     }
 
