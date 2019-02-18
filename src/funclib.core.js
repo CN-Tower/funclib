@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.9 <https://www.funclib.net>
+ * Funclib v3.3.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.2.9';
+  var version = '3.3.1';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -581,9 +581,8 @@
       }
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
-        return {
-          id: timer[timerId], stop: function () { return clearTimer(timer[timerId]); }
-        };
+        function clearFn() { return clearTimer(timer[timerId]); };
+        return { id: timer[timerId], stop: clearFn, clear: clearFn };
       }
       if (isIdStr && contains([null, false], duration)) {
         clearTimer(timer[timerId]);

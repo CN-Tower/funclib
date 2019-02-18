@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.2.9 <https://www.funclib.net>
+ * Funclib v3.3.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -114,7 +114,7 @@ declare namespace fn {
      * width: number = 40
      * type : 'bar'|'spi' = 'bar'
      */
-    (title: string, options?: any): void;
+    (title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi' }): void;
     /**
      * [fn.progress.start] 进度显示工具
      * @param title: string
@@ -123,7 +123,7 @@ declare namespace fn {
      * width: number = 40
      * type : 'bar'|'spi' = 'bar'
      */
-    start(title: string, options?: any): void;
+    start(title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi' }): void;
     /**
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped : function [?]
@@ -145,6 +145,17 @@ declare namespace fn {
      * 关闭定时器
      */
     stop: () => any;
+    /**
+     * 关闭定时器
+     */
+    clear: () => any;
+  }
+
+  interface LogConfig {
+    title?: string, width?: number, isFmt?: boolean, isShowTime?: boolean,
+    pre?: boolean, end?: boolean,
+    ttColor?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow',
+    color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
   }
 
   interface Funclib extends Any {
@@ -189,7 +200,7 @@ declare namespace fn {
      * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
-    indexOf(srcArr: any[]|string, predicate: any): number;
+    indexOf(srcArr: any[] | string, predicate: any): number;
     /**
      * [fn.find] 根据条件取值
      * @param srcArr    : array
@@ -459,7 +470,7 @@ declare namespace fn {
      * leading: boolean = true
      * trailing: boolean = true
      */
-    throttle(func: Function, wait: number, options?): Function;
+    throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }): Function;
     /**
      * [fn.debounce] 防抖函数, 适用于获取用户输入
      * @param  func    : function
@@ -470,7 +481,7 @@ declare namespace fn {
      * maxWait: number = Math.max(0, wait)
      * trailing: boolean = true
      */
-    debounce(func: Function, wait: number, options?): Function;
+    debounce(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number }): Function;
     /**
      * [fn.fullScreen] 全屏显示HTML元素
      * @param el : HTMLElement
@@ -514,7 +525,7 @@ declare namespace fn {
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
      * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
-    log(value: any, title?: any, configs?: any): any;
+    log(value: any, title?: any, configs?: LogConfig): any;
     /**
      * [fn.rd] 读文件
      * @param file : string
