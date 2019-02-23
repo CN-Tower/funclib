@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.4 <https://www.funclib.net>
+ * Funclib v3.3.5 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.4';
+  var version = '3.3.5';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -688,7 +688,7 @@
      * @param offset : number
      */
     function fmtXYZDate (fmtStr, time, offset) {
-      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate(fmtStr, time)) + offset);
+      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate('yyyy-MM-dd hh:mm:ss', time)) + offset);
     }
 
     function fmtDateBase(fmtStr, time, fmtObj) {

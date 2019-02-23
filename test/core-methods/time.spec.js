@@ -60,19 +60,19 @@
     });
     describe('#fn.fmtXYZDate()', function () {
       const offset = 5.5 * 60 * 60 * 1000;
-      it(`fn.fmtXYZDate('yyyy-MM-dd hh:mm:ss', new Date(), offset) should return a fmted date string.`, function () {
-        const t1 = fn.fmtXYZDate('yyyy-MM-dd hh:mm:ss', new Date(), offset);
-        assert(/^\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
+      it(`fn.fmtXYZDate('yy-MM-dd hh:mm:ss', new Date(), offset) should return a fmted date string.`, function () {
+        const t1 = fn.fmtXYZDate('yy-MM-dd hh:mm:ss', new Date(), offset);
+        assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
       });
       it.skip(`fn.fmtXYZDate(yyyy-MM-dd hh:mm', time) should return a fmted date string.`, function () {
         const t2 = fn.fmtXYZDate('yyyy-MM-dd hh:mm', 1528259400000, offset);
         // assert(t2 === '2018-06-06 10:00');
         assert(/^\d\d\d\d-\d\d-\d\d\s\d\d:\d\d$/.test(t2) === true);
       });
-      it(`fn.fmtXYZDate('yyyy-MM-dd hh:mm', date) should return a fmted date string.`, function () {
-        const t3 = fn.fmtXYZDate('yyyy-MM-dd hh:mm', new Date('2018-06-06 12:30'), offset);
+      it(`fn.fmtXYZDate('yy-MM-dd hh:mm', date) should return a fmted date string.`, function () {
+        const t3 = fn.fmtXYZDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30'), offset);
         // assert(t3 === '2018-06-06 10:00');
-        assert(/^\d\d\d\d-\d\d-\d\d\s\d\d:\d\d$/.test(t3) === true);
+        assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d$/.test(t3) === true);
       });
     });
   });
