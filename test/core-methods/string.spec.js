@@ -1,6 +1,14 @@
 /**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('String Methods:', function () {
     describe('#fn.match()', function () {
+      it(`fn.match('b', false) should throw an error.`, function () {
+        try {
+          fn.match('b', false);
+          assert(false);
+        } catch (e) {
+          assert(true);
+        }
+      });
       it(`fn.match('b', {'a': 'aaa', 'b': 'bbb'}) should return 'bbb'.`, function () {
         assert(fn.match('b', { 'a': 'aaa', 'b': 'bbb' }) === 'bbb');
       });
@@ -9,6 +17,18 @@
       });
       it(`fn.match('a', {'a': '@next', 'b': () => 'bbb'}, false) should return a function.`, function () {
         assert(fn.match('a', { 'a': '@next', 'b': () => 'bbb' }, false)() === 'bbb');
+      });
+      it(`fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next'}) should return undefined.`, function () {
+        assert(fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next'}) === undefined);
+      });
+      it(`fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next', 'default': 'ddd'}) should return 'ddd'.`, function () {
+        assert(fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next', 'default': 'ddd'}) === 'ddd');
+      });
+      it(`fn.match('b', {'a': 'aa', 'b': '@next', 'c': 'ccc', 'd': 'ddd'}) should return 'ccc'.`, function () {
+        assert(fn.match('b', {'a': 'aa', 'b': '@next', 'c': 'ccc', 'd': 'ddd'}) === 'ccc');
+      });
+      it(`fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next', 'd': 'ddd'}) should return 'ddd'.`, function () {
+        assert(fn.match('b', {'a': 'aa', 'b': '@next', 'c': '@next', 'd': 'ddd'}) === 'ddd');
       });
       it(`fn.match('c', {'a': 'aaa', 'b': () => 'bbb'}) should return undefined.`, function () {
         assert(fn.match('c', { 'a': 'aaa', 'b': () => 'bbb' }) === undefined);

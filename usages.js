@@ -11,7 +11,7 @@ const fn = require('./src');
 //   fn.timeout(5000, () => fn.progress.stop());
 // });
 
-fn.log(fn.timeout('#abc').clear)
+// fn.log(fn.timeout('#abc').clear)
 
 
 // fn.log(fn.fmtDate('yyyy-MM-dd', '2012-2-3'));

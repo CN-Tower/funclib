@@ -12,6 +12,15 @@
       it(`fn.has({name: 'Tom', age: 20}, 'name') should equal true.`, function () {
         assert(fn.has({ name: 'Tom', age: 20 }, 'name'));
       });
+      it(`fn.has({name: 'Tom', age: 20}, 'name', 'bol) should equal false.`, function () {
+        assert(!fn.has({ name: 'Tom', age: 20 }, 'name', 'bol'));
+      });
+      it(`fn.has({name: 'Tom', age: 20, isGood: true}, 'isGood', 'bol') should equal true.`, function () {
+        assert(fn.has({ name: 'Tom', age: 20, isGood: true }, 'isGood', 'bol'));
+      });
+      it(`fn.has({name: 'Tom', age: 20}, 'name', 'str') should equal true.`, function () {
+        assert(fn.has({ name: 'Tom', age: 20 }, 'name', 'str'));
+      });
       it(`fn.has({name: 'Tom', age: 20}, 'sex') should equal false.`, function () {
         assert(!fn.has({ name: 'Tom', age: 20 }, 'sex'));
       });
@@ -57,7 +66,7 @@
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}, 'name'), {name: 'Tom'});
       });
       it(`fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']) should return {name: 'Tom', age: 28}.`, function () {
-        assert.deepEqual(fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']), {name: 'Tom', age: 28});
+        assert.deepEqual(fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']), {name: 'Tom', age: 28, sex: undefined});
       });
       it(`fn.pick({name: 'Tom', age: 28}, (k, v) => v === 28) should return {age: 28}.`, function () {
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}, (k, v) => v === 28), {age: 28});

@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.1 <https://www.funclib.net>
+ * Funclib v3.3.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -50,6 +50,8 @@
  * fn.timestamp             [-] 返回一个时间戳
  * fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
  * fn.fmtDate               [-] 获取格式化的时间字符串
+ * fn.fmtUTCDate            [-] 获取格式化的UTC时间字符串
+ * fn.fmtXYZDate            [-] 获取格式化指定时差的时间字符串
  ## String
  * fn.match                 [-] 字符串匹配
  * fn.pretty                [-] 转换成格式化字符串
@@ -102,7 +104,7 @@ declare var fn: fn.Funclib;
 declare namespace fn {
 
   type Any = any;
-  type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | 'ptn' | string | string[];
+  type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | 'ptn' | 'dat' | string | string[];
   type Color = 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow';
 
   interface Progress {
@@ -278,6 +280,7 @@ declare namespace fn {
      * [fn.has] 判断对象是否存在某自有属性
      * @param srcObj   : object
      * @param property : string
+     * @param types    : ...string[]
      */
     has(srcObj: any, property: string): boolean;
     /**
@@ -380,6 +383,19 @@ declare namespace fn {
      * @param time   : date|string|number
      */
     fmtDate(fmtStr: string, time: Date | string | number): string;
+    /**
+     * [fn.fmtUTCDate] 获取格式化的UTC时间字符串
+     * @param fmtStr : string
+     * @param time   : date|string|number
+     */
+    fmtUTCDate(fmtStr: string, time: Date | string | number): string;
+    /**
+     * [fn.fmtXYZDate] 获取格式化指定时差的时间字符串
+     * @param fmtStr : string
+     * @param time   : date|string|number
+     * @param offset : number
+     */
+    fmtXYZDate(fmtStr: string, time: Date | string | number): string;
     /**
      * [fn.match] 字符串匹配
      * @param source : any
@@ -520,6 +536,7 @@ declare namespace fn {
      * width: number = 66 [30-100]
      * isFmt: boolean [?]
      * isShowTime: boolean = true
+     * isSplit: boolean = true,
      * pre:   boolean = false,
      * end:   boolean = false
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'

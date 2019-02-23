@@ -13,6 +13,9 @@
       it(`fn.typeOf(undefined, 'udf') should return false.`, function () {
         assert(fn.typeOf(undefined, 'udf'));
       });
+      it(`fn.typeOf(new Date(), 'dat') should return true.`, function () {
+        assert(fn.typeOf(new Date(), 'dat'));
+      });
       it(`fn.typeOf(null, 'nul') should return false.`, function () {
         assert(fn.typeOf(null, 'nul'));
       });

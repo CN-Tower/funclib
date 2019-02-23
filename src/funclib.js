@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.1 <https://www.funclib.net>
+ * Funclib v3.3.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.1';
+  var version = '3.3.2';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -36,6 +36,7 @@
           case 'fun': return typeof value === 'function';
           case 'nul': return value === null;
           case 'udf': return value === undefined;
+          case 'dat': return value instanceof Date;
           case 'arr': return value instanceof Array;
           case 'ptn': return value instanceof RegExp;
           case 'obj': return (value && typeof value === 'object')
@@ -332,10 +333,12 @@
      * [fn.has] 判断对象是否存在某自有属性
      * @param srcObj   : object
      * @param property : string
+     * @param types    : ...string[]
      */
-    function has(srcObj, property) {
-      return srcObj && srcObj.hasOwnProperty(property) || false;
-    }
+    var has = restArgs(function(srcObj, property, types) {
+      var isHas = srcObj && srcObj.hasOwnProperty(property);
+      return types.length ? isHas && typeOf(srcObj[property], types) : isHas;
+    });
 
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
@@ -390,12 +393,10 @@
       return tarObj;
     });
 
-    function extendBase(tarObj, srcObj, predicate, propList, isDoTraDft) {
+    function extendBase(tarObj, srcObj, predicate, propList, isTraDft) {
       var traversal = function (tarObj, srcObj, propList) {
         forEach(propList, function (prop) {
-          if (has(srcObj, prop)) {
-            tarObj[prop] = srcObj[prop];
-          }
+          tarObj[prop] = has(srcObj, prop) ? srcObj[prop] : undefined;
         });
       }
       if (typeOf(predicate, 'str')) {
@@ -410,7 +411,7 @@
           if (predicate(key, val)) tarObj[key] = val;
         });
       }
-      else if (isDoTraDft) {
+      else if (isTraDft) {
         traversal(tarObj, srcObj, Object.keys(srcObj));
       }
       return tarObj;
@@ -422,7 +423,9 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      if (!typeOf(iteratee, 'fun')) throw expFuncErr;
+      if (!typeOf(iteratee, 'fun')) {
+        throw expFuncErr;
+      }
       return forEach(srcObj, function (val, key) {
         return iteratee(key, val);
       });
@@ -445,9 +448,7 @@
       } else {
         tmpObj = {};
         for (var key in srcObj) {
-          if (srcObj.hasOwnProperty(key)) {
-            tmpObj[key] = deepCopy(srcObj[key]);
-          }
+          if (has(srcObj, key)) tmpObj[key] = deepCopy(srcObj[key]);
         }
       }
       return tmpObj;
@@ -648,19 +649,59 @@
      * @param time   : date|string|number
      */
     function fmtDate(fmtStr, time) {
+      return fmtDateBase(fmtStr, time, function (date, mtd) {
+        return match(mtd, {
+          'y': date.getFullYear(),
+          'M': date.getMonth() + 1,
+          'd': date.getDate(),
+          'h': date.getHours(),
+          'm': date.getMinutes(),
+          's': date.getSeconds(),
+          'q': Math.floor((date.getMonth() + 3) / 3),
+          'S': date.getMilliseconds()
+        });
+      });
+    }
+
+    /**
+     * [fn.fmtUTCDate] 获取格式化的UTC时间字符串
+     * @param fmtStr : string
+     * @param time   : date|string|number
+     */
+    function fmtUTCDate(fmtStr, time) {
+      return fmtDateBase(fmtStr, time, function (date, mtd) {
+        return match(mtd, {
+          'y': date.getUTCFullYear(),
+          'M': date.getUTCMonth() + 1,
+          'd': date.getUTCDate(),
+          'h': date.getUTCHours(),
+          'm': date.getUTCMinutes(),
+          's': date.getUTCSeconds(),
+          'q': Math.floor((date.getUTCMonth() + 3) / 3),
+          'S': date.getUTCMilliseconds()
+        });
+      });
+    }
+
+    /**
+     * [fn.fmtXYZDate] 获取格式化指定时差的时间字符串
+     * @param fmtStr : string
+     * @param time   : date|string|number
+     * @param offset : number
+     */
+    function fmtXYZDate (fmtStr, time, offset) {
+      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate(fmtStr, time)) + offset);
+    }
+
+    function fmtDateBase(fmtStr, time, fmtObj) {
       var date = dateBase(time);
       if (!date.getTime()) return '';
       var obj = {
-        'M+': date.getMonth() + 1,
-        'd+': date.getDate(),
-        'h+': date.getHours(),
-        'm+': date.getMinutes(),
-        's+': date.getSeconds(),
-        'q+': Math.floor((date.getMonth() + 3) / 3),
-        'S': date.getMilliseconds()
+        'M+': fmtObj(date, 'M'), 'd+': fmtObj(date, 'd'), 'h+': fmtObj(date, 'h'),
+        'm+': fmtObj(date, 'm'), 's+': fmtObj(date, 's'), 'q+': fmtObj(date, 'q'), 'S': fmtObj(date, 'S'),
       };
       if (/(y+)/.test(fmtStr)) {
-        fmtStr = fmtStr.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+        fmtStr = fmtStr.replace(RegExp.$1, (fmtObj(date, 'y') + '').substr(4 - RegExp.$1.length));
       }
       forIn(obj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
@@ -685,6 +726,7 @@
      * @param isExec : boolean = true
      */
     function match(source, cases, isExec) {
+      if (!typeOf(cases, 'obj')) throw new Error('Cases must be an Object!');
       if (isExec === void 0) isExec = true;
       var symbol = '__@fnMatch__';
       if (has(cases, source)) {
@@ -695,7 +737,7 @@
       var matched = cases[symbol];
       if (matched === '@next') {
         var ks = keys(cases);
-        for (var i = ks.indexOf(matched) + 1; i < ks.length; i++) {
+        for (var i = ks.indexOf(symbol); i < ks.length; i++) {
           if (cases[ks[i]] !== '@next') {
             matched = cases[ks[i]];
             break;
@@ -1100,21 +1142,20 @@
      * width: number = 66 [30-100]
      * isFmt: boolean = true
      * isShowTime: boolean = true
+     * isSplit: boolean = true,
      */
     function log(value, title, configs) {
       var isFmt;
       function getIsFmt(configs) {
-        return has(configs, 'isFmt') ? configs.isFmt : true;
+        return has(configs, 'isFmt', 'bol') ? configs.isFmt : true;
       };
       function getTitle(configs) {
-        return get(configs, '/title') || 'funclib(' + version + ')';
+        return get(configs, 'title', 'str') || 'funclib(' + version + ')';
       };
       if (typeVal(title, 'str')) {
         if (typeOf(configs, 'bol')) {
-          isFmt = configs;
-          configs = undefined;
-        }
-        else {
+          isFmt = configs, configs = {};
+        } else {
           isFmt = getIsFmt(configs);
         }
       }
@@ -1150,16 +1191,16 @@
       else if (isFmt) {
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
+      var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
       if (!isFmt) {
-        console.log(title + ':\n' + value);
+        var logMsg = title + ':\n' + value;
+        console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
       }
       else {
         var sgLine_1 = '', dbLine_1 = '';
-        array(width).forEach(function (x) {
-          sgLine_1 += '-';
-          dbLine_1 += '=';
-        });
-        console.log('\n' + dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1 + '\n');
+        array(width).forEach(function (x) { sgLine_1 += '-', dbLine_1 += '='; });
+        var logMsg = dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1;
+        console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
       }
     }
 
@@ -1321,6 +1362,8 @@
     funclib.timestamp = timestamp;
     funclib.asUtcTime = asUtcTime;
     funclib.fmtDate = fmtDate;
+    funclib.fmtUTCDate = fmtUTCDate;
+    funclib.fmtXYZDate = fmtXYZDate;
 
     funclib.match = match;
     funclib.pretty = pretty;
