@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.2 <https://www.funclib.net>
+ * Funclib v3.3.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.2';
+  var version = '3.3.4';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -1208,8 +1208,10 @@
       if (time) {
         time = '[' + chalk(_time) + '] ';
       }
-      title = chalk(title, colorList[get(configs, 'ttColor', 'str')]);
-      value = chalk(value, colorList[get(configs, 'color', 'str')] || 'cyan');
+      var valuec = get(configs, 'color');
+      var titlec = get(configs, 'ttColor');
+      value = chalk(value, has(colorList, valuec) ? valuec : 'cyan');
+      title = chalk(title, has(colorList, titlec) ? titlec : 'default');
       title = time + title;
       var width = get(configs, 'width', 'num');
       if (!width || width < 30 || width > 100)
@@ -1233,7 +1235,7 @@
           sgLine_1 += '-';
           dbLine_1 += '=';
         });
-        if (get(configs, '/pre', 'bol')) {
+        if (get(configs, 'pre', 'bol')) {
           console.log('\n' + dbLine_1);
           console.log(title);
           console.log(sgLine_1);
