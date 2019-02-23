@@ -47,6 +47,7 @@
  * fn.interval              [-] 循环定时器
  * fn.timeout               [-] 延时定时器
  * fn.defer                 [-] 延迟执行函数
+ * fn.time                  [-] 返回一个时间戳, 同：fn.timestamp
  * fn.timestamp             [-] 返回一个时间戳
  * fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
  * fn.fmtDate               [-] 获取格式化的时间字符串
@@ -282,7 +283,7 @@ declare namespace fn {
      * @param property : string
      * @param types    : ...string[]
      */
-    has(srcObj: any, property: string): boolean;
+    has(srcObj: any, property: string, ...types: Type[]): boolean;
     /**
      * [fn.get] 返回对象或子孙对象的属性，可判断类型
      * @param srcObj  : object
@@ -368,6 +369,11 @@ declare namespace fn {
      */
     defer(func: Function): void;
     /**
+     * [fn.time] 返回一个时间戳
+     * @param time : date|string|number
+     */
+    time(time: Date | string | number): number;
+    /**
      * [fn.timestamp] 返回一个时间戳
      * @param time : date|string|number
      */
@@ -395,7 +401,7 @@ declare namespace fn {
      * @param time   : date|string|number
      * @param offset : number
      */
-    fmtXYZDate(fmtStr: string, time: Date | string | number): string;
+    fmtXYZDate(fmtStr: string, time: Date | string | number, offset: number): string;
     /**
      * [fn.match] 字符串匹配
      * @param source : any

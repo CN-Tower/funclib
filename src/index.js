@@ -61,8 +61,7 @@
      * @param value  : any|function [?]
      */
     function array(length, value) {
-      var tmpArr = [];
-      var tmpVal = 0;
+      var tmpArr = [], tmpVal = 0;
       for (var i = 0; i < length; i++) {
         if (value === undefined) {
           tmpArr.push(tmpVal);
@@ -161,8 +160,7 @@
     }
 
     function filterBase(srcArr, predicate, isFilter) {
-      var ftItems = [];
-      var rjItems = [];
+      var ftItems = [], rjItems = [];
       forEach(srcArr, function (item) {
         if (typeOf(predicate, 'obj')) {
           var isMatched = keys(predicate).every(function (k) {
@@ -1548,6 +1546,7 @@
     funclib.interval = interval;
     funclib.timeout = timeout;
     funclib.defer = defer;
+    funclib.time = timestamp;
     funclib.timestamp = timestamp;
     funclib.asUtcTime = asUtcTime;
     funclib.fmtDate = fmtDate;

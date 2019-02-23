@@ -18,6 +18,11 @@
         assert(/^[0-9]{13}$/.test(fn.timestamp(new Date())) === true);
       });
     });
+    describe('#fn.time()', function () {
+      it(`fn.time(new Date()) should return a time.`, function () {
+        assert(/^[0-9]{13}$/.test(fn.time(new Date())) === true);
+      });
+    });
     describe('#fn.asUtcTime()', function () {
       it(`fn.asUtcTime(new Date()) should return a timestamp.`, function () {
         assert(/^[0-9]{13}$/.test(fn.asUtcTime(new Date())) === true);
