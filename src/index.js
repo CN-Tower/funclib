@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.5 <https://www.funclib.net>
+ * Funclib v3.3.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.5';
+  var version = '3.3.6';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -688,7 +688,11 @@
      * @param offset : number
      */
     function fmtXYZDate (fmtStr, time, offset) {
-      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate('yyyy-MM-dd hh:mm:ss', time)) + offset);
+      var date = dateBase(time);
+      if (!date.getTime()) return '';
+      var ms = date.getUTCMilliseconds();
+      offset = !+offset ? 0 : +offset;
+      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate('yyyy-MM-dd hh:mm:ss', time)) + ms + offset);
     }
 
     function fmtDateBase(fmtStr, time, fmtObj) {
@@ -1143,13 +1147,22 @@
     };
 
     /**
-     * [fn.chalk] 在控制台打印有颜色的字符串
+     * [fn.chalk] 返回带颜色的字符串
      * @param srcStr : string
-     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
+     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
      */
     function chalk(srcStr, color) {
-      if (!has(colorList, color)) color = 'grey';
+      if (!has(colorList, color)) color = 'default';
       return colorList[color].replace(/%s/, srcStr);
+    }
+
+    /**
+     * [fn.print] 在控制台打印格式化的值
+     * @param value  : any
+     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
+     */
+    function print(value, color) {
+      console.log(chalk(pretty(value), color));
     }
 
     /**
@@ -1159,12 +1172,11 @@
      * @param configs : object [?]
      * title: string,
      * width: number = 66 [30-100],
-     * isFmt: boolean [?]
+     * isFmt:      boolean = true
      * isShowTime: boolean = true
-     * isSplit: boolean = true,
+     * isSplit:    boolean = true,
      * pre:   boolean = false,
      * end:   boolean = false,
-
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
      * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
@@ -1578,6 +1590,7 @@
     /**=================================================================== */
 
     funclib.chalk = chalk;
+    funclib.print = print;
     funclib.log = log;
     funclib.rd = rd;
     funclib.wt = wt;

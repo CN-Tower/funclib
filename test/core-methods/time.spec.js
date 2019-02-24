@@ -14,21 +14,33 @@
       });
     });
     describe('#fn.timestamp()', function () {
+      it(`fn.timestamp() should return NaN.`, function () {
+        assert(isNaN(fn.timestamp()));
+      });
       it(`fn.timestamp(new Date()) should return a timestamp.`, function () {
         assert(/^[0-9]{13}$/.test(fn.timestamp(new Date())) === true);
       });
     });
     describe('#fn.time()', function () {
+      it(`fn.time() should return NaN.`, function () {
+        assert(isNaN(fn.time()));
+      });
       it(`fn.time(new Date()) should return a time.`, function () {
         assert(/^[0-9]{13}$/.test(fn.time(new Date())) === true);
       });
     });
     describe('#fn.asUtcTime()', function () {
+      it(`fn.asUtcTime() should return NaN.`, function () {
+        assert(isNaN(fn.asUtcTime()));
+      });
       it(`fn.asUtcTime(new Date()) should return a timestamp.`, function () {
         assert(/^[0-9]{13}$/.test(fn.asUtcTime(new Date())) === true);
       });
     });
     describe('#fn.fmtDate()', function () {
+      it(`fn.fmtDate('yy-MM-dd hh:mm:ss', 'abcd') should return ''.`, function () {
+        assert(fn.fmtDate('yy-MM-dd hh:mm:ss', 'abcd') === '');
+      });
       it(`fn.fmtDate('yy-MM-dd hh:mm:ss', new Date()) should return a fmted date string.`, function () {
         const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss', new Date());
         assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
@@ -43,6 +55,9 @@
       });
     });
     describe('#fn.fmtUTCDate()', function () {
+      it(`fn.fmtUTCDate('yy-MM-dd hh:mm:ss', 'abcd') should return ''.`, function () {
+        assert(fn.fmtUTCDate('yy-MM-dd hh:mm:ss', 'abcd') === '');
+      });
       it(`fn.fmtUTCDate('yy-MM-dd hh:mm:ss', new Date()) should return a fmted date string.`, function () {
         const t1 = fn.fmtUTCDate('yy-MM-dd hh:mm:ss', new Date());
         assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
@@ -59,6 +74,9 @@
       });
     });
     describe('#fn.fmtXYZDate()', function () {
+      it(`fn.fmtXYZDate('yy-MM-dd hh:mm:ss', 'abcd') should return ''.`, function () {
+        assert(fn.fmtXYZDate('yy-MM-dd hh:mm:ss', 'abcd') === '');
+      });
       const offset = 5.5 * 60 * 60 * 1000;
       it(`fn.fmtXYZDate('yy-MM-dd hh:mm:ss', new Date(), offset) should return a fmted date string.`, function () {
         const t1 = fn.fmtXYZDate('yy-MM-dd hh:mm:ss', new Date(), offset);
