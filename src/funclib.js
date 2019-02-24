@@ -1136,7 +1136,7 @@
     /**=================================================================== */
 
     /**
-     * [fn.print] 在控制台打印格式化的值
+     * [fn.print] 在控制台打印值
      * @param value  : any
      */
     function print(value) {
@@ -1144,7 +1144,7 @@
     }
 
     /**
-     * [fn.log] 控制台格式化打印值
+     * [fn.log] 在控制台打印格式化的值
      * @param value   : any
      * @param title   : string|boolean [?]
      * @param configs : object [?]

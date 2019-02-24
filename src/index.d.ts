@@ -74,8 +74,8 @@
  * fn.debounce              [-] 防抖函数
  ## Loger
  * fn.chalk                 [s] 返回带颜色的字符串
- * fn.print              [c][s] 在控制台打印格式化的值
- * fn.log                [c][s] 控制打印格式化值
+ * fn.print              [c][s] 在控制台打印值
+ * fn.log                [c][s] 在控制台打印格式化的值
  ## Element
  * fn.fullScreen            [c] 全屏显示一个HTML元素
  * fn.exitFullScreen        [c] 退出全屏显示
@@ -89,7 +89,7 @@
  * fn.rm                    [s] 删除文件夹和文件
  * fn.mk                    [s] 创建文件夹
  * fn.size                  [s] 获取文件的大小
- * fn.clear                 [s] 命令行清屏
+ * fn.clear                 [s] 控制台清屏
  * fn.copyText              [c] 复制文本到粘贴板
  ## Progress
  * fn.progress              [s] 进度显示工具
@@ -536,13 +536,13 @@ declare namespace fn {
      */
     chalk(srcStr: string, color?: Color): string;
     /**
-     * [fn.print] 在控制台打印格式化的值
+     * [fn.print] 在控制台打印值
      * @param value  : any
      * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
      */
     print(value: any, color?: Color): void;
     /**
-     * [fn.log] 控制台格式化打印值
+     * [fn.log] 在控制台打印格式化的值
      * @param value   : any
      * @param title   : string|boolean [?]
      * @param configs : object [?]
