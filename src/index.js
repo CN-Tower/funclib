@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.7 <https://www.funclib.net>
+ * Funclib v3.3.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.7';
+  var version = '3.3.8';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -1218,7 +1218,7 @@
         title = '( ' + title + ' )';
       }
       if (time) {
-        time = '[' + chalk(_time) + '] ';
+        time = '[' + chalk(_time, 'grey') + '] ';
       }
       var valuec = get(configs, 'color');
       var titlec = get(configs, 'ttColor');
@@ -1272,6 +1272,7 @@
      * title: string
      * width: number = 40
      * type : 'bar'|'spi' = 'bar'
+     * split: boolean = true
      */
     function progress(title, options) {
       timeout('#fn_pg_Bar').stop();
@@ -1285,6 +1286,7 @@
       title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
       options.title = title;
       pgType = get(options, '/type', 'str');
+      if (has(options, 'isSplit', 'bol') ? options.isSplit : true) console.log('');
       if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
         var Pgbar = eval('require("progress")');
         var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';

@@ -3,8 +3,10 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 // fn.progress.stop();
-// fn.progress('Hello', {type: 'spi'});
-// fn.progress.start('Hello_');
+// fn.log(1234)
+// fn.progress('Hello', {type: 'spi', isSplit: false});
+// console.log(12234534)
+// fn.progress.start('Hello_', {isSplit: false});
 // fn.timeout(5000, () => {
 //   fn.progress.clear();
 //   fn.progress('Nice');
