@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.6 <https://www.funclib.net>
+ * Funclib v3.3.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.6';
+  var version = '3.3.7';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -1505,6 +1505,13 @@
       }
     }
 
+    /**
+     * [fn.clear] 命令行清屏
+     */
+    function clear() {
+      process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
+    }
+
     /**=================================================================== */
     /**@spliter*/
 
@@ -1599,6 +1606,7 @@
     funclib.rm = rm;
     funclib.mk = mk;
     funclib.size = size;
+    funclib.clear = clear;
 
     /**=================================================================== */
     /**@spliter*/

@@ -158,6 +158,7 @@ $ npm run test
 * fn.rm                    [s] 删除文件夹和文件
 * fn.mk                    [s] 创建文件夹
 * fn.size                  [s] 获取文件的大小
+* fn.clear                 [s] 命令行清屏
 * fn.copyText              [c] 复制文本到粘贴板
 ## Progress
 * fn.progress              [s] 进度显示工具

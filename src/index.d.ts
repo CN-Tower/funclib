@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.6 <https://www.funclib.net>
+ * Funclib v3.3.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -89,6 +89,7 @@
  * fn.rm                    [s] 删除文件夹和文件
  * fn.mk                    [s] 创建文件夹
  * fn.size                  [s] 获取文件的大小
+ * fn.clear                 [s] 命令行清屏
  * fn.copyText              [c] 复制文本到粘贴板
  ## Progress
  * fn.progress              [s] 进度显示工具
@@ -597,6 +598,10 @@ declare namespace fn {
      * @param digit : number = 2
      */
     size(file: string, unit?: 'b' | 'kb' | 'mb' | 'gb' | 'tb', digit?: number): number;
+    /**
+     * [fn.clear] 命令行清屏
+     */
+    clear(): void;
     /**
      * [fn.progress] 进度显示工具
      */
