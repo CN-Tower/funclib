@@ -116,9 +116,12 @@ $ npm run test
 * fn.interval              [-] 循环定时器
 * fn.timeout               [-] 延时定时器
 * fn.defer                 [-] 延迟执行函数
+* fn.time                  [-] 返回一个时间戳, 同：fn.timestamp
 * fn.timestamp             [-] 返回一个时间戳
 * fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
 * fn.fmtDate               [-] 获取格式化的时间字符串
+* fn.fmtUTCDate            [-] 获取格式化的UTC时间字符串
+* fn.fmtXYZDate            [-] 获取格式化指定时差的时间字符串
 ## String
 * fn.match                 [-] 字符串匹配
 * fn.pretty                [-] 转换成格式化字符串
@@ -140,6 +143,7 @@ $ npm run test
 * fn.debounce              [-] 防抖函数
 ## Loger
 * fn.chalk                 [s] 返回带颜色的字符串
+* fn.print              [c][s] 在控制台打印格式化的值
 * fn.log                [c][s] 控制打印格式化值
 ## Element
 * fn.fullScreen            [c] 全屏显示一个HTML元素
