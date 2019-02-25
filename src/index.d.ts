@@ -458,7 +458,7 @@ declare namespace fn {
      * @param ptnMap  : string|object
      * @param pattern : regexp [?]
      */
-    setPattern(ptnMap: any, pattern: any): any;
+    setPattern(ptnMap: any, pattern?: any): any;
     /**
      * [fn.getPattern]获取一个通用的正则表达式
      * @param type_ : string
