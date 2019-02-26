@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.9 <https://www.funclib.net>
+ * Funclib v3.3.10 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.9';
+  var version = '3.3.10';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -647,7 +647,7 @@
      * @param offset : number
      */
     function asXyzTime(time, offset) {
-      return fn.asUtcTime(time) - (!+offset ? 0 : +offset);
+      return asUtcTime(time) - (!+offset ? 0 : +offset);
     }
 
     /**
@@ -700,7 +700,7 @@
       var date = dateBase(time);
       if (!date.getTime()) return '';
       var ms = date.getUTCMilliseconds();
-      return fmtDate(fmtStr, timestamp(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset));
+      return fmtDate(fmtStr, timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset));
     }
 
     function fmtDateBase(fmtStr, time, fmtObj) {

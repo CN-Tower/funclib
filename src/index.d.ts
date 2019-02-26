@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.9 <https://www.funclib.net>
+ * Funclib v3.3.10 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -95,7 +95,7 @@
  ## Progress
  * fn.progress              [s] 进度显示工具
  * fn.progress.stop         [s] 停止进度，结束后触发回调
-## Tricks
+ ## Tricks
  * fn.noConflict            [-] 释放fn变量占用权
  * fn.version               [-] 返回当前函数库版本
  * fn().method              [-] 使用OOP风格的调用
