@@ -9,6 +9,8 @@ fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
 fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', xyzTime), 'xyz2');
 fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
 
+
+
 // fn.progress.stop();
 // fn.log(1234)
 // fn.progress('Hello', {type: 'spi', isSplit: false});

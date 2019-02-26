@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.10 <https://www.funclib.net>
+ * Funclib v3.3.11 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.10';
+  var version = '3.3.11';
   var originalFn = root.fn;
 
   var fn = (function () {
