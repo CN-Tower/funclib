@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.8 <https://www.funclib.net>
+ * Funclib v3.3.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.8';
+  var version = '3.3.9';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -624,7 +624,7 @@
     }
 
     /**
-     * [fn.asUtcTime] 转化为相同时间的零时区时间戳
+     * [fn.asUtcTime] 转化为相同时间的UTC时间戳
      * @param time : date|string|number
      */
     function asUtcTime(time) {
@@ -639,6 +639,15 @@
         date.getSeconds(),
         date.getMilliseconds()
       );
+    }
+
+    /**
+     * [fn.asXyzTime] 转化为相同时间的指定时差的时间戳
+     * @param time : date|string|number
+     * @param offset : number
+     */
+    function asXyzTime(time, offset) {
+      return fn.asUtcTime(time) - (!+offset ? 0 : +offset);
     }
 
     /**
@@ -662,11 +671,11 @@
     }
 
     /**
-     * [fn.fmtUTCDate] 获取格式化的UTC时间字符串
+     * [fn.fmtUtcDate] 获取格式化的UTC时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number
      */
-    function fmtUTCDate(fmtStr, time) {
+    function fmtUtcDate(fmtStr, time) {
       return fmtDateBase(fmtStr, time, function (date, mtd) {
         return match(mtd, {
           'y': date.getUTCFullYear(),
@@ -682,17 +691,16 @@
     }
 
     /**
-     * [fn.fmtXYZDate] 获取格式化指定时差的时间字符串
+     * [fn.fmtXyzDate] 获取格式化指定时差的时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number
      * @param offset : number
      */
-    function fmtXYZDate (fmtStr, time, offset) {
+    function fmtXyzDate (fmtStr, time, offset) {
       var date = dateBase(time);
       if (!date.getTime()) return '';
       var ms = date.getUTCMilliseconds();
-      offset = !+offset ? 0 : +offset;
-      return fmtDate(fmtStr, timestamp(fn.fmtUTCDate('yyyy-MM-dd hh:mm:ss', time)) + ms + offset);
+      return fmtDate(fmtStr, timestamp(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset));
     }
 
     function fmtDateBase(fmtStr, time, fmtObj) {
@@ -1572,9 +1580,10 @@
     funclib.time = timestamp;
     funclib.timestamp = timestamp;
     funclib.asUtcTime = asUtcTime;
+    funclib.asXyzTime = asXyzTime;
     funclib.fmtDate = fmtDate;
-    funclib.fmtUTCDate = fmtUTCDate;
-    funclib.fmtXYZDate = fmtXYZDate;
+    funclib.fmtUtcDate = fmtUtcDate;
+    funclib.fmtXyzDate = fmtXyzDate;
 
     funclib.match = match;
     funclib.pretty = pretty;

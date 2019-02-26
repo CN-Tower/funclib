@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.8 <https://www.funclib.net>
+ * Funclib v3.3.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -49,10 +49,11 @@
  * fn.defer                 [-] 延迟执行函数
  * fn.time                  [-] 返回一个时间戳, 同：fn.timestamp
  * fn.timestamp             [-] 返回一个时间戳
- * fn.asUtcTime             [-] 转化为相同时间的零时区时间戳
+ * fn.asUtcTime             [-] 转化为相同时间的UTC时间戳
+ * fn.asXyzTime             [-] 转化为相同时间指定时差的时间戳
  * fn.fmtDate               [-] 获取格式化的时间字符串
- * fn.fmtUTCDate            [-] 获取格式化的UTC时间字符串
- * fn.fmtXYZDate            [-] 获取格式化指定时差的时间字符串
+ * fn.fmtUtcDate            [-] 获取格式化的UTC时间字符串
+ * fn.fmtXyzDate            [-] 获取格式化指定时差的时间字符串
  ## String
  * fn.match                 [-] 字符串匹配
  * fn.pretty                [-] 转换成格式化字符串
@@ -381,10 +382,15 @@ declare namespace fn {
      */
     timestamp(time: Date | string | number): number;
     /**
-     * [fn.asUtcTime] 转化为相同时间的零时区时间戳
+     * [fn.asUtcTime] 转化为相同时间的UTC时间戳
      * @param time : date|string|number
      */
     asUtcTime(time: Date | string | number): number;
+    /**
+     * [fn.asXyzTime] 转化为相同时间的指定时差的时间戳
+     * @param time : date|string|number
+     */
+    asXyzTime(time: Date | string | number, offset: number): number;
     /**
      * [fn.fmtDate] 获取格式化的时间字符串
      * @param fmtStr : string
@@ -392,18 +398,18 @@ declare namespace fn {
      */
     fmtDate(fmtStr: string, time: Date | string | number): string;
     /**
-     * [fn.fmtUTCDate] 获取格式化的UTC时间字符串
+     * [fn.fmtUtcDate] 获取格式化的UTC时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number
      */
-    fmtUTCDate(fmtStr: string, time: Date | string | number): string;
+    fmtUtcDate(fmtStr: string, time: Date | string | number): string;
     /**
-     * [fn.fmtXYZDate] 获取格式化指定时差的时间字符串
+     * [fn.fmtXyzDate] 获取格式化指定时差的时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number
      * @param offset : number
      */
-    fmtXYZDate(fmtStr: string, time: Date | string | number, offset: number): string;
+    fmtXyzDate(fmtStr: string, time: Date | string | number, offset: number): string;
     /**
      * [fn.match] 字符串匹配
      * @param source : any
@@ -472,7 +478,7 @@ declare namespace fn {
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    testPattern(srcStr: string, type_: string, ...types: string[]): boolean;
+    testPattern(srcStr: string, type_: string, ...types: any[]): boolean;
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
      * @param srcStr : string
@@ -480,7 +486,7 @@ declare namespace fn {
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    matchPattern(srcStr: string, type_: string, ...types: string[]): any;
+    matchPattern(srcStr: string, type_: string, ...types: any[]): any;
     /**
      * [fn.restArgs] 获取函数的剩余参数
      * @param srcFunc : function
