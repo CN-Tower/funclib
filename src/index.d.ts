@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.11 <https://www.funclib.net>
+ * Funclib v3.4.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */

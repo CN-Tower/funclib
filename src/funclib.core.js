@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.3.11 <https://www.funclib.net>
+ * Funclib v3.4.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -8,13 +8,14 @@
 
   var undefined;
   var _global = typeof global == 'object' && global && global.Object === Object && global;
+  var _window = typeof window == 'object' && window && window.Object === Object && window;
   var _self = typeof self == 'object' && self && self.Object === Object && self;
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
-  var root = _global || _self || Function('return this')();
+  var root = _global || _window || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.3.11';
+  var version = '3.4.1';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -37,10 +38,22 @@
           case 'nul': return value === null;
           case 'udf': return value === undefined;
           case 'dat': return value instanceof Date;
-          case 'arr': return value instanceof Array;
           case 'ptn': return value instanceof RegExp;
-          case 'obj': return (value && typeof value === 'object')
-            && !(value instanceof Array || value instanceof RegExp);
+          case 'arr': return value instanceof Array;
+          case 'obj': return (function () {
+            if (!value || typeof value !== "object" || value.nodeType || [_global, _window, _self].indexOf(value) > -1) {
+              return false;
+            }
+            try {
+              if (value.constructor && !has(value, "constructor") && !has(value.constructor.prototype, "isPrototypeOf")) {
+                return false;
+              }
+            } catch (e) {
+              return false;
+            }
+            for (var key in value) { }
+            return key === undefined || has(value, key);
+          })();
           default: return typeof value === tp;
         }
       });
@@ -320,7 +333,7 @@
       if (typeOf(srcObj, 'obj')) {
         return keys(srcObj).length;
       }
-      else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, '/length', 'num')) {
+      else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, 'length', 'num')) {
         return srcObj.length;
       } else {
         return -1;
@@ -333,7 +346,7 @@
      * @param property : string
      * @param types    : ...string[]
      */
-    var has = restArgs(function(srcObj, property, types) {
+    var has = restArgs(function (srcObj, property, types) {
       var isHas = srcObj && srcObj.hasOwnProperty(property);
       return types.length ? isHas && typeOf(srcObj[property], types) : isHas;
     });
@@ -438,16 +451,18 @@
         return srcObj;
       }
       var tmpObj;
-      if (srcObj instanceof Array) {
+      if (typeOf(srcObj, 'arr')) {
         tmpObj = [];
         for (var i = 0; i < srcObj.length; i++) {
           tmpObj.push(deepCopy(srcObj[i]));
         }
-      } else {
+      } else if (typeOf(srcObj, 'obj')) {
         tmpObj = {};
         for (var key in srcObj) {
           if (has(srcObj, key)) tmpObj[key] = deepCopy(srcObj[key]);
         }
+      } else {
+        tmpObj = srcObj;
       }
       return tmpObj;
     }
@@ -696,7 +711,7 @@
      * @param time   : date|string|number
      * @param offset : number
      */
-    function fmtXyzDate (fmtStr, time, offset) {
+    function fmtXyzDate(fmtStr, time, offset) {
       var date = dateBase(time);
       if (!date.getTime()) return '';
       var ms = date.getUTCMilliseconds();
@@ -766,7 +781,7 @@
      * @param srcObj : any
      */
     function pretty(srcObj) {
-      return typeof srcObj === 'object' ? JSON.stringify(srcObj, null, 2) : String(srcObj);
+      return typeOf(srcObj, 'arr', 'obj') ? JSON.stringify(srcObj, null, 2) : String(srcObj);
     }
 
     var deCodes = ['&', '<', '>', ' ', '\'', '"'];
