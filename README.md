@@ -1,12 +1,12 @@
-# funclib.js (凡客杰斯)
+# funclib.js
 [![npm](https://img.shields.io/npm/v/funclib.svg)
 ![LICENSE MIT](https://img.shields.io/npm/l/funclib.svg)](https://www.npmjs.com/package/funclib) 
 [![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
 ## Brief Intro
-一个实用的JavaScript函数库!
-> 目的：高效率完成业务代码！
+A practical and powerful JavaScript library!
+> Purpose: Complete task code efficiently!
 
 ### Documents:&nbsp;&nbsp;https://www.funclib.net
 

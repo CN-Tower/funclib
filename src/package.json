@@ -1,6 +1,6 @@
 {
   "name": "funclib",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
@@ -49,6 +49,7 @@
     "logger",
     "print",
     "pretty",
+    "formatter",
     "chalk",
     "full-screen",
     "typeOf"
