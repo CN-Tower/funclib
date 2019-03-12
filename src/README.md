@@ -6,7 +6,8 @@
 
 ## Brief Intro
 A practical and powerful JavaScript library!
-> Purpose: Complete task code efficiently!
+
+> Let you complete the task code efficiently and elegantly!
 
 ### Documents:&nbsp;&nbsp;https://www.funclib.net
 
