@@ -8,7 +8,11 @@ const fn = require('./src');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', xyzTime), 'xyz2');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
-fn.print([{}]);
+// fn.log(new Date());
+// fn.log(/aaa/);
+// fn.log(null);
+// fn.log(undefined);
+// fn.log([{name: 'tom'}])
 
 // fn.log(fn.isDeepEqual({}, {}));
 // fn.log(fn.typeOf({}, 'obj'));
