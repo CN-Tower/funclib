@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.2 <https://www.funclib.net>
+ * Funclib v3.4.3 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -8,17 +8,43 @@
 
   var undefined;
   var _global = typeof global == 'object' && global && global.Object === Object && global;
-  var _window = typeof window == 'object' && window && window.Object === Object && window;
   var _self = typeof self == 'object' && self && self.Object === Object && self;
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
-  var root = _global || _window || _self || Function('return this')();
+  var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.4.2';
+  var version = '3.4.3';
   var originalFn = root.fn;
 
   var fn = (function () {
+
+    /**
+     * [fn.restArgs] 获取函数的剩余参数
+     * @param srcFunc : function
+     */
+    function restArgs(srcFunc) {
+      var start = srcFunc.length - 1;
+      return function () {
+        var length = Math.max(arguments.length - start, 0);
+        var rest = Array(length);
+        for (var index = 0; index < length; index++) {
+          rest[index] = arguments[index + start];
+        }
+        switch (start) {
+          case 0: return srcFunc.call(this, rest);
+          case 1: return srcFunc.call(this, arguments[0], rest);
+          case 2: return srcFunc.call(this, arguments[0], arguments[1], rest);
+          default:
+            var args = Array(start + 1);
+            for (index = 0; index < start; index++) {
+              args[index] = arguments[index];
+            }
+            args[start] = rest;
+            return srcFunc.apply(this, args);
+        };
+      };
+    }
 
     /**
      * [fn.typeOf] 检查值的类型
@@ -29,32 +55,23 @@
     var typeOf = restArgs(function (value, type_, types) {
       if (!type_) return false;
       types = toArr(type_).concat(types);
-      return types.some(function (tp) {
-        switch (tp) {
-          case 'str': return typeof value === 'string';
-          case 'num': return typeof value === 'number';
-          case 'bol': return typeof value === 'boolean';
-          case 'fun': return typeof value === 'function';
+      return types.some(function (_type) {
+        switch (_type) {
+          case 'str': return typeof value == 'string';
+          case 'num': return typeof value == 'number';
+          case 'bol': return typeof value == 'boolean';
+          case 'fun': return typeof value == 'function';
           case 'nul': return value === null;
           case 'udf': return value === undefined;
           case 'dat': return value instanceof Date;
           case 'ptn': return value instanceof RegExp;
           case 'arr': return value instanceof Array;
-          case 'obj': return (function () {
-            if (!value || typeof value !== "object" || value.nodeType || [_global, _window, _self].indexOf(value) > -1) {
-              return false;
-            }
-            try {
-              if (value.constructor && !has(value, "constructor") && !has(value.constructor.prototype, "isPrototypeOf")) {
-                return false;
-              }
-            } catch (e) {
-              return false;
-            }
-            for (var key in value) { }
-            return key === undefined || has(value, key);
-          })();
-          default: return typeof value === tp;
+          case 'obj': return !!value && typeof value == 'object'
+            && !value.nodeType && [_global, _self].indexOf(value) == -1
+            && ![Array, Date, RegExp, Function, Error].some(function(Obj) {
+              return value instanceof Obj;
+            });
+          default: return typeof value === _type;
         }
       });
     });
@@ -173,19 +190,19 @@
     }
 
     function filterBase(srcArr, predicate, isFilter) {
-      var ftItems = [], rjItems = [];
+      var fts = [], rjs = [];
       forEach(srcArr, function (item) {
         if (typeOf(predicate, 'obj')) {
           var isMatched = keys(predicate).every(function (k) {
             return predicate[k] === item[k];
           });
-          isMatched ? ftItems.push(item) : rjItems.push(item);
+          isMatched ? fts.push(item) : rjs.push(item);
         }
         else if (typeOf(predicate, 'fun')) {
-          predicate(item) ? ftItems.push(item) : rjItems.push(item);
+          predicate(item) ? fts.push(item) : rjs.push(item);
         }
       });
-      return isFilter ? ftItems : rjItems;
+      return isFilter ? fts : rjs;
     }
 
     /**
@@ -255,7 +272,7 @@
      */
     function uniq(srcArr, pathStr, isDeep) {
       if (isDeep === void 0) isDeep = true;
-      if (typeof pathStr === 'boolean') {
+      if (typeOf(pathStr, 'bol')) {
         isDeep = pathStr, pathStr = undefined;
       }
       pathStr = typeVal(pathStr, 'str');
@@ -434,9 +451,7 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      if (!typeOf(iteratee, 'fun')) {
-        throw expFuncErr;
-      }
+      if (!typeOf(iteratee, 'fun')) throw expFuncErr;
       return forEach(srcObj, function (val, key) {
         return iteratee(key, val);
       });
@@ -447,9 +462,6 @@
      * @param srcObj : object
      */
     function deepCopy(srcObj) {
-      if (typeof srcObj !== 'object') {
-        return srcObj;
-      }
       var tmpObj;
       if (typeOf(srcObj, 'arr')) {
         tmpObj = [];
@@ -487,33 +499,29 @@
         return false;
       }
       if (typeOf(obj1, 'arr') && typeOf(obj2, 'arr')) {
-        if (obj1.length !== obj2.length) {
-          return false;
-        }
+        if (obj1.length !== obj2.length) return false;
         for (var i = 0; i < obj1.length; i++) {
           if (!isDeepEqual(obj1[i], obj2[i], isStrict)) {
             return false;
           }
         }
         return true;
-      } else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
-        if (len(obj1) !== len(obj2)) {
-          return false;
-        }
+      }
+      else if (typeOf(obj1, 'obj') && typeOf(obj2, 'obj')) {
+        if (len(obj1) !== len(obj2)) return false;
         var ks = keys(obj1);
         if (isStrict && !isDeepEqual(ks, keys(obj2))) {
           return false;
         }
         for (var i = 0; i < ks.length; i++) {
-          if (!obj2.hasOwnProperty(ks[i])) {
-            return false;
-          }
+          if (!obj2.hasOwnProperty(ks[i])) return false;
           if (!isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)) {
             return false;
           }
         }
         return true;
-      } else {
+      }
+      else {
         return obj1 === obj2;
       }
     }
@@ -587,7 +595,7 @@
     }
 
     function timerBase(timerId, duration, callback, type_) {
-      var params, timer, setTimer, clearTimer;
+      var timer, setTimer, clearTimer;
       if (type_ === 'interval') {
         timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
       } else if (type_ === 'timeout') {
@@ -596,22 +604,20 @@
       var isIdStr = typeVal(timerId, 'str');
       if (isIdStr && duration === undefined) {
         function clearFn() { return clearTimer(timer[timerId]); };
-        return { id: timer[timerId], stop: clearFn, clear: clearFn };
+        return { 'id': timer[timerId], 'stop': clearFn, 'clear': clearFn };
       }
       if (isIdStr && contains([null, false], duration)) {
         clearTimer(timer[timerId]);
         return timer[timerId] = null;
       }
       if (isIdStr && typeOf(duration, 'fun')) {
-        params = [duration, 0], callback = params[0], duration = params[1];
+        callback = duration, duration = 0;
       }
       if (typeOf(timerId, 'num') && typeOf(duration, 'fun')) {
-        params = [undefined, timerId, duration];
-        timerId = params[0], duration = params[1], callback = params[2];
+        callback = duration, duration = timerId, timerId = undefined;
       }
       if (typeOf(timerId, 'fun')) {
-        params = [undefined, 0, timerId];
-        timerId = params[0], duration = params[1], callback = params[2];
+        callback = timerId, duration = 0, timerId = undefined;
       }
       if (typeOf(callback, 'fun') && typeOf(duration, 'num') && duration >= 0) {
         if (isIdStr) {
@@ -868,7 +874,8 @@
       var params = {};
       for (var i = 0; i < querys.length; i++) {
         var kw = querys[i].split('=');
-        params[decodeURIComponent(kw[0])] = decodeURIComponent(kw[1] || '');
+        var decode = decodeURIComponent;
+        params[decode(kw[0])] = decode(kw[1] || '');
       }
       return params;
     }
@@ -881,18 +888,9 @@
       if (!typeOf(obj, ['obj', 'arr'])) return '';
       obj = JSON.parse(JSON.stringify(obj));
       var pairs = [];
-      var encode = encodeURIComponent;
       forIn(obj, function (key, value) {
-        if (typeOf(value, 'arr')) {
-          forEach(value, function (val, i) {
-            var k = encode(key + '[' + i + ']');
-            pairs.push(k + '=' + encode(val));
-          });
-        }
-        else {
-          var val = encode(value);
-          pairs.push(encode(key) + '=' + val);
-        }
+        var encode = encodeURIComponent;
+        pairs.push(encode(key) + '=' + encode(value));
       });
       return '?' + pairs.join('&');
     }
@@ -1017,33 +1015,6 @@
         }
       }
       return isTest ? ttRst : mtRst;
-    }
-
-    /**
-     * [fn.restArgs] 获取函数的剩余参数
-     * @param srcFunc : function
-     */
-    function restArgs(srcFunc) {
-      var start = srcFunc.length - 1;
-      return function () {
-        var length = Math.max(arguments.length - start, 0);
-        var rest = Array(length);
-        for (var index = 0; index < length; index++) {
-          rest[index] = arguments[index + start];
-        }
-        switch (start) {
-          case 0: return srcFunc.call(this, rest);
-          case 1: return srcFunc.call(this, arguments[0], rest);
-          case 2: return srcFunc.call(this, arguments[0], arguments[1], rest);
-          default:
-            var args = Array(start + 1);
-            for (index = 0; index < start; index++) {
-              args[index] = arguments[index];
-            }
-            args[start] = rest;
-            return srcFunc.apply(this, args);
-        };
-      };
     }
 
     /**
