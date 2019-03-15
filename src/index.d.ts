@@ -165,8 +165,8 @@ declare namespace fn {
   interface LogConfig {
     title?: string, width?: number, isFmt?: boolean, isShowTime?: boolean,
     pre?: boolean, end?: boolean,
-    ttColor?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow',
-    color?: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
+    ttColor?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
+    color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow'
   }
 
   interface Funclib extends Any {
