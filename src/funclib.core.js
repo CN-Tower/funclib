@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.3 <https://www.funclib.net>
+ * Funclib v3.4.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.4.3';
+  var version = '3.4.4';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -652,13 +652,8 @@
       var date = dateBase(time);
       if (!date.getTime()) return NaN;
       return Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds(),
-        date.getMilliseconds()
+        date.getFullYear(), date.getMonth(), date.getDate(),
+        date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()
       );
     }
 
@@ -677,18 +672,7 @@
      * @param time   : date|string|number
      */
     function fmtDate(fmtStr, time) {
-      return fmtDateBase(fmtStr, time, function (date, mtd) {
-        return match(mtd, {
-          'y': date.getFullYear(),
-          'M': date.getMonth() + 1,
-          'd': date.getDate(),
-          'h': date.getHours(),
-          'm': date.getMinutes(),
-          's': date.getSeconds(),
-          'q': Math.floor((date.getMonth() + 3) / 3),
-          'S': date.getMilliseconds()
-        });
-      });
+      return fmtDateBase(fmtStr, time, false);
     }
 
     /**
@@ -697,18 +681,7 @@
      * @param time   : date|string|number
      */
     function fmtUtcDate(fmtStr, time) {
-      return fmtDateBase(fmtStr, time, function (date, mtd) {
-        return match(mtd, {
-          'y': date.getUTCFullYear(),
-          'M': date.getUTCMonth() + 1,
-          'd': date.getUTCDate(),
-          'h': date.getUTCHours(),
-          'm': date.getUTCMinutes(),
-          's': date.getUTCSeconds(),
-          'q': Math.floor((date.getUTCMonth() + 3) / 3),
-          'S': date.getUTCMilliseconds()
-        });
-      });
+      return fmtDateBase(fmtStr, time, true);
     }
 
     /**
@@ -724,20 +697,31 @@
       return fmtDate(fmtStr, timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset));
     }
 
-    function fmtDateBase(fmtStr, time, fmtObj) {
-      var date = dateBase(time);
+    function fmtDateBase(fmtStr, time, isUtc) {
+      var date = dateBase(time), obj, year;
       if (!date.getTime()) return '';
-      var obj = {
-        'M+': fmtObj(date, 'M'), 'd+': fmtObj(date, 'd'), 'h+': fmtObj(date, 'h'),
-        'm+': fmtObj(date, 'm'), 's+': fmtObj(date, 's'), 'q+': fmtObj(date, 'q'), 'S': fmtObj(date, 'S'),
-      };
-      if (/(y+)/.test(fmtStr)) {
-        fmtStr = fmtStr.replace(RegExp.$1, (fmtObj(date, 'y') + '').substr(4 - RegExp.$1.length));
+      if (isUtc) {
+        year = date.getUTCFullYear();
+        timeObj = {
+          'M+': date.getUTCMonth() + 1, 'd+': date.getUTCDate(), 'h+': date.getUTCHours(),
+          'm+': date.getUTCMinutes(), 's+': date.getUTCSeconds(), 'S':  date.getUTCMilliseconds(),
+          'q+': Math.floor((date.getUTCMonth() + 3) / 3),
+        } 
+      } else {
+        year = date.getFullYear();
+        timeObj = {
+          'M+': date.getMonth() + 1, 'd+': date.getDate(), 'h+': date.getHours(),
+          'm+': date.getMinutes(), 's+': date.getSeconds(), 'S':  date.getMilliseconds(),
+          'q+': Math.floor((date.getMonth() + 3) / 3),
+        } 
       }
-      forIn(obj, function (k) {
+      if (/(y+)/.test(fmtStr)) {
+        fmtStr = fmtStr.replace(RegExp.$1, (year + '').substr(4 - RegExp.$1.length));
+      }
+      forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
           fmtStr = fmtStr.replace(
-            RegExp.$1, (RegExp.$1.length === 1) ? obj[k] : (('00' + obj[k]).substr((obj[k] + '').length))
+            RegExp.$1, (RegExp.$1.length === 1) ? timeObj[k] : (('00' + timeObj[k]).substr((timeObj[k] + '').length))
           );
         }
       });

@@ -3,25 +3,26 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 
-// const d = Date.now();
-// const offset = 5.5 * 60 * 60 * 1000;
-// const xyzTime = fn.asXyzTime(d, offset);
-// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
-// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', xyzTime), 'xyz2');
+const d = Date.now();
+const offset = 5.5 * 60 * 60 * 1000;
+fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
+fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
+fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
+// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asXyzTime(d, offset)), 'xyz2');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
-fn.log(new Date());
-fn.log(/aaa/);
-fn.log(null);
-fn.log(undefined);
-fn.log([{name: 'tom'}])
+// fn.log(new Date());
+// fn.log(/aaa/);
+// fn.log(null);
+// fn.log(undefined);
+// fn.log([{name: 'tom'}])
 
-class A {
-  constructor() {
-    this.a = 'aa';
-  }
-}
+// class A {
+//   constructor() {
+//     this.a = 'aa';
+//   }
+// }
 
-fn.log(new A());
+// fn.log(new A());
 
 // fn.log(fn.isDeepEqual({}, {}));
 // fn.log(fn.typeOf({}, 'obj'));

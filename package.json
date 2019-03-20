@@ -1,6 +1,6 @@
 {
   "name": "funclib.js",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
@@ -41,14 +41,14 @@
     "js-utils",
     "js-tools",
     "js-log",
-    "js-loger",
+    "js-logger",
     "js-library",
     "ts-lib",
     "ts-util",
     "ts-utils",
     "ts-tools",
     "ts-log",
-    "ts-loger",
+    "ts-logger",
     "ts-library",
     "javascript-library",
     "js-functions",
@@ -58,6 +58,7 @@
     "logger",
     "print",
     "pretty",
+    "formatter",
     "chalk",
     "full-screen",
     "typeOf"
