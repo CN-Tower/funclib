@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.4 <https://www.funclib.net>
+ * Funclib v3.4.5 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
   var root = _global || _self || Function('return this')();
   var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.4.4';
+  var version = '3.4.5';
   var originalFn = root.fn;
 
   var fn = (function () {
@@ -400,7 +400,7 @@
     /**
      * [fn.pick] 获取对象的部分属性
      * @param srcObj    : object
-     * @param predicate : function
+     * @param predicate : function|object
      * @param props     : ...string[]
      */
     var pick = restArgs(function (srcObj, predicate, props) {
@@ -411,7 +411,7 @@
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : function
+     * @param predicate : function|object
      * @param props     : ...string[]
      */
     var extend = restArgs(function (tarObj, srcObj, predicate, props) {
@@ -422,17 +422,19 @@
     });
 
     function extendBase(tarObj, srcObj, predicate, propList, isTraDft) {
+      propList = flatten(propList);
+      var isPredicateObj = typeOf(predicate, 'obj');
       var traversal = function (tarObj, srcObj, propList) {
         forEach(propList, function (prop) {
-          tarObj[prop] = has(srcObj, prop) ? srcObj[prop] : undefined;
+          if (has(srcObj, prop)) {
+            tarObj[prop] = srcObj[prop];
+          } else if (isPredicateObj && has(predicate, 'default')) {
+            tarObj[prop] = predicate.default;
+          }
         });
       }
-      if (typeOf(predicate, 'str')) {
-        propList.unshift(predicate);
-        traversal(tarObj, srcObj, propList);
-      }
-      else if (typeOf(predicate, 'arr')) {
-        traversal(tarObj, srcObj, predicate);
+      if (typeOf(predicate, 'str', 'arr', 'obj')) {
+        traversal(tarObj, srcObj, isPredicateObj ? propList : toArr(predicate).concat(propList));
       }
       else if (typeOf(predicate, 'fun')) {
         forIn(srcObj, function (key, val) {
@@ -440,7 +442,7 @@
         });
       }
       else if (isTraDft) {
-        traversal(tarObj, srcObj, Object.keys(srcObj));
+        traversal(tarObj, srcObj, keys(srcObj));
       }
       return tarObj;
     }
@@ -501,9 +503,7 @@
       if (typeOf(obj1, 'arr') && typeOf(obj2, 'arr')) {
         if (obj1.length !== obj2.length) return false;
         for (var i = 0; i < obj1.length; i++) {
-          if (!isDeepEqual(obj1[i], obj2[i], isStrict)) {
-            return false;
-          }
+          if (!isDeepEqual(obj1[i], obj2[i], isStrict)) return false;
         }
         return true;
       }
@@ -827,6 +827,24 @@
       }
       return decimal ? integerStr + '.' + decimal : integerStr;
     }
+    
+    /**
+     * [fn.maskString] 编码字符串或其子串
+     * @param srcStr : any
+     * @param mask   : string = '*'
+     * @param start  : number
+     * @param length : number
+     */
+    function maskString(srcStr, mask, start, length) {
+      var str = String(srcStr), ptn = /[^\u4e00-\u9fa5]/mg, ptn_ = /[\u4e00-\u9fa5]/mg;
+      if (typeOf(mask, 'num')) {
+        length = start, start = mask, mask = '*';
+      } else if (!typeOf(mask, 'str')) {
+        mask = '*';
+      }
+      var maskStr = str.substr(start, length).replace(ptn, mask).replace(ptn_, mask + mask);
+      return str.substr(0, start) + maskStr + (typeOf(length, 'udf') ? '' : str.substr(start + length));
+    }
 
     /**
      * [fn.cutString] 裁切字符串到指定长度
@@ -964,7 +982,8 @@
     /**
      * [fn.testPattern]用一个或几个通用正则测试
      * @param srcStr : string
-     * @param type_  : string
+     * @param type_  : 'cnChar'|'dbChar'|'email'|'mobPhone'|'telPhone'|'idCard'|'uuid'|'base64Code'|'domain'|
+     * 'port'|'ip'|'ipUrl'|'domainUrl'|'url'|'ipWithPortUrl'|'domainWithPortUrl'|'withPortUrl'
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
@@ -976,7 +995,8 @@
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
      * @param srcStr : string
-     * @param type_  : string
+     * @param type_  : 'cnChar'|'dbChar'|'email'|'mobPhone'|'telPhone'|'idCard'|'uuid'|'base64Code'|'domain'|
+     * 'port'|'ip'|'ipUrl'|'domainUrl'|'url'|'ipWithPortUrl'|'domainWithPortUrl'|'withPortUrl'
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
@@ -1178,6 +1198,7 @@
     funclib.unescape = unescape;
     funclib.capitalize = capitalize;
     funclib.fmtCurrency = fmtCurrency;
+    funclib.maskString = maskString;
     funclib.cutString = cutString;
     funclib.parseQueryStr = parseQueryStr;
     funclib.stringifyQueryStr = stringifyQueryStr;

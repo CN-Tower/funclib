@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.4 <https://www.funclib.net>
+ * Funclib v3.4.5 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -61,6 +61,7 @@
  * fn.unescape              [-] 解码HTML字符串
  * fn.capitalize            [-] 字符串首字母大写
  * fn.fmtCurrency           [-] 格式化显示货币
+ * fn.maskString            [-] 编码字符串或其子串
  * fn.cutString             [-] 裁切字符串到指定长度
  * fn.parseQueryStr         [-] 解析Url参数成对象
  * fn.stringifyQueryStr     [-] 把对象编译成Url参数
@@ -110,6 +111,8 @@ declare namespace fn {
   type Any = any;
   type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf' | 'nul' | 'ptn' | 'dat' | string | string[];
   type Color = 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow';
+  type Pattern = 'cnChar' | 'dbChar' | 'email' | 'mobPhone' | 'telPhone' | 'idCard' | 'uuid' | 'base64Code' | 'domain'
+               | 'port' | 'ip' | 'ipUrl' | 'domainUrl' | 'url' | 'ipWithPortUrl' | 'domainWithPortUrl' | 'withPortUrl' | string
 
   interface Progress {
     /**
@@ -497,6 +500,15 @@ declare namespace fn {
     fmtCurrency(number: number, digit?: number): any;
 
     /**
+     * [fn.maskString] 编码字符串或其子串
+     * @param srcStr : any
+     * @param mask   : string = '*'
+     * @param start  : number
+     * @param length : number
+     */
+    maskString(srcStr: any, mask?: string, start?: number, length?: number): string;
+
+    /**
      * [fn.cutString] 裁切字符串到指定长度
      * @param srcStr : string
      * @param length : number
@@ -532,20 +544,22 @@ declare namespace fn {
     /**
      * [fn.testPattern]用一个或几个通用正则测试
      * @param srcStr : string
-     * @param type_  : string
+     * @param type_  : 'cnChar'|'dbChar'|'email'|'mobPhone'|'telPhone'|'idCard'|'uuid'|'base64Code'|'domain'|
+     * 'port'|'ip'|'ipUrl'|'domainUrl'|'url'|'ipWithPortUrl'|'domainWithPortUrl'|'withPortUrl'
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    testPattern(srcStr: string, type_: string, ...types: any[]): boolean;
+    testPattern(srcStr: string, type_: Pattern, ...types: Pattern[]): boolean;
 
     /**
      * [fn.matchPattern]与一个或几个通用正则匹配
      * @param srcStr : string
-     * @param type_  : string
+     * @param type_  : 'cnChar'|'dbChar'|'email'|'mobPhone'|'telPhone'|'idCard'|'uuid'|'base64Code'|'domain'|
+     * 'port'|'ip'|'ipUrl'|'domainUrl'|'url'|'ipWithPortUrl'|'domainWithPortUrl'|'withPortUrl'
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    matchPattern(srcStr: string, type_: string, ...types: any[]): any;
+    matchPattern(srcStr: string, type_: Pattern, ...types: Pattern[]): any;
 
     /**
      * [fn.restArgs] 获取函数的剩余参数

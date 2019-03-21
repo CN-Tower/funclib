@@ -3,11 +3,13 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 
-const d = Date.now();
-const offset = 5.5 * 60 * 60 * 1000;
-fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
-fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
-fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
+fn.log(fn.maskString(18770347037, 7))
+
+// const d = Date.now();
+// const offset = 5.5 * 60 * 60 * 1000;
+// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
+// fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
+// fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asXyzTime(d, offset)), 'xyz2');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
 // fn.log(new Date());

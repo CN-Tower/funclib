@@ -66,7 +66,10 @@
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}, 'name'), {name: 'Tom'});
       });
       it(`fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']) should return {name: 'Tom', age: 28}.`, function () {
-        assert.deepEqual(fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']), {name: 'Tom', age: 28, sex: undefined});
+        assert.deepEqual(fn.pick({name: 'Tom', age: 28}, ['name', 'age', 'sex']), {name: 'Tom', age: 28});
+      });
+      it(`fn.pick({name: 'Tom', age: 28}, { default: undefined }, ['name', 'age', 'sex']) should return {name: 'Tom', age: 28}.`, function () {
+        assert.deepEqual(fn.pick({name: 'Tom', age: 28}, { default: undefined }, ['name', 'age', 'sex']), {name: 'Tom', age: 28, sex: undefined});
       });
       it(`fn.pick({name: 'Tom', age: 28}, (k, v) => v === 28) should return {age: 28}.`, function () {
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}, (k, v) => v === 28), {age: 28});
@@ -90,8 +93,12 @@
         assert.deepEqual(tom, { name: 'Tom', age: 28, sex: 'm' });
       });
       it(`fn.extend(dist, src, ...props) should extend dist by src and props.`, function () {
-        fn.extend(tom, jerry, 'name', 'age', 'sex');
+        fn.extend(tom, jerry, 'name', 'age', 'sex', 'hobby');
         assert.deepEqual(tom, { name: 'Jerry', age: 28, sex: 'm' });
+      });
+      it(`fn.extend(dist, src, {default: undefined}, ...props) should extend dist by src and props.`, function () {
+        fn.extend(tom, jerry, {default: ''}, 'name', 'age', 'sex', 'hobby');
+        assert.deepEqual(tom, { name: 'Jerry', age: 28, sex: 'm', hobby: ''});
       });
     });
     describe('#fn.forIn()', function () {
