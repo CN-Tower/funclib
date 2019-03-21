@@ -131,6 +131,7 @@ $ npm run test
  * fn.unescape              [-] 解码HTML字符串
  * fn.capitalize            [-] 字符串首字母大写
  * fn.fmtCurrency           [-] 格式化显示货币
+ * fn.maskString            [-] 编码字符串或其子串
  * fn.cutString             [-] 裁切字符串到指定长度
  * fn.parseQueryStr         [-] 解析Url参数成对象
  * fn.stringifyQueryStr     [-] 把对象编译成Url参数
