@@ -332,19 +332,21 @@ declare namespace fn {
     /**
      * [fn.pick] 获取对象的部分属性
      * @param srcObj    : object
-     * @param predicate : function
+     * @param predicate : function|object
+     * default?: any;
      * @param props     : ...string[]
      */
-    pick(srcObj: Object, predicate: any, ...props: string[]): any;
+    pick(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : function
+     * @param predicate : function|object [?]
+     * default?: any;
      * @param props     : ...string[]
      */
-    extend(tarObj: any, srcObj: any, predicate?: any, ...props: string[]): any;
+    extend(tarObj: any, srcObj: any, predicate?: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.forIn] 遍历对象的可数自有属性
