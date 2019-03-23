@@ -82,6 +82,17 @@ $ npm run test
  ## Type
  * fn.typeOf                [-] 检查值的类型
  * fn.typeVal               [-] 获取期望类型的值
+ * fn.isStr                 [-] 判断类型是否为：string
+ * fn.isNum                 [-] 判断类型是否为：number
+ * fn.isBol                 [-] 判断类型是否为：boolean
+ * fn.isFun                 [-] 判断类型是否为：function
+ * fn.isNul                 [-] 判断是否为：null
+ * fn.isUdf                 [-] 判断类型是否为：undefined
+ * fn.isErr                 [-] 判断类型是否为：Error
+ * fn.isDat                 [-] 判断类型是否为：Date
+ * fn.isReg                 [-] 判断类型是否为：RegExp
+ * fn.isArr                 [-] 判断类型是否为：Array
+ * fn.isObj                 [-] 判断是否为：正常Object
  ## Array
  * fn.array                 [-] 返回指定长度和默认值的数组
  * fn.range                 [-] 返回一个范围数组

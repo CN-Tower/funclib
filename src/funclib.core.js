@@ -959,10 +959,10 @@
     }
 
     /**
-     * [fn.debounce] 防抖函数, 适用于获取用户输入
+     * [fn.debounce] 防抖函数, 适用于获取用户输入或防止函数频繁调用
      * @param  func    : function
      * @param  wait    : number
-     * @param  options : object [?]
+     * @param  options : object|boolean [?] 为true时，leading = true, trailing = false;
      * leading: boolean = false
      * maxing: boolean = false
      * maxWait: number = Math.max(0, wait)

@@ -646,9 +646,9 @@ declare namespace fn {
 
     /**
      * [fn.restArgs] 获取函数的剩余参数
-     * @param srcFunc : function
+     * @param func : function
      */
-    restArgs(srcFunc: Function): Function;
+    restArgs(func: Function): Function;
 
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
@@ -661,16 +661,16 @@ declare namespace fn {
     throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }): Function;
 
     /**
-     * [fn.debounce] 防抖函数, 适用于获取用户输入
+     * [fn.debounce] 防抖函数, 适用于获取用户输入或防止函数频繁调用
      * @param  func    : function
      * @param  wait    : number
-     * @param  options : object [?]
+     * @param  options : object|boolean [?] 为true时，leading = true, trailing = false;
      * leading: boolean = false
      * maxing: boolean = false
      * maxWait: number = Math.max(0, wait)
      * trailing: boolean = true
      */
-    debounce(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number }): Function;
+    debounce(func: Function, wait: number, options?: boolean | { leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number }): Function;
 
     /**
      * [fn.fullScreen] 全屏显示HTML元素
