@@ -47,5 +47,99 @@
         assert(!fn.typeVal({}, 'str', 'arr'));
       });
     });
+    describe('#fn.isStr()', function () {
+      it(`fn.isStr('str') should return true.`, function () {
+        assert(fn.isStr('str'));
+      });
+      it(`fn.isStr(123) should return false.`, function () {
+        assert(!fn.isStr(123));
+      });
+    });
+    describe('#fn.isNum()', function () {
+      it(`fn.isNum(123) should return true.`, function () {
+        assert(fn.isNum(123));
+      });
+      it(`fn.isNum('123') should return false.`, function () {
+        assert(!fn.isNum('123'));
+      });
+    });
+    describe('#fn.isBol()', function () {
+      it(`fn.isBol(false) should return true.`, function () {
+        assert(fn.isBol(false));
+      });
+      it(`fn.isBol(123) should return false.`, function () {
+        assert(!fn.isBol(123));
+      });
+    });
+    describe('#fn.isFun()', function () {
+      it(`fn.isFun(() => {}) should return true.`, function () {
+        assert(fn.isFun(() => {}));
+      });
+      it(`fn.isFun(123) should return false.`, function () {
+        assert(!fn.isFun(123));
+      });
+    });
+    describe('#fn.isNul()', function () {
+      it(`fn.isNul(null) should return true.`, function () {
+        assert(fn.isNul(null));
+      });
+      it(`fn.isNul(123) should return false.`, function () {
+        assert(!fn.isNul(123));
+      });
+    });
+    describe('#fn.isUdf()', function () {
+      it(`fn.isUdf(undefined) should return true.`, function () {
+        assert(fn.isUdf(undefined));
+      });
+      it(`fn.isUdf(123) should return false.`, function () {
+        assert(!fn.isUdf(123));
+      });
+    });
+    describe('#fn.isErr()', function () {
+      it(`fn.isErr(new Error()) should return true.`, function () {
+        assert(fn.isErr(new Error()));
+      });
+      it(`fn.isErr(123) should return false.`, function () {
+        assert(!fn.isErr(123));
+      });
+    });
+    describe('#fn.isDat()', function () {
+      it(`fn.isDat(new Date()) should return true.`, function () {
+        assert(fn.isDat(new Date()));
+      });
+      it(`fn.isDat(123) should return false.`, function () {
+        assert(!fn.isDat(123));
+      });
+    });
+    describe('#fn.isReg()', function () {
+      it(`fn.isReg(new RegExp('ptn')) should return true.`, function () {
+        assert(fn.isReg(new RegExp('ptn')));
+      });
+      it(`fn.isReg(123) should return false.`, function () {
+        assert(!fn.isReg(123));
+      });
+    });
+    describe('#fn.isArr()', function () {
+      it(`fn.isArr([]) should return true.`, function () {
+        assert(fn.isArr([]));
+      });
+      it(`fn.isArr(123) should return false.`, function () {
+        assert(!fn.isArr(123));
+      });
+    });
+    describe('#fn.isObj()', function () {
+      it(`fn.isObj({}) should return true.`, function () {
+        assert(fn.isObj({}));
+      });
+      it(`fn.isObj(new Date()) should return true.`, function () {
+        assert(!fn.isObj(new Date()));
+      });
+      it(`fn.isObj(123) should return false.`, function () {
+        assert(!fn.isObj(123));
+      });
+      it(`fn.isObj(null) should return false.`, function () {
+        assert(!fn.isObj(null));
+      });
+    });
   });
 /**@server+*//* } /**@server=|*/

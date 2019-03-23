@@ -21,6 +21,10 @@
         const email = 'cntower@yahoo.com';
         assert(fn.testPattern(email, 'email') === true);
       });
+      it(`fn.testPattern(url, 'url') should return true.`, function () {
+        const url = 'http://www.ora.com:80/goodparts?query=a123#fragment';
+        assert(fn.testPattern(url, 'url') === true);
+      });
     });
     describe('#fn.matchPattern()', function () {
       it(`fn.matchPattern(email, 'email') should return true.`, function () {
