@@ -17,6 +17,7 @@
   var originalFn = root.fn;
 
   var fn = (function () {
+    
     var expFuncErr = new TypeError('Expected a function');
     /**
      * [fn.restArgs] 获取函数的剩余参数
