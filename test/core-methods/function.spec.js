@@ -1,8 +1,8 @@
 /**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Function Methods:', function () {
-    describe('#restArgs()', function () {
-      it(`fn.restArgs(function(args) {})(1,2) args should return [1, 2]`, function () {
-        fn.restArgs(function(args) {
+    describe('#rest()', function () {
+      it(`fn.rest(function(args) {})(1,2) args should return [1, 2]`, function () {
+        fn.rest(function(args) {
           assert.deepEqual(args, [1, 2]);
         })(1, 2)
       });

@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.6 <https://www.funclib.net>
+ * Funclib v3.4.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -82,7 +82,7 @@
  * fn.testPattern           [-] 用一个或几个通用正则测试
  * fn.matchPattern          [-] 与一个或几个通用正则匹配
  ## Function
- * fn.restArgs              [-] 获取函数的剩余参数
+ * fn.rest                  [-] 获取函数的剩余参数
  * fn.throttle              [-] 节流函数
  * fn.debounce              [-] 防抖函数
  ## Loger
@@ -219,8 +219,9 @@ declare namespace fn {
     /**
      * [fn.isNum] 判断类型是否为：number
      * @param value : any
+     * @param impure : boolean = false
      */
-    isNum(value: any): boolean;
+    isNum(value: any, impure?: boolean): boolean;
 
     /**
      * [fn.isBol] 判断类型是否为：boolean
@@ -460,8 +461,9 @@ declare namespace fn {
      * [fn.random] 返回一个指定范围内的随机数
      * @param start : number
      * @param end   : number [?]
+     * @param isFlt : boolean = true;
      */
-    random(start: number, end?: number): number;
+    random(start: number, end?: number, isFlt?: boolean): number;
 
     /**
      * [fn.gid] 返回一个指定长度的随机ID
@@ -645,10 +647,10 @@ declare namespace fn {
     matchPattern(srcStr: string, type_: Pattern, ...types: Pattern[]): any;
 
     /**
-     * [fn.restArgs] 获取函数的剩余参数
+     * [fn.rest] 获取函数的剩余参数
      * @param func : function
      */
-    restArgs(func: Function): Function;
+    rest(func: Function): Function;
 
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率

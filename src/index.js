@@ -1,43 +1,47 @@
 /**
  * @license
- * Funclib v3.4.6 <https://www.funclib.net>
+ * Funclib v3.4.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var undefined;
+  var undefined, UDF = undefined;
   var _global = typeof global == 'object' && global && global.Object === Object && global;
   var _self = typeof self == 'object' && self && self.Object === Object && self;
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
+  var expFuncErr = new TypeError('Expected a function');
 
-  var version = '3.4.6';
-  var originalFn = root.fn;
+  var version = '3.4.7';
+  var oldFn = root.fn;
 
   var fn = (function () {
     
-    var expFuncErr = new TypeError('Expected a function');
     /**
-     * [fn.restArgs] 获取函数的剩余参数
+     * [fn.rest] 获取函数的剩余参数
      * @param func : function
      */
-    function restArgs(func) {
+    function rest(func) {
       if (typeof func !== 'function') return expFuncErr;
       var start = func.length - 1;
       return function () {
         var len = Math.max(arguments.length - start, 0);
-        var rest = Array(len);
-        for (var i = 0; i < len; i++) { rest[i] = arguments[i + start]; }
+        var rst = Array(len);
+        for (var i = 0; i < len; i++) {
+          rst[i] = arguments[i + start];
+        }
         switch (start) {
-          case 0: return func.call(this, rest);
-          case 1: return func.call(this, arguments[0], rest);
-          case 2: return func.call(this, arguments[0], arguments[1], rest);
+          case 0: return func.call(this, rst);
+          case 1: return func.call(this, arguments[0], rst);
+          case 2: return func.call(this, arguments[0], arguments[1], rst);
           default:
             var args = Array(start + 1);
-            for (i = 0; i < start; i++) { args[i] = arguments[i]; }
-            args[start] = rest;
+            for (i = 0; i < start; i++) {
+              args[i] = arguments[i];
+            }
+            args[start] = rst;
             return func.apply(this, args);
         };
       };
@@ -49,24 +53,22 @@
      * @param type_ : string|string[]
      * @param types : ...string[]
      */
-    var typeOf = restArgs(function (value, type_, types) {
+    var typeOf = rest(function (value, type_, types) {
       if (!type_) return false;
       types = toArr(type_).concat(types);
       function checkType(_type) {
         switch (_type) {
-          case 'str': return typeof value == 'string';
-          case 'num': return typeof value == 'number';
-          case 'bol': return typeof value == 'boolean';
-          case 'fun': return typeof value == 'function';
-          case 'nul': return value === null;
-          case 'udf': return value === undefined;
-          case 'err': return value instanceof Error;
-          case 'dat': return value instanceof Date;
-          case 'reg': return value instanceof RegExp;
-          case 'arr': return value instanceof Array;
-          case 'obj': return !!value && typeof value == 'object'
-            && [_global, _self].indexOf(value) == -1
-            && !['arr', 'fun', 'err', 'dat', 'reg'].some(checkType);
+          case 'str': return isStr(value);
+          case 'num': return isNum(value);
+          case 'bol': return isBol(value);
+          case 'fun': return isFun(value);
+          case 'nul': return isNul(value);
+          case 'udf': return isUdf(value);
+          case 'err': return isErr(value);
+          case 'dat': return isDat(value);
+          case 'reg': return isReg(value);
+          case 'arr': return isArr(value);
+          case 'obj': return isObj(value);
           default: return typeof value === _type;
         }
       }
@@ -79,7 +81,7 @@
      * @param type_ : string|string[]
      * @param types : ...string[]
      */
-    var typeVal = restArgs(function (value, type_, types) {
+    var typeVal = rest(function (value, type_, types) {
       return typeOf.apply(void 0, [value, type_].concat(types)) && value;
     });
 
@@ -90,7 +92,7 @@
     function array(length, value) {
       var tmpArr = [], tmpVal = 0;
       for (var i = 0; i < length; i++) {
-        if (value === undefined) {
+        if (isUdf(value)) {
           tmpArr.push(tmpVal);
           tmpVal++;
         } else if (isFun(value)) {
@@ -112,13 +114,17 @@
       if (isNum(start)) {
         function rangeLoop(isAdd) {
           if (length >= 0) {
-            for (var i = 0; i < length; i++) { rgArr.push(isAdd ? i + start : i); }
+            for (var i = 0; i < length; i++) {
+              rgArr.push(isAdd ? i + start : i);
+            }
           } else if (length < 0) {
-            for (var i = 0; i > length; i--) { rgArr.push(isAdd ? i + start : i); }
+            for (var i = 0; i > length; i--) {
+              rgArr.push(isAdd ? i + start : i);
+            }
           }
         };
         if (isUdf(length)) {
-          length = start, start = undefined;
+          length = start, start = UDF;
           rangeLoop(false);
         } else if (isNum(length)) {
           rangeLoop(true);
@@ -143,7 +149,9 @@
     function indexOf(srcArr, predicate) {
       for (var i = 0; i < srcArr.length; i++) {
         if (isObj(predicate)) {
-          if (keys(predicate).every(function (k) { return srcArr[i][k] === predicate[k]; })) return i;
+          if (keys(predicate).every(
+            function (k) { return srcArr[i][k] === predicate[k]; })
+          ) return i;
         } else if (isFun(predicate)) {
           if (predicate(srcArr[i])) return i;
         }
@@ -158,7 +166,7 @@
      */
     function find(srcArr, predicate) {
       var idx = indexOf(srcArr, predicate);
-      return idx > -1 ? srcArr[idx] : undefined;
+      return idx > -1 ? srcArr[idx] : UDF;
     }
 
     /**
@@ -183,7 +191,9 @@
       var fts = [], rjs = [];
       forEach(srcArr, function (item) {
         if (isObj(predicate)) {
-          keys(predicate).every(function (key) { return predicate[key] === item[key]; }) ? fts.push(item) : rjs.push(item);
+          keys(predicate).every(
+            function (key) { return predicate[key] === item[key]; }
+          ) ? fts.push(item) : rjs.push(item);
         }
         else if (isFun(predicate)) {
           predicate(item) ? fts.push(item) : rjs.push(item);
@@ -253,7 +263,7 @@
      */
     function uniq(srcArr, pathStr, isDeep) {
       if (isUdf(isDeep)) isDeep = true;
-      if (isBol(pathStr)) isDeep = pathStr, pathStr = undefined;
+      if (isBol(pathStr)) isDeep = pathStr, pathStr = UDF;
       pathStr = typeVal(pathStr, 'str');
       var tmpArr = srcArr.slice();
       for (var i = 0; i < tmpArr.length - 1; i++) {
@@ -262,13 +272,16 @@
           if (pathStr) {
             var val1 = get(tmpArr[i], pathStr);
             var val2 = get(tmpArr[j], pathStr);
-            isDuplicate = isDeep ? isDeepEqual(val1, val2) : val1 === val2;
+            isDuplicate = isDeep
+              ? isDeepEqual(val1, val2)
+              : val1 === val2;
           } else {
-            isDuplicate = isDeep ? isDeepEqual(tmpArr[i], tmpArr[j]) : tmpArr[i] === tmpArr[j];
+            isDuplicate = isDeep
+              ? isDeepEqual(tmpArr[i], tmpArr[j])
+              : tmpArr[i] === tmpArr[j];
           }
           if (isDuplicate) {
-            tmpArr.splice(j, 1);
-            j--;
+            tmpArr.splice(j, 1), j--;
           }
         }
       }
@@ -286,11 +299,14 @@
       if (!isFun(iteratee)) throw expFuncErr;
       var length = srcObj.length;
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
-        for (var i = 0; i < length; i++) { iteratee(srcObj[i], i); }
-      }
-      else {
+        for (var i = 0; i < length; i++) {
+          iteratee(srcObj[i], i);
+        }
+      } else {
         var ks = keys(srcObj);
-        for (var i = 0; i < ks.length; i++) { iteratee(srcObj[ks[i]], ks[i]); }
+        for (var i = 0; i < ks.length; i++) {
+          iteratee(srcObj[ks[i]], ks[i]);
+        }
       }
       return srcObj;
     }
@@ -337,7 +353,7 @@
      * @param property : string
      * @param types    : ...string[]
      */
-    var has = restArgs(function (srcObj, property, types) {
+    var has = rest(function (srcObj, property, types) {
       var isHas = srcObj && srcObj.hasOwnProperty(property);
       return types.length ? isHas && typeOf(srcObj[property], types) : isHas;
     });
@@ -348,13 +364,15 @@
      * @param pathStr : string
      * @param types   : ...string[]
      */
-    var get = restArgs(function (srcObj, pathStr, types) {
-      if (!srcObj || !isStr(pathStr)) return undefined;
+    var get = rest(function (srcObj, pathStr, types) {
+      if (!srcObj || !isStr(pathStr)) return UDF;
       var paths = contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
       var prop = paths.shift();
-      if (!prop) return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
+      if (!prop) {
+        return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
+      }
       if (paths.length) {
-        if (!typeOf(srcObj[prop], 'obj', 'arr')) return undefined;
+        if (!typeOf(srcObj[prop], 'obj', 'arr')) return UDF;
         return get.apply(void 0, [srcObj[prop], paths.join('/')].concat(types));
       } else {
         return types.length ? typeVal.apply(void 0, [srcObj[prop]].concat(types)) : srcObj[prop];
@@ -365,9 +383,7 @@
      * [fn.keys] 获取对象的键数组
      * @param srcObj : object
      */
-    function keys(srcObj) {
-      return Object.keys(srcObj);
-    }
+    function keys(srcObj) { return Object.keys(srcObj); }
 
     /**
      * [fn.pick] 获取对象的部分属性
@@ -375,7 +391,7 @@
      * @param predicate : function|object
      * @param props     : ...string[]
      */
-    var pick = restArgs(function (srcObj, predicate, props) {
+    var pick = rest(function (srcObj, predicate, props) {
       return extendBase({}, srcObj, predicate, props, false);
     });
 
@@ -386,25 +402,25 @@
      * @param predicate : function|object
      * @param props     : ...string[]
      */
-    var extend = restArgs(function (tarObj, srcObj, predicate, props) {
-      if (typeVal(srcObj, 'object')) extendBase(tarObj, srcObj, predicate, props, true);
-      return tarObj;
+    var extend = rest(function (tarObj, srcObj, predicate, props) {
+      return extendBase(tarObj, srcObj, predicate, props, true);
     });
 
     function extendBase(tarObj, srcObj, predicate, propList, isTraDft) {
+      if (!isObj(srcObj)) return tarObj;
       propList = flatten(propList);
-      var isPredicateObj = isObj(predicate);
+      var isPdtObj = isObj(predicate);
       function traversal(tarObj, srcObj, propList) {
         forEach(propList, function (prop) {
           if (has(srcObj, prop)) {
             tarObj[prop] = srcObj[prop];
-          } else if (isPredicateObj && has(predicate, 'default')) {
+          } else if (isPdtObj && has(predicate, 'default')) {
             tarObj[prop] = predicate.default;
           }
         });
       }
       if (typeOf(predicate, 'str', 'arr', 'obj')) {
-        traversal(tarObj, srcObj, isPredicateObj ? propList : toArr(predicate).concat(propList));
+        traversal(tarObj, srcObj, isPdtObj ? propList : toArr(predicate).concat(propList));
       }
       else if (isFun(predicate)) {
         forIn(srcObj, function (key, val) {
@@ -435,7 +451,9 @@
       var tmpObj;
       if (isArr(srcObj)) {
         tmpObj = [];
-        for (var i = 0; i < srcObj.length; i++) { tmpObj.push(deepCopy(srcObj[i])); }
+        for (var i = 0; i < srcObj.length; i++) {
+          tmpObj.push(deepCopy(srcObj[i]));
+        }
       } else if (isObj(srcObj)) {
         tmpObj = {};
         for (var key in srcObj) {
@@ -473,7 +491,9 @@
         var ks = keys(obj1);
         if (isStrict && !isDeepEqual(ks, keys(obj2))) return false;
         for (var i = 0; i < ks.length; i++) {
-          if (!obj2.hasOwnProperty(ks[i]) || !isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)) return false;
+          if (
+            !has(obj2, ks[i]) || !isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)
+          ) return false;
         }
         return true;
       }
@@ -486,21 +506,20 @@
      * [fn.random] 返回一个指定范围内的随机数
      * @param start : number
      * @param end   : number [?]
+     * @param isFlt : boolean = true;
      */
-    function random(start, end) {
-      if (start === undefined && end === undefined) {
-        return Math.random();
-      }
-      else if (end === undefined || start === end) {
-        return Math.floor(Math.random() * start);
-      }
-      else {
-        if (start > end) {
-          var tmpSta = start, start = end, end = tmpSta;
-          return Math.ceil(Math.random() * (end - start) + start);
-        } else {
-          return Math.floor(Math.random() * (end - start) + start);
-        }
+    function random(start, end, isFlt) {
+      if (!isNum(start)) return Math.random();
+      if (isBol(end)) isFlt = end, end = UDF;
+      var rdNum, temp;
+      if (!isNum(end) || start === end) {
+        rdNum = Math.random() * start;
+        return isFlt ? rdNum : Math.floor(rdNum);
+      } else {
+        var isStartGt = start > end
+        if (isStartGt) temp = start, start = end, end = temp;
+        rdNum = Math.random() * (end - start) + start;
+        return isFlt ? rdNum : (isStartGt ? Math.ceil(rdNum) : Math.floor(rdNum));
       }
     }
 
@@ -512,7 +531,9 @@
       if (isUdf(length)) length = 12;
       var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var id = '';
-      for (var i = 0; i< length; i++) { id += charSet[random(charSet.length)]; }
+      for (var i = 0; i< length; i++) {
+        id += charSet[random(charSet.length)];
+      }
       return id;
     }
 
@@ -556,7 +577,7 @@
       var isTimerIdStr = typeVal(timerId, 'str');
       function invokeClear() { return clearTimer(timer[timerId]); };
       if (isTimerIdStr) {
-        if (duration === undefined) {
+        if (idUdf(duration)) {
           return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
         }
         if (contains([null, false], duration)) {
@@ -568,13 +589,13 @@
         }
       }
       if (isNum(timerId) && isFun(duration)) {
-        callback = duration, duration = timerId, timerId = undefined;
+        callback = duration, duration = timerId, timerId = UDF;
       }
       if (isFun(timerId)) {
-        callback = timerId, duration = 0, timerId = undefined;
+        callback = timerId, duration = 0, timerId = UDF;
       }
       if (isFun(callback) && isNum(duration) && duration >= 0) {
-        if (timerId === undefined) return setTimer(callback, duration);
+        if (isUdf(timerId)) return setTimer(callback, duration);
         if (isTimerIdStr) {
           invokeClear();
           return timer[timerId] = setTimer(callback, duration);
@@ -640,7 +661,8 @@
       var date = dateBase(time);
       if (!date.getTime()) return '';
       var ms = date.getUTCMilliseconds();
-      return fmtDate(fmtStr, timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset));
+      var tm = timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset);
+      return fmtDate(fmtStr, tm);
     }
 
     function dateBase(time) {
@@ -672,9 +694,9 @@
       }
       forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
-          fmtStr = fmtStr.replace(
-            RegExp.$1, (RegExp.$1.length === 1) ? timeObj[k] : (('00' + timeObj[k]).substr((timeObj[k] + '').length))
-          );
+          var tmk = timeObj[k];
+          var fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
+          fmtStr = fmtStr.replace(RegExp.$1, fmt);
         }
       });
       return fmtStr;
@@ -705,7 +727,7 @@
       if (isExec && isFun(matched)) {
         return len(matched) ? matched(source) : matched();
       } else {
-        return matched === '@next' ? undefined : matched;
+        return matched === '@next' ? UDF : matched;
       }
     }
 
@@ -891,7 +913,7 @@
       if (!type_) return;
       if (isUdf(limit)) limit = true;
       if (contains(['all', 'list'], type_)) return keys(patterns);
-      if (!has(patterns, type_)) return undefined;
+      if (!has(patterns, type_)) return UDF;
       var pattern = patterns[type_];
       return limit ? new RegExp('^(' + pattern.source.replace(/^(\^|\$)$/mg, '') + ')$') : pattern;
     }
@@ -904,7 +926,7 @@
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    var testPattern = restArgs(function (srcStr, type_, types) {
+    var testPattern = rest(function (srcStr, type_, types) {
       if (!srcStr || !type_) return false;
       return patternBase(srcStr, [type_].concat(types), true);
     });
@@ -917,7 +939,7 @@
      * @param types  : ...string[]
      * @param limit  : boolean = true
      */
-    var matchPattern = restArgs(function (srcStr, type_, types) {
+    var matchPattern = rest(function (srcStr, type_, types) {
       if (!srcStr || !type_) return null;
       return patternBase(srcStr, [type_].concat(types), false);
     });
@@ -984,7 +1006,7 @@
       };
       function invokeFunc(time) {
         var args = lastArgs, thisArg = lastThis;
-        lastArgs = lastThis = undefined;
+        lastArgs = lastThis = UDF;
         lastInvokeTime = time;
         result = func.apply(thisArg, args);
         return result;
@@ -995,7 +1017,7 @@
       }
       function shouldInvoke(time) {
         var timeSinceLastCall = time - lastCallTime;
-        return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+        return (isUdf(lastCallTime) || (timeSinceLastCall >= wait) ||
           (timeSinceLastCall < 0) || (maxing && (time - lastInvokeTime) >= maxWait));
       }
       function timerExpired() {
@@ -1004,16 +1026,16 @@
         timerId = setTimeout(timerExpired, remainingWait(time));
       }
       function trailingEdge(time) {
-        timerId = undefined;
+        timerId = UDF;
         if (trailing && lastArgs) return invokeFunc(time);
-        lastArgs = lastThis = undefined;
+        lastArgs = lastThis = UDF;
         return result;
       }
       function debounced() {
         var time = Date.now(), isInvoking = shouldInvoke(time);
         lastArgs = arguments, lastThis = this, lastCallTime = time;
         if (isInvoking) {
-          if (timerId === undefined) {
+          if (isUdf(timerId)) {
             lastInvokeTime = lastCallTime;
             timerId = setTimeout(timerExpired, wait);
             return leading ? invokeFunc(lastCallTime) : result;
@@ -1023,16 +1045,16 @@
             return invokeFunc(lastCallTime);
           }
         }
-        if (timerId === undefined) timerId = setTimeout(timerExpired, wait);
+        if (isUdf(timerId)) timerId = setTimeout(timerExpired, wait);
         return result;
       }
       debounced.cancel = function () {
-        if (timerId !== undefined) clearTimeout(timerId);
+        if (!isUdf(timerId)) clearTimeout(timerId);
         lastInvokeTime = 0;
-        lastArgs = lastCallTime = lastThis = timerId = undefined;
+        lastArgs = lastCallTime = lastThis = timerId = UDF;
       };
       debounced.flush = function () {
-        return timerId === undefined ? result : trailingEdge(Date.now());
+        return isUdf(timerId) ? result : trailingEdge(Date.now());
       };
       return debounced;
     }
@@ -1041,67 +1063,75 @@
      * [fn.isStr] 判断类型是否为：string
      * @param value : any
      */
-    function isStr(value) { return typeOf(value, 'str') };
+    function isStr(value) { return typeof value == 'string'; }
 
     /**
      * [fn.isNum] 判断类型是否为：number
-     * @param value : any
+     * @param value  : any
+     * @param impure : boolean = false
      */
-    function isNum(value) { return typeOf(value, 'num') };
+    function isNum(value, impure) {
+      var isNumber = typeof value == 'number';
+      return impure ? isNumber : isNumber && isFinite(value);
+    }
 
     /**
      * [fn.isBol] 判断类型是否为：boolean
      * @param value : any
      */
-    function isBol(value) { return typeOf(value, 'bol') };
+    function isBol(value) { return typeof value == 'boolean'; }
 
     /**
      * [fn.isFun] 判断类型是否为：function
      * @param value : any
      */
-    function isFun(value) { return typeOf(value, 'fun') };
+    function isFun(value) { return typeof value == 'function'; }
 
     /**
      * [fn.isNul] 判断是否为：null
      * @param value : any
      */
-    function isNul(value) { return typeOf(value, 'nul') };
+    function isNul(value) { return value === null; }
 
     /**
      * [fn.isUdf] 判断类型是否为：undefined
      * @param value : any
      */
-    function isUdf(value) { return typeOf(value, 'udf') };
+    function isUdf(value) { return value === UDF; }
 
     /**
      * [fn.isErr] 判断类型是否为：Error
      * @param value : any
      */
-    function isErr(value) { return typeOf(value, 'err') };
+    function isErr(value) { return value instanceof Error; }
 
     /**
      * [fn.isDat] 判断类型是否为：Date
      * @param value : any
      */
-    function isDat(value) { return typeOf(value, 'dat') };
+    function isDat(value) { return value instanceof Date; }
 
     /**
      * [fn.isReg] 判断类型是否为：RegExp
      * @param value : any
      */
-    function isReg(value) { return typeOf(value, 'reg') };
+    function isReg(value) { return value instanceof RegExp; };
 
     /**
      * [fn.isArr] 判断类型是否为：Array
      * @param value : any
      */
-    function isArr(value) { return typeOf(value, 'arr') };
+    function isArr(value) { return value instanceof Array; }
 
     /**
      * [fn.isObj] 判断是否为：正常Object
      * @param value : any
      */
-    function isObj(value) { return typeOf(value, 'obj') };
+    function isObj(value) {
+      return !!value && typeof value == 'object'
+        && [_global, _self].indexOf(value) == -1
+        && ![isArr, isFun, isErr, isDat, isReg].some(function(func) { return func(value); });
+    }
 
     /**@spliter*/
     /**=================================================================== */
@@ -1243,7 +1273,7 @@
       interval('#fn_pg_spi').stop();
       var progressBar, duration, pgType;
       if (isObj(title)) {
-        options = title, title = undefined;
+        options = title, title = UDF;
       }
       if (!options) options = {};
       title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
@@ -1448,12 +1478,8 @@
      */
     function size(file, unit, digit) {
       if (fs.existsSync(file)) {
-        if (isNum(unit)) {
-          digit = unit, unit = undefined;
-        }
-        if (unit === undefined || digit === undefined) {
-          digit = 2;
-        }
+        if (isNum(unit)) digit = unit, unit = UDF;
+        if (!isNum(digit)) digit = 2;
         var flSize = fs.statSync(file)['size'];
         var rlSize = match(unit, {
           'b': flSize,
@@ -1481,7 +1507,7 @@
      * [fn.noConflict] 释放fn变量占用权
      */
     function noConflict() {
-      if (root.fn === this) root.fn = originalFn;
+      if (root.fn === this) root.fn = oldFn;
       return this;
     }
 
@@ -1553,7 +1579,7 @@
     funclib.testPattern = testPattern;
     funclib.matchPattern = matchPattern;
 
-    funclib.restArgs = restArgs;
+    funclib.rest = rest;
     funclib.throttle = throttle;
     funclib.debounce = debounce;
 
@@ -1588,7 +1614,7 @@
     /**@spliter*/
 
     forEach(keys(funclib), function (method) {
-      shadowFn[method] = restArgs(function (args) {
+      shadowFn[method] = rest(function (args) {
         if (!isUdf(shadowFn.data)) {
           args = [shadowFn.data].concat(args);
         }

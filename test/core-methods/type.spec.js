@@ -62,6 +62,12 @@
       it(`fn.isNum('123') should return false.`, function () {
         assert(!fn.isNum('123'));
       });
+      it(`fn.isNum(NaN) should return false.`, function () {
+        assert(!fn.isNum(NaN));
+      });
+      it(`fn.isNum(Infinity) should return false.`, function () {
+        assert(!fn.isNum(Infinity));
+      });
     });
     describe('#fn.isBol()', function () {
       it(`fn.isBol(false) should return true.`, function () {

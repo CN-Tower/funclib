@@ -3,7 +3,16 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 
-fn.log(fn.maskString(18770347037, 7))
+// fn.log(fn.random());
+// fn.log(fn.random(5));
+// fn.log(fn.random(5, true));
+// fn.log(fn.random(5, 6, true));
+// fn.log(fn.random(5.5));
+// fn.interval(1000, () => {
+//   fn.log(fn.random(5, 8));
+// });
+
+// fn.log(fn.maskString(18770347037, 7))
 
 // const d = Date.now();
 // const offset = 5.5 * 60 * 60 * 1000;
@@ -99,12 +108,12 @@ fn.log(fn.maskString(18770347037, 7))
  * Function
  * =======================================================================
  */
-// let i = 0;
-// const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
-// fn.interval(500, () => {
-//     i ++;
-//     log();
-// });
+let i = 0;
+const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
+fn.interval(500, () => {
+    i ++;
+    log();
+});
 // let i = 0;
 // const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
 // fn.interval('test', 500, () => {
