@@ -1,6 +1,14 @@
 /**@server+*//* module.exports = function (fn, assert) { /**@server=|*/
   describe('Function Methods:', function () {
     describe('#rest()', function () {
+      it(`fn.rest(null) should throw a error`, function () {
+        try {
+          fn.rest(null);
+          assert(false);
+        } catch (e) {
+          assert( e instanceof TypeError );
+        };
+      });
       it(`fn.rest(function(args) {})(1,2) args should return [1, 2]`, function () {
         fn.rest(function(args) {
           assert.deepEqual(args, [1, 2]);

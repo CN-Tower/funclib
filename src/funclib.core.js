@@ -12,7 +12,6 @@
   var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
-  var expFuncErr = new TypeError('Expected a function');
 
   var version = '3.4.7';
   var oldFn = root.fn;
@@ -24,7 +23,7 @@
      * @param func : function
      */
     function rest(func) {
-      if (typeof func !== 'function') return expFuncErr;
+      if (!isFun(func)) throwError('fun')
       var start = func.length - 1;
       return function () {
         var len = Math.max(arguments.length - start, 0);
@@ -296,7 +295,7 @@
      */
     function forEach(srcObj, iteratee) {
       if (!srcObj) return srcObj;
-      if (!isFun(iteratee)) throw expFuncErr;
+      if (!isFun(iteratee)) throwError('fun')
       var length = srcObj.length;
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
         for (var i = 0; i < length; i++) {
@@ -439,7 +438,7 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      if (!isFun(iteratee)) throw expFuncErr;
+      if (!isFun(iteratee)) throwError('fun')
       return forEach(srcObj, function (val, key) { return iteratee(key, val); });
     }
 
@@ -709,7 +708,7 @@
      * @param isExec : boolean = true
      */
     function match(source, cases, isExec) {
-      if (!isObj(cases)) throw new Error('Cases must be an Object!');
+      if (!isObj(cases)) throwError('obj');
       if (isUdf(isExec)) isExec = true;
       var symbol = '__@fnMatch__';
       if (has(cases, source)) {
@@ -887,19 +886,11 @@
      * @param pattern : regexp [?]
      */
     function setPattern(ptnMap, pattern) {
-      if (pattern && !isReg(pattern)) {
-        throw new TypeError('Expected a RegExp pattern');
-      }
-      if (typeVal(ptnMap, 'str')) {
-        patterns[ptnMap] = pattern;
-      }
-      else if (isObj(ptnMap)) {
+      if (ptnMap && isStr(ptnMap)) {
+        isReg(pattern) ? patterns[ptnMap] = pattern : throwError('reg');
+      } else if (isObj(ptnMap)) {
         forIn(ptnMap, function (ptn, ptnVal) {
-          if (isReg(ptnVal)) {
-            patterns[ptn] = ptnVal;
-          } else {
-            throw new TypeError('Expected RegExp pattern values');
-          }
+          isReg(ptnVal) ? patterns[ptn] = ptnVal : throwError('reg');
         });
       };
     }
@@ -969,7 +960,7 @@
      */
     function throttle(func, wait, options) {
       var leading = true, trailing = true;
-      if (!isFun(func)) throw expFuncErr;
+      if (!isFun(func)) throwError('fun')
       if (isObj(options)) {
         leading = has(options, 'leading') ? !!options.leading : leading;
         trailing = has(options, 'trailing') ? !!options.trailing : trailing;
@@ -992,7 +983,7 @@
      * trailing: boolean = true
      */
     function debounce(func, wait, options) {
-      if (!isFun(func)) throw expFuncErr;
+      if (!isFun(func)) throwError('fun')
       var lastArgs, lastThis, maxWait, result, timerId, lastCallTime
         , lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
       wait = +wait || 0;
@@ -1131,6 +1122,14 @@
       return !!value && typeof value == 'object'
         && [_global, _self].indexOf(value) == -1
         && ![isArr, isFun, isErr, isDat, isReg].some(function(func) { return func(value); });
+    }
+
+    function throwError(type_) {
+      switch(type_) {
+        case 'fun': throw new TypeError('Expected a Function');
+        case 'obj': throw new TypeError('Expect an Object!');
+        case 'reg': throw new TypeError('Expected a RegExp pattern');
+      }
     }
 
     /**@spliter*/
