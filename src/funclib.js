@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.7 <https://www.funclib.net>
+ * Funclib v3.4.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.4.7';
+  var version = '3.4.8';
   var oldFn = root.fn;
 
   var fn = (function () {
@@ -650,7 +650,7 @@
       var isTimerIdStr = typeVal(timerId, 'str');
       function invokeClear() { return clearTimer(timer[timerId]); };
       if (isTimerIdStr) {
-        if (idUdf(duration)) {
+        if (isUdf(duration)) {
           return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
         }
         if (contains([null, false], duration)) {
