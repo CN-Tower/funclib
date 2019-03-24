@@ -83,6 +83,80 @@
     var typeVal = rest(function (value, type_, types) {
       return typeOf.apply(void 0, [value, type_].concat(types)) && value;
     });
+    
+    /**
+     * [fn.isStr] 判断类型是否为：string
+     * @param value : any
+     */
+    function isStr(value) { return typeof value == 'string'; }
+
+    /**
+     * [fn.isBol] 判断类型是否为：boolean
+     * @param value : any
+     */
+    function isBol(value) { return typeof value == 'boolean'; }
+
+    /**
+     * [fn.isFun] 判断类型是否为：function
+     * @param value : any
+     */
+    function isFun(value) { return typeof value == 'function'; }
+
+    /**
+     * [fn.isNul] 判断是否为：null
+     * @param value : any
+     */
+    function isNul(value) { return value === null; }
+
+    /**
+     * [fn.isUdf] 判断类型是否为：undefined
+     * @param value : any
+     */
+    function isUdf(value) { return value === UDF; }
+
+    /**
+     * [fn.isErr] 判断类型是否为：Error
+     * @param value : any
+     */
+    function isErr(value) { return value instanceof Error; }
+
+    /**
+     * [fn.isDat] 判断类型是否为：Date
+     * @param value : any
+     */
+    function isDat(value) { return value instanceof Date; }
+
+    /**
+     * [fn.isReg] 判断类型是否为：RegExp
+     * @param value : any
+     */
+    function isReg(value) { return value instanceof RegExp; };
+
+    /**
+     * [fn.isArr] 判断类型是否为：Array
+     * @param value : any
+     */
+    function isArr(value) { return value instanceof Array; }
+
+    /**
+     * [fn.isNum] 判断类型是否为：number
+     * @param value  : any
+     * @param impure : boolean = false
+     */
+    function isNum(value, impure) {
+      var isNb = typeof value == 'number';
+      return impure ? isNb : isNb && isFinite(value);
+    }
+
+    /**
+     * [fn.isObj] 判断是否为：正常Object
+     * @param value : any
+     */
+    function isObj(value) {
+      return !!value && typeof value == 'object'
+        && [_global, _self].indexOf(value) == -1
+        && ![isArr, isFun, isErr, isDat, isReg].some(function(func) { return func(value); });
+    }
 
     /**
      * [fn.array] 返回一个指定长度和默认值的数组
@@ -137,7 +211,7 @@
      * @param value : any
      */
     function toArr(value) {
-      return value && value instanceof Array ? value : [value];
+      return isArr(value) ? value : [value];
     }
 
     /**
@@ -249,7 +323,7 @@
     function pluck(srcArr, pathStr) {
       var tmpArr = [];
       if (typeVal(pathStr, 'str')) {
-        forEach(srcArr, function (val) { return tmpArr.push(get(val, pathStr)); });
+        forEach(srcArr, function (val) { tmpArr.push(get(val, pathStr)); });
       }
       return tmpArr;
     }
@@ -439,7 +513,7 @@
      */
     function forIn(srcObj, iteratee) {
       if (!isFun(iteratee)) throwError('fun')
-      return forEach(srcObj, function (val, key) { return iteratee(key, val); });
+      return forEach(srcObj, function (val, key) { iteratee(key, val); });
     }
 
     /**
@@ -1050,80 +1124,6 @@
       return debounced;
     }
 
-    /**
-     * [fn.isStr] 判断类型是否为：string
-     * @param value : any
-     */
-    function isStr(value) { return typeof value == 'string'; }
-
-    /**
-     * [fn.isNum] 判断类型是否为：number
-     * @param value  : any
-     * @param impure : boolean = false
-     */
-    function isNum(value, impure) {
-      var isNumber = typeof value == 'number';
-      return impure ? isNumber : isNumber && isFinite(value);
-    }
-
-    /**
-     * [fn.isBol] 判断类型是否为：boolean
-     * @param value : any
-     */
-    function isBol(value) { return typeof value == 'boolean'; }
-
-    /**
-     * [fn.isFun] 判断类型是否为：function
-     * @param value : any
-     */
-    function isFun(value) { return typeof value == 'function'; }
-
-    /**
-     * [fn.isNul] 判断是否为：null
-     * @param value : any
-     */
-    function isNul(value) { return value === null; }
-
-    /**
-     * [fn.isUdf] 判断类型是否为：undefined
-     * @param value : any
-     */
-    function isUdf(value) { return value === UDF; }
-
-    /**
-     * [fn.isErr] 判断类型是否为：Error
-     * @param value : any
-     */
-    function isErr(value) { return value instanceof Error; }
-
-    /**
-     * [fn.isDat] 判断类型是否为：Date
-     * @param value : any
-     */
-    function isDat(value) { return value instanceof Date; }
-
-    /**
-     * [fn.isReg] 判断类型是否为：RegExp
-     * @param value : any
-     */
-    function isReg(value) { return value instanceof RegExp; };
-
-    /**
-     * [fn.isArr] 判断类型是否为：Array
-     * @param value : any
-     */
-    function isArr(value) { return value instanceof Array; }
-
-    /**
-     * [fn.isObj] 判断是否为：正常Object
-     * @param value : any
-     */
-    function isObj(value) {
-      return !!value && typeof value == 'object'
-        && [_global, _self].indexOf(value) == -1
-        && ![isArr, isFun, isErr, isDat, isReg].some(function(func) { return func(value); });
-    }
-
     function throwError(type_) {
       switch(type_) {
         case 'fun': throw new TypeError('Expected a Function');
@@ -1519,7 +1519,18 @@
 
     funclib.typeOf = typeOf;
     funclib.typeVal = typeVal;
-
+    funclib.isStr = isStr;
+    funclib.isNum = isNum;
+    funclib.isBol = isBol;
+    funclib.isFun = isFun;
+    funclib.isNul = isNul;
+    funclib.isUdf = isUdf;
+    funclib.isErr = isErr;
+    funclib.isDat = isDat;
+    funclib.isReg = isReg;
+    funclib.isArr = isArr;
+    funclib.isObj = isObj;
+  
     funclib.array = array;
     funclib.range = range;
     funclib.toArr = toArr;
@@ -1581,18 +1592,6 @@
     funclib.rest = rest;
     funclib.throttle = throttle;
     funclib.debounce = debounce;
-
-    funclib.isStr = isStr;
-    funclib.isNum = isNum;
-    funclib.isBol = isBol;
-    funclib.isFun = isFun;
-    funclib.isNul = isNul;
-    funclib.isUdf = isUdf;
-    funclib.isErr = isErr;
-    funclib.isDat = isDat;
-    funclib.isReg = isReg;
-    funclib.isArr = isArr;
-    funclib.isObj = isObj;
 
     /**@spliter*/
     /**=================================================================== */
