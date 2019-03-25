@@ -29,7 +29,7 @@
         var len = Math.max(arguments.length - start, 0);
         var rst = Array(len);
         for (var i = 0; i < len; i++) {
-          rst[i] = arguments[i + start];
+          rst[i] = arguments[start + i];
         }
         switch (start) {
           case 0: return func.call(this, rst);
