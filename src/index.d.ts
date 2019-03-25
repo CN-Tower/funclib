@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.9 <https://www.funclib.net>
+ * Funclib v3.5.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -43,6 +43,7 @@
  * fn.len                   [-] 获取对象自有属性的个数
  * fn.has                   [-] 判断对象是否存在某自有属性
  * fn.get                   [-] 返回对象或子孙对象的属性，可判断类型
+ * fn.set                   [-] 设置对象或子孙对象的属性
  * fn.keys                  [-] 返回对象的键值数组
  * fn.pick                  [-] 获取对象的部分属性
  * fn.extend                [-] 给对象赋值，可指定字段
@@ -108,9 +109,11 @@
  * fn.progress              [s] 进度显示工具
  * fn.progress.stop         [s] 停止进度，结束后触发回调
  ## Tricks
+ * fn.chain                 [-] 返回链接调用对象
+ * fn().method              [-] 返回链接调用对象
  * fn.noConflict            [-] 释放fn变量占用权
  * fn.version               [-] 返回当前函数库版本
- * fn().method              [-] 使用OOP风格的调用
+
  ================================================================*/
 export = fn;
 export as namespace fn;
@@ -190,9 +193,9 @@ declare namespace fn {
   interface Funclib extends Any {
     /**
      * [fn().method] 使用OOP风格的调用
-     * @param data : any 目标方法的第一个参数
+     * @param value : any 目标方法的第一个参数
      */
-    (data?: any): Funclib;
+    (value?: any): any;
 
     /**
      * [fn.typeOf] 检查值的类型
@@ -404,6 +407,14 @@ declare namespace fn {
      * @param types   : ...string[]
      */
     get(srcObj: Object, pathStr: string, ...types: Type[]): any;
+
+    /**
+     * [fn.set] 设置对象或子孙对象的属性
+     * @param srcObj  : object
+     * @param pathStr : string
+     * @param value   : any
+     */
+    get(srcObj: Object, pathStr: string, value: any): void;
 
     /**
      * [fn.keys] 获取对象的键数组
@@ -790,6 +801,11 @@ declare namespace fn {
      * [fn.progress] 进度显示工具
      */
     progress: Progress;
+
+    /**
+     * [fn.chain] 释放fn变量占用权
+     */
+    chain(value?: any): any;
 
     /**
      * [fn.noConflict] 释放fn变量占用权

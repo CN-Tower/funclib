@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.4.9 <https://www.funclib.net>
+ * Funclib v3.5.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,11 +13,27 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.4.9';
+  var version = '3.5.1';
   var oldFn = root.fn;
 
   var fn = (function () {
     
+    /**
+     * 根据参数长度和上下文调用原函数
+     * @param func    : Function
+     * @param thisArg : any
+     * @param args    : any[]
+     */
+    function apply(func, thisArg, args) {
+      switch (args.length) {
+        case 0: return func.call(thisArg);
+        case 1: return func.call(thisArg, args[0]);
+        case 2: return func.call(thisArg, args[0], args[1]);
+        case 3: return func.call(thisArg, args[0], args[1], args[2]);
+      }
+      return func.apply(thisArg, args);
+    }
+
     /**
      * [fn.rest] 获取函数的剩余参数
      * @param func : function
@@ -27,22 +43,12 @@
       var start = func.length - 1;
       return function () {
         var len = Math.max(arguments.length - start, 0);
-        var rst = Array(len);
-        for (var i = 0; i < len; i++) {
-          rst[i] = arguments[start + i];
-        }
-        switch (start) {
-          case 0: return func.call(this, rst);
-          case 1: return func.call(this, arguments[0], rst);
-          case 2: return func.call(this, arguments[0], arguments[1], rst);
-          default:
-            var args = Array(start + 1);
-            for (i = 0; i < start; i++) {
-              args[i] = arguments[i];
-            }
-            args[start] = rst;
-            return func.apply(this, args);
-        };
+        var rst = Array(len), i = -1;
+        while (++i < len) rst[i] = arguments[start + i];
+        var args = Array(start + 1);
+        for (i = 0; i < start; i ++) args[i] = arguments[i];
+        args[start] = rst;
+        return apply(func, this, args);
       };
     }
 
@@ -163,8 +169,8 @@
      * @param value  : any|function [?]
      */
     function array(length, value) {
-      var tmpArr = [], tmpVal = 0;
-      for (var i = 0; i < length; i++) {
+      var tmpArr = [], tmpVal = 0, i = -1;
+      while (++i < length) {
         if (isUdf(value)) {
           tmpArr.push(tmpVal);
           tmpVal++;
@@ -187,13 +193,9 @@
       if (isNum(start)) {
         function rangeLoop(isAdd) {
           if (length >= 0) {
-            for (var i = 0; i < length; i++) {
-              rgArr.push(isAdd ? i + start : i);
-            }
+            for (var i = 0; i < length; i++) rgArr.push(isAdd ? i + start : i);
           } else if (length < 0) {
-            for (var i = 0; i > length; i--) {
-              rgArr.push(isAdd ? i + start : i);
-            }
+            for (var i = 0; i > length; i--) rgArr.push(isAdd ? i + start : i);
           }
         };
         if (isUdf(length)) {
@@ -338,8 +340,8 @@
       if (isUdf(isDeep)) isDeep = true;
       if (isBol(pathStr)) isDeep = pathStr, pathStr = UDF;
       pathStr = typeVal(pathStr, 'str');
-      var tmpArr = srcArr.slice();
-      for (var i = 0; i < tmpArr.length - 1; i++) {
+      var tmpArr = srcArr.slice(), i = -1;
+      while (++i < tmpArr.length - 1) {
         for (var j = i + 1; j < tmpArr.length; j++) {
           var isDuplicate;
           if (pathStr) {
@@ -372,14 +374,10 @@
       if (!isFun(iteratee)) throwError('fun');
       var length = srcObj.length;
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
-        for (var i = 0; i < length; i++) {
-          iteratee(srcObj[i], i);
-        }
+        for (var i = 0; i < length; i++) iteratee(srcObj[i], i);
       } else {
-        var ks = keys(srcObj);
-        for (var i = 0; i < ks.length; i++) {
-          iteratee(srcObj[ks[i]], ks[i]);
-        }
+        var ks = keys(srcObj), i = -1;
+        while (++ i < ks.length) iteratee(srcObj[ks[i]], ks[i]);
       }
       return srcObj;
     }
@@ -439,18 +437,39 @@
      */
     var get = rest(function (srcObj, pathStr, types) {
       if (!srcObj || !isStr(pathStr)) return UDF;
-      var paths = contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
-      var prop = paths.shift();
+      var paths = getPaths(pathStr), prop = paths.shift();
       if (!prop) {
         return types.length ? typeVal.apply(void 0, [srcObj].concat(types)) : srcObj;
       }
       if (paths.length) {
-        if (!typeOf(srcObj[prop], 'obj', 'arr')) return UDF;
+        if (!typeVal(srcObj[prop], 'object', 'fun')) return UDF;
         return get.apply(void 0, [srcObj[prop], paths.join('/')].concat(types));
       } else {
         return types.length ? typeVal.apply(void 0, [srcObj[prop]].concat(types)) : srcObj[prop];
       }
     });
+
+    /**
+     * [fn.set] 设置对象或子孙对象的属性
+     * @param srcObj  : object
+     * @param pathStr : string
+     * @param value   : any
+     */
+    var set = function (srcObj, pathStr, value) {
+      if (!srcObj || !isStr(pathStr)) return;
+      var paths = getPaths(pathStr), prop = paths.shift();
+      if (!prop) return;
+      if (paths.length) {
+        if (!typeVal(srcObj[prop], 'object', 'fun')) return;
+        return set(srcObj[prop], paths.join('/'), value);
+      } else {
+        return srcObj[prop] = value;
+      }
+    }
+
+    function getPaths(pathStr) {
+      return contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
+    }
 
     /**
      * [fn.keys] 获取对象的键数组
@@ -570,9 +589,7 @@
         }
         return true;
       }
-      else {
-        return obj1 === obj2;
-      }
+      else return obj1 === obj2;
     }
 
     /**
@@ -603,10 +620,8 @@
     function gid(length) {
       if (isUdf(length)) length = 12;
       var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var id = '';
-      for (var i = 0; i< length; i++) {
-        id += charSet[random(charSet.length)];
-      }
+      var id = '', i = -1;
+      while (++i< length) id += charSet[random(charSet.length)];
       return id;
     }
 
@@ -792,10 +807,8 @@
       }
       var matched = cases[symbol];
       if (matched === '@next') {
-        var ks = keys(cases);
-        for (var i = ks.indexOf(symbol); i < ks.length; i++) {
-          if (cases[ks[i]] !== '@next') { matched = cases[ks[i]]; break; }
-        }
+        var ks = keys(cases), i = ks.indexOf(symbol) - 1;
+        while (++i < ks.length) if (cases[ks[i]] !== '@next') { matched = cases[ks[i]]; break; }
       }
       if (isExec && isFun(matched)) {
         return len(matched) ? matched(source) : matched();
@@ -890,8 +903,8 @@
      * @param length : number
      */
     function cutString(srcStr, length) {
-      var tmpChar, tmpStr = '', count = 0;
-      for (var i = 0; i < srcStr.length; i++) {
+      var tmpChar, tmpStr = '', count = 0, i = -1;
+      while (++i < srcStr.length) {
         if (count >= length) break;
         tmpChar = srcStr.substr(i, 1);
         tmpStr += tmpChar;
@@ -909,8 +922,8 @@
       var queryStr = url.substring(url.lastIndexOf('?') + 1);
       if (queryStr === '') return {};
       var querys = queryStr.split('&');
-      var params = {};
-      for (var i = 0; i < querys.length; i++) {
+      var params = {}, i = -1;
+      while (++i < querys.length) {
         var kw = querys[i].split('=');
         var decode = decodeURIComponent;
         params[decode(kw[0])] = decode(kw[1] || '');
@@ -1126,13 +1139,36 @@
 
     function throwError(type_) {
       switch(type_) {
-        case 'fun': throw new TypeError('Expected a Function');
-        case 'obj': throw new TypeError('Expect an Object!');
-        case 'reg': throw new TypeError('Expected a RegExp pattern');
+        case 'fun': throw new TypeError('Expect a function!');
+        case 'obj': throw new TypeError('Expect an object!');
+        case 'reg': throw new TypeError('Expect a regexp pattern!');
+        case 'arg': throw new TypeError('Arguments type error!');
       }
     }
 
     /**@spliter*/
+
+    /**
+     * [fn.chain] funclib链接调用
+     * @param value: any
+     */
+    function chain(value) {
+      var chainedFn = { 'value': value };
+      chainedFn.val = function () { return chainedFn.value; };
+      forEach(keys(funclib), function (method) {
+        if (method === 'match') {
+          chainedFn[method] = function () { strProto[method].call(arguments); }
+        } else {
+          chainedFn[method] = rest(function (args) {
+            if (!isUdf(chainedFn.value)) {
+              args = [chainedFn.value].concat(args);
+            }
+            return chain(isFun(fn[method]) ? fn[method].apply(void 0, args) : fn[method]);
+          });
+        }
+      });
+      return chainedFn;
+    }
 
     /**
      * [fn.noConflict] 释放fn变量占用权
@@ -1142,12 +1178,11 @@
       return this;
     }
 
-    var shadowFn = {};
-
-    function funclib(data) {
-      shadowFn.data = data;
-      return shadowFn;
-    }
+    /**
+     * [fn().method] funclib链接调用
+     * @param value: any
+     */
+    function funclib(value) { return chain(value); }
 
     funclib.typeOf = typeOf;
     funclib.typeVal = typeVal;
@@ -1182,6 +1217,7 @@
     funclib.len = len;
     funclib.has = has;
     funclib.get = get;
+    funclib.set = set;
     funclib.keys = keys;
     funclib.pick = pick;
     funclib.extend = extend;
@@ -1225,21 +1261,28 @@
     funclib.throttle = throttle;
     funclib.debounce = debounce;
 
-    /**@spliter*/
+    var arrProto = Array.prototype;
+    var strProto = String.prototype;
+    var extMethods = [
+      'pop', 'push', 'concat', 'join', 'reverse', 'shift', 'slice', 'split', 'sort', 'substr', 'substring', 'splice',
+      'splice', 'unshift', 'every', 'some', 'map', 'reduce', 'trim', 'toLowerCase', 'toUpperCase', 'replace', 'search', 
+    ];
 
-    forEach(keys(funclib), function (method) {
-      shadowFn[method] = rest(function (args) {
-        if (!isUdf(shadowFn.data)) {
-          args = [shadowFn.data].concat(args);
-        }
-        return fn[method].apply(void 0, args);
+    forEach(extMethods, function(method) {
+      funclib[method] = rest(function(args) {
+        var proto, arg0 = args.shift();
+        if (isArr(arg0) && has(arrProto, method)) proto = arrProto;
+        if (isStr(arg0) && has(strProto, method)) proto = strProto;
+        if (proto) return apply(proto[method], arg0, args);
+        throwError('arg');
       });
     });
 
     /**@spliter*/
 
-    funclib.version = version;
+    funclib.chain = chain;
     funclib.noConflict = noConflict;
+    funclib.version = version;
 
     return funclib;
   })();

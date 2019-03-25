@@ -3,6 +3,9 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 
+/**
+ * fn.random
+ */
 // fn.log(fn.random());
 // fn.log(fn.random(5));
 // fn.log(fn.random(5, true));
@@ -108,12 +111,12 @@ const fn = require('./src');
  * Function
  * =======================================================================
  */
-let i = 0;
-const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
-fn.interval(500, () => {
-    i ++;
-    log();
-});
+// let i = 0;
+// const log = fn.throttle(() => fn.log(i, 'throttle'), 2000);
+// fn.interval(500, () => {
+//     i ++;
+//     log();
+// });
 // let i = 0;
 // const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
 // fn.interval('test', 500, () => {
@@ -147,15 +150,24 @@ fn.interval(500, () => {
  * Object
  * =======================================================================
  */
-// const obj1 = {name: 'Obj', metadata: {subObj: {name: 'abc'}}}
-// const obj2 = {name: 'Obj', metadata: null}
-// const val1 = fn.get(obj1, '/metadata/subObj/name');
-// const val2 = fn.get(obj2, 'metadata/subObj/name');
-// const val1 = fn.get(obj1, '.metadata.subObj.name');
-// const val2 = fn.get(obj2, 'metadata.subObj.name');
+const obj1 = [{name: 'Obj', metadata: {subObj: {name: 'abc'}}}]
+const obj2 = {name: 'Obj', metadata: null}
+// fn.set(obj1, '/metadata/subObj/name', 'tom');
+// fn.set(obj2, 'metadata/subObj/name', 'tom');
+// fn.set(obj1, '.metadata.subObj.name', 'tom');
+// fn.set(obj2, 'metadata.subObj.name', 'tom');
+fn(obj1).find({name: 'Obj'}).set('metadata.subObj.name', 'tom').val();
+fn.log(obj1, 'set1');
+fn.log(obj2, 'set2');
+
+
+// fn.log(fn.get(obj1, '/metadata/subObj/name'));
+// fn.log(fn.get(obj2, 'metadata/subObj/name'));
+// fn.log(fn.get(obj1, '.metadata.subObj.name'));
+// fn.log(fn.get(obj2, 'metadata.subObj.name'));
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
-// fn.log(val1, 'val1');
-// fn.log(val2, 'val2');
+
+
 // const persons = [{name:'LiLi', age: 22, indexes: {height: 180, weight: 70}},
 //                  {name:'Mari', age: undefined, indexes: {height: 180, weight: 72}},
 //                  {name:'Enn', age: null, indexes: {height: 180, weight: 70}},
