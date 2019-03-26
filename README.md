@@ -38,14 +38,15 @@ $ node
 ==================================================================
 
 > // var bob = fn.find(ps, function(p) { return p.name === 'Bob'; });
-> var bob = fn.find(ps, {name: 'Bob'});
-> fn.log(bob, 'Persons');
+> // var bob = fn.find(ps, {name: 'Bob'});
+> var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
+> fn.log(p, 'Person');
 // =>
 ==================================================================
-                       [10:33:55] Persons 
+                       [10:33:55] Person
 ------------------------------------------------------------------
 {
-  "name": "Bob",
+  "name": "Lee",
   "age": 22
 }
 ==================================================================
@@ -113,6 +114,7 @@ $ npm run test
  * fn.len                   [-] 获取对象自有属性的个数
  * fn.has                   [-] 判断对象是否存在某自有属性
  * fn.get                   [-] 返回对象或子孙对象的属性，可判断类型
+ * fn.set                   [-] 设置对象或子孙对象的属性
  * fn.keys                  [-] 返回对象的键值数组
  * fn.pick                  [-] 获取对象的部分属性
  * fn.extend                [-] 给对象赋值，可指定字段
@@ -152,7 +154,7 @@ $ npm run test
  * fn.testPattern           [-] 用一个或几个通用正则测试
  * fn.matchPattern          [-] 与一个或几个通用正则匹配
  ## Function
- * fn.restArgs              [-] 获取函数的剩余参数
+ * fn.rest                  [-] 获取函数的剩余参数
  * fn.throttle              [-] 节流函数
  * fn.debounce              [-] 防抖函数
  ## Loger
@@ -177,10 +179,11 @@ $ npm run test
  ## Progress
  * fn.progress              [s] 进度显示工具
  * fn.progress.stop         [s] 停止进度，结束后触发回调
-## Tricks
+ ## Tricks
+ * fn.chain                 [-] 返回链接调用对象
+ * fn().method              [-] 返回链接调用对象
  * fn.noConflict            [-] 释放fn变量占用权
  * fn.version               [-] 返回当前函数库版本
- * fn().method              [-] 使用OOP风格的调用
 ==================================================================
 ```
 
