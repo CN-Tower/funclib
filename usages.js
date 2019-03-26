@@ -2,7 +2,9 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-
+var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
+fn.log(p);
 /**
  * fn.random
  */

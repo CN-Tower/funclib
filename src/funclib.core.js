@@ -456,14 +456,15 @@
      * @param value   : any
      */
     var set = function (srcObj, pathStr, value) {
-      if (!srcObj || !isStr(pathStr)) return;
+      if (!srcObj || !isStr(pathStr)) return srcObj;
       var paths = getPaths(pathStr), prop = paths.shift();
-      if (!prop) return;
+      if (!prop) return srcObj;
       if (paths.length) {
         if (!typeVal(srcObj[prop], 'object', 'fun')) return;
         return set(srcObj[prop], paths.join('/'), value);
       } else {
-        return srcObj[prop] = value;
+        srcObj[prop] = value;
+        return srcObj;
       }
     }
 
