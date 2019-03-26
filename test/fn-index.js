@@ -5,6 +5,7 @@ const _fn = require('../src');
 fn.log('Testing index.js', 'Server Test');
 
 const specs = [
+  './core-methods/core.spec',
   './core-methods/array.spec',
   './core-methods/function.spec',
   './core-methods/math.spec',

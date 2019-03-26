@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.1 <https://www.funclib.net>
+ * Funclib v3.5.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -13,7 +13,7 @@
   var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
   var root = _global || _self || Function('return this')();
 
-  var version = '3.5.1';
+  var version = '3.5.2';
   var oldFn = root.fn;
 
   var fn = (function () {
@@ -456,16 +456,19 @@
      * @param value   : any
      */
     var set = function (srcObj, pathStr, value) {
-      if (!srcObj || !isStr(pathStr)) return srcObj;
-      var paths = getPaths(pathStr), prop = paths.shift();
-      if (!prop) return srcObj;
-      if (paths.length) {
-        if (!typeVal(srcObj[prop], 'object', 'fun')) return;
-        return set(srcObj[prop], paths.join('/'), value);
-      } else {
-        srcObj[prop] = value;
-        return srcObj;
+      function setBase(origin, srcObj, pathStr, value) {
+        if (!srcObj || !isStr(pathStr)) return origin;
+        var paths = getPaths(pathStr), prop = paths.shift();
+        if (!prop) return origin;
+        if (paths.length) {
+          if (!typeVal(srcObj[prop], 'object', 'fun')) return origin;
+          return setBase(origin, srcObj[prop], paths.join('/'), value);
+        } else {
+          srcObj[prop] = value;
+          return origin;
+        }
       }
+      return setBase(srcObj, srcObj, pathStr, value);
     }
 
     function getPaths(pathStr) {

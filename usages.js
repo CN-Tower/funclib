@@ -3,7 +3,8 @@ const fn = require('./src');
 // const fn = require('./src/funclib');
 
 var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
+// var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
+var p = fn.chain(ps).filter({name: 'Bob'}).val();
 fn.log(p);
 /**
  * fn.random
@@ -152,15 +153,15 @@ fn.log(p);
  * Object
  * =======================================================================
  */
-const obj1 = [{name: 'Obj', metadata: {subObj: {name: 'abc'}}}]
-const obj2 = {name: 'Obj', metadata: null}
+// const obj1 = [{name: 'Obj', metadata: {subObj: {name: 'abc'}}}]
+// const obj2 = {name: 'Obj', metadata: null}
 // fn.set(obj1, '/metadata/subObj/name', 'tom');
 // fn.set(obj2, 'metadata/subObj/name', 'tom');
 // fn.set(obj1, '.metadata.subObj.name', 'tom');
 // fn.set(obj2, 'metadata.subObj.name', 'tom');
-fn(obj1).find({name: 'Obj'}).set('metadata.subObj.name', 'tom').val();
-fn.log(obj1, 'set1');
-fn.log(obj2, 'set2');
+// fn(obj1).find({name: 'Obj'}).set('metadata.subObj.name', 'tom').val();
+// fn.log(obj1, 'set1');
+// fn.log(obj2, 'set2');
 
 
 // fn.log(fn.get(obj1, '/metadata/subObj/name'));

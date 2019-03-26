@@ -58,6 +58,33 @@
         assert(fn.get(obj, '.metadata.subObj.name', 'arr', 'str') === 'subOjb');
       });
     });
+    describe('#fn.set()', function () {
+      let obj;
+      beforeEach(function() {
+        obj = {
+          name: 'Obj',
+          id: 'Obj_001',
+          metadata: {
+            subObj: {
+              name: 'subOjb',
+              id: 'subOjb_001'
+            }
+          }
+        };
+      });
+      it(`fn.set(obj, '/metadata/subObj/name') should return 'obj with name 'tom'.`, function () {
+        assert(fn.set(obj, '/metadata/subObj/name', 'tom').metadata.subObj.name === 'tom');
+      });
+      it(`fn.set(obj, '/metadata/subArr/name', 'tom') should return 'obj'.`, function () {
+        assert.deepEqual(fn.set(obj, '/metadata/subObj/name', 'tom'), obj);
+      });
+      it(`fn.set(obj, '/metadata/name', 'tom') should return 'obj' which metadata.name = 'tom'.`, function () {
+        assert(fn.set(obj, '/metadata/name', 'tom').metadata.name === 'tom');
+      });
+      it(`fn.set(null, '/metadata/subArr/id', 'tom') return null.`, function () {
+        assert(fn.set(null, '/metadata/subArr/id', 'tom') === null);
+      });
+    });
     describe('#fn.pick()', function () {
       it(`fn.pick({name: 'Tom', age: 28}) should return {}.`, function () {
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}), {});

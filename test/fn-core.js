@@ -5,6 +5,7 @@ const _fn = require('../src/funclib.core');
 fn.log('Testing funclib.core.js', 'Server Test');
 
 const specs = [
+  './core-methods/core.spec',
   './core-methods/array.spec',
   './core-methods/function.spec',
   './core-methods/math.spec',
