@@ -2,10 +2,23 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+
+fn.log(fn.isObj(global));
+fn.log(fn.isObj(/a/));
+fn.log(fn.isObj(new Date()));
+fn.log(fn.isObj(new Error()));
+fn.log(fn.isObj(new Array()));
+fn.log(fn.isObj([]));
+fn.log(fn.isObj(null));
+fn.log(fn.isObj(undefined));
+fn.log(fn.isObj(new (class A{})));
+fn.log(fn.isObj(new Object()));
+fn.log(fn.isObj({}));
+
+// var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 // var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
-var p = fn.chain(ps).filter({name: 'Bob'}).val();
-fn.log(p);
+// var p = fn.chain(ps).filter({name: 'Bob'}).val();
+// fn.log(p);
 /**
  * fn.random
  */

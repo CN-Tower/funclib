@@ -150,7 +150,7 @@
     function isObj(value) {
       return !!value && typeof value == 'object'
         && [_global, _self].indexOf(value) == -1
-        && ![isArr, isFun, isErr, isDat, isReg].some(function(func) { return func(value); });
+        && [isArr, isFun, isErr, isDat, isReg].every(function(func) { return !func(value); });
     }
 
     /**
