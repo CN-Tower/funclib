@@ -1,45 +1,29 @@
 /**
  * @license
- * Funclib v3.5.2 <https://www.funclib.net>
+ * Funclib v3.5.3 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var undefined, UDF = undefined;
-  var _global = typeof global == 'object' && global && global.Object === Object && global;
-  var _self = typeof self == 'object' && self && self.Object === Object && self;
-  var _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-  var _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
-  var root = _global || _self || Function('return this')();
+  var undefined, UDF = undefined
+    , _global = typeof global == 'object' && global && global.Object === Object && global
+    , _self = typeof self == 'object' && self && self.Object === Object && self
+    , _exports = typeof exports == 'object' && exports && !exports.nodeType && exports
+    , _module = _exports && typeof module == 'object' && module && !module.nodeType && module
+    , root = _global || _self || Function('return this')()
+    , oldFn = root.fn;
 
-  var version = '3.5.2';
-  var oldFn = root.fn;
+  var version = '3.5.3';
 
   var fn = (function () {
-    
-    /**
-     * 根据参数长度和上下文调用原函数
-     * @param func    : Function
-     * @param thisArg : any
-     * @param args    : any[]
-     */
-    function apply(func, thisArg, args) {
-      switch (args.length) {
-        case 0: return func.call(thisArg);
-        case 1: return func.call(thisArg, args[0]);
-        case 2: return func.call(thisArg, args[0], args[1]);
-        case 3: return func.call(thisArg, args[0], args[1], args[2]);
-      }
-      return func.apply(thisArg, args);
-    }
 
     /**
      * [fn.rest] 获取函数的剩余参数
      * @param func : function
      */
     function rest(func) {
-      if (!isFun(func)) throwError('fun');
+      if (!isFun(func)) throwErr('fun');
       var start = func.length - 1;
       return function () {
         var len = Math.max(arguments.length - start, 0);
@@ -48,7 +32,13 @@
         var args = Array(start + 1);
         for (i = 0; i < start; i ++) args[i] = arguments[i];
         args[start] = rst;
-        return apply(func, this, args);
+        switch (args.length) {
+          case 0: return func.call(this);
+          case 1: return func.call(this, args[0]);
+          case 2: return func.call(this, args[0], args[1]);
+          case 3: return func.call(this, args[0], args[1], args[2]);
+        }
+        return func.apply(this, args);
       };
     }
 
@@ -61,7 +51,7 @@
     var typeOf = rest(function (value, type_, types) {
       if (!type_) return false;
       types = toArr(type_).concat(types);
-      function checkType(_type) {
+      return types.some(function (_type) {
         switch (_type) {
           case 'str': return isStr(value);
           case 'num': return isNum(value);
@@ -76,8 +66,7 @@
           case 'obj': return isObj(value);
           default: return typeof value === _type;
         }
-      }
-      return types.some(checkType);
+      });
     });
 
     /**
@@ -95,6 +84,16 @@
      * @param value : any
      */
     function isStr(value) { return typeof value == 'string'; }
+    
+    /**
+     * [fn.isNum] 判断类型是否为：number
+     * @param value  : any
+     * @param impure : boolean = false
+     */
+    function isNum(value, impure) {
+      var isNb = typeof value == 'number';
+      return impure ? isNb : isNb && isFinite(value);
+    }
 
     /**
      * [fn.isBol] 判断类型是否为：boolean
@@ -145,16 +144,6 @@
     function isArr(value) { return value instanceof Array; }
 
     /**
-     * [fn.isNum] 判断类型是否为：number
-     * @param value  : any
-     * @param impure : boolean = false
-     */
-    function isNum(value, impure) {
-      var isNb = typeof value == 'number';
-      return impure ? isNb : isNb && isFinite(value);
-    }
-
-    /**
      * [fn.isObj] 判断是否为：正常Object
      * @param value : any
      */
@@ -172,8 +161,7 @@
       var tmpArr = [], tmpVal = 0, i = -1;
       while (++i < length) {
         if (isUdf(value)) {
-          tmpArr.push(tmpVal);
-          tmpVal++;
+          tmpArr.push(tmpVal++);
         } else if (isFun(value)) {
           tmpArr.push(value.length > 0 ? value(i) : value());
         } else {
@@ -345,19 +333,12 @@
         for (var j = i + 1; j < tmpArr.length; j++) {
           var isDuplicate;
           if (pathStr) {
-            var val1 = get(tmpArr[i], pathStr);
-            var val2 = get(tmpArr[j], pathStr);
-            isDuplicate = isDeep
-              ? isDeepEqual(val1, val2)
-              : val1 === val2;
+            var val1 = get(tmpArr[i], pathStr), val2 = get(tmpArr[j], pathStr);
+            isDuplicate = isDeep ? isDeepEqual(val1, val2) : val1 === val2;
           } else {
-            isDuplicate = isDeep
-              ? isDeepEqual(tmpArr[i], tmpArr[j])
-              : tmpArr[i] === tmpArr[j];
+            isDuplicate = isDeep ? isDeepEqual(tmpArr[i], tmpArr[j]) : tmpArr[i] === tmpArr[j];
           }
-          if (isDuplicate) {
-            tmpArr.splice(j, 1), j--;
-          }
+          if (isDuplicate) tmpArr.splice(j--, 1);
         }
       }
       return tmpArr;
@@ -371,7 +352,7 @@
      */
     function forEach(srcObj, iteratee) {
       if (!srcObj) return srcObj;
-      if (!isFun(iteratee)) throwError('fun');
+      if (!isFun(iteratee)) throwErr('fun');
       var length = srcObj.length;
       if (length && length >= 0 && length < Math.pow(2, 53) - 1) {
         for (var i = 0; i < length; i++) iteratee(srcObj[i], i);
@@ -413,9 +394,8 @@
       }
       else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, 'length', 'num')) {
         return srcObj.length;
-      } else {
-        return -1;
       }
+      else return -1;
     }
 
     /**
@@ -535,7 +515,7 @@
      * @arg iteratee : function
      */
     function forIn(srcObj, iteratee) {
-      if (!isFun(iteratee)) throwError('fun');
+      if (!isFun(iteratee)) throwErr('fun');
       return forEach(srcObj, function (val, key) { iteratee(key, val); });
     }
 
@@ -623,8 +603,7 @@
      */
     function gid(length) {
       if (isUdf(length)) length = 12;
-      var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var id = '', i = -1;
+      var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', id = '', i = -1;
       while (++i< length) id += charSet[random(charSet.length)];
       return id;
     }
@@ -636,9 +615,6 @@
       return '#' + ('00000' + (random(0x1000000) << 0).toString(16)).slice(-6);
     }
 
-    var intervalTimers = {};
-    var timeoutTimers = {};
-
     /**
      * [fn.interval] 循环定时器
      * @param timerId  : string [?]
@@ -648,7 +624,7 @@
     function interval(timerId, duration, callback) {
       return timerBase(timerId, duration, callback, 'interval');
     }
-
+    
     /**
      * [fn.timeout] 延时定时器
      * @param timerId  : string [?]
@@ -658,6 +634,8 @@
     function timeout(timerId, duration, callback) {
       return timerBase(timerId, duration, callback, 'timeout');
     }
+    
+    var intervalTimers = {}, timeoutTimers = {};
 
     function timerBase(timerId, duration, callback, type_) {
       var timer, setTimer, clearTimer;
@@ -752,8 +730,8 @@
     function fmtXyzDate(fmtStr, time, offset) {
       var date = dateBase(time);
       if (!date.getTime()) return '';
-      var ms = date.getUTCMilliseconds();
-      var tm = timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset);
+      var ms = date.getUTCMilliseconds()
+        , tm = timestamp(fmtUtcDate('yyyy-MM-dd hh:mm:ss', time)) + ms + (!+offset ? 0 : +offset);
       return fmtDate(fmtStr, tm);
     }
 
@@ -786,8 +764,8 @@
       }
       forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
-          var tmk = timeObj[k];
-          var fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
+          var tmk = timeObj[k]
+            , fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
           fmtStr = fmtStr.replace(RegExp.$1, fmt);
         }
       });
@@ -801,7 +779,7 @@
      * @param isExec : boolean = true
      */
     function match(source, cases, isExec) {
-      if (!isObj(cases)) throwError('obj');
+      if (!isObj(cases)) throwErr('obj');
       if (isUdf(isExec)) isExec = true;
       var symbol = '__@fnMatch__';
       if (has(cases, source)) {
@@ -829,8 +807,8 @@
       return typeOf(srcObj, 'arr', 'obj') ? JSON.stringify(srcObj, null, 2) : String(srcObj);
     }
 
-    var deCodes = ['&', '<', '>', ' ', '\'', '"'];
-    var enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
+    var deCodes = ['&', '<', '>', ' ', '\'', '"']
+      , enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
 
     /**
      * [fn.escape] 编码HTML字符串
@@ -869,10 +847,10 @@
      */
     function fmtCurrency(number, digit) {
       if (isUdf(digit)) digit = 2;
-      var nbArr = String(number.toFixed(digit)).split('.');
-      var integer = nbArr[0];
-      var decimal = nbArr.length > 1 ? nbArr[1] : '';
-      var integerStr, spn, sti, i;
+      var nbArr = String(number.toFixed(digit)).split('.')
+        , integer = nbArr[0]
+        , decimal = nbArr.length > 1 ? nbArr[1] : ''
+        , integerStr, spn, sti, i;
       spn = Math.floor(integer.length / 3);
       sti = integer.length % 3;
       integerStr = integer.substr(0, sti);
@@ -925,11 +903,10 @@
       if (!contains(url, '?')) return {};
       var queryStr = url.substring(url.lastIndexOf('?') + 1);
       if (queryStr === '') return {};
-      var querys = queryStr.split('&');
-      var params = {}, i = -1;
+      var querys = queryStr.split('&'), params = {}, i = -1;
       while (++i < querys.length) {
-        var kw = querys[i].split('=');
-        var decode = decodeURIComponent;
+        var kw = querys[i].split('=')
+          , decode = decodeURIComponent;
         params[decode(kw[0])] = decode(kw[1] || '');
       }
       return params;
@@ -965,7 +942,7 @@
       domain: /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/,
       port: /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/,
       ip: /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/,
-      url_: /(\/([^?#]*))?(\?([^#]*))?(#(.*))?/,
+      url_: /(\/([^?#]*))?(\?([^#]*))?(#(.*))?/
     };
     patterns['ipUrl'] = new RegExp('http(s)?://' + patterns.ip.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
     patterns['domainUrl'] = new RegExp('http(s)?://' + patterns.domain.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
@@ -978,10 +955,10 @@
      */
     function setPattern(ptnMap, pattern) {
       if (ptnMap && isStr(ptnMap)) {
-        isReg(pattern) ? patterns[ptnMap] = pattern : throwError('reg');
+        isReg(pattern) ? patterns[ptnMap] = pattern : throwErr('reg');
       } else if (isObj(ptnMap)) {
         forIn(ptnMap, function (ptn, ptnVal) {
-          isReg(ptnVal) ? patterns[ptn] = ptnVal : throwError('reg');
+          isReg(ptnVal) ? patterns[ptn] = ptnVal : throwErr('reg');
         });
       };
     }
@@ -1051,7 +1028,7 @@
      */
     function throttle(func, wait, options) {
       var leading = true, trailing = true;
-      if (!isFun(func)) throwError('fun');
+      if (!isFun(func)) throwErr('fun');
       if (isObj(options)) {
         leading = has(options, 'leading') ? !!options.leading : leading;
         trailing = has(options, 'trailing') ? !!options.trailing : trailing;
@@ -1074,7 +1051,7 @@
      * trailing: boolean = true
      */
     function debounce(func, wait, options) {
-      if (!isFun(func)) throwError('fun');
+      if (!isFun(func)) throwErr('fun');
       var lastArgs, lastThis, maxWait, result, timerId, lastCallTime
         , lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
       wait = +wait || 0;
@@ -1141,12 +1118,12 @@
       return debounced;
     }
 
-    function throwError(type_) {
+    function throwErr(type_) {
       switch(type_) {
-        case 'fun': throw new TypeError('Expect a function!');
-        case 'obj': throw new TypeError('Expect an object!');
-        case 'reg': throw new TypeError('Expect a regexp pattern!');
         case 'arg': throw new TypeError('Arguments type error!');
+        case 'obj': throw new TypeError('Expect an Object param!');
+        case 'fun': throw new TypeError('Expect a Function param!');
+        case 'reg': throw new TypeError('Expect a RegExp pattern!');
       }
     }
 
@@ -1265,20 +1242,17 @@
     funclib.throttle = throttle;
     funclib.debounce = debounce;
 
-    var arrProto = Array.prototype;
-    var strProto = String.prototype;
-    var extMethods = [
+    var arrProto = Array.prototype , strProto = String.prototype , extMethods = [
       'pop', 'push', 'concat', 'join', 'reverse', 'shift', 'slice', 'split', 'sort', 'substr', 'substring', 'splice',
       'splice', 'unshift', 'every', 'some', 'map', 'reduce', 'trim', 'toLowerCase', 'toUpperCase', 'replace', 'search', 
     ];
-
     forEach(extMethods, function(method) {
       funclib[method] = rest(function(args) {
         var proto, arg0 = args.shift();
         if (isArr(arg0) && has(arrProto, method)) proto = arrProto;
         if (isStr(arg0) && has(strProto, method)) proto = strProto;
-        if (proto) return apply(proto[method], arg0, args);
-        throwError('arg');
+        if (proto) return proto[method].apply(arg0, args);
+        throwErr('arg');
       });
     });
 
