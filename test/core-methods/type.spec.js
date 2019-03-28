@@ -137,6 +137,21 @@
       it(`fn.isObj({}) should return true.`, function () {
         assert(fn.isObj({}));
       });
+      it(`fn.isObj(new Object()) should return true.`, function () {
+        assert(fn.isObj(new Object()));
+      });
+      it(`fn.isObj(new (class A {})) should return true.`, function () {
+        assert(fn.isObj(new (class A {})));
+      });
+      it(`fn.isObj(new Date()) should return true.`, function () {
+        assert(!fn.isObj([]));
+      });
+      it(`fn.isObj(new Date()) should return true.`, function () {
+        assert(!fn.isObj(/test/));
+      });
+      it(`fn.isObj(new Date()) should return true.`, function () {
+        assert(!fn.isObj(Date));
+      });
       it(`fn.isObj(new Date()) should return true.`, function () {
         assert(!fn.isObj(new Date()));
       });
