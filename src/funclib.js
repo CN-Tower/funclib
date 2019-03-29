@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.3 <https://www.funclib.net>
+ * Funclib v3.5.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.3';
+  var version = '3.5.4';
 
   var fn = (function () {
 
@@ -1315,9 +1315,7 @@
           chainedFn[method] = function () { strProto[method].call(arguments); }
         } else {
           chainedFn[method] = rest(function (args) {
-            if (!isUdf(chainedFn.value)) {
-              args = [chainedFn.value].concat(args);
-            }
+            if (!isUdf(chainedFn.value)) args = [chainedFn.value].concat(args);
             return chain(isFun(fn[method]) ? fn[method].apply(void 0, args) : fn[method]);
           });
         }
