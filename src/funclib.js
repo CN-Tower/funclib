@@ -435,7 +435,7 @@
      * @param pathStr : string
      * @param value   : any
      */
-    var set = function (srcObj, pathStr, value) {
+    function set(srcObj, pathStr, value) {
       function setBase(origin, srcObj, pathStr, value) {
         if (!srcObj || !isStr(pathStr)) return origin;
         var paths = getPaths(pathStr), prop = paths.shift();
