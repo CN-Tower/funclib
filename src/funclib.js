@@ -464,7 +464,7 @@
     /**
      * [fn.pick] 获取包含部分属性的对象副本
      * @param srcObj    : object
-     * @param predicate : object|function|string|string[]
+     * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
     var pick = rest(function (srcObj, predicate, props) {
@@ -485,7 +485,7 @@
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : object|function|string|string[]
+     * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
     var extend = rest(function (tarObj, srcObj, predicate, props) {
