@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.5 <https://www.funclib.net>
+ * Funclib v3.5.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.5';
+  var version = '3.5.6';
 
   var fn = (function () {
 
@@ -460,32 +460,43 @@
      * @param srcObj : object
      */
     function keys(srcObj) { return Object.keys(srcObj); }
-
+    
     /**
-     * [fn.pick] 获取对象的部分属性
+     * [fn.pick] 获取包含部分属性的对象副本
      * @param srcObj    : object
-     * @param predicate : function|object
+     * @param predicate : object|function|string|string[]
      * @param props     : ...string[]
      */
     var pick = rest(function (srcObj, predicate, props) {
-      return extendBase({}, srcObj, predicate, props, false);
+      return extendBase({}, srcObj, predicate, props);
     });
 
+    /**
+     * [fn.omit] 获取省略部分属性的对象副本
+     * @param srcObj    : object
+     * @param predicate : function|string|string[]
+     * @param props     : ...string[]
+     */
+    var omit = rest(function (srcObj, predicate, props) {
+      return extendBase({}, srcObj, predicate, props, true, true);
+    });
+    
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : function|object
+     * @param predicate : object|function|string|string[]
      * @param props     : ...string[]
      */
     var extend = rest(function (tarObj, srcObj, predicate, props) {
       return extendBase(tarObj, srcObj, predicate, props, true);
     });
 
-    function extendBase(tarObj, srcObj, predicate, propList, isTraDft) {
+    function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
       if (!isObj(srcObj)) return tarObj;
       propList = flatten(propList);
       var isPdtObj = isObj(predicate);
+      var srcKs = keys(srcObj);
       function traversal(tarObj, srcObj, propList) {
         forEach(propList, function (prop) {
           if (has(srcObj, prop)) {
@@ -496,15 +507,18 @@
         });
       }
       if (typeOf(predicate, 'str', 'arr', 'obj')) {
-        traversal(tarObj, srcObj, isPdtObj ? propList : toArr(predicate).concat(propList));
+        var props = isPdtObj ? propList : toArr(predicate).concat(propList);
+        if (isOmit) props = srcKs.filter(function(key) { return !contains(props, key); });
+        traversal(tarObj, srcObj, props);
       }
       else if (isFun(predicate)) {
         forIn(srcObj, function (key, val) {
-          if (predicate(key, val)) tarObj[key] = val;
+          var isPred = predicate(key, val);
+          if ((isPred && !isOmit ) || (!isPred && isOmit)) tarObj[key] = val;
         });
       }
       else if (isTraDft) {
-        traversal(tarObj, srcObj, keys(srcObj));
+        traversal(tarObj, srcObj, srcKs);
       }
       return tarObj;
     }
@@ -1199,6 +1213,7 @@
     funclib.set = set;
     funclib.keys = keys;
     funclib.pick = pick;
+    funclib.omit = omit;
     funclib.extend = extend;
     funclib.forIn = forIn;
     funclib.deepCopy = deepCopy;

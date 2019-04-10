@@ -105,6 +105,29 @@
         assert.deepEqual(fn.pick({name: 'Tom', age: 28}, 'name', 'age'), {name: 'Tom', age: 28});
       });
     });
+    describe('#fn.omit()', function () {
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}) should return {name: 'Tom', sex: 'f', age: 28}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}), {name: 'Tom', sex: 'f', age: 28});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name') should return {age: 28}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name'), {age: 28, sex: 'f'});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, ['name', 'age']) should return {sex: 'f'}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, ['name', 'age']), {sex: 'f'});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, ['name', 'age', 'sex']) should return {}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, ['name', 'age', 'sex']), {});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, (k, v) => v === 28) should return {name: 'Tom', sex: 'f'}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, (k, v) => v === 28), {name: 'Tom', sex: 'f'});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name', 'age') should return {}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name', 'age', 'sex'), {});
+      });
+      it(`fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name', 'age') should return {sex: 'f'}.`, function () {
+        assert.deepEqual(fn.omit({name: 'Tom', sex: 'f', age: 28}, 'name', 'age'), {sex: 'f'});
+      });
+    });
     describe('#fn.extend()', function () {
       let tom, jerry;
       beforeEach(function () {

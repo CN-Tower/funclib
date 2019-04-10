@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.5 <https://www.funclib.net>
+ * Funclib v3.5.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -45,7 +45,8 @@
  * fn.get                   [-] 返回对象或子孙对象的属性，可判断类型
  * fn.set                   [-] 设置对象或子孙对象的属性
  * fn.keys                  [-] 返回对象的键值数组
- * fn.pick                  [-] 获取对象的部分属性
+ * fn.pick                  [-] 获取包含部分属性的对象副本
+ * fn.omit                  [-] 获取省略部分属性的对象副本
  * fn.extend                [-] 给对象赋值，可指定字段
  * fn.forIn                 [-] 遍历对象的可数自有属性
  * fn.deepCopy              [-] 深拷贝数组或对象
@@ -422,20 +423,26 @@ declare namespace fn {
     keys(srcObj: Object): string[];
 
     /**
-     * [fn.pick] 获取对象的部分属性
+     * [fn.pick] 获取包含部分属性的对象副本
      * @param srcObj    : object
-     * @param predicate : function|object
-     * default?: any;
+     * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
     pick(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
+     * [fn.omit] 获取省略部分属性的对象副本
+     * @param srcObj    : object
+     * @param predicate : function|string|string[]
+     * @param props     : ...string[]
+     */
+    omit(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
+
+    /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
-     * @param predicate : function|object [?]
-     * default?: any;
+     * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
     extend(tarObj: any, srcObj: any, predicate?: { default?: any } | any, ...props: string[]): any;
