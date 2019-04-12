@@ -12,7 +12,7 @@
     <input type="text" id="ipt" oninput="onIptChange()">
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./src/funclib.js"></script>
-    <!-- <script src="./src/funclib.min.js"></script> -->
+    <!-- <script src="./src/funclib.min.js"></script> --> 
     <script>
         /**
          * Url
@@ -45,8 +45,8 @@
                 var fsChangeEvent = fn.fullScreenChange(function() {
                     fn.log(111);
                     fn.exitFullScreen();
-                    // fsChangeEvent.remove();
-                    fn.fullScreenChange.removeAll();
+                    fsChangeEvent.remove();
+                    // fn.fullScreenChange.removeAll();
                 });
             });
         }
