@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.6 <https://www.funclib.net>
+ * Funclib v3.5.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.6';
+  var version = '3.5.7';
 
   var fn = (function () {
 

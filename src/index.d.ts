@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.6 <https://www.funclib.net>
+ * Funclib v3.5.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -183,6 +183,19 @@ declare namespace fn {
     clear: () => any;
   }
 
+  interface FullScreenChange {
+    /**
+     * [fn.fullScreenChange] 全屏状态变化事件
+     * @param callback function
+     */
+    (callback: Function): { remove: () => void };
+
+    /**
+     * [fn.fullScreenChange.removeAll] 清除所有全屏状态变化事件
+     */
+    removeAll: () => void;
+  }
+
   interface LogConfig {
     title?: string, width?: number, isFmt?: boolean, isShowTime?: boolean,
     pre?: boolean, end?: boolean,
@@ -201,6 +214,11 @@ declare namespace fn {
      * [fn.progress] 进度显示工具
      */
     progress: Progress;
+
+    /**
+     * [fn.fullScreenChange] 全屏状态变化事件
+     */
+    fullScreenChange: FullScreenChange;
 
     /**
      * [fn().method] 使用OOP风格的调用
@@ -706,25 +724,21 @@ declare namespace fn {
 
     /**
      * [fn.fullScreen] 全屏显示HTML元素
-     * @param el : HTMLElement
+     * @param el      : HTMLElement|selector
+     * @param didFull : function [?]
      */
-    fullScreen(el: any): void;
+    fullScreen(el: any, didFull?: Function): void;
 
     /**
      * [fn.exitFullScreen] 退出全屏显示
+     * @param didExit : function [?] 
      */
-    exitFullScreen(): void;
+    exitFullScreen(didExit?: Function): void;
 
     /**
      * [fn.isFullScreen] 检测是否全屏状态
      */
     isFullScreen(): boolean;
-
-    /**
-     * [fn.fullScreenChange] 全屏状态变化事件
-     * @param callback function|false [?]
-     */
-    fullScreenChange(callback?: any): void;
 
     /**
      * [fn.copyText] 复制文本到粘贴板

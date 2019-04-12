@@ -8,9 +8,10 @@
 </head>
 <body>
     <div id="myDiv" style="width: 100px; height: 100px; background: red;"></div>
+    <button onclick="fullScreen()">放大</button>
     <input type="text" id="ipt" oninput="onIptChange()">
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="./src/funclib.core.js"></script>
+    <script src="./src/funclib.js"></script>
     <!-- <script src="./src/funclib.min.js"></script> -->
     <script>
         /**
@@ -26,18 +27,29 @@
          * Function
          * =======================================================================
          */
-        var logVal = fn.debounce(function() {
-            fn.log($('#ipt').val(), false);
-        }, 500);
-        function onIptChange(e) {
-            logVal();
+        // var logVal = fn.debounce(function() {
+        //     fn.log($('#ipt').val(), false);
+        // }, 500);
+        // function onIptChange(e) {
+        //     logVal();
+        // }
+        // var showClientTop = fn.throttle(function(e) {
+        //     fn.log(e.clientX, false);
+        // }, 1000);
+        // $(document).mousemove(function(e) {
+        //     showClientTop(e);
+        // });
+
+        function fullScreen() {
+            fn.fullScreen('#myDiv', function() {
+                var fsChangeEvent = fn.fullScreenChange(function() {
+                    fn.log(111);
+                    fn.exitFullScreen();
+                    // fsChangeEvent.remove();
+                    fn.fullScreenChange.removeAll();
+                });
+            });
         }
-        var showClientTop = fn.throttle(function(e) {
-            fn.log(e.clientX, false);
-        }, 1000);
-        $(document).mousemove(function(e) {
-            showClientTop(e);
-        });
     </script>
 </body>
 </html>
