@@ -191,6 +191,12 @@ declare namespace fn {
   }
 
   interface Funclib extends Any {
+    
+    /**
+     * [fn.version] 获取版本号
+     */
+    version: string;
+
     /**
      * [fn().method] 使用OOP风格的调用
      * @param value : any 目标方法的第一个参数
@@ -689,7 +695,9 @@ declare namespace fn {
      * maxWait: number = Math.max(0, wait)
      * trailing: boolean = true
      */
-    debounce(func: Function, wait: number, options?: boolean | { leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number }): Function;
+    debounce(func: Function, wait: number, options?: boolean | {
+      leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number
+    }): Function;
 
     /**
      * [fn.fullScreen] 全屏显示HTML元素
@@ -817,10 +825,5 @@ declare namespace fn {
      * [fn.noConflict] 释放fn变量占用权
      */
     noConflict(): void;
-
-    /**
-     * [fn.version] 获取版本号
-     */
-    version: string;
   }
 }
