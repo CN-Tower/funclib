@@ -198,6 +198,11 @@ declare namespace fn {
     version: string;
 
     /**
+     * [fn.progress] 进度显示工具
+     */
+    progress: Progress;
+
+    /**
      * [fn().method] 使用OOP风格的调用
      * @param value : any 目标方法的第一个参数
      */
@@ -810,11 +815,6 @@ declare namespace fn {
      * [fn.clear] 命令行清屏
      */
     clear(): void;
-
-    /**
-     * [fn.progress] 进度显示工具
-     */
-    progress: Progress;
 
     /**
      * [fn.chain] 释放fn变量占用权
