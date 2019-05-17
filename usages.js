@@ -2,18 +2,20 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
+// fn.progress('test');
+// fn.timeout(15000, () => fn.progress.stop());
 
-fn.log(fn.isObj(global));
-fn.log(fn.isObj(/a/));
-fn.log(fn.isObj(new Date()));
-fn.log(fn.isObj(new Error()));
-fn.log(fn.isObj(new Array()));
-fn.log(fn.isObj([]));
-fn.log(fn.isObj(null));
-fn.log(fn.isObj(undefined));
-fn.log(fn.isObj(new (class A{})));
-fn.log(fn.isObj(new Object()));
-fn.log(fn.isObj({}));
+// fn.log(fn.isObj(global));
+// fn.log(fn.isObj(/a/));
+// fn.log(fn.isObj(new Date()));
+// fn.log(fn.isObj(new Error()));
+// fn.log(fn.isObj(new Array()));
+// fn.log(fn.isObj([]));
+// fn.log(fn.isObj(null));
+// fn.log(fn.isObj(undefined));
+// fn.log(fn.isObj(new (class A{})));
+// fn.log(fn.isObj(new Object()));
+// fn.log(fn.isObj({}));
 
 // var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 // var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
@@ -134,7 +136,7 @@ fn.log(fn.isObj({}));
 //     log();
 // });
 // let i = 0;
-// const log = fn.debounce(() => fn.log(i, 'debounce'), 2000, true);
+// const log = fn.debounce(() => fn.log(i, 'debounce'), 2000);
 // fn.interval('test', 500, () => {
 //     if(i < 10) i ++
 //     else fn.interval('test').stop();

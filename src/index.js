@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.7 <https://www.funclib.net>
+ * Funclib v3.5.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.7';
+  var version = '3.5.8';
 
   var fn = (function () {
 
@@ -706,9 +706,10 @@
     function asUtcTime(time) {
       var date = dateBase(time);
       if (!date.getTime()) return NaN;
+      var timeObj = getTimeObj(date);
       return Date.UTC(
-        date.getFullYear(), date.getMonth(), date.getDate(),
-        date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()
+        timeObj['y+'], timeObj['M+'], timeObj['d+'],
+        timeObj['h+'], timeObj['m+'], timeObj['s+'], timeObj['S']
       );
     }
 
@@ -726,14 +727,18 @@
      * @param fmtStr : string
      * @param time   : date|string|number
      */
-    function fmtDate(fmtStr, time) { return fmtDateBase(fmtStr, time, false); }
+    function fmtDate(fmtStr, time) {
+      return fmtDateBase(fmtStr, time, false);
+    }
 
     /**
      * [fn.fmtUtcDate] 获取格式化的UTC时间字符串
      * @param fmtStr : string
      * @param time   : date|string|number
      */
-    function fmtUtcDate(fmtStr, time) { return fmtDateBase(fmtStr, time, true); }
+    function fmtUtcDate(fmtStr, time) {
+      return fmtDateBase(fmtStr, time, true);
+    }
 
     /**
      * [fn.fmtXyzDate] 获取格式化指定时差的时间字符串
@@ -755,32 +760,41 @@
       return new Date(time.match(/^[0-9]*$/) ? +time : time);
     }
 
+    function getTimeObj(date, isUtc) {
+      return isUtc ? {
+        'y+': date.getUTCFullYear(),
+        'M+': date.getUTCMonth() + 1,
+        'd+': date.getUTCDate(),
+        'h+': date.getUTCHours(),
+        'm+': date.getUTCMinutes(),
+        's+': date.getUTCSeconds(),
+        'S':  date.getUTCMilliseconds(),
+        'q+': Math.floor((date.getUTCMonth() + 3) / 3)
+      } : {
+        'y+': date.getFullYear(),
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds(),
+        'S': date.getMilliseconds(),
+        'q+': Math.floor((date.getMonth() + 3) / 3)
+      }
+    }
+
     function fmtDateBase(fmtStr, time, isUtc) {
-      var date = dateBase(time), obj, year;
+      var date = dateBase(time);
       if (!date.getTime()) return '';
-      if (isUtc) {
-        year = date.getUTCFullYear();
-        timeObj = {
-          'M+': date.getUTCMonth() + 1, 'd+': date.getUTCDate(), 'h+': date.getUTCHours(),
-          'm+': date.getUTCMinutes(), 's+': date.getUTCSeconds(), 'S':  date.getUTCMilliseconds(),
-          'q+': Math.floor((date.getUTCMonth() + 3) / 3),
-        } 
-      } else {
-        year = date.getFullYear();
-        timeObj = {
-          'M+': date.getMonth() + 1, 'd+': date.getDate(), 'h+': date.getHours(),
-          'm+': date.getMinutes(), 's+': date.getSeconds(), 'S':  date.getMilliseconds(),
-          'q+': Math.floor((date.getMonth() + 3) / 3),
-        } 
-      }
-      if (/(y+)/.test(fmtStr)) {
-        fmtStr = fmtStr.replace(RegExp.$1, (year + '').substr(4 - RegExp.$1.length));
-      }
+      var timeObj = getTimeObj(date, isUtc);
       forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
-          var tmk = timeObj[k]
-            , fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
-          fmtStr = fmtStr.replace(RegExp.$1, fmt);
+          if (k === 'y+') {
+            fmtStr = fmtStr.replace(RegExp.$1, (timeObj['y+'] + '').substr(4 - RegExp.$1.length));
+          } else {
+            var tmk = timeObj[k]
+              , fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
+            fmtStr = fmtStr.replace(RegExp.$1, fmt);
+          }
         }
       });
       return fmtStr;
@@ -1084,10 +1098,6 @@
         result = func.apply(thisArg, args);
         return result;
       }
-      function remainingWait(time) {
-        var timeWaiting = wait - (time - lastCallTime);
-        return maxing ? Math.min(timeWaiting, maxWait - (time - lastInvokeTime)) : timeWaiting;
-      }
       function shouldInvoke(time) {
         var timeSinceLastCall = time - lastCallTime;
         return (isUdf(lastCallTime) || (timeSinceLastCall >= wait) ||
@@ -1096,7 +1106,9 @@
       function timerExpired() {
         var time = Date.now();
         if (shouldInvoke(time)) return trailingEdge(time);
-        timerId = setTimeout(timerExpired, remainingWait(time));
+        var timeWaiting = wait - (time - lastCallTime)
+          , waitingTime = maxing ? Math.min(timeWaiting, maxWait - (time - lastInvokeTime)) : timeWaiting; 
+        timerId = timeout(waitingTime, timerExpired);
       }
       function trailingEdge(time) {
         timerId = UDF;
@@ -1110,15 +1122,15 @@
         if (isInvoking) {
           if (isUdf(timerId)) {
             lastInvokeTime = lastCallTime;
-            timerId = setTimeout(timerExpired, wait);
+            timerId = timeout(wait, timerExpired);
             return leading ? invokeFunc(lastCallTime) : result;
           }
           if (maxing) {
-            timerId = setTimeout(timerExpired, wait);
+            timerId = timeout(wait, timerExpired);
             return invokeFunc(lastCallTime);
           }
         }
-        if (isUdf(timerId)) timerId = setTimeout(timerExpired, wait);
+        if (isUdf(timerId)) timerId = timeout(wait, timerExpired);
         return result;
       }
       debounced.cancel = function () {
@@ -1276,9 +1288,9 @@
      * type : 'bar'|'spi' = 'bar'
      * split: boolean = true
      */
+    var pgBarId = '#FN_PG_BAR', pgSpiId = '#FN_PG_SPI';
     function progress(title, options) {
-      timeout('#fn_pg_Bar').stop();
-      interval('#fn_pg_spi').stop();
+      timeout(pgBarId).stop(), interval(pgSpiId).stop();
       var progressBar, duration, pgType;
       if (isObj(title)) {
         options = title, title = UDF;
@@ -1303,13 +1315,14 @@
       else {
         var stream = process.stderr;
         var flag = '/';
-        interval('#fn_pg_spi', 180, function () {
+        interval(pgSpiId, 180, function () {
           stream.clearLine();
           stream.cursorTo(0);
           stream.write(chalk(flag, 'cyan') + ' ' + title);
           flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
         });
       }
+
       /**
        * [fn.progress.stop] 结束进度条，结束后触发回调
        * @param onStopped : function [?]
@@ -1323,11 +1336,12 @@
           });
         }
         else {
-          interval('#fn_pg_spi').stop();
+          interval(pgSpiId).stop();
           pgType = null;
           if (isFun(onStopped)) onStopped();
         }
       }
+
       /**
        * [fn.progress.clear] 立即结束进度条，并触发回调
        * @param onStopped : function [?]
@@ -1336,23 +1350,25 @@
         if (pgType === 'bar') {
           pgType = null;
           progressBar.complete = true;
-          timeout('#fn_pg_Bar').stop();
+          timeout(pgBarId).stop();
         }
         else {
           pgType = null;
-          interval('#fn_pg_spi').stop();
+          interval(pgSpiId).stop();
         }
         if (isFun(onStopped)) onStopped();
       }
-      function tick(tickType, onStopped) {
-        timeout('#fn_pg_Bar', duration, function () {
-          progressBar.tick();
+
+      function tick(tickType, onStopped, limited) {
+        timeout(pgBarId, duration, function () {
+          if (!limited) progressBar.tick();
           switch (tickType) {
             case '+': duration += 300; break;
             case '-': duration -= duration * 0.2; break;
           };
           if (!progressBar.complete) {
-            tick(tickType, onStopped);
+            var isLimit = tickType === '+' && progressBar.curr === progressBar.total -1;
+            tick(tickType, onStopped, isLimit);
           }
           else if (onStopped) {
             onStopped();
