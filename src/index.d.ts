@@ -443,7 +443,7 @@ declare namespace fn {
      * @param pathStr : string
      * @param value   : any
      */
-    get(srcObj: Object, pathStr: string, value: any): void;
+    set(srcObj: Object, pathStr: string, value: any): void;
 
     /**
      * [fn.keys] 获取对象的键数组
