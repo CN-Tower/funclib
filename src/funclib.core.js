@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.8 <https://www.funclib.net>
+ * Funclib v3.5.9 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.8';
+  var version = '3.5.9';
 
   var fn = (function () {
 
@@ -708,7 +708,7 @@
       if (!date.getTime()) return NaN;
       var timeObj = getTimeObj(date);
       return Date.UTC(
-        timeObj['y+'], timeObj['M+'], timeObj['d+'],
+        timeObj['y+'], timeObj['M+'] - 1, timeObj['d+'],
         timeObj['h+'], timeObj['m+'], timeObj['s+'], timeObj['S']
       );
     }
