@@ -78,8 +78,8 @@
       it(`fn.maskString(18770347037, 3) should return '187********'.`, function () {
         assert(fn.maskString(18770347037, 3) === '187********');
       });
-      it(`fn.maskString('18770347037', 3, 4) should return '187****7037'.`, function () {
-        assert(fn.maskString('18770347037', 'x', 3, 4) === '187xxxx7037');
+      it(`fn.maskString('18770347037', 3, 4, 'x') should return '187****7037'.`, function () {
+        assert(fn.maskString('18770347037', 3, 4, 'x') === '187xxxx7037');
       });
       it(`fn.maskString('测试双字节', 2, 1) should return '测试**字节'.`, function () {
         assert(fn.maskString('测试双字节', 2, 1) === '测试**字节');
