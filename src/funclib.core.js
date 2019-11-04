@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.9 <https://www.funclib.net>
+ * Funclib v3.5.10 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -14,7 +14,7 @@
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
 
-  var version = '3.5.9';
+  var version = '3.5.10';
 
   var fn = (function () {
 
@@ -78,13 +78,13 @@
     var typeVal = rest(function (value, type_, types) {
       return typeOf.apply(void 0, [value, type_].concat(types)) && value;
     });
-    
+
     /**
      * [fn.isStr] 判断类型是否为：string
      * @param value : any
      */
     function isStr(value) { return typeof value == 'string'; }
-    
+
     /**
      * [fn.isNum] 判断类型是否为：number
      * @param value  : any
@@ -460,7 +460,7 @@
      * @param srcObj : object
      */
     function keys(srcObj) { return Object.keys(srcObj); }
-    
+
     /**
      * [fn.pick] 获取包含部分属性的对象副本
      * @param srcObj    : object
@@ -480,7 +480,7 @@
     var omit = rest(function (srcObj, predicate, props) {
       return extendBase({}, srcObj, predicate, props, true, true);
     });
-    
+
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
@@ -638,7 +638,7 @@
     function interval(timerId, duration, callback) {
       return timerBase(timerId, duration, callback, 'interval');
     }
-    
+
     /**
      * [fn.timeout] 延时定时器
      * @param timerId  : string [?]
@@ -648,7 +648,7 @@
     function timeout(timerId, duration, callback) {
       return timerBase(timerId, duration, callback, 'timeout');
     }
-    
+
     var intervalTimers = {}, timeoutTimers = {};
 
     function timerBase(timerId, duration, callback, type_) {
@@ -888,21 +888,18 @@
       }
       return decimal ? integerStr + '.' + decimal : integerStr;
     }
-    
+
     /**
      * [fn.maskString] 编码字符串或其子串
      * @param srcStr : any
-     * @param mask   : string = '*'
      * @param start  : number
      * @param length : number
+     * @param mask   : string = '*'
      */
-    function maskString(srcStr, mask, start, length) {
+    function maskString(srcStr, start, length, mask) {
       var str = String(srcStr), ptn = /[^\u4e00-\u9fa5]/mg, ptn_ = /[\u4e00-\u9fa5]/mg;
-      if (isNum(mask)) {
-        length = start, start = mask, mask = '*';
-      } else if (!isStr(mask)) {
-        mask = '*';
-      }
+      if (isStr(length)) mask = length, length = UDF;
+      if (!isStr(mask)) mask = '*';
       var maskStr = str.substr(start, length).replace(ptn, mask).replace(ptn_, mask + mask);
       return str.substr(0, start) + maskStr + (isUdf(length) ? '' : str.substr(start + length));
     }
@@ -1107,7 +1104,7 @@
         var time = Date.now();
         if (shouldInvoke(time)) return trailingEdge(time);
         var timeWaiting = wait - (time - lastCallTime)
-          , waitingTime = maxing ? Math.min(timeWaiting, maxWait - (time - lastInvokeTime)) : timeWaiting; 
+          , waitingTime = maxing ? Math.min(timeWaiting, maxWait - (time - lastInvokeTime)) : timeWaiting;
         timerId = timeout(waitingTime, timerExpired);
       }
       function trailingEdge(time) {
@@ -1202,7 +1199,7 @@
     funclib.isReg = isReg;
     funclib.isArr = isArr;
     funclib.isObj = isObj;
-  
+
     funclib.array = array;
     funclib.range = range;
     funclib.toArr = toArr;
@@ -1269,7 +1266,7 @@
 
     var arrProto = Array.prototype , strProto = String.prototype , extMethods = [
       'pop', 'push', 'concat', 'join', 'reverse', 'shift', 'slice', 'split', 'sort', 'substr', 'substring', 'splice',
-      'splice', 'unshift', 'every', 'some', 'map', 'reduce', 'trim', 'toLowerCase', 'toUpperCase', 'replace', 'search', 
+      'splice', 'unshift', 'every', 'some', 'map', 'reduce', 'trim', 'toLowerCase', 'toUpperCase', 'replace', 'search',
     ];
     forEach(extMethods, function(method) {
       funclib[method] = rest(function(args) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v3.5.9 <https://www.funclib.net>
+ * Funclib v3.5.10 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -123,7 +123,7 @@ declare var fn: fn.Funclib;
 declare namespace fn {
 
   type Any = any;
-  
+
   type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf'
             | 'nul' | 'err' | 'reg' | 'dat' | string | string[];
 
@@ -204,7 +204,7 @@ declare namespace fn {
   }
 
   interface Funclib extends Any {
-    
+
     /**
      * [fn.version] 获取版本号
      */
@@ -633,11 +633,11 @@ declare namespace fn {
     /**
      * [fn.maskString] 编码字符串或其子串
      * @param srcStr : any
-     * @param mask   : string = '*'
      * @param start  : number
      * @param length : number
+     * @param mask   : string = '*'
      */
-    maskString(srcStr: any, mask?: string, start?: number, length?: number): string;
+    maskString(srcStr: any, start: number, length?: number|string, mask?: string): string;
 
     /**
      * [fn.cutString] 裁切字符串到指定长度
@@ -731,7 +731,7 @@ declare namespace fn {
 
     /**
      * [fn.exitFullScreen] 退出全屏显示
-     * @param didExit : function [?] 
+     * @param didExit : function [?]
      */
     exitFullScreen(didExit?: Function): void;
 
