@@ -86,4 +86,4 @@ function debounce(func, wait, options) {
 }
 
 /**@function*/
-module.exports = throwErr;
+module.exports = debounce;
