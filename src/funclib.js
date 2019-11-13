@@ -1,12 +1,12 @@
 /**
  * @license
- * Funclib v3.5.10 <https://www.funclib.net>
+ * Funclib v4.0.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '3.5.10';
+  var version = '4.0.1';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global

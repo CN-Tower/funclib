@@ -10,7 +10,6 @@ const clientJsPath = path.join(rootPath, 'src/funclib.js');
 const serverJsPath = path.join(rootPath, 'src/index.js');
 
 const configStr =  fn.rd(confPath)
-  .replace(/\* Funclib v\d*\.\d*\.\d*/, '* Funclib v' + pkg.version)
   .replace(/var version = '\d*\.\d*\.\d*';/, 'var version = \'' + pkg.version + '\';');
 fn.wt(confPath, configStr);
 
@@ -59,7 +58,8 @@ function asyncMethodToJs(jsPath, type_) {
 
   jsStr = fn.rd(jsPath)
     .replace(/\;\s\(function\s\(\)\s\{(.|\r|\n)*var\sfn\s=\s\(function\s\(\)\s\{/, jsConf)
-    .replace(/var\sfn\s=\s\(function\s\(\)\s\{(.|\r|\n)*\/\*\*\@funclib/, () => tempStr);
+    .replace(/var\sfn\s=\s\(function\s\(\)\s\{(.|\r|\n)*\/\*\*\@funclib/, () => tempStr)
+    .replace(/\* Funclib v\d*\.\d*\.\d*/, '* Funclib v' + pkg.version);
 
   fn.wt(jsPath, jsStr);
 }

@@ -1,11 +1,12 @@
-const fn = require('./src');
+// const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
-const log = require('./src/logS');
-const progress = require('./src/progress');
+// const log = require('./src/logS');
+// const fmtDate = require('./src/fmtDate');
+// const progress = require('./src/progress');
 
-progress('test');
+// progress('test');
 // fn.progress('test');
 // fn.timeout(15000, () => fn.progress.stop());
 
@@ -43,6 +44,7 @@ progress('test');
 
 // const d = Date.now();
 // const offset = 5.5 * 60 * 60 * 1000;
+// log(fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
 // fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
 // fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
 // fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
