@@ -2,6 +2,9 @@ var isDat = require('./isDat');
 
 /**@function*/
 
+/**
+ * Transfer time to Date object.
+ */
 function dateBase(time) {
   if (isDat(time)) return time;
   time = String(time);

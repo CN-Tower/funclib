@@ -2,13 +2,12 @@ var isBol = require('./isBol');
 var isObj = require('./isObj');
 var has = require('./has');
 var get = require('./get');
-var chalk = require('./chalk');
 var pretty = require('./pretty');
 var array = require('./array');
 var fmtDate = require('./fmtDate');
 var cutString = require('./cutString');
 var typeVal = require('./typeVal');
-var colorList = require('./_config').colorList;
+var version = require('./_config').version;
 
 /**@function*/
 
@@ -17,15 +16,11 @@ var colorList = require('./_config').colorList;
  * @param value   : any
  * @param title   : string|boolean [?]
  * @param configs : object [?]
- * title: string,
- * width: number = 66 [30-100],
- * isFmt:      boolean = true
+ * title: string
+ * width: number = 66 [30-100]
+ * isFmt: boolean = true
  * isShowTime: boolean = true
- * isSplit:    boolean = true,
- * pre:   boolean = false,
- * end:   boolean = false,
- * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
- * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
+ * isSplit: boolean = true,
  */
 function log(value, title, configs) {
   var isFmt;
@@ -53,28 +48,20 @@ function log(value, title, configs) {
     title = 'funclib(' + version + ')';
   }
   value = pretty(value);
-  var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
-  var _time = fmtDate('hh:mm:ss', new Date());
-  var time = isShowTime ? '[' + _time + '] ' : '';
+  var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true
+    , time = isShowTime ? '[' + fmtDate('hh:mm:ss', new Date()) + '] ' : '';
   title = title.replace(/\n/mg, '');
   var originTtLength = (time + title + '[] ').length;
   if (!isFmt) {
     title = '( ' + title + ' )';
   }
-  if (time) {
-    time = '[' + chalk(_time, 'grey') + '] ';
-  }
-  var valuec = get(configs, 'color');
-  var titlec = get(configs, 'ttColor');
-  value = chalk(value, has(colorList, valuec) ? valuec : 'cyan');
-  title = chalk(title, has(colorList, titlec) ? titlec : 'default');
   title = time + title;
-  var width = get(configs, 'width', 'num');
-  if (!width || width < 30 || width > 100) width = 66;
+  var width = get(configs, '/width');
+  if (!width || width < 30 || width > 100) {
+    width = 66;
+  }
   if (originTtLength > width) {
-    var colorEnd = '\x1B[0m';
-    var fixLength = title.length - originTtLength - colorEnd.length;
-    title = cutString(title, width + fixLength - 3) + colorEnd;
+    title = cutString(title, width - 3);
   }
   else if (isFmt) {
     title = array((width - originTtLength) / 2, ' ').join('') + title;
@@ -87,21 +74,8 @@ function log(value, title, configs) {
   else {
     var sgLine_1 = '', dbLine_1 = '';
     for(var i = 0; i < width; i ++ ) { sgLine_1 += '-', dbLine_1 += '='; };
-    if (get(configs, 'pre', 'bol')) {
-      console.log('\n' + dbLine_1);
-      console.log(title);
-      console.log(sgLine_1);
-    }
-    else if (get(configs, '/end', 'bol')) {
-      console.log(dbLine_1 + '\n');
-    }
-    else {
-      console.log(isSplit ? '\n' + dbLine_1 : dbLine_1);
-      console.log(title);
-      console.log(sgLine_1);
-      console.log(value);
-      console.log(isSplit ? dbLine_1 + '\n' : dbLine_1);
-    }
+    var logMsg = dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1;
+    console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
   }
 }
 

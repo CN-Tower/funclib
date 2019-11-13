@@ -5,6 +5,9 @@ var forEach = require('./forEach');
 
 /**@function*/
 
+/**
+ * Basic methods of array filter and reject.
+ */
 function filterBase(srcArr, predicate, isFilter) {
   var fts = [], rjs = [];
   forEach(srcArr, function (item) {

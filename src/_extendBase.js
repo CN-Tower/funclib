@@ -11,6 +11,9 @@ var contains = require('./contains');
 
 /**@function*/
 
+/**
+ * Basic methods of collection extention.
+ */
 function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
   if (!isObj(srcObj)) return tarObj;
   propList = flatten(propList);

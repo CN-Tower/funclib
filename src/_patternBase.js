@@ -3,6 +3,9 @@ var getPattern = require('./getPattern');
 
 /**@function*/
 
+/**
+ * Basic methods of patterns match.
+ */
 function patternBase(srcStr, types, isTest) {
   var limit = true, ttRst = false, mtRst = null;
   if (types.length && typeOf(types[types.length - 1], 'bol')) {

@@ -1,5 +1,8 @@
 /**@function*/
 
+/**
+ * Throw error method.
+ */
 function throwErr(type_) {
   switch(type_) {
     case 'arg': throw new TypeError('Arguments type error!');

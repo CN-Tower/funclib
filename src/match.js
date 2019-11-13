@@ -7,7 +7,6 @@ var throwErr = require('./_throwErr');
 
 /**@function*/
 
-var MATCH_SYMBOL='__@fnMatch__', MATCH_NEST = '@next';
 /**
  * [fn.match] 字符串匹配
  * @param source : any
@@ -17,14 +16,15 @@ var MATCH_SYMBOL='__@fnMatch__', MATCH_NEST = '@next';
 function match(source, cases, isExec) {
   if (!isObj(cases)) throwErr('obj');
   if (isUdf(isExec)) isExec = true;
+  var symbol = MATCH_SYMBOL;
   if (has(cases, source)) {
-    MATCH_SYMBOL = source;
+    symbol = source;
   } else if (has(cases, 'default')) {
-    MATCH_SYMBOL = 'default';
+    symbol = 'default';
   }
-  var matched = cases[MATCH_SYMBOL];
+  var matched = cases[symbol];
   if (matched === MATCH_NEST) {
-    var ks = keys(cases), i = ks.indexOf(MATCH_SYMBOL) - 1;
+    var ks = keys(cases), i = ks.indexOf(symbol) - 1;
     while (++i < ks.length) if (cases[ks[i]] !== MATCH_NEST) {
       matched = cases[ks[i]];
       break;

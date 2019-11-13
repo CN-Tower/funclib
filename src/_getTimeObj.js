@@ -1,5 +1,8 @@
 /**@function*/
 
+/**
+ * Get data methods object.
+ */
 function getTimeObj(date, isUtc) {
   return isUtc ? {
     'y+': date.getUTCFullYear(),

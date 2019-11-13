@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
-    "build": "node ./scripts/pre-build.js && npm run uglify && node ./scripts/build.js",
+    "build": "node ./scripts/prepare.js && npm run uglify && node ./scripts/build.js",
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",

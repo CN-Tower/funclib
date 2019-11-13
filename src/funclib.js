@@ -6,6 +6,8 @@
  */
 ; (function () {
 
+  var version = '3.5.10';
+  
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
     , _self = typeof self == 'object' && self && self.Object === Object && self
@@ -13,9 +15,57 @@
     , _module = _exports && typeof module == 'object' && module && !module.nodeType && module
     , root = _global || _self || Function('return this')()
     , oldFn = root.fn;
+  
+  /**
+   * HTML encode and decode characters.
+   */
+  var deCodes = ['&', '<', '>', ' ', '\'', '"']
+    , enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
+  
+  /**
+   * String match variables.
+   */
+  var MATCH_SYMBOL='__@fnMatch__'
+    , MATCH_NEST = '@next';
+  
+  /**
+   * Frequently-used regular expression patterns.
+   */
+  var patterns = {
+    cnChar: /[\u4e00-\u9fa5]/,
+    dbChar: /[^x00-xff]/,
+    email: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
+    mobPhone: /(\+?0?86\-?)?1[3456789]\d{9}/,
+    telPhone: /((d{3,4})|d{3,4}-)?d{7,8}/,
+    idCard: /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/,
+    uuid: /[0-9a-zA-Z]{8}-([0-9a-zA-Z]{4}-){3}[0-9a-zA-Z]{12}/,
+    base64Code: /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/,
+    domain: /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/,
+    port: /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/,
+    ip: /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/,
+    url_: /(\/([^?#]*))?(\?([^#]*))?(#(.*))?/
+  };
+  patterns['ipUrl'] = new RegExp('http(s)?://' + patterns.ip.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
+  patterns['domainUrl'] = new RegExp('http(s)?://' + patterns.domain.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
+  patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + ')(:' + patterns.port.source + ')?' + patterns.url_.source);
+  
+  /**
+   * timers container.
+   */
+  var intervalTimers = {}
+    , timeoutTimers  = {};
+  
+  /**
+   * Full screen events.
+   */
+  var fsChangeEvents = {}
+    , fsEvent = 'fullscreenchange'
+    , fsEvents = [fsEvent, 'webkit' + fsEvent, 'moz' + fsEvent, 'MS' + fsEvent];
 
-  var version = '3.5.10';
 
+  /**
+   * Funclib definition closure.
+   */
   var fn = (function () {
 
     /**
@@ -83,7 +133,9 @@
      * [fn.isStr] 判断类型是否为：string
      * @param value : any
      */
-    function isStr(value) { return typeof value == 'string'; }
+    function isStr(value) {
+      return typeof value == 'string';
+    }
 
     /**
      * [fn.isNum] 判断类型是否为：number
@@ -99,49 +151,65 @@
      * [fn.isBol] 判断类型是否为：boolean
      * @param value : any
      */
-    function isBol(value) { return typeof value == 'boolean'; }
+    function isBol(value) {
+      return typeof value == 'boolean';
+    }
 
     /**
      * [fn.isFun] 判断类型是否为：function
      * @param value : any
      */
-    function isFun(value) { return typeof value == 'function'; }
+    function isFun(value) {
+      return typeof value == 'function';
+    }
 
     /**
      * [fn.isNul] 判断是否为：null
      * @param value : any
      */
-    function isNul(value) { return value === null; }
+    function isNul(value) {
+      return value === null;
+    }
 
     /**
      * [fn.isUdf] 判断类型是否为：undefined
      * @param value : any
      */
-    function isUdf(value) { return value === UDF; }
+    function isUdf(value) {
+      return value === UDF;
+    }
 
     /**
      * [fn.isErr] 判断类型是否为：Error
      * @param value : any
      */
-    function isErr(value) { return value instanceof Error; }
+    function isErr(value) {
+      return value instanceof Error;
+    }
 
     /**
      * [fn.isDat] 判断类型是否为：Date
      * @param value : any
      */
-    function isDat(value) { return value instanceof Date; }
+    function isDat(value) {
+      return value instanceof Date;
+    }
 
     /**
      * [fn.isReg] 判断类型是否为：RegExp
      * @param value : any
      */
-    function isReg(value) { return value instanceof RegExp; };
+    function isReg(value) {
+      return value instanceof RegExp;
+    };
 
     /**
      * [fn.isArr] 判断类型是否为：Array
      * @param value : any
      */
-    function isArr(value) { return value instanceof Array; }
+    function isArr(value) {
+      return value instanceof Array;
+    }
 
     /**
      * [fn.isObj] 判断是否为：正常Object
@@ -243,26 +311,11 @@
 
     /**
       * [fn.reject] 根据条件过滤值
-     * @param srcArr    : array
-     * @param predicate : object|function|any
+      * @param srcArr    : array
+      * @param predicate : object|function|any
       */
-    function reject(srcArr, predicate) {
+      function reject(srcArr, predicate) {
       return filterBase(srcArr, predicate, false);
-    }
-
-    function filterBase(srcArr, predicate, isFilter) {
-      var fts = [], rjs = [];
-      forEach(srcArr, function (item) {
-        if (isObj(predicate)) {
-          keys(predicate).every(
-            function (key) { return predicate[key] === item[key]; }
-          ) ? fts.push(item) : rjs.push(item);
-        }
-        else if (isFun(predicate)) {
-          predicate(item) ? fts.push(item) : rjs.push(item);
-        }
-      });
-      return isFilter ? fts : rjs;
     }
 
     /**
@@ -451,15 +504,13 @@
       return setBase(srcObj, srcObj, pathStr, value);
     }
 
-    function getPaths(pathStr) {
-      return contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
-    }
-
     /**
      * [fn.keys] 获取对象的键数组
      * @param srcObj : object
      */
-    function keys(srcObj) { return Object.keys(srcObj); }
+    function keys(srcObj) {
+      return Object.keys(srcObj);
+    }
 
     /**
      * [fn.pick] 获取包含部分属性的对象副本
@@ -491,37 +542,6 @@
     var extend = rest(function (tarObj, srcObj, predicate, props) {
       return extendBase(tarObj, srcObj, predicate, props, true);
     });
-
-    function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
-      if (!isObj(srcObj)) return tarObj;
-      propList = flatten(propList);
-      var isPdtObj = isObj(predicate);
-      var srcKs = keys(srcObj);
-      function traversal(tarObj, srcObj, propList) {
-        forEach(propList, function (prop) {
-          if (has(srcObj, prop)) {
-            tarObj[prop] = srcObj[prop];
-          } else if (isPdtObj && has(predicate, 'default')) {
-            tarObj[prop] = predicate.default;
-          }
-        });
-      }
-      if (typeOf(predicate, 'str', 'arr', 'obj')) {
-        var props = isPdtObj ? propList : toArr(predicate).concat(propList);
-        if (isOmit) props = srcKs.filter(function(key) { return !contains(props, key); });
-        traversal(tarObj, srcObj, props);
-      }
-      else if (isFun(predicate)) {
-        forIn(srcObj, function (key, val) {
-          var isPred = predicate(key, val);
-          if ((isPred && !isOmit ) || (!isPred && isOmit)) tarObj[key] = val;
-        });
-      }
-      else if (isTraDft) {
-        traversal(tarObj, srcObj, srcKs);
-      }
-      return tarObj;
-    }
 
     /**
      * [fn.forIn] 遍历对象的可数自有属性
@@ -649,55 +669,21 @@
       return timerBase(timerId, duration, callback, 'timeout');
     }
 
-    var intervalTimers = {}, timeoutTimers = {};
-
-    function timerBase(timerId, duration, callback, type_) {
-      var timer, setTimer, clearTimer;
-      if (type_ === 'interval') {
-        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
-      } else if (type_ === 'timeout') {
-        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
-      }
-      var isTimerIdStr = typeVal(timerId, 'str');
-      function invokeClear() { return clearTimer(timer[timerId]); };
-      if (isTimerIdStr) {
-        if (isUdf(duration)) {
-          return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
-        }
-        if (contains([null, false], duration)) {
-          invokeClear();
-          return timer[timerId] = null;
-        }
-        if (isFun(duration)) {
-          callback = duration, duration = 0;
-        }
-      }
-      if (isNum(timerId) && isFun(duration)) {
-        callback = duration, duration = timerId, timerId = UDF;
-      }
-      if (isFun(timerId)) {
-        callback = timerId, duration = 0, timerId = UDF;
-      }
-      if (isFun(callback) && isNum(duration) && duration >= 0) {
-        if (isUdf(timerId)) return setTimer(callback, duration);
-        if (isTimerIdStr) {
-          invokeClear();
-          return timer[timerId] = setTimer(callback, duration);
-        }
-      }
-    }
-
     /**
      * [fn.defer] 延迟执行函数
      * @param func : function
      */
-    function defer(func) { return setTimeout(func); }
+    function defer(func) {
+      return setTimeout(func);
+    }
 
     /**
      * [fn.timestamp] 返回一个时间戳
      * @param time : date|string|number
      */
-    function timestamp(time) { return dateBase(time).getTime(); }
+    function timestamp(time) {
+      return dateBase(time).getTime();
+    }
 
     /**
      * [fn.asUtcTime] 转化为相同时间的UTC时间戳
@@ -754,52 +740,6 @@
       return fmtDate(fmtStr, tm);
     }
 
-    function dateBase(time) {
-      if (time instanceof Date) return time;
-      time = String(time);
-      return new Date(time.match(/^[0-9]*$/) ? +time : time);
-    }
-
-    function getTimeObj(date, isUtc) {
-      return isUtc ? {
-        'y+': date.getUTCFullYear(),
-        'M+': date.getUTCMonth() + 1,
-        'd+': date.getUTCDate(),
-        'h+': date.getUTCHours(),
-        'm+': date.getUTCMinutes(),
-        's+': date.getUTCSeconds(),
-        'S':  date.getUTCMilliseconds(),
-        'q+': Math.floor((date.getUTCMonth() + 3) / 3)
-      } : {
-        'y+': date.getFullYear(),
-        'M+': date.getMonth() + 1,
-        'd+': date.getDate(),
-        'h+': date.getHours(),
-        'm+': date.getMinutes(),
-        's+': date.getSeconds(),
-        'S': date.getMilliseconds(),
-        'q+': Math.floor((date.getMonth() + 3) / 3)
-      }
-    }
-
-    function fmtDateBase(fmtStr, time, isUtc) {
-      var date = dateBase(time);
-      if (!date.getTime()) return '';
-      var timeObj = getTimeObj(date, isUtc);
-      forIn(timeObj, function (k) {
-        if (new RegExp('(' + k + ')').test(fmtStr)) {
-          if (k === 'y+') {
-            fmtStr = fmtStr.replace(RegExp.$1, (timeObj['y+'] + '').substr(4 - RegExp.$1.length));
-          } else {
-            var tmk = timeObj[k]
-              , fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
-            fmtStr = fmtStr.replace(RegExp.$1, fmt);
-          }
-        }
-      });
-      return fmtStr;
-    }
-
     /**
      * [fn.match] 字符串匹配
      * @param source : any
@@ -809,21 +749,24 @@
     function match(source, cases, isExec) {
       if (!isObj(cases)) throwErr('obj');
       if (isUdf(isExec)) isExec = true;
-      var symbol = '__@fnMatch__';
+      var symbol = MATCH_SYMBOL;
       if (has(cases, source)) {
         symbol = source;
       } else if (has(cases, 'default')) {
         symbol = 'default';
       }
       var matched = cases[symbol];
-      if (matched === '@next') {
+      if (matched === MATCH_NEST) {
         var ks = keys(cases), i = ks.indexOf(symbol) - 1;
-        while (++i < ks.length) if (cases[ks[i]] !== '@next') { matched = cases[ks[i]]; break; }
+        while (++i < ks.length) if (cases[ks[i]] !== MATCH_NEST) {
+          matched = cases[ks[i]];
+          break;
+        }
       }
       if (isExec && isFun(matched)) {
         return len(matched) ? matched(source) : matched();
       } else {
-        return matched === '@next' ? UDF : matched;
+        return matched === MATCH_NEST ? UDF : matched;
       }
     }
 
@@ -834,9 +777,6 @@
     function pretty(srcObj) {
       return typeOf(srcObj, 'arr', 'obj') ? JSON.stringify(srcObj, null, 2) : String(srcObj);
     }
-
-    var deCodes = ['&', '<', '>', ' ', '\'', '"']
-      , enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
 
     /**
      * [fn.escape] 编码HTML字符串
@@ -953,27 +893,6 @@
     }
 
     /**
-     * 常用的正则表达式收集
-     */
-    var patterns = {
-      cnChar: /[\u4e00-\u9fa5]/,
-      dbChar: /[^x00-xff]/,
-      email: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
-      mobPhone: /(\+?0?86\-?)?1[3456789]\d{9}/,
-      telPhone: /((d{3,4})|d{3,4}-)?d{7,8}/,
-      idCard: /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)/,
-      uuid: /[0-9a-zA-Z]{8}-([0-9a-zA-Z]{4}-){3}[0-9a-zA-Z]{12}/,
-      base64Code: /([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?/,
-      domain: /([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6}/,
-      port: /([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/,
-      ip: /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/,
-      url_: /(\/([^?#]*))?(\?([^#]*))?(#(.*))?/
-    };
-    patterns['ipUrl'] = new RegExp('http(s)?://' + patterns.ip.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
-    patterns['domainUrl'] = new RegExp('http(s)?://' + patterns.domain.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
-    patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + ')(:' + patterns.port.source + ')?' + patterns.url_.source);
-
-    /**
      * [fn.setPattern]设置一个正则表达式
      * @param ptnMap  : string|object
      * @param pattern : regexp [?]
@@ -1027,21 +946,6 @@
       if (!srcStr || !type_) return null;
       return patternBase(srcStr, [type_].concat(types), false);
     });
-
-    function patternBase(srcStr, types, isTest) {
-      var limit = true, ttRst = false, mtRst = null;
-      if (types.length && typeOf(types[types.length - 1], 'bol')) {
-        limit = types.pop();
-      }
-      for (var i = 0; i < types.length; i++) {
-        var pattern = getPattern(types[i], limit);
-        if (pattern) {
-          isTest ? ttRst = pattern.test(srcStr) : mtRst = srcStr.match(pattern);
-          if (ttRst || mtRst) break;
-        }
-      }
-      return isTest ? ttRst : mtRst;
-    }
 
     /**
      * [fn.throttle] 节流函数，适用于限制resize和scroll等函数的调用频率
@@ -1140,18 +1044,6 @@
       };
       return debounced;
     }
-
-    function throwErr(type_) {
-      switch(type_) {
-        case 'arg': throw new TypeError('Arguments type error!');
-        case 'obj': throw new TypeError('Expect an Object param!');
-        case 'fun': throw new TypeError('Expect a Function param!');
-        case 'reg': throw new TypeError('Expect a RegExp pattern!');
-      }
-    }
-
-    /**@spliter*/
-    /**=================================================================== */
 
     /**
      * [fn.print] 在控制台打印值
@@ -1263,13 +1155,6 @@
       }
     }
 
-    function sendF11() {
-      if (window.ActiveXObject) {
-        var ws = new window.ActiveXObject('WScript.Shell');
-        if (ws) ws.SendKeys('{F11}');
-      }
-    }
-
     /**
      * [fn.isFullScreen] 检测是否全屏状态
      */
@@ -1277,10 +1162,6 @@
       return !!(document.fullscreenElement || document.msFullscreenElement ||
         document.mozFullScreenElement || document.webkitFullscreenElement);
     }
-
-    var fsChangeEvents = {}
-      , fsEvent = 'fullscreenchange'
-      , fsEvents = [fsEvent, 'webkit' + fsEvent, 'moz' + fsEvent, 'MS' + fsEvent];
 
     /**
      * [fn.fullScreenChange] 全屏状态变化事件
@@ -1296,14 +1177,14 @@
         return { 'remove': function() { rmFsChangeEvent(eventId); } };
       }
     }
-
+    
     /**
      * [fn.fullScreenChange.removeAll] 清除所有全屏状态变化事件
      */
     fullScreenChange.removeAll = function() {
       forIn(fsChangeEvents, function(eventId) { rmFsChangeEvent(eventId); });
     }
-
+    
     function rmFsChangeEvent(eventId) {
       forEach(fsEvents, function (e) {
         document.removeEventListener(e, fsChangeEvents[eventId]);
@@ -1326,9 +1207,6 @@
       document.execCommand('Copy');
       document.body.removeChild(textarea);
     }
-
-    /**=================================================================== */
-    /**@spliter*/
 
     /**
      * [fn.chain] funclib链接调用
@@ -1359,10 +1237,205 @@
     }
 
     /**
+     * Throw error method.
+     */
+    function throwErr(type_) {
+      switch(type_) {
+        case 'arg': throw new TypeError('Arguments type error!');
+        case 'obj': throw new TypeError('Expect an Object param!');
+        case 'fun': throw new TypeError('Expect a Function param!');
+        case 'reg': throw new TypeError('Expect a RegExp pattern!');
+      }
+    }
+
+    /**
+     * Basic methods of array filter and reject.
+     */
+    function filterBase(srcArr, predicate, isFilter) {
+      var fts = [], rjs = [];
+      forEach(srcArr, function (item) {
+        if (isObj(predicate)) {
+          keys(predicate).every(
+            function (key) { return predicate[key] === item[key]; }
+          ) ? fts.push(item) : rjs.push(item);
+        }
+        else if (isFun(predicate)) {
+          predicate(item) ? fts.push(item) : rjs.push(item);
+        }
+      });
+      return isFilter ? fts : rjs;
+    }
+
+    /**
+     * Basic methods of collection extention.
+     */
+    function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
+      if (!isObj(srcObj)) return tarObj;
+      propList = flatten(propList);
+      var isPdtObj = isObj(predicate);
+      var srcKs = keys(srcObj);
+      function traversal(tarObj, srcObj, propList) {
+        forEach(propList, function (prop) {
+          if (has(srcObj, prop)) {
+            tarObj[prop] = srcObj[prop];
+          } else if (isPdtObj && has(predicate, 'default')) {
+            tarObj[prop] = predicate.default;
+          }
+        });
+      }
+      if (typeOf(predicate, 'str', 'arr', 'obj')) {
+        var props = isPdtObj ? propList : toArr(predicate).concat(propList);
+        if (isOmit) props = srcKs.filter(function(key) { return !contains(props, key); });
+        traversal(tarObj, srcObj, props);
+      }
+      else if (isFun(predicate)) {
+        forIn(srcObj, function (key, val) {
+          var isPred = predicate(key, val);
+          if ((isPred && !isOmit ) || (!isPred && isOmit)) tarObj[key] = val;
+        });
+      }
+      else if (isTraDft) {
+        traversal(tarObj, srcObj, srcKs);
+      }
+      return tarObj;
+    }
+
+    /**
+     * Util method for path.
+     */
+    function getPaths(pathStr) {
+      return contains(pathStr, '.') ? drop(pathStr.split('.')) : drop(pathStr.split('/'));
+    }
+
+    /**
+     * Basic methods of timers.
+     */
+    function timerBase(timerId, duration, callback, type_) {
+      var timer, setTimer, clearTimer;
+      if (type_ === 'interval') {
+        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+      } else if (type_ === 'timeout') {
+        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+      }
+      var isTimerIdStr = typeVal(timerId, 'str');
+      function invokeClear() { return clearTimer(timer[timerId]); };
+      if (isTimerIdStr) {
+        if (isUdf(duration)) {
+          return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
+        }
+        if (contains([null, false], duration)) {
+          invokeClear();
+          return timer[timerId] = null;
+        }
+        if (isFun(duration)) {
+          callback = duration, duration = 0;
+        }
+      }
+      if (isNum(timerId) && isFun(duration)) {
+        callback = duration, duration = timerId, timerId = UDF;
+      }
+      if (isFun(timerId)) {
+        callback = timerId, duration = 0, timerId = UDF;
+      }
+      if (isFun(callback) && isNum(duration) && duration >= 0) {
+        if (isUdf(timerId)) return setTimer(callback, duration);
+        if (isTimerIdStr) {
+          invokeClear();
+          return timer[timerId] = setTimer(callback, duration);
+        }
+      }
+    }
+
+    /**
+     * Get data methods object.
+     */
+    function getTimeObj(date, isUtc) {
+      return isUtc ? {
+        'y+': date.getUTCFullYear(),
+        'M+': date.getUTCMonth() + 1,
+        'd+': date.getUTCDate(),
+        'h+': date.getUTCHours(),
+        'm+': date.getUTCMinutes(),
+        's+': date.getUTCSeconds(),
+        'S':  date.getUTCMilliseconds(),
+        'q+': Math.floor((date.getUTCMonth() + 3) / 3)
+      } : {
+        'y+': date.getFullYear(),
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds(),
+        'S': date.getMilliseconds(),
+        'q+': Math.floor((date.getMonth() + 3) / 3)
+      }
+    }
+
+    /**
+     * Transfer time to Date object.
+     */
+    function dateBase(time) {
+      if (isDat(time)) return time;
+      time = String(time);
+      return new Date(time.match(/^[0-9]*$/) ? +time : time);
+    }
+
+    /**
+     * Basic methods of date formation.
+     */
+    function fmtDateBase(fmtStr, time, isUtc) {
+      var date = dateBase(time);
+      if (!date.getTime()) return '';
+      var timeObj = getTimeObj(date, isUtc);
+      forIn(timeObj, function (k) {
+        if (new RegExp('(' + k + ')').test(fmtStr)) {
+          if (k === 'y+') {
+            fmtStr = fmtStr.replace(RegExp.$1, (timeObj['y+'] + '').substr(4 - RegExp.$1.length));
+          } else {
+            var tmk = timeObj[k]
+              , fmt = RegExp.$1.length === 1 ? tmk : ('00' + tmk).substr((tmk + '').length);
+            fmtStr = fmtStr.replace(RegExp.$1, fmt);
+          }
+        }
+      });
+      return fmtStr;
+    }
+
+    /**
+     * Basic methods of patterns match.
+     */
+    function patternBase(srcStr, types, isTest) {
+      var limit = true, ttRst = false, mtRst = null;
+      if (types.length && typeOf(types[types.length - 1], 'bol')) {
+        limit = types.pop();
+      }
+      for (var i = 0; i < types.length; i++) {
+        var pattern = getPattern(types[i], limit);
+        if (pattern) {
+          isTest ? ttRst = pattern.test(srcStr) : mtRst = srcStr.match(pattern);
+          if (ttRst || mtRst) break;
+        }
+      }
+      return isTest ? ttRst : mtRst;
+    }
+
+    /**
+     * Send F11 command to browser.
+     */
+    function sendF11() {
+      if (window.ActiveXObject) {
+        var ws = new window.ActiveXObject('WScript.Shell');
+        if (ws) ws.SendKeys('{F11}');
+      }
+    }
+
+    /**@funclib
      * [fn().method] funclib链接调用
      * @param value: any
      */
-    function funclib(value) { return chain(value); }
+    function funclib(value) {
+      return chain(value);
+    }
 
     funclib.typeOf = typeOf;
     funclib.typeVal = typeVal;
@@ -1456,9 +1529,6 @@
       });
     });
 
-    /**@spliter*/
-    /**=================================================================== */
-
     funclib.print = print;
     funclib.log = log;
     funclib.fullScreen = fullScreen;
@@ -1466,9 +1536,6 @@
     funclib.isFullScreen = isFullScreen;
     funclib.fullScreenChange = fullScreenChange;
     funclib.copyText = copyText;
-
-    /**=================================================================== */
-    /**@spliter*/
 
     funclib.chain = chain;
     funclib.noConflict = noConflict;

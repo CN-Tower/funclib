@@ -10,11 +10,20 @@ var undefined, UDF = undefined
   , root = _global || _self || Function('return this')()
   , oldFn = root.fn;
 
+/**
+ * HTML encode and decode characters.
+ */
 var deCodes = ['&', '<', '>', ' ', '\'', '"']
   , enCodes = ['&amp;', '&lt;', '&gt;', '&nbsp;', '&#39;', '&quot;'];
 
 /**
- * 常用的正则表达式收集
+ * String match variables.
+ */
+var MATCH_SYMBOL='__@fnMatch__'
+  , MATCH_NEST = '@next';
+
+/**
+ * Frequently-used regular expression patterns.
  */
 var patterns = {
   cnChar: /[\u4e00-\u9fa5]/,
@@ -34,6 +43,26 @@ patterns['ipUrl'] = new RegExp('http(s)?://' + patterns.ip.source + '(:' + patte
 patterns['domainUrl'] = new RegExp('http(s)?://' + patterns.domain.source + '(:' + patterns.port.source + ')?' + patterns.url_.source);
 patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + patterns.domain.source + ')(:' + patterns.port.source + ')?' + patterns.url_.source);
 
+/**
+ * timers container.
+ */
+var intervalTimers = {}
+  , timeoutTimers  = {};
+
+/**@conf-client*/
+
+/**
+ * Full screen events.
+ */
+var fsChangeEvents = {}
+  , fsEvent = 'fullscreenchange'
+  , fsEvents = [fsEvent, 'webkit' + fsEvent, 'moz' + fsEvent, 'MS' + fsEvent];
+/**@conf-client*/
+
+/**@conf-server*/
+/**
+ * Color string of console display.
+ */
 var colorList = {
   'grey': '\x1B[90m%s\x1B[0m',
   'blue': '\x1B[34m%s\x1B[0m',
@@ -44,6 +73,7 @@ var colorList = {
   'yellow': '\x1B[33m%s\x1B[0m',
   'default': '%s\x1B[0m'
 };
+/**@conf-server*/
 
 /**@config*/
 module.exports = {
@@ -54,5 +84,10 @@ module.exports = {
   deCodes: deCodes,
   enCodes: enCodes,
   patterns: patterns,
-  colorList: colorList
+  intervalTimers: intervalTimers,
+  timeoutTimers: timeoutTimers,
+  colorList: colorList,
+  fsEvent: fsEvent,
+  fsEvents: fsEvents,
+  fsChangeEvents: fsChangeEvents
 };

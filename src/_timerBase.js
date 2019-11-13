@@ -3,11 +3,16 @@ var isFun = require('./isFun');
 var isNum = require('./isNum');
 var contains = require('./contains');
 var typeVal = require('./typeVal');
+var config = require('./_config');
+
+var intervalTimers = config.intervalTimers
+  , timeoutTimers  = config.timeoutTimers;
 
 /**@function*/
 
-var intervalTimers = {}, timeoutTimers = {};
-
+/**
+ * Basic methods of timers.
+ */
 function timerBase(timerId, duration, callback, type_) {
   var timer, setTimer, clearTimer;
   if (type_ === 'interval') {

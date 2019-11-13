@@ -2,6 +2,10 @@ const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
+const log = require('./src/logS');
+const progress = require('./src/progress');
+
+progress('test');
 // fn.progress('test');
 // fn.timeout(15000, () => fn.progress.stop());
 
@@ -18,8 +22,10 @@ const fn = require('./src');
 // fn.log(fn.isObj({}));
 
 // var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-// var p = fn(ps).find({name: 'Bob'}).set('name', 'Lee').val();
+// var p = fn(ps).find({name: 'Bob'}).set('name', 'Bob').val();
 // var p = fn.chain(ps).filter({name: 'Bob'}).val();
+
+// log(p);
 // fn.log(p);
 /**
  * fn.random

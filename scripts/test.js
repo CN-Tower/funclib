@@ -17,5 +17,8 @@ fn.match(process.argv[2], {
       fn.wt(spec, content)
     });
   },
+  '-d': () => {
+    
+  }
 });
 

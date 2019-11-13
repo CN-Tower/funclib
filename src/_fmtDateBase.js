@@ -4,6 +4,9 @@ var getTimeObj = require('./_getTimeObj');
 
 /**@function*/
 
+/**
+ * Basic methods of date formation.
+ */
 function fmtDateBase(fmtStr, time, isUtc) {
   var date = dateBase(time);
   if (!date.getTime()) return '';
