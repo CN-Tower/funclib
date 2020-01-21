@@ -9,7 +9,7 @@ fn.match(process.argv[4], {
   'fun': () => {
     fn.log('Testing funclib.js', 'Client Test');
     files = [
-      'src/funclib.js',
+      'dist/funclib.js',
       'test/**/*.spec.js'
     ];
     exclude = ['test/server-methods/*.spec.js'];
@@ -19,7 +19,7 @@ fn.match(process.argv[4], {
   'min': () => {
     fn.log('Testing funclib.min.js', 'Client Test');
     files = [
-      'src/funclib.min.js',
+      'dist/funclib.min.js',
       'test/**/*.spec.js'
     ];
     exclude = ['test/server-methods/*.spec.js'];
@@ -29,7 +29,7 @@ fn.match(process.argv[4], {
   'core': () => {
     fn.log('Testing funclib.core.js', 'Client Test');
     files = [
-      'src/funclib.core.js',
+      'dist/funclib.core.js',
       'test/**/*.spec.js'
     ];
     exclude = [
@@ -37,7 +37,7 @@ fn.match(process.argv[4], {
       'test/server-methods/*.spec.js'
     ];
     preprocessors = {
-      'src/funclib.core.js': 'coverage'
+      'dist/funclib.core.js': 'coverage'
     };
     reporters = ['mocha', 'coverage'];
   },

@@ -6,6 +6,7 @@ var contains = require('./contains');
 var typeVal = require('./typeVal');
 var timeout = require('./timeout');
 var interval = require('./interval');
+var Pgbar = require('progress');
 
 /**@function*/
 
@@ -32,7 +33,6 @@ function progress(title, options) {
   pgType = get(options, '/type', 'str');
   if (has(options, 'isSplit', 'bol') ? options.isSplit : true) console.log('');
   if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
-    var Pgbar = eval('require("progress")');
     var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
     pgType = 'bar';
     duration = 250;

@@ -198,6 +198,7 @@ funclib.js
 │   ├── pre-build.js        # 构建配置脚本
 │   └── test.js             # 测试配置脚本
 ├── src                     ### Source code
+│   ├── funclib/            # 库的函数
 │   ├── funclib.core.js     # 通用版
 │   ├── funclib.js          # 未压缩版客户端版
 │   ├── funclib.min.js      # 压缩版客户端版

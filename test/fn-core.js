@@ -1,6 +1,6 @@
 const assert = require('power-assert');
 const fn = require('funclib');
-const _fn = require('../src/funclib.core');
+const _fn = require('../dist/funclib.core');
 
 fn.log('Testing funclib.core.js', 'Server Test');
 

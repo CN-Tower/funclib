@@ -1,5 +1,7 @@
 const fn = require('funclib');
+const fs = require('fs');
 const path = require('path');
+const glob = require('glob');
 const pkg = require('../src/package.json');
 
 const root = path.dirname(__dirname);
@@ -22,11 +24,22 @@ const spliter = '/**============================================================
 fn.wt(fnDefTs, liscence + spliter + fnDefTsStr.split(spliter)[1]);
 fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
-// 打印构建信息
-fn.progress.stop(() => fn.log(`
-Funclib Version: v${pkg.version}
-
-funclib.js      ${fn.size(fnJs)} kb
-funclib.min.js  ${fn.size(fnMinJs)} kb
-index.js        ${fn.size(indexJs)} kb`, 'Build Success!'
-));
+fn.rm('dist');
+fn.timeout(1000, () => {
+  fn.mk('dist');
+  const fnFis = glob.sync('src/**/*');
+  fnFis.forEach(fi => {
+    const stat = fs.statSync(fi);
+    if (stat.isFile()) fn.cp(fi, path.join(root, `dist/${path.basename(fi)}`));
+  });
+  fn.cp(path.join(root, 'README.md'), path.join(root, 'dist/README.md'));
+  
+  // 打印构建信息
+  fn.progress.stop(() => fn.log(`
+  Funclib Version: v${pkg.version}
+  
+  funclib.js      ${fn.size(fnJs)} kb
+  funclib.min.js  ${fn.size(fnMinJs)} kb
+  index.js        ${fn.size(indexJs)} kb`, 'Build Success!'
+  ));
+})
