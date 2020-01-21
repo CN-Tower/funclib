@@ -71,12 +71,12 @@
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
     "@types/node": "^10.3.0",
+    "funclib": "^4.0.3",
     "jquery": "^3.3.1",
     "typescript": "^2.8.3"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "funclib": "^3.5.9",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
