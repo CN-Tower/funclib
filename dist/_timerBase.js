@@ -13,40 +13,55 @@ var intervalTimers = config.intervalTimers
 /**
  * Basic methods of timers.
  */
-function timerBase(timerId, duration, callback, type_) {
-  var timer, setTimer, clearTimer;
+function timerBase(timerId, duration, callback, leading, type_) {
+  var timers, setTimer, clearTimer, tempVar;
   if (type_ === 'interval') {
-    timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+    timers = intervalTimers,
+    setTimer = setInterval,
+    clearTimer = clearInterval;
   } else if (type_ === 'timeout') {
-    timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+    timers = timeoutTimers,
+    setTimer = setTimeout,
+    clearTimer = clearTimeout;
   }
-  var isTimerIdStr = typeVal(timerId, 'str');
-  function invokeClear() { return clearTimer(timer[timerId]); };
-  if (isTimerIdStr) {
+  if (typeVal(timerId, 'str')) {
     if (isUdf(duration)) {
-      return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
-    }
-    if (contains([null, false], duration)) {
+      return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+    } else if (contains([null, false], duration)) {
       invokeClear();
-      return timer[timerId] = null;
+      return timers[timerId] = null;
+    } else if (isFun(duration)) {
+      tempVar = duration,
+      duration = typeVal(callback, 'num') || 0,
+      callback = tempVar;
     }
-    if (isFun(duration)) {
-      callback = duration, duration = 0;
-    }
-  }
-  if (isNum(timerId) && isFun(duration)) {
+  } else if (isNum(timerId) && isFun(duration)) {
+    if (isBol(callback)) leading = callback;
     callback = duration, duration = timerId, timerId = UDF;
+  } else if (isFun(timerId)) {
+    tempVar = timerId;
+    if (isNum(duration)) {
+      timerId = typeVal(callback, 'str') || UDF;
+    } else if (typeVal(duration, 'str')) {
+      timerId = duration,
+      duration = typeVal(callback, 'num') || 0;
+    } else {
+      timerId = UDF, duration = 0;
+    }
+    callback = tempVar;
   }
-  if (isFun(timerId)) {
-    callback = timerId, duration = 0, timerId = UDF;
-  }
-  if (isFun(callback) && isNum(duration) && duration >= 0) {
-    if (isUdf(timerId)) return setTimer(callback, duration);
-    if (isTimerIdStr) {
+  if (isFun(callback) && isNum(duration)) {
+    if (leading) callback();
+    if (duration < 0) duration = 0;
+    if (!timerId) return setTimer(callback, duration);
+    if (typeVal(timerId, 'str')) {
       invokeClear();
-      return timer[timerId] = setTimer(callback, duration);
+      return timers[timerId] = setTimer(callback, duration);
     }
   }
+  function invokeClear() {
+    return clearTimer(timers[timerId]);
+  };
 }
 
 /**@function*/

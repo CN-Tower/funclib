@@ -5,13 +5,13 @@ var Pgbar = require('progress');
 
 /**
  * @license
- * Funclib v4.0.3 <https://www.funclib.net>
+ * Funclib v4.0.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '4.0.3';
+  var version = '4.0.4';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -63,17 +63,18 @@ var Pgbar = require('progress');
   /**
    * Color string of console display.
    */
+  var colorPre = '\x1B[';
+  var colorEnd = colorPre + '0m';
   var colorList = {
-    'grey': '\x1B[90m%s\x1B[0m',
-    'blue': '\x1B[34m%s\x1B[0m',
-    'cyan': '\x1B[36m%s\x1B[0m',
-    'green': '\x1B[32m%s\x1B[0m',
-    'magenta': '\x1B[35m%s\x1B[0m',
-    'red': '\x1B[31m%s\x1B[0m',
-    'yellow': '\x1B[33m%s\x1B[0m',
-    'default': '%s\x1B[0m'
+    'grey': colorPre + '90m',
+    'blue': colorPre + '34m',
+    'cyan': colorPre + '36m',
+    'green': colorPre + '32m',
+    'magenta': colorPre + '35m',
+    'red': colorPre + '31m',
+    'yellow': colorPre + '33m',
+    'default': ''
   };
-
 
   /**
    * Funclib definition closure.
@@ -666,9 +667,10 @@ var Pgbar = require('progress');
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    function interval(timerId, duration, callback) {
-      return timerBase(timerId, duration, callback, 'interval');
+    function interval(timerId, duration, callback, leading) {
+      return timerBase(timerId, duration, callback, leading, 'interval');
     }
 
     /**
@@ -676,9 +678,10 @@ var Pgbar = require('progress');
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    function timeout(timerId, duration, callback) {
-      return timerBase(timerId, duration, callback, 'timeout');
+    function timeout(timerId, duration, callback, leading) {
+      return timerBase(timerId, duration, callback, leading, 'timeout');
     }
 
     /**
@@ -1063,8 +1066,7 @@ var Pgbar = require('progress');
      * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
      */
     function chalk(srcStr, color) {
-      if (!has(colorList, color)) color = 'default';
-      return colorList[color].replace(/%s/, srcStr);
+      return colorList[has(colorList, color) ? color : 'default'] + srcStr + colorEnd;
     }
 
     /**
@@ -1116,7 +1118,6 @@ var Pgbar = require('progress');
         isFmt = true;
         title = 'funclib(' + version + ')';
       }
-      value = pretty(value);
       var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
       var _time = fmtDate('hh:mm:ss', new Date());
       var time = isShowTime ? '[' + _time + '] ' : '';
@@ -1128,25 +1129,28 @@ var Pgbar = require('progress');
       if (time) {
         time = '[' + chalk(_time, 'grey') + '] ';
       }
-      var valuec = get(configs, 'color');
-      var titlec = get(configs, 'ttColor');
-      value = chalk(value, has(colorList, valuec) ? valuec : 'cyan');
-      title = chalk(title, has(colorList, titlec) ? titlec : 'default');
+      title = chalk(title, get(configs, 'ttColor'));
       title = time + title;
       var width = get(configs, 'width', 'num');
       if (!width || width < 30 || width > 100) width = 66;
       if (originTtLength > width) {
-        var colorEnd = '\x1B[0m';
         var fixLength = title.length - originTtLength - colorEnd.length;
         title = cutString(title, width + fixLength - 3) + colorEnd;
       }
       else if (isFmt) {
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
+      var valuec = get(configs, 'color');
       var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
       if (!isFmt) {
-        var logMsg = title + ':\n' + value;
-        console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+        if (isSplit) console.log('');
+        console.log(title + ':');
+        try {
+          console.log(chalk(pretty(value), valuec));
+        } catch (e) {
+          console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+        }
+        if (isSplit) console.log('');
       }
       else {
         var sgLine_1 = '', dbLine_1 = '';
@@ -1160,11 +1164,17 @@ var Pgbar = require('progress');
           console.log(dbLine_1 + '\n');
         }
         else {
-          console.log(isSplit ? '\n' + dbLine_1 : dbLine_1);
+          if (isSplit) console.log('');
+          console.log(dbLine_1);
           console.log(title);
           console.log(sgLine_1);
-          console.log(value);
-          console.log(isSplit ? dbLine_1 + '\n' : dbLine_1);
+          try {
+            console.log(chalk(pretty(value), valuec));
+          } catch (e) {
+            console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+          }
+          console.log(dbLine_1);
+          if (isSplit) console.log('');
         }
       }
     }
@@ -1519,40 +1529,55 @@ var Pgbar = require('progress');
     /**
      * Basic methods of timers.
      */
-    function timerBase(timerId, duration, callback, type_) {
-      var timer, setTimer, clearTimer;
+    function timerBase(timerId, duration, callback, leading, type_) {
+      var timers, setTimer, clearTimer, tempVar;
       if (type_ === 'interval') {
-        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+        timers = intervalTimers,
+        setTimer = setInterval,
+        clearTimer = clearInterval;
       } else if (type_ === 'timeout') {
-        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+        timers = timeoutTimers,
+        setTimer = setTimeout,
+        clearTimer = clearTimeout;
       }
-      var isTimerIdStr = typeVal(timerId, 'str');
-      function invokeClear() { return clearTimer(timer[timerId]); };
-      if (isTimerIdStr) {
+      if (typeVal(timerId, 'str')) {
         if (isUdf(duration)) {
-          return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
-        }
-        if (contains([null, false], duration)) {
+          return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+        } else if (contains([null, false], duration)) {
           invokeClear();
-          return timer[timerId] = null;
+          return timers[timerId] = null;
+        } else if (isFun(duration)) {
+          tempVar = duration,
+          duration = typeVal(callback, 'num') || 0,
+          callback = tempVar;
         }
-        if (isFun(duration)) {
-          callback = duration, duration = 0;
-        }
-      }
-      if (isNum(timerId) && isFun(duration)) {
+      } else if (isNum(timerId) && isFun(duration)) {
+        if (isBol(callback)) leading = callback;
         callback = duration, duration = timerId, timerId = UDF;
+      } else if (isFun(timerId)) {
+        tempVar = timerId;
+        if (isNum(duration)) {
+          timerId = typeVal(callback, 'str') || UDF;
+        } else if (typeVal(duration, 'str')) {
+          timerId = duration,
+          duration = typeVal(callback, 'num') || 0;
+        } else {
+          timerId = UDF, duration = 0;
+        }
+        callback = tempVar;
       }
-      if (isFun(timerId)) {
-        callback = timerId, duration = 0, timerId = UDF;
-      }
-      if (isFun(callback) && isNum(duration) && duration >= 0) {
-        if (isUdf(timerId)) return setTimer(callback, duration);
-        if (isTimerIdStr) {
+      if (isFun(callback) && isNum(duration)) {
+        if (leading) callback();
+        if (duration < 0) duration = 0;
+        if (!timerId) return setTimer(callback, duration);
+        if (typeVal(timerId, 'str')) {
           invokeClear();
-          return timer[timerId] = setTimer(callback, duration);
+          return timers[timerId] = setTimer(callback, duration);
         }
       }
+      function invokeClear() {
+        return clearTimer(timers[timerId]);
+      };
     }
 
     /**

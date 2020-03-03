@@ -1,6 +1,6 @@
 /**@config*/
 
-var version = '4.0.3';
+var version = '4.0.4';
 
 var undefined, UDF = undefined
   , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -63,15 +63,17 @@ var fsChangeEvents = {}
 /**
  * Color string of console display.
  */
+var colorPre = '\x1B[';
+var colorEnd = colorPre + '0m';
 var colorList = {
-  'grey': '\x1B[90m%s\x1B[0m',
-  'blue': '\x1B[34m%s\x1B[0m',
-  'cyan': '\x1B[36m%s\x1B[0m',
-  'green': '\x1B[32m%s\x1B[0m',
-  'magenta': '\x1B[35m%s\x1B[0m',
-  'red': '\x1B[31m%s\x1B[0m',
-  'yellow': '\x1B[33m%s\x1B[0m',
-  'default': '%s\x1B[0m'
+  'grey': colorPre + '90m',
+  'blue': colorPre + '34m',
+  'cyan': colorPre + '36m',
+  'green': colorPre + '32m',
+  'magenta': colorPre + '35m',
+  'red': colorPre + '31m',
+  'yellow': colorPre + '33m',
+  'default': ''
 };
 /**@conf-server*/
 
@@ -86,6 +88,8 @@ module.exports = {
   patterns: patterns,
   intervalTimers: intervalTimers,
   timeoutTimers: timeoutTimers,
+  colorPre: colorPre,
+  colorEnd: colorEnd,
   colorList: colorList,
   fsEvent: fsEvent,
   fsEvents: fsEvents,

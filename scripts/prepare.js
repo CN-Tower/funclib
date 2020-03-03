@@ -48,7 +48,7 @@ function asyncMethodToJs(jsPath, type_) {
       modules = ALL_MODULES.filter(md => !SERVER_IGNORE.includes(md));
       break;
   }
-  jsConf = `; (function () {${newLine}${trimJsStr(jsConf)}\r\n  /**\r\n   * Funclib definition closure.\r\n   */\r\n  var fn = (function () {`;
+  jsConf = `; (function () {${newLine}${trimJsStr(jsConf)}  /**\r\n   * Funclib definition closure.\r\n   */\r\n  var fn = (function () {`;
 
   modules.forEach(md => {
     const mdPath = path.join(rootPath, `src/funclib/${md}.js`);

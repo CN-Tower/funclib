@@ -1,5 +1,7 @@
 var has = require('./has');
-var colorList = require('./_config').colorList;
+var config = require('./_config');
+var colorEnd = config.colorEnd;
+var colorList = config.colorList;
 
 /**@function*/
 
@@ -9,8 +11,7 @@ var colorList = require('./_config').colorList;
  * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
  */
 function chalk(srcStr, color) {
-  if (!has(colorList, color)) color = 'default';
-  return colorList[color].replace(/%s/, srcStr);
+  return colorList[has(colorList, color) ? color : 'default'] + srcStr + colorEnd;
 }
 
 /**@function*/

@@ -47,7 +47,6 @@ function log(value, title, configs) {
     isFmt = true;
     title = 'funclib(' + version + ')';
   }
-  value = pretty(value);
   var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true
     , time = isShowTime ? '[' + fmtDate('hh:mm:ss', new Date()) + '] ' : '';
   title = title.replace(/\n/mg, '');
@@ -68,14 +67,27 @@ function log(value, title, configs) {
   }
   var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
   if (!isFmt) {
-    var logMsg = title + ':\n' + value;
-    console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+    if (isSplit) console.log('');
+    console.log(title + ':');
+    try {
+      console.log(pretty(value));
+    } catch (e) {
+      console.log(value);
+    }
+    if (isSplit) console.log('');
   }
   else {
-    var sgLine_1 = '', dbLine_1 = '';
-    for(var i = 0; i < width; i ++ ) { sgLine_1 += '-', dbLine_1 += '='; };
-    var logMsg = dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1;
-    console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+    var dbLine_1 = '', sgLine_1 = '';
+    for(var i = 0; i < width; i ++ ) dbLine_1 += '=', sgLine_1 += '-';
+    if (isSplit) console.log('');
+    console.log(dbLine_1 + '\n' + title + '\n' + sgLine_1);
+    try {
+      console.log(pretty(value));
+    } catch (e) {
+      console.log(value);
+    }
+    console.log(dbLine_1);
+    if (isSplit) console.log('');
   }
 }
 

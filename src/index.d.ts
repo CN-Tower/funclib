@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v4.0.3 <https://www.funclib.net>
+ * Funclib v4.0.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -527,16 +527,18 @@ declare namespace fn {
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    interval(timerId: any, duration?: any, callback?: any): Timer;
+    interval(timerId: any, duration?: any, callback?: any, leading?: any): Timer;
 
     /**
      * [fn.timeout] 延时定时器
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    timeout(timerId: any, duration?: any, callback?: any): Timer;
+    timeout(timerId: any, duration?: any, callback?: any, leading?: any): Timer;
 
     /**
      * [fn.defer] 延迟执行函数

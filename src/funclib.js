@@ -1,12 +1,12 @@
 /**
  * @license
- * Funclib v4.0.3 <https://www.funclib.net>
+ * Funclib v4.0.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '4.0.3';
+  var version = '4.0.4';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -61,7 +61,6 @@
   var fsChangeEvents = {}
     , fsEvent = 'fullscreenchange'
     , fsEvents = [fsEvent, 'webkit' + fsEvent, 'moz' + fsEvent, 'MS' + fsEvent];
-
 
   /**
    * Funclib definition closure.
@@ -654,9 +653,10 @@
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    function interval(timerId, duration, callback) {
-      return timerBase(timerId, duration, callback, 'interval');
+    function interval(timerId, duration, callback, leading) {
+      return timerBase(timerId, duration, callback, leading, 'interval');
     }
 
     /**
@@ -664,9 +664,10 @@
      * @param timerId  : string [?]
      * @param duration : number|false|null [?]
      * @param callback : function
+     * @param leading  : boolean [?]
      */
-    function timeout(timerId, duration, callback) {
-      return timerBase(timerId, duration, callback, 'timeout');
+    function timeout(timerId, duration, callback, leading) {
+      return timerBase(timerId, duration, callback, leading, 'timeout');
     }
 
     /**
@@ -1089,7 +1090,6 @@
         isFmt = true;
         title = 'funclib(' + version + ')';
       }
-      value = pretty(value);
       var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true
         , time = isShowTime ? '[' + fmtDate('hh:mm:ss', new Date()) + '] ' : '';
       title = title.replace(/\n/mg, '');
@@ -1110,14 +1110,27 @@
       }
       var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
       if (!isFmt) {
-        var logMsg = title + ':\n' + value;
-        console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+        if (isSplit) console.log('');
+        console.log(title + ':');
+        try {
+          console.log(pretty(value));
+        } catch (e) {
+          console.log(value);
+        }
+        if (isSplit) console.log('');
       }
       else {
-        var sgLine_1 = '', dbLine_1 = '';
-        for(var i = 0; i < width; i ++ ) { sgLine_1 += '-', dbLine_1 += '='; };
-        var logMsg = dbLine_1 + '\n' + title + '\n' + sgLine_1 + '\n' + value + '\n' + dbLine_1;
-        console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+        var dbLine_1 = '', sgLine_1 = '';
+        for(var i = 0; i < width; i ++ ) dbLine_1 += '=', sgLine_1 += '-';
+        if (isSplit) console.log('');
+        console.log(dbLine_1 + '\n' + title + '\n' + sgLine_1);
+        try {
+          console.log(pretty(value));
+        } catch (e) {
+          console.log(value);
+        }
+        console.log(dbLine_1);
+        if (isSplit) console.log('');
       }
     }
 
@@ -1310,40 +1323,55 @@
     /**
      * Basic methods of timers.
      */
-    function timerBase(timerId, duration, callback, type_) {
-      var timer, setTimer, clearTimer;
+    function timerBase(timerId, duration, callback, leading, type_) {
+      var timers, setTimer, clearTimer, tempVar;
       if (type_ === 'interval') {
-        timer = intervalTimers, setTimer = setInterval, clearTimer = clearInterval;
+        timers = intervalTimers,
+        setTimer = setInterval,
+        clearTimer = clearInterval;
       } else if (type_ === 'timeout') {
-        timer = timeoutTimers, setTimer = setTimeout, clearTimer = clearTimeout;
+        timers = timeoutTimers,
+        setTimer = setTimeout,
+        clearTimer = clearTimeout;
       }
-      var isTimerIdStr = typeVal(timerId, 'str');
-      function invokeClear() { return clearTimer(timer[timerId]); };
-      if (isTimerIdStr) {
+      if (typeVal(timerId, 'str')) {
         if (isUdf(duration)) {
-          return { 'id': timer[timerId], 'stop': invokeClear, 'clear': invokeClear };
-        }
-        if (contains([null, false], duration)) {
+          return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+        } else if (contains([null, false], duration)) {
           invokeClear();
-          return timer[timerId] = null;
+          return timers[timerId] = null;
+        } else if (isFun(duration)) {
+          tempVar = duration,
+          duration = typeVal(callback, 'num') || 0,
+          callback = tempVar;
         }
-        if (isFun(duration)) {
-          callback = duration, duration = 0;
-        }
-      }
-      if (isNum(timerId) && isFun(duration)) {
+      } else if (isNum(timerId) && isFun(duration)) {
+        if (isBol(callback)) leading = callback;
         callback = duration, duration = timerId, timerId = UDF;
+      } else if (isFun(timerId)) {
+        tempVar = timerId;
+        if (isNum(duration)) {
+          timerId = typeVal(callback, 'str') || UDF;
+        } else if (typeVal(duration, 'str')) {
+          timerId = duration,
+          duration = typeVal(callback, 'num') || 0;
+        } else {
+          timerId = UDF, duration = 0;
+        }
+        callback = tempVar;
       }
-      if (isFun(timerId)) {
-        callback = timerId, duration = 0, timerId = UDF;
-      }
-      if (isFun(callback) && isNum(duration) && duration >= 0) {
-        if (isUdf(timerId)) return setTimer(callback, duration);
-        if (isTimerIdStr) {
+      if (isFun(callback) && isNum(duration)) {
+        if (leading) callback();
+        if (duration < 0) duration = 0;
+        if (!timerId) return setTimer(callback, duration);
+        if (typeVal(timerId, 'str')) {
           invokeClear();
-          return timer[timerId] = setTimer(callback, duration);
+          return timers[timerId] = setTimer(callback, duration);
         }
       }
+      function invokeClear() {
+        return clearTimer(timers[timerId]);
+      };
     }
 
     /**

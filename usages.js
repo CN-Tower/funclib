@@ -1,4 +1,4 @@
-// const fn = require('./src');
+const fn = require('./src');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
@@ -6,103 +6,11 @@
 // const fmtDate = require('./src/fmtDate');
 // const progress = require('./src/progress');
 
-// progress('test');
-// fn.progress('test');
-// fn.timeout(15000, () => fn.progress.stop());
 
-// fn.log(fn.isObj(global));
-// fn.log(fn.isObj(/a/));
-// fn.log(fn.isObj(new Date()));
-// fn.log(fn.isObj(new Error()));
-// fn.log(fn.isObj(new Array()));
-// fn.log(fn.isObj([]));
-// fn.log(fn.isObj(null));
-// fn.log(fn.isObj(undefined));
-// fn.log(fn.isObj(new (class A{})));
-// fn.log(fn.isObj(new Object()));
-// fn.log(fn.isObj({}));
-
-// var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-// var p = fn(ps).find({name: 'Bob'}).set('name', 'Bob').val();
-// var p = fn.chain(ps).filter({name: 'Bob'}).val();
-
-// log(p);
-// fn.log(p);
 /**
- * fn.random
+ * Hybrid
+ * =======================================================================
  */
-// fn.log(fn.random());
-// fn.log(fn.random(5));
-// fn.log(fn.random(5, true));
-// fn.log(fn.random(5, 6, true));
-// fn.log(fn.random(5.5));
-// fn.interval(1000, () => {
-//   fn.log(fn.random(5, 8));
-// });
-
-// fn.log(fn.maskString(18770347037, 7))
-
-// const d = Date.now();
-// const offset = 5.5 * 60 * 60 * 1000;
-// log(fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
-// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
-// fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
-// fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
-// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asXyzTime(d, offset)), 'xyz2');
-// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
-// fn.log(new Date());
-// fn.log(/aaa/);
-// fn.log(null);
-// fn.log(undefined);
-// fn.log([{name: 'tom'}])
-
-// class A {
-//   constructor() {
-//     this.a = 'aa';
-//   }
-// }
-
-// fn.log(new A());
-
-// fn.log(fn.isDeepEqual({}, {}));
-// fn.log(fn.typeOf({}, 'obj'));
-// fn.log(fn.typeOf(global, 'obj'));
-
-
-// fn.progress.stop();
-// fn.log(1234)
-// fn.progress('Hello', {type: 'spi', isSplit: false});
-// console.log(12234534)
-// fn.progress.start('Hello_', {isSplit: false});
-// fn.timeout(5000, () => {
-//   fn.progress.clear();
-//   fn.progress('Nice');
-//   fn.timeout(5000, () => fn.progress.stop());
-// });
-
-// fn.log(fn.timeout('#abc').clear)
-
-
-// fn.log(fn.fmtDate('yyyy-MM-dd', '2012-2-3'));
-// fn.log(fn.fmtDate('yyyy-MM-dd', new Date()));
-// fn.log(fn.fmtDate('yyyy-MM-dd'));
-
-// console.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
-
-// fn.setPattern('myPtn', /test_/);
-// fn.matchPattern('test_x', 'myPtn', false);
-
-// fn.progress.start('Testing...', {type: 'spi'});
-// console.log(111);
-// console.log(222);
-// fn.timeout(1000, () => console.log(333));
-
-// fn.interval(() => console.log(1), 1000, 'abc');
-
-// fn.log(fn.interval());
-// fn.timeout(() => fn.interval(), 3000)
-// fn.timeout(() => fn.interval('abc', false), 2000);
-
 // fn.log();
 // fn('aaa').log({title: 'AAA'});
 // fn({name: 'Tom'}).get('/name');
@@ -122,6 +30,108 @@
 // }, '/metadata/subArr/id', 'arr', 'udf'));
 
 // fn.log(fn.typeVal(undefined, 'arr'));
+// fn.log(fn.maskString(18770347037, 7))
+// fn.log(fn.isDeepEqual({}, {}));
+// fn.log(fn.typeOf({}, 'obj'));
+// fn.log(fn.typeOf(global, 'obj'));
+// console.log(fn.drop([/a/, '', null, [], {}, 0, 1], true))
+// fn.setPattern('myPtn', /test_/);
+// fn.matchPattern('test_x', 'myPtn', false);
+
+/**
+ * Is
+ * =======================================================================
+ */
+// fn.log(fn.isObj(global));
+// fn.log(fn.isObj(/a/));
+// fn.log(fn.isObj(new Date()));
+// fn.log(fn.isObj(new Error()));
+// fn.log(fn.isObj(new Array()));
+// fn.log(fn.isObj([]));
+// fn.log(fn.isObj(null));
+// fn.log(fn.isObj(undefined));
+// fn.log(fn.isObj(new (class A{})));
+// fn.log(fn.isObj(new Object()));
+// fn.log(fn.isObj({}));
+
+/**
+ * Chain
+ * =======================================================================
+ */
+// var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+// var p = fn(ps).find({name: 'Bob'}).set('name', 'Bob').val();
+// var p = fn.chain(ps).filter({name: 'Bob'}).val();
+
+// log(p);
+// fn.log(p);
+
+/**
+ * Random
+ * =======================================================================
+ */
+// fn.log(fn.random());
+// fn.log(fn.random(5));
+// fn.log(fn.random(5, true));
+// fn.log(fn.random(5, 6, true));
+// fn.log(fn.random(5.5));
+// fn.interval(1000, () => {
+//   fn.log(fn.random(5, 8));
+// });
+
+/**
+ * Date
+ * =======================================================================
+ */
+// const d = Date.now();
+// const offset = 5.5 * 60 * 60 * 1000;
+// log(fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
+// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', d), 'local');
+// fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm:ss', d), 'utc');
+// fn.log(fn.fmtXyzDate('yyyy-MM-dd hh:mm:ss', d, offset), 'xyz');
+// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asXyzTime(d, offset)), 'xyz2');
+// fn.log(fn.fmtDate('yyyy-MM-dd hh:mm:ss', fn.asUtcTime(d) - offset), 'xyz');
+// fn.log(new Date());
+// fn.log(fn.fmtDate('yyyy-MM-dd', '2012-2-3'));
+// fn.log(fn.fmtDate('yyyy-MM-dd', new Date()));
+// fn.log(fn.fmtDate('yyyy-MM-dd'));
+
+/**
+ * Utils
+ * =======================================================================
+ */
+// fn.interval('abc', 2000, () => console.log(1));
+// fn.interval('abc', 2000, () => console.log(1));
+// fn.interval('abc', 2000, () => console.log(1));
+// fn.interval('abc', 2000, () => console.log(1), true);
+// fn.interval('abc', 2000, () => console.log(1), true);
+// fn.interval('abc', 2000, () => console.log(1), true);
+// fn.interval(2000, () => console.log(1));
+// fn.interval(2000, () => console.log(1));
+// fn.interval(2000, () => console.log(1));
+// fn.interval(2000, () => console.log(1), true);
+// fn.interval(2000, () => console.log(1), true);
+// fn.interval(2000, () => console.log(1), true);
+// fn.interval(() => console.log(1), 2000, 'abc');
+// fn.interval(() => console.log(1), 2000, 'abc');
+// fn.interval(() => console.log(1), 2000, 'abc');
+// fn.interval(() => console.log(1), 2000, 'abc', true);
+// fn.interval(() => console.log(1), 2000, 'abc', true);
+// fn.interval(() => console.log(1), 2000, 'abc', true);
+// fn.interval(() => console.log(1), 'abc', 2000);
+// fn.interval(() => console.log(1), 'abc', 2000);
+// fn.interval(() => console.log(1), 'abc', 2000);
+// fn.interval(() => console.log(1), 'abc', 2000, true);
+// fn.interval(() => console.log(1), 'abc', 2000, true);
+// fn.interval(() => console.log(1), 'abc', 2000, true);
+// fn.log(fn.interval(), '#interval');
+// fn.log(fn.interval('abc'), '#interval_abc', { color: 'red' });
+// fn.timeout(6100, () => fn.interval('abc', false));
+// fn.timeout(6100, () => fn.interval('abc').clear());
+// fn.timeout(() => fn.interval('abc').clear(), 6100);
+
+// fn.timeout(() => fn.interval(), 3000)
+// fn.timeout(() => fn.interval('abc', false), 2000);
+// fn.log(fn.timeout('#abc').clear)
 
 /**
  * Loger
@@ -132,6 +142,16 @@
 // fn.log([{name: 'tom', age: 22}], {title: 'Hello Woooooooooooooo4d55oooo0000d04400000040000400ooooold'});
 // fn.log([{name: 'tom', age: 22}], {title: 'Hello world', width: 80, color: 'red', ttColor: 'blue'});
 // fn.log(() => {console.log(111)}, 'Function');
+// fn.log(/aaa/);
+// fn.log(null);
+// fn.log(undefined);
+// fn.log([{name: 'tom'}])
+// class A {
+//   constructor() {
+//     this.a = 'aa';
+//   }
+// }
+// fn.log(new A());
 
 /**
  * Function
@@ -186,13 +206,11 @@
 // fn.log(obj1, 'set1');
 // fn.log(obj2, 'set2');
 
-
 // fn.log(fn.get(obj1, '/metadata/subObj/name'));
 // fn.log(fn.get(obj2, 'metadata/subObj/name'));
 // fn.log(fn.get(obj1, '.metadata.subObj.name'));
 // fn.log(fn.get(obj2, 'metadata.subObj.name'));
 // fn.forIn(['aaa', 'bbb'], x => fn.log(x));
-
 
 // const persons = [{name:'LiLi', age: 22, indexes: {height: 180, weight: 70}},
 //                  {name:'Mari', age: undefined, indexes: {height: 180, weight: 72}},
@@ -297,3 +315,17 @@
 // setTimeout(() => {
 //     fn.progress.stop()
 // }, 5000);
+
+// fn.progress.stop();
+// fn.log(1234)
+// fn.progress('Hello', {type: 'spi', isSplit: false});
+// console.log(12234534)
+// fn.progress.start('Hello_', {isSplit: false});
+// fn.timeout(5000, () => {
+//   fn.progress.clear();
+//   fn.progress('Nice');
+//   fn.timeout(5000, () => fn.progress.stop());
+// });
+// fn.progress.start('Testing...', {type: 'spi'});
+// console.log(111);
+// console.log(222);

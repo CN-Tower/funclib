@@ -9,6 +9,7 @@ var fmtDate = require('./fmtDate');
 var cutString = require('./cutString');
 var typeVal = require('./typeVal');
 var config = require('./_config');
+var colorEnd = config.colorEnd;
 var colorList = config.colorList;
 var version = config.version;
 
@@ -54,7 +55,6 @@ function log(value, title, configs) {
     isFmt = true;
     title = 'funclib(' + version + ')';
   }
-  value = pretty(value);
   var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
   var _time = fmtDate('hh:mm:ss', new Date());
   var time = isShowTime ? '[' + _time + '] ' : '';
@@ -66,25 +66,28 @@ function log(value, title, configs) {
   if (time) {
     time = '[' + chalk(_time, 'grey') + '] ';
   }
-  var valuec = get(configs, 'color');
-  var titlec = get(configs, 'ttColor');
-  value = chalk(value, has(colorList, valuec) ? valuec : 'cyan');
-  title = chalk(title, has(colorList, titlec) ? titlec : 'default');
+  title = chalk(title, get(configs, 'ttColor'));
   title = time + title;
   var width = get(configs, 'width', 'num');
   if (!width || width < 30 || width > 100) width = 66;
   if (originTtLength > width) {
-    var colorEnd = '\x1B[0m';
     var fixLength = title.length - originTtLength - colorEnd.length;
     title = cutString(title, width + fixLength - 3) + colorEnd;
   }
   else if (isFmt) {
     title = array((width - originTtLength) / 2, ' ').join('') + title;
   }
+  var valuec = get(configs, 'color');
   var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
   if (!isFmt) {
-    var logMsg = title + ':\n' + value;
-    console.log(isSplit ? '\n' + logMsg + '\n' : logMsg);
+    if (isSplit) console.log('');
+    console.log(title + ':');
+    try {
+      console.log(chalk(pretty(value), valuec));
+    } catch (e) {
+      console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+    }
+    if (isSplit) console.log('');
   }
   else {
     var sgLine_1 = '', dbLine_1 = '';
@@ -98,11 +101,17 @@ function log(value, title, configs) {
       console.log(dbLine_1 + '\n');
     }
     else {
-      console.log(isSplit ? '\n' + dbLine_1 : dbLine_1);
+      if (isSplit) console.log('');
+      console.log(dbLine_1);
       console.log(title);
       console.log(sgLine_1);
-      console.log(value);
-      console.log(isSplit ? dbLine_1 + '\n' : dbLine_1);
+      try {
+        console.log(chalk(pretty(value), valuec));
+      } catch (e) {
+        console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+      }
+      console.log(dbLine_1);
+      if (isSplit) console.log('');
     }
   }
 }

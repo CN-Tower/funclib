@@ -7,9 +7,10 @@ var timerBase = require('./_timerBase');
  * @param timerId  : string [?]
  * @param duration : number|false|null [?]
  * @param callback : function
+ * @param leading  : boolean [?]
  */
-function interval(timerId, duration, callback) {
-  return timerBase(timerId, duration, callback, 'interval');
+function interval(timerId, duration, callback, leading) {
+  return timerBase(timerId, duration, callback, leading, 'interval');
 }
 
 /**@function*/

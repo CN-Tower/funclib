@@ -35,11 +35,11 @@ fn.timeout(1000, () => {
   fn.cp(path.join(root, 'README.md'), path.join(root, 'dist/README.md'));
   
   // 打印构建信息
-  fn.progress.stop(() => fn.log(`
-  Funclib Version: v${pkg.version}
+  fn.progress.stop(() => fn.log(
+`  Funclib Version: v${pkg.version}
   
-  funclib.js      ${fn.size(fnJs)} kb
-  funclib.min.js  ${fn.size(fnMinJs)} kb
-  index.js        ${fn.size(indexJs)} kb`, 'Build Success!'
+  funclib.js       ${fn.size(fnJs)} kb
+  funclib.min.js   ${fn.size(fnMinJs)} kb
+  index.js         ${fn.size(indexJs)} kb`, 'Build Success!'
   ));
 })
