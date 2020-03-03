@@ -93,5 +93,7 @@ module.exports = {
   colorList: colorList,
   fsEvent: fsEvent,
   fsEvents: fsEvents,
-  fsChangeEvents: fsChangeEvents
+  fsChangeEvents: fsChangeEvents,
+  MATCH_SYMBOL: MATCH_SYMBOL,
+  MATCH_NEST: MATCH_NEST
 };
