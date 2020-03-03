@@ -5,13 +5,13 @@ var Pgbar = require('progress');
 
 /**
  * @license
- * Funclib v4.0.4 <https://www.funclib.net>
+ * Funclib v4.0.5 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '4.0.4';
+  var version = '4.0.5';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -1141,6 +1141,7 @@ var Pgbar = require('progress');
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
       var valuec = get(configs, 'color');
+      if (!has(colorList, valuec)) valuec = 'cyan';
       var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
       if (!isFmt) {
         if (isSplit) console.log('');
@@ -1148,7 +1149,7 @@ var Pgbar = require('progress');
         try {
           console.log(chalk(pretty(value), valuec));
         } catch (e) {
-          console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+          console.log(colorList[valuec], value, colorEnd);
         }
         if (isSplit) console.log('');
       }
@@ -1171,7 +1172,7 @@ var Pgbar = require('progress');
           try {
             console.log(chalk(pretty(value), valuec));
           } catch (e) {
-            console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+            console.log(colorList[valuec], value, colorEnd);
           }
           console.log(dbLine_1);
           if (isSplit) console.log('');

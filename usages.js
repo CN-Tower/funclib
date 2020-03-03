@@ -27,7 +27,7 @@ const fn = require('./src');
 //       id: 'subOjb_001'
 //     }
 //   }
-// }, '/metadata/subArr/id', 'arr', 'udf'));
+// }, '/metadata/subObj/id', 'str', 'udf'));
 
 // fn.log(fn.typeVal(undefined, 'arr'));
 // fn.log(fn.maskString(18770347037, 7))

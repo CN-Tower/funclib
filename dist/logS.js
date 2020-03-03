@@ -78,6 +78,7 @@ function log(value, title, configs) {
     title = array((width - originTtLength) / 2, ' ').join('') + title;
   }
   var valuec = get(configs, 'color');
+  if (!has(colorList, valuec)) valuec = 'cyan';
   var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
   if (!isFmt) {
     if (isSplit) console.log('');
@@ -85,7 +86,7 @@ function log(value, title, configs) {
     try {
       console.log(chalk(pretty(value), valuec));
     } catch (e) {
-      console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+      console.log(colorList[valuec], value, colorEnd);
     }
     if (isSplit) console.log('');
   }
@@ -108,13 +109,12 @@ function log(value, title, configs) {
       try {
         console.log(chalk(pretty(value), valuec));
       } catch (e) {
-        console.log(colorList[has(colorList, valuec) ? valuec : 'default'], value, colorEnd);
+        console.log(colorList[valuec], value, colorEnd);
       }
       console.log(dbLine_1);
       if (isSplit) console.log('');
     }
   }
 }
-
 /**@function*/
 module.exports = log;
