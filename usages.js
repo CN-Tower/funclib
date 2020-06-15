@@ -1,4 +1,4 @@
-const fn = require('./src');
+const fn = require('./src/funclib');
 // const fn = require('./src/funclib.min');
 // const fn = require('./src/funclib');
 
@@ -6,6 +6,7 @@ const fn = require('./src');
 // const fmtDate = require('./src/fmtDate');
 // const progress = require('./src/progress');
 
+fn.log(fn.fmtCurrency(-1234.7455))
 
 /**
  * Hybrid

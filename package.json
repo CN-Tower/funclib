@@ -71,7 +71,7 @@
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
     "@types/node": "^10.3.0",
-    "funclib": "^4.0.5",
+    "funclib": "^4.0.6",
     "jquery": "^3.3.1",
     "typescript": "^2.8.3"
   },

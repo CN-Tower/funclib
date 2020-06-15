@@ -5,13 +5,13 @@ var Pgbar = require('progress');
 
 /**
  * @license
- * Funclib v4.0.5 <https://www.funclib.net>
+ * Funclib v4.0.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '4.0.5';
+  var version = '4.0.6';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -838,7 +838,7 @@ var Pgbar = require('progress');
       sti = integer.length % 3;
       integerStr = integer.substr(0, sti);
       for (i = 0; i < spn; i++) {
-        integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
+        integerStr += (i === 0 && (integerStr === '-' || !integerStr)) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
         sti += 3;
       }
       return decimal ? integerStr + '.' + decimal : integerStr;

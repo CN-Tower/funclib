@@ -17,7 +17,7 @@ function fmtCurrency(number, digit) {
   sti = integer.length % 3;
   integerStr = integer.substr(0, sti);
   for (i = 0; i < spn; i++) {
-    integerStr += (i === 0 && !integerStr) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
+    integerStr += (i === 0 && (integerStr === '-' || !integerStr)) ? integer.substr(sti, 3) : ',' + integer.substr(sti, 3);
     sti += 3;
   }
   return decimal ? integerStr + '.' + decimal : integerStr;
