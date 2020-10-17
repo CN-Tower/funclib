@@ -1,4 +1,5 @@
 var UDF = undefined;
+var indexOf = require('./indexOf');
 
 /**@function*/
 
