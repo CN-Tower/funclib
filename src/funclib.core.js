@@ -1,12 +1,12 @@
 /**
  * @license
- * Funclib v4.0.6 <https://www.funclib.net>
+ * Funclib v4.0.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '4.0.6';
+  var version = '4.0.7';
   
   var undefined, UDF = undefined
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -410,13 +410,13 @@
 
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
-     * @param srcArr : array
-     * @param field  : string
-     * @param isDesc : boolean = false
+     * @param srcArr    : array
+     * @param fieldPath : string
+     * @param isDesc    : boolean = false
      */
-    function sortBy(srcArr, field, isDesc) {
+    function sortBy(srcArr, fieldPath, isDesc) {
       return srcArr.slice().sort(function (row1, row2) {
-        var rst1 = get(row1, field), rst2 = get(row2, field);
+        var rst1 = get(row1, fieldPath), rst2 = get(row2, fieldPath);
         if (rst1 !== 0 && !rst1) {
           return isDesc ? 1 : -1;
         } else if (rst2 !== 0 && !rst2) {
@@ -606,20 +606,21 @@
      * [fn.random] 返回一个指定范围内的随机数
      * @param start : number
      * @param end   : number [?]
-     * @param isFlt : boolean = true;
+     * @param isInt : boolean = true;
      */
-    function random(start, end, isFlt) {
+    function random(start, end, isInt) {
       if (!isNum(start)) return Math.random();
-      if (isBol(end)) isFlt = end, end = UDF;
+      if (isBol(end)) isInt = end, end = UDF;
+      if (isInt !== false) isInt = true;
       var rdNum, temp;
       if (!isNum(end) || start === end) {
         rdNum = Math.random() * start;
-        return isFlt ? rdNum : Math.floor(rdNum);
+        return isInt ?  Math.floor(rdNum) : rdNum;
       } else {
         var isStartGt = start > end
         if (isStartGt) temp = start, start = end, end = temp;
         rdNum = Math.random() * (end - start) + start;
-        return isFlt ? rdNum : (isStartGt ? Math.ceil(rdNum) : Math.floor(rdNum));
+        return isInt ? (isStartGt ? Math.ceil(rdNum) : Math.floor(rdNum)) : rdNum ;
       }
     }
 
@@ -1223,7 +1224,7 @@
     function dateBase(time) {
       if (isDat(time)) return time;
       time = String(time);
-      return new Date(time.match(/^[0-9]*$/) ? +time : time);
+      return new Date(time.match(/^\-?[0-9]*$/) ? +time : time);
     }
 
     /**
@@ -1231,7 +1232,8 @@
      */
     function fmtDateBase(fmtStr, time, isUtc) {
       var date = dateBase(time);
-      if (!date.getTime()) return '';
+      var dateTime = date.getTime();
+      if (!dateTime && dateTime !== 0) return '';
       var timeObj = getTimeObj(date, isUtc);
       forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {

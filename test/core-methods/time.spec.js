@@ -64,6 +64,14 @@
         const t3 = fn.fmtDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30'));
         assert(t3 === '18-06-06 12:30');
       });
+      it(`fn.fmtDate('yy-MM-dd hh:mm', 0) should return a fmted date string.`, function () {
+        const t3 = fn.fmtDate('yyyy-MM-dd hh:mm', 0);
+        assert(t3 === '1970-01-01 08:00');
+      });
+      it(`fn.fmtDate('yy-MM-dd hh:mm', -1528259400000) should return a fmted date string.`, function () {
+        const t3 = fn.fmtDate('yy-MM-dd hh:mm', -1528259400000);
+        assert(t3 === '21-07-29 03:30');
+      });
     });
     describe('#fn.fmtUtcDate()', function () {
       it(`fn.fmtUtcDate('yy-MM-dd hh:mm:ss', 'abcd') should return ''.`, function () {

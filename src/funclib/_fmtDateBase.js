@@ -9,7 +9,8 @@ var getTimeObj = require('./_getTimeObj');
  */
 function fmtDateBase(fmtStr, time, isUtc) {
   var date = dateBase(time);
-  if (!date.getTime()) return '';
+  var dateTime = date.getTime();
+  if (!dateTime && dateTime !== 0) return '';
   var timeObj = getTimeObj(date, isUtc);
   forIn(timeObj, function (k) {
     if (new RegExp('(' + k + ')').test(fmtStr)) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v4.0.6 <https://www.funclib.net>
+ * Funclib v4.0.7 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -314,14 +314,16 @@ declare namespace fn {
      * @param length : number
      * @param value  : any|function [?]
      */
-    array(length: number, value?: any): any[];
+    array(length: number): number[];
+    array<T>(length: number, value: T): T[];
 
     /**
      * [fn.range] 返回一个范围数组
      * @param start  : number [?]
      * @param length : number
      */
-    range(start: number, length?: number): number[];
+    range(length: number): number[];
+    range(start: number, length: number): number[];
 
     /**
      * [fn.toArr] 值数组化
@@ -334,6 +336,8 @@ declare namespace fn {
      * @param srcArr    : array|string
      * @param predicate : object|function|any
      */
+    indexOf<T>(srcArr: T[], predicate: (item: T) => boolean): number;
+    indexOf<T>(srcArr: T[], predicate: { [key: string]: any }): number;
     indexOf(srcArr: any[] | string, predicate: any): number;
 
     /**
@@ -341,6 +345,8 @@ declare namespace fn {
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
+    find<T>(srcArr: T[], predicate: (item: T) => boolean): T;
+    find<T>(srcArr: T[], predicate: { [key: string]: any }): T;
     find(srcArr: any[], predicate: any): any;
 
     /**
@@ -348,6 +354,8 @@ declare namespace fn {
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
+    filter<T>(srcArr: T[], predicate: (item: T) => boolean): T[];
+    filter<T>(srcArr: T[], predicate: { [key: string]: any }): T[];
     filter(srcArr: any[], predicate: any): any[];
 
     /**
@@ -355,6 +363,8 @@ declare namespace fn {
       * @param srcArr    : array
       * @param predicate : object|function|any
       */
+    reject<T>(srcArr: T[], predicate: (item: T) => boolean): T[];
+    reject<T>(srcArr: T[], predicate: { [key: string]: any }): T[];
     reject(srcArr: any[], predicate: any): any[];
 
     /**
@@ -362,6 +372,8 @@ declare namespace fn {
      * @param srcArr    : array
      * @param predicate : object|function|any
      */
+    contains<T>(srcArr: T[], predicate: (item: T) => boolean): boolean;
+    contains<T>(srcArr: T[], predicate: { [key: string]: any }): boolean;
     contains(srcArr: any[], predicate: any): boolean;
 
     /**
@@ -369,7 +381,7 @@ declare namespace fn {
      * @param srcArr  : array
      * @param isDrop0 : boolean = false
      */
-    drop(srcArr: any[], isDrop0?: boolean): any[];
+    drop<T>(srcArr: T[], isDrop0?: boolean): T[];
 
     /**
      * [fn.flatten] 把有结构的数组打散，减少层数
@@ -391,13 +403,15 @@ declare namespace fn {
      * @param pathStr : string [?]
      * @param isDeep  : boolean = true
      */
-    uniq(srcArr: any[], pathStr?: string, isDeep?: boolean): any[];
+    uniq<T>(srcArr: T[], pathStr?: string, isDeep?: boolean): T[];
 
     /**
      * [fn.each] 遍历数组或类数组
      * @param srcObj   : array|object
      * @param iteratee : function
      */
+    each<T>(srcObj: T[], iteratee: (value: T, index?: number) => void): void;
+    each<T>(srcObj: T, iteratee: (value: any, key?: keyof T) => void): void;
     each(srcObj: any, iteratee: any): any;
 
     /**
@@ -405,15 +419,17 @@ declare namespace fn {
      * @param srcObj   : array|object
      * @param iteratee : function
      */
+    forEach<T>(srcObj: T[], iteratee: (value: T, index?: number) => void): void;
+    forEach<T>(srcObj: T, iteratee: (value: any, key?: keyof T) => void): void;
     forEach(srcObj: any, iteratee: any): any;
 
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
-     * @param srcArr : array
-     * @param field  : string
-     * @param isDesc : boolean = false
+     * @param srcArr    : array
+     * @param fieldPath : string
+     * @param isDesc    : boolean = false
      */
-    sortBy(srcArr: any[], field: string, isDesc?: boolean): any;
+    sortBy<T>(srcArr: T[], fieldPath: string, isDesc?: boolean): T[];
 
     /**
      * [fn.len] 获取对象自有属性的个数
@@ -454,26 +470,35 @@ declare namespace fn {
     /**
      * [fn.pick] 获取包含部分属性的对象副本
      * @param srcObj    : object
+     * @param options   : { default?: any } [?]
      * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
+    pick<T>(srcObj: T, predicate: (key: keyof T, value?: any) => boolean): any;
+    pick<T>(srcObj: T, options: { default?: any }, predicate: (key: keyof T, value?: any) => boolean): any;
     pick(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.omit] 获取省略部分属性的对象副本
      * @param srcObj    : object
+     * @param options   : { default?: any } [?]
      * @param predicate : function|string|string[]
      * @param props     : ...string[]
      */
+    omit<T>(srcObj: T, predicate: (key: keyof T, value?: any) => boolean): any;
+    omit<T>(srcObj: T, options: { default?: any }, predicate: (key: keyof T, value?: any) => boolean): any;
     omit(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.extend] 给对象赋值
      * @param tarObj    : object
      * @param srcObj    : object
+     * @param options   : { default?: any } [?]
      * @param predicate : function|string|string[]|{ default?: any }
      * @param props     : ...string[]
      */
+    extend<T>(tarObj: any, srcObj: T, predicate: (key: keyof T, value?: any) => boolean): any;
+    extend<T>(tarObj: any, srcObj: T, options: { default?: any }, predicate: (key: keyof T, value?: any) => boolean): any;
     extend(tarObj: any, srcObj: any, predicate?: { default?: any } | any, ...props: string[]): any;
 
     /**
@@ -481,13 +506,15 @@ declare namespace fn {
      * @param srcObj   : object
      * @param iteratee : function
      */
+    forIn<T>(srcObj: T, iteratee: (key: keyof T, value?: any) => void): void;
+    forIn<T>(srcObj: T[], iteratee: (index: number, value?: T) => void): void;
     forIn(srcObj: any, iteratee: any): any;
 
     /**
      * [fn.deepCopy] 深拷贝对象或数组
      * @param srcObj : object
      */
-    deepCopy(srcObj: any): any;
+    deepCopy<T>(srcObj: T): T;
 
     /**
      * [fn.isEmpty] 判断对象是否为空对象或数组
@@ -507,9 +534,9 @@ declare namespace fn {
      * [fn.random] 返回一个指定范围内的随机数
      * @param start : number
      * @param end   : number [?]
-     * @param isFlt : boolean = true;
+     * @param isInt : boolean = true;
      */
-    random(start: number, end?: number, isFlt?: boolean): number;
+    random(start?: number, end?: number, isInt?: boolean): number;
 
     /**
      * [fn.gid] 返回一个指定长度的随机ID

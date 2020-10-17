@@ -1,12 +1,13 @@
 const fn = require('./src/funclib');
 // const fn = require('./src/funclib.min');
-// const fn = require('./src/funclib');
 
 // const log = require('./src/logS');
 // const fmtDate = require('./src/fmtDate');
 // const progress = require('./src/progress');
 
-fn.log(fn.fmtCurrency(-1234.7455))
+// fn.log(fn.fmtCurrency(-1234.7455))
+fn.log(fn.fmtDate('yyyy-MM-dd hh:mm', 0));
+fn.log(fn.fmtDate('yy-MM-dd hh:mm', -1528259400000));
 
 /**
  * Hybrid

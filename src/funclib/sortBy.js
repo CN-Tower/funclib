@@ -4,13 +4,13 @@ var get = require('./get');
 
 /**
  * [fn.sortBy] 返回对象数组根据字段排序后的副本
- * @param srcArr : array
- * @param field  : string
- * @param isDesc : boolean = false
+ * @param srcArr    : array
+ * @param fieldPath : string
+ * @param isDesc    : boolean = false
  */
-function sortBy(srcArr, field, isDesc) {
+function sortBy(srcArr, fieldPath, isDesc) {
   return srcArr.slice().sort(function (row1, row2) {
-    var rst1 = get(row1, field), rst2 = get(row2, field);
+    var rst1 = get(row1, fieldPath), rst2 = get(row2, fieldPath);
     if (rst1 !== 0 && !rst1) {
       return isDesc ? 1 : -1;
     } else if (rst2 !== 0 && !rst2) {
