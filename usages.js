@@ -8,6 +8,7 @@ const fn = require('./src/funclib');
 // fn.log(fn.fmtCurrency(-1234.7455))
 fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm', 0));
 fn.log(fn.fmtUtcDate('yy-MM-dd hh:mm', -1528259400000));
+fn.log(fn.fmtUtcDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30')));
 
 /**
  * Hybrid
