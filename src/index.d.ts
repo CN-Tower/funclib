@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v4.0.7 <https://www.funclib.net>
+ * Funclib v4.0.8 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -338,7 +338,7 @@ declare namespace fn {
      */
     indexOf<T>(srcArr: T[], predicate: (item: T) => boolean): number;
     indexOf<T>(srcArr: T[], predicate: { [key: string]: any }): number;
-    indexOf(srcArr: any[] | string, predicate: any): number;
+    indexOf(srcArr: any[] | string | any, predicate: any): number;
 
     /**
      * [fn.find] 根据条件取值
@@ -347,7 +347,7 @@ declare namespace fn {
      */
     find<T>(srcArr: T[], predicate: (item: T) => boolean): T;
     find<T>(srcArr: T[], predicate: { [key: string]: any }): T;
-    find(srcArr: any[], predicate: any): any;
+    find(srcArr: any[] | any, predicate: any): any;
 
     /**
      * [fn.filter] 根据条件取过滤值
@@ -356,7 +356,7 @@ declare namespace fn {
      */
     filter<T>(srcArr: T[], predicate: (item: T) => boolean): T[];
     filter<T>(srcArr: T[], predicate: { [key: string]: any }): T[];
-    filter(srcArr: any[], predicate: any): any[];
+    filter(srcArr: any[] | any, predicate: any): any[];
 
     /**
       * [fn.reject] 根据条件过滤值
@@ -365,7 +365,7 @@ declare namespace fn {
       */
     reject<T>(srcArr: T[], predicate: (item: T) => boolean): T[];
     reject<T>(srcArr: T[], predicate: { [key: string]: any }): T[];
-    reject(srcArr: any[], predicate: any): any[];
+    reject(srcArr: any[] | any, predicate: any): any[];
 
     /**
      * [fn.contains] 判断数组是否包含符合条件的值
@@ -374,7 +374,7 @@ declare namespace fn {
      */
     contains<T>(srcArr: T[], predicate: (item: T) => boolean): boolean;
     contains<T>(srcArr: T[], predicate: { [key: string]: any }): boolean;
-    contains(srcArr: any[], predicate: any): boolean;
+    contains(srcArr: any[] | any, predicate: any): boolean;
 
     /**
      * [fn.drop] 去掉空数组、空对象及布尔化后为false的值
@@ -382,6 +382,7 @@ declare namespace fn {
      * @param isDrop0 : boolean = false
      */
     drop<T>(srcArr: T[], isDrop0?: boolean): T[];
+    drop(srcArr: any[] | any, isDrop0?: boolean): any[];
 
     /**
      * [fn.flatten] 把有结构的数组打散，减少层数
@@ -404,6 +405,7 @@ declare namespace fn {
      * @param isDeep  : boolean = true
      */
     uniq<T>(srcArr: T[], pathStr?: string, isDeep?: boolean): T[];
+    uniq(srcArr: any[] | any, pathStr?: string, isDeep?: boolean): any[];
 
     /**
      * [fn.each] 遍历数组或类数组
@@ -412,7 +414,7 @@ declare namespace fn {
      */
     each<T>(srcObj: T[], iteratee: (value: T, index?: number) => void): void;
     each<T>(srcObj: T, iteratee: (value: any, key?: keyof T) => void): void;
-    each(srcObj: any, iteratee: any): any;
+    each(srcObj: any, iteratee: any): void;
 
     /**
      * [fn.forEach] 遍历数组或类数组
@@ -421,7 +423,7 @@ declare namespace fn {
      */
     forEach<T>(srcObj: T[], iteratee: (value: T, index?: number) => void): void;
     forEach<T>(srcObj: T, iteratee: (value: any, key?: keyof T) => void): void;
-    forEach(srcObj: any, iteratee: any): any;
+    forEach(srcObj: any, iteratee: any): void;
 
     /**
      * [fn.sortBy] 返回对象数组根据字段排序后的副本
@@ -430,6 +432,7 @@ declare namespace fn {
      * @param isDesc    : boolean = false
      */
     sortBy<T>(srcArr: T[], fieldPath: string, isDesc?: boolean): T[];
+    sortBy(srcArr: any[] | any, fieldPath: string, isDesc?: boolean): any[];
 
     /**
      * [fn.len] 获取对象自有属性的个数
@@ -476,7 +479,7 @@ declare namespace fn {
      */
     pick<T>(srcObj: T, predicate: (key: keyof T, value?: any) => boolean): any;
     pick<T>(srcObj: T, options: { default?: any }, predicate: (key: keyof T, value?: any) => boolean): any;
-    pick(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
+    pick(srcObj: any, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.omit] 获取省略部分属性的对象副本
@@ -487,7 +490,7 @@ declare namespace fn {
      */
     omit<T>(srcObj: T, predicate: (key: keyof T, value?: any) => boolean): any;
     omit<T>(srcObj: T, options: { default?: any }, predicate: (key: keyof T, value?: any) => boolean): any;
-    omit(srcObj: Object, predicate: { default?: any } | any, ...props: string[]): any;
+    omit(srcObj: any, predicate: { default?: any } | any, ...props: string[]): any;
 
     /**
      * [fn.extend] 给对象赋值
