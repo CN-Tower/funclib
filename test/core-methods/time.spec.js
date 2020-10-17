@@ -56,21 +56,21 @@
         const t1 = fn.fmtDate('yy-MM-dd hh:mm:ss', new Date());
         assert(/^\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d$/.test(t1) === true);
       });
-      it.skip(`fn.fmtDate(yyyy-MM-dd hh:mm', time) should return a fmted date string.`, function () {
-        const t2 = fn.fmtDate('yyyy-MM-dd hh:mm', 1528259400000);
-        assert(t2 === '2018-06-06 12:30');
+      it(`fn.fmtUtcDate(yyyy-MM-dd hh:mm', time) should return a fmted date string.`, function () {
+        const t2 = fn.fmtUtcDate('yyyy-MM-dd hh:mm', 1528259400000);
+        assert(t2 === '2018-06-06 04:30');
       });
-      it(`fn.fmtDate('yy-MM-dd hh:mm', date) should return a fmted date string.`, function () {
-        const t3 = fn.fmtDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30'));
-        assert(t3 === '18-06-06 12:30');
+      it(`fn.fmtUtcDate('yy-MM-dd hh:mm', date) should return a fmted date string.`, function () {
+        const t3 = fn.fmtUtcDate('yy-MM-dd hh:mm', new Date('2018-06-06 12:30'));
+        assert(t3 === '18-06-06 04:30');
       });
-      it(`fn.fmtDate('yy-MM-dd hh:mm', 0) should return a fmted date string.`, function () {
-        const t3 = fn.fmtDate('yyyy-MM-dd hh:mm', 0);
-        assert(t3 === '1970-01-01 08:00');
+      it(`fn.fmtUtcDate('yy-MM-dd hh:mm', 0) should return a fmted date string.`, function () {
+        const t4 = fn.fmtUtcDate('yyyy-MM-dd hh:mm', 0);
+        assert(t4 === '1970-01-01 00:00');
       });
-      it(`fn.fmtDate('yy-MM-dd hh:mm', -1528259400000) should return a fmted date string.`, function () {
-        const t3 = fn.fmtDate('yy-MM-dd hh:mm', -1528259400000);
-        assert(t3 === '21-07-29 03:30');
+      it(`fn.fmtUtcDate('yy-MM-dd hh:mm', -1528259400000) should return a fmted date string.`, function () {
+        const t5 = fn.fmtUtcDate('yy-MM-dd hh:mm', -1528259400000);
+        assert(t5 === '21-07-28 19:30');
       });
     });
     describe('#fn.fmtUtcDate()', function () {

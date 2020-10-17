@@ -6,8 +6,8 @@ const fn = require('./src/funclib');
 // const progress = require('./src/progress');
 
 // fn.log(fn.fmtCurrency(-1234.7455))
-fn.log(fn.fmtDate('yyyy-MM-dd hh:mm', 0));
-fn.log(fn.fmtDate('yy-MM-dd hh:mm', -1528259400000));
+fn.log(fn.fmtUtcDate('yyyy-MM-dd hh:mm', 0));
+fn.log(fn.fmtUtcDate('yy-MM-dd hh:mm', -1528259400000));
 
 /**
  * Hybrid
