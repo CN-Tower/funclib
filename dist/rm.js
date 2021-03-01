@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var execSync = require('child_process').execSync
 var forEach = require('./forEach');
-var timout = require('./timeout');
+var timeout = require('./timeout');
 
 /**@function*/
 
@@ -25,7 +25,7 @@ function rm(src) {
       try {
         fs.rmdirSync(src);
       } catch (e) {
-        timout(500, function () {
+        timeout(500, function () {
           if (/win/.test(process.platform)) {
             var absSrc = path.resolve(src);
             execSync('rd /s /q ' + absSrc);
