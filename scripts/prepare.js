@@ -1,13 +1,14 @@
 const fn = require('funclib');
 const path = require('path');
 const pkg = require('../src/package.json');
-const { ALL_MODULES, CORE_IGNORE, CLIENT_IGNORE, SERVER_IGNORE } = require('./config');
+const { ALL_MODULES, CORE_IGNORE, CLIENT_IGNORE, SERVER_IGNORE, MINI_IGNORE } = require('./config');
 
 const rootPath = path.dirname(__dirname);
 const confPath = path.join(rootPath, 'src/funclib/_config.js');
 const coreJsPath = path.join(rootPath, 'src/funclib.core.js');
 const clientJsPath = path.join(rootPath, 'src/funclib.js');
 const serverJsPath = path.join(rootPath, 'src/index.js');
+const miniJsPath = path.join(rootPath, 'src/fn4mini.js');
 
 const configStr =  fn.rd(confPath)
   .replace(/var version = '\d*\.\d*\.\d*';/, 'var version = \'' + pkg.version + '\';');
@@ -21,6 +22,7 @@ const ptn4ServerConf = /[\r\n]{0,2}\/\*\*\@conf\-server\*\/((.|\r|\n)*)\/\*\*\@c
 asyncMethodToJs(coreJsPath, 'core');
 asyncMethodToJs(clientJsPath, 'client');
 asyncMethodToJs(serverJsPath, 'server');
+asyncMethodToJs(miniJsPath, 'miniprogram');
 
 /**
  * Sync methods to js file.
@@ -46,6 +48,10 @@ function asyncMethodToJs(jsPath, type_) {
       const serverConf = trimJsStr(RegExp.$1, '');
       jsConf = confStr.replace(ptn4ClientConf, '').replace(ptn4ServerConf, serverConf);
       modules = ALL_MODULES.filter(md => !SERVER_IGNORE.includes(md));
+      break;
+    case 'miniprogram':
+      jsConf = confStr.replace(ptn4ClientConf, '').replace(ptn4ServerConf, '');
+      modules = ALL_MODULES.filter(md => !MINI_IGNORE.includes(md));
       break;
   }
   jsConf = `; (function () {${newLine}${trimJsStr(jsConf)}  /**\r\n   * Funclib definition closure.\r\n   */\r\n  var fn = (function () {`;

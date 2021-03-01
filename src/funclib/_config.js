@@ -1,6 +1,6 @@
 /**@config*/
 
-var version = '4.1.1';
+var version = '4.1.2';
 
 var undefined, UDF = undefined
   , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -50,7 +50,6 @@ var intervalTimers = {}
   , timeoutTimers  = {};
 
 /**@conf-client*/
-
 /**
  * Full screen events.
  */

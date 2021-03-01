@@ -1,8 +1,3 @@
-var fs = require('fs');
-var path = require('path');
-var execSync = require('child_process').execSync;
-var Pgbar = require('progress');
-
 /**
  * @license
  * Funclib v4.1.2 <https://www.funclib.net>
@@ -59,22 +54,6 @@ var Pgbar = require('progress');
    */
   var intervalTimers = {}
     , timeoutTimers  = {};
-  
-  /**
-   * Color string of console display.
-   */
-  var colorPre = '\x1B[';
-  var colorEnd = colorPre + '0m';
-  var colorList = {
-    'grey': colorPre + '90m',
-    'blue': colorPre + '34m',
-    'cyan': colorPre + '36m',
-    'green': colorPre + '32m',
-    'magenta': colorPre + '35m',
-    'red': colorPre + '31m',
-    'yellow': colorPre + '33m',
-    'default': ''
-  };
 
   /**
    * Funclib definition closure.
@@ -1062,21 +1041,11 @@ var Pgbar = require('progress');
     }
 
     /**
-     * [fn.chalk] 返回带颜色的字符串
-     * @param srcStr : string
-     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
-     */
-    function chalk(srcStr, color) {
-      return colorList[has(colorList, color) ? color : 'default'] + srcStr + colorEnd;
-    }
-
-    /**
      * [fn.print] 在控制台打印值
      * @param value  : any
-     * @param color  : 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' [?]
      */
-    function print(value, color) {
-      console.log(chalk(pretty(value), color));
+    function print(value) {
+      console.log(pretty(value));
     }
 
     /**
@@ -1084,15 +1053,11 @@ var Pgbar = require('progress');
      * @param value   : any
      * @param title   : string|boolean [?]
      * @param configs : object [?]
-     * title: string,
-     * width: number = 66 [30-100],
-     * isFmt:      boolean = true
+     * title: string
+     * width: number = 66 [30-100]
+     * isFmt: boolean = true
      * isShowTime: boolean = true
-     * isSplit:    boolean = true,
-     * pre:   boolean = false,
-     * end:   boolean = false,
-     * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
-     * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
+     * isSplit: boolean = true,
      */
     function log(value, title, configs) {
       var isFmt;
@@ -1119,313 +1084,47 @@ var Pgbar = require('progress');
         isFmt = true;
         title = 'funclib(' + version + ')';
       }
-      var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true;
-      var _time = fmtDate('hh:mm:ss', new Date());
-      var time = isShowTime ? '[' + _time + '] ' : '';
+      var isShowTime = has(configs, 'isShowTime') ? !!configs.isShowTime : true
+        , time = isShowTime ? '[' + fmtDate('hh:mm:ss', new Date()) + '] ' : '';
       title = title.replace(/\n/mg, '');
       var originTtLength = (time + title + '[] ').length;
       if (!isFmt) {
         title = '( ' + title + ' )';
       }
-      if (time) {
-        time = '[' + chalk(_time, 'grey') + '] ';
-      }
-      title = chalk(title, get(configs, 'ttColor'));
       title = time + title;
-      var width = get(configs, 'width', 'num');
-      if (!width || width < 30 || width > 100) width = 66;
+      var width = get(configs, '/width');
+      if (!width || width < 30 || width > 100) {
+        width = 66;
+      }
       if (originTtLength > width) {
-        var fixLength = title.length - originTtLength - colorEnd.length;
-        title = cutString(title, width + fixLength - 3) + colorEnd;
+        title = cutString(title, width - 3);
       }
       else if (isFmt) {
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
-      var valuec = get(configs, 'color');
-      if (!has(colorList, valuec)) valuec = 'cyan';
       var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
       if (!isFmt) {
         if (isSplit) console.log('');
         console.log(title + ':');
         try {
-          console.log(chalk(pretty(value), valuec));
+          console.log(pretty(value));
         } catch (e) {
-          console.log(colorList[valuec], value, colorEnd);
+          console.log(value);
         }
         if (isSplit) console.log('');
       }
       else {
-        var sgLine_1 = '', dbLine_1 = '';
-        for(var i = 0; i < width; i ++ ) { sgLine_1 += '-', dbLine_1 += '='; };
-        if (get(configs, 'pre', 'bol')) {
-          console.log('\n' + dbLine_1);
-          console.log(title);
-          console.log(sgLine_1);
-        }
-        else if (get(configs, '/end', 'bol')) {
-          console.log(dbLine_1 + '\n');
-        }
-        else {
-          if (isSplit) console.log('');
-          console.log(dbLine_1);
-          console.log(title);
-          console.log(sgLine_1);
-          try {
-            console.log(chalk(pretty(value), valuec));
-          } catch (e) {
-            console.log(colorList[valuec], value, colorEnd);
-          }
-          console.log(dbLine_1);
-          if (isSplit) console.log('');
-        }
-      }
-    }
-
-    /**
-     * [fn.rd] 读文件
-     * @param file : string
-     */
-    function rd(file) {
-      return fs.existsSync(file) ? fs.readFileSync(file, { encoding: 'utf8' }) : '';
-    }
-
-    /**
-     * [fn.wt] 写文件
-     * @param file : string
-     * @param text : string
-     * @param flag : 'w'|'a' = 'w'
-     */
-    function wt(file, text, flag) {
-      if (flag === void 0) { flag = 'w'; }
-      fs.writeFileSync(file, text, { encoding: 'utf8', flag: flag });
-    }
-
-    /**
-     * [fn.cp] 复制文件或文件夹
-     * @param src  : string
-     * @param dist : string
-     * @param isInner : boolean
-     */
-    function cp(src, dist, isInner) {
-      function copy(src_, dst_, isOnInit) {
-        if (fs.existsSync(src_)) {
-          var stat = fs.statSync(src_);
-          if (stat.isFile()) {
-            if (!path.extname(dst_)) {
-              mk(dst_);
-              dst_ = path.join(dst_, path.basename(src_));
-            }
-            fs.createReadStream(src_).pipe(fs.createWriteStream(dst_));
-          }
-          else if (stat.isDirectory()) {
-            if (isOnInit && !isInner) dst_ = path.join(dst_, path.basename(src_));
-            mk(dst_);
-            var subSrcs = fs.readdirSync(src_);
-            subSrcs.forEach(function (file) {
-              var subSrc = path.join(src_, file);
-              var subDist = path.join(dst_, file);
-              copy(subSrc, subDist, false);
-            });
-          }
-        }
-      }
-      return copy(src, dist, true);
-    }
-
-    /**
-     * [fn.mv] 移动文件或文件夹
-     * @param src  : string
-     * @param dist : string
-     */
-    function mv(src, dist) {
-      try {
-        fs.renameSync(src, dist);
-      }
-      catch (e) {
-        cp(src, dist);
-        rm(src);
-      }
-    }
-
-    /**
-     * [fn.rm] 删除文件或文件夹
-     * @param src : string
-     */
-    function rm(src) {
-      if (fs.existsSync(src)) {
-        var stat = fs.statSync(src);
-        if (stat.isFile()) {
-          fs.unlinkSync(src);
-        }
-        else if (stat.isDirectory()) {
-          var subSrcs = fs.readdirSync(src);
-          forEach(subSrcs, function (file) {
-            var subSrc = path.join(src, file);
-            rm(subSrc);
-          });
-          try {
-            fs.rmdirSync(src);
-          } catch (e) {
-            timeout(500, function () {
-              if (/win/.test(process.platform)) {
-                var absSrc = path.resolve(src);
-                execSync('rd /s /q ' + absSrc);
-              } else {
-                execSync('rm -rf ' + src);
-              }
-            });
-          }
-        }
-      }
-    }
-
-    /**
-     * [fn.mk] 创建文件夹
-     * @param dir : string
-     */
-    function mk(dir) {
-      var absDir = path.resolve(dir);
-      if (!fs.existsSync(absDir)) {
+        var dbLine_1 = '', sgLine_1 = '';
+        for(var i = 0; i < width; i ++ ) dbLine_1 += '=', sgLine_1 += '-';
+        if (isSplit) console.log('');
+        console.log(dbLine_1 + '\n' + title + '\n' + sgLine_1);
         try {
-          fs.mkdirSync(absDir);
+          console.log(pretty(value));
+        } catch (e) {
+          console.log(value);
         }
-        catch (e) {
-          mk(path.dirname(absDir));
-          fs.mkdirSync(absDir);
-        }
-      }
-    }
-
-    /**
-     * [fn.size] 获取文件的大小
-     * @param file   : string
-     * @param unit  : 'b'|'kb'|'mb'|'gb'|'tb' = 'kb'
-     * @param digit : number = 2
-     */
-    function size(file, unit, digit) {
-      if (fs.existsSync(file)) {
-        if (isNum(unit)) digit = unit, unit = UDF;
-        if (!isNum(digit)) digit = 2;
-        var flSize = fs.statSync(file)['size'];
-        var rlSize = match(unit, {
-          'b': flSize,
-          'kb': flSize / 1024,
-          'mb': flSize / 1024 / 1024,
-          'gb': flSize / 1024 / 1024 / 1024,
-          'tb': flSize / 1024 / 1024 / 1024 / 1024,
-          'default': flSize / 1024
-        });
-        return Number(rlSize).toFixed(digit);
-      }
-    }
-
-    /**
-     * [fn.clear] 命令行清屏
-     * @param isForce : boolean
-     */
-    function clear(isForce) {
-      if (isForce) {
-        process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
-      } else {
-        process.platform === 'win32' ? execSync('cls') : execSync('clear');
-      }
-    }
-
-    var pgBarId = '#FN_PG_BAR', pgSpiId = '#FN_PG_SPI';
-    
-    /**
-     * [fn.progress] 进度显示工具
-     * @param title: string
-     * @param options: object [?]
-     * title: string
-     * width: number = 40
-     * type : 'bar'|'spi' = 'bar'
-     * split: boolean = true
-     */
-    function progress(title, options) {
-      timeout(pgBarId).stop(), interval(pgSpiId).stop();
-      var progressBar, duration, pgType;
-      if (isObj(title)) {
-        options = title, title = UDF;
-      }
-      if (!options) options = {};
-      title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
-      options.title = title;
-      pgType = get(options, '/type', 'str');
-      if (has(options, 'isSplit', 'bol') ? options.isSplit : true) console.log('');
-      if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
-        var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
-        pgType = 'bar';
-        duration = 250;
-        progressBar = new Pgbar(prog, {
-          complete: '=', incomplete: ' ',
-          width: options['width'] || 40,
-          total: options['total'] || 20
-        });
-        tick('+');
-      }
-      else {
-        var stream = process.stderr;
-        var flag = '/';
-        interval(pgSpiId, 180, function () {
-          stream.clearLine();
-          stream.cursorTo(0);
-          stream.write(chalk(flag, 'cyan') + ' ' + title);
-          flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
-        });
-      }
-    
-      /**
-       * [fn.progress.stop] 结束进度条，结束后触发回调
-       * @param onStopped : function [?]
-       */
-      progress.stop = function (onStopped) {
-        if (pgType === 'bar') {
-          duration = 600;
-          tick('-', function () {
-            pgType = null;
-            if (isFun(onStopped)) onStopped();
-          });
-        }
-        else {
-          interval(pgSpiId).stop();
-          pgType = null;
-          if (isFun(onStopped)) onStopped();
-        }
-      }
-    
-      /**
-       * [fn.progress.clear] 立即结束进度条，并触发回调
-       * @param onStopped : function [?]
-       */
-      progress.clear = function (onStopped) {
-        if (pgType === 'bar') {
-          pgType = null;
-          progressBar.complete = true;
-          timeout(pgBarId).stop();
-        }
-        else {
-          pgType = null;
-          interval(pgSpiId).stop();
-        }
-        if (isFun(onStopped)) onStopped();
-      }
-    
-      function tick(tickType, onStopped, limited) {
-        timeout(pgBarId, duration, function () {
-          if (!limited) progressBar.tick();
-          switch (tickType) {
-            case '+': duration += 300; break;
-            case '-': duration -= duration * 0.2; break;
-          };
-          if (!progressBar.complete) {
-            var isLimit = tickType === '+' && progressBar.curr === progressBar.total -1;
-            tick(tickType, onStopped, isLimit);
-          }
-          else if (onStopped) {
-            onStopped();
-          }
-        });
+        console.log(dbLine_1);
+        if (isSplit) console.log('');
       }
     }
 
@@ -1756,20 +1455,8 @@ var Pgbar = require('progress');
       });
     });
 
-    funclib.chalk = chalk;
     funclib.print = print;
     funclib.log = log;
-    funclib.rd = rd;
-    funclib.wt = wt;
-    funclib.cp = cp;
-    funclib.mv = mv;
-    funclib.rm = rm;
-    funclib.mk = mk;
-    funclib.size = size;
-    funclib.clear = clear;
-    progress.stop = new Function();
-    progress.start = progress;
-    funclib.progress = progress;
 
     funclib.chain = chain;
     funclib.noConflict = noConflict;

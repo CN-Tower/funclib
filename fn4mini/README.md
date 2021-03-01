@@ -14,11 +14,11 @@ A practical and powerful JavaScript library!
 ## Quick start
 ```bash
 # Install funclib.js
-$ npm install funclib
+$ npm install fn4mini
 
 # Use funclib
 $ node
-> var fn = require('funclib');
+> var fn = require('fn4mini');
 > var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 > fn.log(ps, 'Persons');
 // =>

@@ -149,3 +149,24 @@ exports.SERVER_IGNORE = [
   '_sendF11',
 ];
 
+exports.MINI_IGNORE = [
+  'chalk',
+  'printS',
+  'logS',
+  'rd',
+  'wt',
+  'cp',
+  'mv',
+  'rm',
+  'mk',
+  'size',
+  'clear',
+  'progress',
+  'fullScreen',
+  'exitFullScreen',
+  'isFullScreen',
+  'fullScreenChange',
+  'copyText',
+  '_sendF11',
+];
+
