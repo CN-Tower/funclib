@@ -7,7 +7,7 @@
     "start": "npm run build && npm run usage",
     "build": "node ./scripts/prepare.js && npm run uglify && node ./scripts/build.js && npm run uglify:mini",
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
-    "uglify:mini": "uglifyjs ./src/fn4mini.js -m -o ./fn4mini/index.js",
+    "uglify:mini": "uglifyjs ./src/fn4wx.js -m -o ./fn4wx/index.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",
     "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",

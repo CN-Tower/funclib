@@ -25,7 +25,7 @@ fn.wt(fnDefTs, liscence + spliter + fnDefTsStr.split(spliter)[1]);
 fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
 fn.rm('dist');
-fn.rm('fn4mini');
+fn.rm('fn4wx');
 fn.timeout(1000, () => {
   fn.mk('dist');
   const fnFis = glob.sync('src/**/*');
@@ -44,17 +44,17 @@ fn.timeout(1000, () => {
   index.js         ${fn.size(indexJs)} kb`, 'Build Success!'
   ));
 
-  fn.mk('fn4mini');
+  fn.mk('fn4wx');
   fn.wt(
-    path.join(root, 'fn4mini/package.json'),
+    path.join(root, 'fn4wx/package.json'),
     fn.rd(path.join(root, 'src/package.json'))
-      .replace('"name": "funclib"', '"name": "fn4mini"')
+      .replace('"name": "funclib"', '"name": "fn4wx"')
       .replace(/\s*"progress":\s*"\^\d\.\d\.\d",?/, '')
   );
   fn.wt(
-    path.join(root, 'fn4mini/README.md'),
+    path.join(root, 'fn4wx/README.md'),
     fn.rd(path.join(root, 'src/README.md'))
-      .replace('npm install funclib', 'npm install fn4mini')
-      .replace('require(\'funclib\')', 'require(\'fn4mini\')')
+      .replace('npm install funclib', 'npm install fn4wx')
+      .replace('require(\'funclib\')', 'require(\'fn4wx\')')
   );
 });

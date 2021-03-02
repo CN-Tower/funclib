@@ -8,7 +8,7 @@ const confPath = path.join(rootPath, 'src/funclib/_config.js');
 const coreJsPath = path.join(rootPath, 'src/funclib.core.js');
 const clientJsPath = path.join(rootPath, 'src/funclib.js');
 const serverJsPath = path.join(rootPath, 'src/index.js');
-const miniJsPath = path.join(rootPath, 'src/fn4mini.js');
+const miniJsPath = path.join(rootPath, 'src/fn4wx.js');
 
 const configStr =  fn.rd(confPath)
   .replace(/var version = '\d*\.\d*\.\d*';/, 'var version = \'' + pkg.version + '\';');
