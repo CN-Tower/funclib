@@ -25,7 +25,7 @@ fn.wt(fnDefTs, liscence + spliter + fnDefTsStr.split(spliter)[1]);
 fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
 
 fn.rm('dist');
-fn.rm('fn4wx');
+fn.rm('funclib-mp');
 fn.timeout(1000, () => {
   fn.mk('dist');
   const fnFis = glob.sync('src/**/*');
@@ -44,17 +44,18 @@ fn.timeout(1000, () => {
   index.js         ${fn.size(indexJs)} kb`, 'Build Success!'
   ));
 
-  fn.mk('fn4wx');
+  fn.mk('funclib-mp');
   fn.wt(
-    path.join(root, 'fn4wx/package.json'),
+    path.join(root, 'funclib-mp/package.json'),
     fn.rd(path.join(root, 'src/package.json'))
-      .replace('"name": "funclib"', '"name": "fn4wx"')
+      .replace('"name": "funclib"', '"name": "funclib-mp"')
       .replace(/\s*"progress":\s*"\^\d\.\d\.\d",?/, '')
   );
   fn.wt(
-    path.join(root, 'fn4wx/README.md'),
+    path.join(root, 'funclib-mp/README.md'),
     fn.rd(path.join(root, 'src/README.md'))
-      .replace('npm install funclib', 'npm install fn4wx')
-      .replace('require(\'funclib\')', 'require(\'fn4wx\')')
+      .replace('npm install funclib', 'npm install funclib-mp')
+      .replace('require(\'funclib\')', 'require(\'funclib-mp\')')
   );
+  fn.cp(path.join(root, 'src/index.d.ts'), path.join(root, 'funclib-mp/'));
 });

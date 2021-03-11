@@ -4,23 +4,31 @@
 [![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
-## Brief Intro
+## 1 Brief Intro
 A practical and powerful JavaScript library!
 
-> Let you complete the task code efficiently and elegantly!
+> Let you complete the business code efficiently and elegantly!
 
 ### Documents:&nbsp;&nbsp;https://www.funclib.net
 
-## Quick start
-```bash
-# Install funclib.js
-$ npm install funclib
+## 2 Quick Start
 
-# Use funclib
-$ node
+### 2.1 Install funclib
+yarn: `$ yarn add funclib`<br>
+npm: `$ npm install funclib`<br>
+
+### 2.2 Install in miniprogram
+yarn: `$ yarn add funclib-mp`<br>
+npm: `$ npm install funclib-mp`<br>
+
+### 2.3 Use funclib in JavaScript
+```js
 > var fn = require('funclib');
 > var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 > fn.log(ps, 'Persons');
+```
+Output:
+```bash
 // =>
 ==================================================================
                        [10:33:55] Persons 
@@ -52,7 +60,7 @@ $ node
 ==================================================================
 ```
 
-## Clone Repo
+## 3 Clone Repo
 ```bash
 # Download funclib repo
 $ git clone https://github.com/CN-Tower/funclib.js.git
@@ -73,7 +81,7 @@ $ npm run build
 $ npm run test
 ```
 
-## Methods
+## 4 Lib Methods
 ```
 ==================================================================
 * [c]: Client side method 客户端方法
@@ -188,7 +196,7 @@ $ npm run test
 ==================================================================
 ```
 
-## Structure
+## 5 Proj Structure
 ```
 funclib.js
 ├── node_modules/           ### You know the drill...

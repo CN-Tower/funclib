@@ -2,12 +2,12 @@
   "name": "funclib.js",
   "version": "4.0.0",
   "description": "A powerful javascript functions library!",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
     "build": "node ./scripts/prepare.js && npm run uglify && node ./scripts/build.js && npm run uglify:mini",
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
-    "uglify:mini": "uglifyjs ./src/fn4wx.js -m -o ./fn4wx/index.js",
+    "uglify:mini": "uglifyjs ./src/funclib-mp.js -m -o ./funclib-mp/index.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",
     "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",
@@ -72,12 +72,11 @@
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
   "dependencies": {
     "@types/node": "^10.3.0",
-    "funclib": "^4.0.8",
-    "jquery": "^3.3.1",
-    "typescript": "^2.8.3"
+    "funclib": "^4.0.8"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
+    "jquery": "^3.3.1",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
@@ -88,6 +87,7 @@
     "power-assert": "^1.5.0",
     "progress": "^2.0.0",
     "ts-loader": "^3.1.1",
+    "typescript": "^2.8.3",
     "uglify-js": "^3.5.2",
     "webpack": "^3.8.1"
   }

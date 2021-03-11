@@ -1,6 +1,6 @@
 {
-  "name": "fn4wx",
-  "version": "4.1.3",
+  "name": "funclib-mp",
+  "version": "5.1.1",
   "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
@@ -52,7 +52,12 @@
     "formatter",
     "chalk",
     "full-screen",
-    "typeOf"
+    "typeOf",
+    "fn4wx",
+    "fn4mini",
+    "funclib-mp",
+    "wechat",
+    "miniprogram"
   ],
   "author": "CN-Tower",
   "license": "MIT",
