@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
-语言 Language: [English](https://github.com/CN-Tower/dir-parser) | 简体中文
+语言 Language: [English](./README_en_US.md) | 简体中文
 
 ## 一、简单介绍
 
@@ -24,15 +24,15 @@ funclib.js使用 Karma / Mocha 进行自动化单元测试， 使用 Travis-CI �
 yarn: `$ yarn add funclib`<br>
 npm: `$ npm install funclib`<br>
 
-### 2.2 小程序中的安装
+### 2.2 在小程序中安装
 yarn: `$ yarn add funclib-mp`<br>
 npm: `$ npm install funclib-mp`<br>
 
-### 2.3 在Js中使用funclib
+### 2.3 在JavaScript中使用
 ```js
-> var fn = require('funclib');
-> var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-> fn.log(ps, 'Persons');
+var fn = require('funclib');
+var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+fn.log(ps, 'Persons');
 ```
 Output:
 ```bash

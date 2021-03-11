@@ -4,6 +4,8 @@
 [![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
+Language 语言: English | [简体中文](https://github.com/CN-Tower/funclib.js)
+
 ## 1 Brief Intro
 A practical and powerful JavaScript library!
 
@@ -23,9 +25,9 @@ npm: `$ npm install funclib-mp`<br>
 
 ### 2.3 Use funclib in JavaScript
 ```js
-> var fn = require('funclib');
-> var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-> fn.log(ps, 'Persons');
+var fn = require('funclib');
+var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+fn.log(ps, 'Persons');
 ```
 Output:
 ```bash

@@ -4,28 +4,35 @@
 [![Build Status](https://travis-ci.org/CN-Tower/funclib.js.svg?branch=master)](https://travis-ci.org/CN-Tower/funclib.js)
 [![Coverage Status](https://coveralls.io/repos/github/CN-Tower/funclib.js/badge.svg)](https://coveralls.io/github/CN-Tower/funclib.js)
 
-## 1 Brief Intro
-A practical and powerful JavaScript library!
+语言 Language: [English](./README_en_US.md) | 简体中文
 
-> Let you complete the business code efficiently and elegantly!
+## 一、简单介绍
 
-### Documents:&nbsp;&nbsp;https://www.funclib.net
+> 让你高效优雅的完成业务代码！
 
-## 2 Quick Start
+funclib.js 是一个简单、易用、贴进业务逻辑的JavaScript UMD函数库，以高效完成业务代码为目标，具有“通用、实用、易用、好用”等特点！类似于 underscore 和 lodash。 跟它们对比，funclib.js省去了很多js自带的或者不常用的方法，并且改进和拓展了很多方法的使用方式。<br>
 
-### 2.1 Install funclib
+funclib.js还根据一些实际业务的逻辑的规律封装了很多前后端都实用的新方法， 让你提高代码质量和交付效率的同时，享受编程的乐趣!<br>
+
+funclib.js使用 Karma / Mocha 进行自动化单元测试， 使用 Travis-CI 进行持续集成。
+
+### 文档地址:&nbsp;&nbsp;https://www.funclib.net
+
+## 二、快速开始
+
+### 2.1 快速安装funclib
 yarn: `$ yarn add funclib`<br>
 npm: `$ npm install funclib`<br>
 
-### 2.2 Install in miniprogram
+### 2.2 在小程序中安装
 yarn: `$ yarn add funclib-mp`<br>
 npm: `$ npm install funclib-mp`<br>
 
-### 2.3 Use funclib in JavaScript
+### 2.3 在JavaScript中使用
 ```js
-> var fn = require('funclib');
-> var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
-> fn.log(ps, 'Persons');
+var fn = require('funclib');
+var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
+fn.log(ps, 'Persons');
 ```
 Output:
 ```bash
@@ -60,28 +67,28 @@ Output:
 ==================================================================
 ```
 
-## 3 Clone Repo
+## 三、克隆项目
 ```bash
-# Download funclib repo
+# 克隆funclib
 $ git clone https://github.com/CN-Tower/funclib.js.git
 
-# Install dependency
+# 安装依赖
 $ npm install
 
-# Start
+# 开始
 $ npm start
 
-# Do Try
+# 试运行
 $ npm run usage
 
-# Build
+# 构建
 $ npm run build
 
-# Test
+# 测试
 $ npm run test
 ```
 
-## 4 Lib Methods
+## 四、函数库方法
 ```
 ==================================================================
 * [c]: Client side method 客户端方法
@@ -196,7 +203,7 @@ $ npm run test
 ==================================================================
 ```
 
-## 5 Proj Structure
+## 五、项目结构
 ```
 funclib.js
 ├── node_modules/           ### You know the drill...
