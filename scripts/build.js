@@ -24,6 +24,10 @@ fn.rm('dist');
 fn.rm('funclib-mp');
 
 fn.timeout(1000, () => {
+  const packageJson = fn.rd(path.join(root, 'package.json'))
+    .replace(/"scripts":\s\{(.|\r|\n)*\},(.|\r|\n)*(\s*"repository": {)/, '$3')
+    .replace(/(#readme"),(\r|\n|\s)*"devDependencies": {(.|\r|\n)*((\r|\n)}(\r|\n)?)/, '$1$4');
+
   fn.mk('dist');
   const fnFis = glob.sync('src/**/*');
   fnFis.forEach(fi => {
@@ -32,17 +36,13 @@ fn.timeout(1000, () => {
   });
   fn.cp(path.join(root, 'README.md'), path.join(root, 'dist/'));
   fn.cp(path.join(root, 'README_en_US.md'), path.join(root, 'dist/'));
+  fn.wt(path.join(root, 'dist/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib"'));
 
   fn.mk('funclib-mp');
-  fn.wt(
-    path.join(root, 'funclib-mp/package.json'),
-    fn.rd(path.join(root, 'src/package.json'))
-      .replace('"name": "funclib"', '"name": "funclib-mp"')
-      .replace(/\s*"progress":\s*"\^\d\.\d\.\d",?/, '')
-  );
   fn.cp(path.join(root, 'src/index.d.ts'), path.join(root, 'funclib-mp/'));
   fn.cp(path.join(root, 'README.md'), path.join(root, 'funclib-mp/'));
   fn.cp(path.join(root, 'README_en_US.md'), path.join(root, 'funclib-mp/'));
+  fn.wt(path.join(root, 'funclib-mp/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
 
   fn.progress.stop();
 });

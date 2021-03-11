@@ -9,7 +9,7 @@ Language 语言: English | [简体中文](https://github.com/CN-Tower/funclib.js
 ## 1 Brief Intro
 A practical and powerful JavaScript library!
 
-> Let you complete the business code efficiently and elegantly!
+> Funclib: Let you complete the business code efficiently and elegantly!
 
 ### Documents:&nbsp;&nbsp;https://www.funclib.net
 
@@ -26,6 +26,8 @@ npm: `$ npm install funclib-mp`<br>
 ### 2.3 Use funclib in JavaScript
 ```js
 var fn = require('funclib');
+// In miniprogram: var fn = require('funclib-mp');
+
 var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 fn.log(ps, 'Persons');
 ```

@@ -1,6 +1,6 @@
 const fn = require('funclib');
 const path = require('path');
-const pkg = require('../src/package.json');
+const pkg = require('../package.json');
 const { ALL_MODULES, CORE_IGNORE, CLIENT_IGNORE, SERVER_IGNORE, MINI_IGNORE } = require('./config');
 
 const rootPath = path.dirname(__dirname);
@@ -23,6 +23,8 @@ asyncMethodToJs(coreJsPath, 'core');
 asyncMethodToJs(clientJsPath, 'client');
 asyncMethodToJs(serverJsPath, 'server');
 asyncMethodToJs(miniJsPath, 'miniprogram');
+
+fn.cp();
 
 /**
  * Sync methods to js file.

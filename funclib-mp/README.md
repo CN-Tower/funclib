@@ -8,7 +8,7 @@
 
 ## 一、简单介绍
 
-> 让你高效优雅的完成业务代码！
+> Funclib: 让你高效优雅的完成业务代码！
 
 funclib.js 是一个简单、易用、贴进业务逻辑的JavaScript UMD函数库，以高效完成业务代码为目标，具有“通用、实用、易用、好用”等特点！类似于 underscore 和 lodash。 跟它们对比，funclib.js省去了很多js自带的或者不常用的方法，并且改进和拓展了很多方法的使用方式。<br>
 
@@ -31,6 +31,8 @@ npm: `$ npm install funclib-mp`<br>
 ### 2.3 在JavaScript中使用
 ```js
 var fn = require('funclib');
+// 在小程序中： var fn = require('funclib-mp');
+
 var ps = [{name: 'Tom', age: 18}, {name: 'Bob', age: 22}];
 fn.log(ps, 'Persons');
 ```

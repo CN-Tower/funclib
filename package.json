@@ -1,13 +1,14 @@
 {
   "name": "funclib.js",
-  "version": "4.0.0",
+  "version": "5.1.1",
   "description": "A powerful javascript functions library!",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
-    "build": "node ./scripts/prepare.js && npm run uglify && node ./scripts/build.js && npm run uglify:mini && node ./scripts/print.js",
+    "build": "npm run uglify:pg && node ./scripts/prepare.js && npm run uglify && node ./scripts/build.js && npm run uglify:mp && node ./scripts/print.js",
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
-    "uglify:mini": "uglifyjs ./src/funclib-mp.js -m -o ./funclib-mp/index.js",
+    "uglify:mp": "uglifyjs ./src/funclib-mp.js -m -o ./funclib-mp/index.js",
+    "uglify:pg": "uglifyjs ./node_modules/progress/lib/node-progress.js -m -o ./src/funclib/ProgressBar.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",
     "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",
@@ -62,7 +63,11 @@
     "formatter",
     "chalk",
     "full-screen",
-    "typeOf"
+    "typeOf",
+    "fn4wx",
+    "fn4mini",
+    "funclib-mp",
+    "miniprogram"
   ],
   "author": "CN-Tower",
   "license": "MIT",
@@ -70,12 +75,10 @@
     "url": "https://github.com/CN-Tower/funclib.js/issues"
   },
   "homepage": "https://github.com/CN-Tower/funclib.js#readme",
-  "dependencies": {
-    "@types/node": "^10.3.0",
-    "funclib": "^4.0.8"
-  },
   "devDependencies": {
+    "@types/node": "^10.3.0",
     "coveralls": "^3.0.0",
+    "funclib": "^5.1.1",
     "jquery": "^3.3.1",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",

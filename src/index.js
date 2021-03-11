@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var execSync = require('child_process').execSync;
-var Pgbar = require('progress');
+var ProgressBar = require('./ProgressBar');
 
 /**
  * @license
@@ -1357,7 +1357,7 @@ var Pgbar = require('progress');
         var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
         pgType = 'bar';
         duration = 250;
-        progressBar = new Pgbar(prog, {
+        progressBar = new ProgressBar(prog, {
           complete: '=', incomplete: ' ',
           width: options['width'] || 40,
           total: options['total'] || 20

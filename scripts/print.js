@@ -1,6 +1,6 @@
 const fn = require('funclib');
 const path = require('path');
-const pkg = require('../src/package.json');
+const pkg = require('../package.json');
 
 const root = path.dirname(__dirname);
 const indexJs = path.join(root, 'src/index.js');
