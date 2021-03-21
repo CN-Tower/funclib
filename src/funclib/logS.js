@@ -22,11 +22,12 @@ var version = config.version;
  * @param configs : object [?]
  * title: string,
  * width: number = 66 [30-100],
- * isFmt:      boolean = true
- * isShowTime: boolean = true
- * isSplit:    boolean = true,
  * pre:   boolean = false,
  * end:   boolean = false,
+ * breakPre: boolean = false,
+ * breakEnd: boolean = false,
+ * isFmt:      boolean = true
+ * isShowTime: boolean = true
  * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
  * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
  */
@@ -79,16 +80,17 @@ function log(value, title, configs) {
   }
   var valuec = get(configs, 'color');
   if (!has(colorList, valuec)) valuec = 'cyan';
-  var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
+  var isBreakPre = get(configs, 'breakPre', 'bol');
+  var isBreakEnd = get(configs, 'breakEnd', 'bol');
   if (!isFmt) {
-    if (isSplit) console.log('');
+    if (isBreakPre) console.log('');
     console.log(title + ':');
     try {
       console.log(chalk(pretty(value), valuec));
     } catch (e) {
       console.log(colorList[valuec], value, colorEnd);
     }
-    if (isSplit) console.log('');
+    if (isBreakEnd) console.log('');
   }
   else {
     var sgLine_1 = '', dbLine_1 = '';
@@ -102,7 +104,7 @@ function log(value, title, configs) {
       console.log(dbLine_1 + '\n');
     }
     else {
-      if (isSplit) console.log('');
+      if (isBreakPre) console.log('');
       console.log(dbLine_1);
       console.log(title);
       console.log(sgLine_1);
@@ -112,7 +114,7 @@ function log(value, title, configs) {
         console.log(colorList[valuec], value, colorEnd);
       }
       console.log(dbLine_1);
-      if (isSplit) console.log('');
+      if (isBreakEnd) console.log('');
     }
   }
 }

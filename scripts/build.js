@@ -1,4 +1,7 @@
-const fn = require('funclib');
+// const fn = require('funclib');
+// const fn = require('../src/index');
+const fn = require('../dist/index');
+
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
@@ -8,8 +11,10 @@ const rdmSrc = path.join(root, 'src/README.md');
 const fnJs = path.join(root, 'src/funclib.js');
 const fnDefTs = path.join(root, 'src/index.d.ts');
 const fnMinJs = path.join(root, 'src/funclib.min.js');
+const fnIdxJs = path.join(root, 'dist/index.js');
+const fnMp = path.join(root, 'funclib-mp/');
 
-fn.progress('Building FuncLib', {width: 42});
+fn.progress('Building FuncLib', { width: 42 });
 fn.rm(rdmSrc)
 
 // 给funclib.d.ts和funclib.min.js增加licence信息
@@ -37,11 +42,13 @@ fn.timeout(1000, () => {
   fn.cp(path.join(root, 'README.md'), path.join(root, 'dist/'));
   fn.cp(path.join(root, 'README_en_US.md'), path.join(root, 'dist/'));
   fn.wt(path.join(root, 'dist/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib"'));
+  fn.timeout(800, () => fn.wt(fnIdxJs, fn.rd(fnIdxJs).replace(/require\('\.\/funclib\//mg, `require('./`)));
 
   fn.mk('funclib-mp');
-  fn.cp(path.join(root, 'src/index.d.ts'), path.join(root, 'funclib-mp/'));
-  fn.cp(path.join(root, 'README.md'), path.join(root, 'funclib-mp/'));
-  fn.cp(path.join(root, 'README_en_US.md'), path.join(root, 'funclib-mp/'));
+  fn.cp(path.join(root, 'src/index.d.ts'), fnMp);
+  fn.cp(path.join(root, 'README.md'), fnMp);
+  fn.cp(path.join(root, 'README_en_US.md'), fnMp);
+  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMp, 'funclib.js'));
   fn.wt(path.join(root, 'funclib-mp/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
 
   fn.progress.stop();

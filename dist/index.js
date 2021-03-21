@@ -2,18 +2,19 @@ var fs = require('fs');
 var path = require('path');
 var execSync = require('child_process').execSync;
 var ProgressBar = require('./ProgressBar');
+var ProgressSpi = require('./ProgressSpi');
 
 /**
  * @license
- * Funclib v5.1.1 <https://www.funclib.net>
+ * Funclib v5.1.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '5.1.1';
+  var version = '5.1.2';
   
-  var undefined, UDF = undefined
+  var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
     , _self = typeof self == 'object' && self && self.Object === Object && self
     , _exports = typeof exports == 'object' && exports && !exports.nodeType && exports
@@ -59,6 +60,14 @@ var ProgressBar = require('./ProgressBar');
    */
   var intervalTimers = {}
     , timeoutTimers  = {};
+  
+  /**
+   * Char sets
+   */
+  var charNb = '0123456789'
+    , charLower = 'abcdefghijklmnopqrstuvwxyz'
+    , charUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    , charPwd = '~!@#$%^&*_';
   
   /**
    * Color string of console display.
@@ -648,12 +657,29 @@ var ProgressBar = require('./ProgressBar');
     /**
      * [fn.gid] 返回一个指定长度的随机ID
      * @param length : number = 12
+     * @param charSet: string?
+     * charSet presets: [pwd] | [0-9] | [a-z] | [A-A] | [0-9a-z]... | string.
      */
-    function gid(length) {
+    function gid(length, charSet) {
       if (isUdf(length)) length = 12;
-      var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', id = '', i = -1;
-      while (++i< length) id += charSet[random(charSet.length)];
-      return id;
+      if (!charSet || !isStr(charSet)) {
+        charSet = charNb + charUpper;
+      } else {
+        if (charSet.match(/^\[.*\]$/)) {
+          var chars = '';
+          if (charSet === '[pwd]') {
+            chars = charUpper + charLower + charNb + charPwd;
+          } else {
+            if (charSet.match(/0-9/)) chars += charNb;
+            if (charSet.match(/a-z/)) chars += charLower;
+            if (charSet.match(/A-Z/)) chars += charUpper;
+          }
+          if (chars) charSet = chars;
+        }
+      }
+      var str = '', i = -1;
+      while (++i< length) str += charSet[random(charSet.length)];
+      return str;
     }
 
     /**
@@ -1086,11 +1112,12 @@ var ProgressBar = require('./ProgressBar');
      * @param configs : object [?]
      * title: string,
      * width: number = 66 [30-100],
-     * isFmt:      boolean = true
-     * isShowTime: boolean = true
-     * isSplit:    boolean = true,
      * pre:   boolean = false,
      * end:   boolean = false,
+     * breakPre: boolean = false,
+     * breakEnd: boolean = false,
+     * isFmt:      boolean = true
+     * isShowTime: boolean = true
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
      * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */
@@ -1143,16 +1170,17 @@ var ProgressBar = require('./ProgressBar');
       }
       var valuec = get(configs, 'color');
       if (!has(colorList, valuec)) valuec = 'cyan';
-      var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
+      var isBreakPre = get(configs, 'breakPre', 'bol');
+      var isBreakEnd = get(configs, 'breakEnd', 'bol');
       if (!isFmt) {
-        if (isSplit) console.log('');
+        if (isBreakPre) console.log('');
         console.log(title + ':');
         try {
           console.log(chalk(pretty(value), valuec));
         } catch (e) {
           console.log(colorList[valuec], value, colorEnd);
         }
-        if (isSplit) console.log('');
+        if (isBreakEnd) console.log('');
       }
       else {
         var sgLine_1 = '', dbLine_1 = '';
@@ -1166,7 +1194,7 @@ var ProgressBar = require('./ProgressBar');
           console.log(dbLine_1 + '\n');
         }
         else {
-          if (isSplit) console.log('');
+          if (isBreakPre) console.log('');
           console.log(dbLine_1);
           console.log(title);
           console.log(sgLine_1);
@@ -1176,7 +1204,7 @@ var ProgressBar = require('./ProgressBar');
             console.log(colorList[valuec], value, colorEnd);
           }
           console.log(dbLine_1);
-          if (isSplit) console.log('');
+          if (isBreakEnd) console.log('');
         }
       }
     }
@@ -1331,8 +1359,6 @@ var ProgressBar = require('./ProgressBar');
       }
     }
 
-    var pgBarId = '#FN_PG_BAR', pgSpiId = '#FN_PG_SPI';
-    
     /**
      * [fn.progress] 进度显示工具
      * @param title: string
@@ -1340,56 +1366,85 @@ var ProgressBar = require('./ProgressBar');
      * title: string
      * width: number = 40
      * type : 'bar'|'spi' = 'bar'
-     * split: boolean = true
+     * isClear: boolean = true
+     * isBreak: boolean = true
      */
     function progress(title, options) {
-      timeout(pgBarId).stop(), interval(pgSpiId).stop();
-      var progressBar, duration, pgType;
+      var progressInstance, duration, pgType, flag
+        , isStoped = false
+        , progressTimerId = 'FN_PROGRESS_TIMER'
+        , isClear = get(options, 'isClear', 'bol');
       if (isObj(title)) {
         options = title, title = UDF;
       }
       if (!options) options = {};
-      title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
-      options.title = title;
-      pgType = get(options, '/type', 'str');
-      if (has(options, 'isSplit', 'bol') ? options.isSplit : true) console.log('');
-      if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
-        var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
+      title = typeVal(title, 'str') || get(options, 'title', 'str') || 'funclib ' + version;
+      pgType = get(options, 'type', 'str');
+      pgType = pgType === 'spi' ? pgType : 'bar';
+      if (has(options, 'isBreak', 'bol') ? options.isBreak : true) console.log('');
+      if (pgType === 'bar') {
+        timeout(progressTimerId).clear();
         pgType = 'bar';
         duration = 250;
-        progressBar = new ProgressBar(prog, {
-          complete: '=', incomplete: ' ',
+        progressInstance = new ProgressBar((title || '[fn.progress]') + ' [:bar] :percent', {
+          clear: isClear,
+          complete: '=',
+          incomplete: ' ',
           width: options['width'] || 40,
-          total: options['total'] || 20
+          total: options['total'] || 20,
         });
-        tick('+');
+      } else {
+        interval(progressTimerId).clear();
+        progressInstance = new ProgressSpi(title);
       }
-      else {
-        var stream = process.stderr;
-        var flag = '/';
-        interval(pgSpiId, 180, function () {
-          stream.clearLine();
-          stream.cursorTo(0);
-          stream.write(chalk(flag, 'cyan') + ' ' + title);
-          flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
-        });
+      start();
+    
+      /**
+       * [fn.progress.pause] 暂停进度
+       */
+      function pause() {
+        if (pgType === 'bar') {
+          timeout(progressTimerId).clear();
+        } else {
+          flag = progressInstance.flag;
+          interval(progressTimerId).clear();
+        }
       }
     
       /**
-       * [fn.progress.stop] 结束进度条，结束后触发回调
+       * [fn.progress.start] 开始进度
+       */
+      function start() {
+        if (pgType === 'bar') {
+          tick(isStoped ? '-' : '+');
+        } else {
+          interval(progressTimerId, 180, function () {
+            if (flag) {
+              progressInstance.flag = flag;
+              flag = '';
+            }
+            progressInstance.tick();
+          });
+        }
+      }
+    
+      /**
+       * [fn.progress.stop] 结束进度
        * @param onStopped : function [?]
        */
-      progress.stop = function (onStopped) {
+      function stop(onStopped) {
+        isStoped = true;
         if (pgType === 'bar') {
           duration = 600;
           tick('-', function () {
             pgType = null;
+            progressInstance.terminate();
             if (isFun(onStopped)) onStopped();
           });
-        }
-        else {
-          interval(pgSpiId).stop();
+        } else {
+          interval(progressTimerId).clear();
           pgType = null;
+          progressInstance.terminate(isClear);
           if (isFun(onStopped)) onStopped();
         }
       }
@@ -1397,29 +1452,30 @@ var ProgressBar = require('./ProgressBar');
       /**
        * [fn.progress.clear] 立即结束进度条，并触发回调
        * @param onStopped : function [?]
+       * @param isBrk : function [?]
        */
-      progress.clear = function (onStopped) {
+      function clear(onStopped) {
         if (pgType === 'bar') {
-          pgType = null;
-          progressBar.complete = true;
-          timeout(pgBarId).stop();
+          progressInstance.complete = true;
+          timeout(progressTimerId).clear();
+          progressInstance.terminate();
+        } else {
+          interval(progressTimerId).clear();
+          progressInstance.terminate(isClear);
         }
-        else {
-          pgType = null;
-          interval(pgSpiId).stop();
-        }
+        pgType = null;
         if (isFun(onStopped)) onStopped();
       }
     
       function tick(tickType, onStopped, limited) {
-        timeout(pgBarId, duration, function () {
-          if (!limited) progressBar.tick();
+        timeout(progressTimerId, duration, function () {
+          if (!limited) progressInstance.tick();
           switch (tickType) {
             case '+': duration += 300; break;
             case '-': duration -= duration * 0.2; break;
           };
-          if (!progressBar.complete) {
-            var isLimit = tickType === '+' && progressBar.curr === progressBar.total -1;
+          if (!progressInstance.complete) {
+            var isLimit = tickType === '+' && progressInstance.curr === progressInstance.total -1;
             tick(tickType, onStopped, isLimit);
           }
           else if (onStopped) {
@@ -1427,6 +1483,11 @@ var ProgressBar = require('./ProgressBar');
           }
         });
       }
+    
+      progress.pause = pause;
+      progress.start = start;
+      progress.stop = stop;
+      progress.clear = clear;
     }
 
     /**
@@ -1542,9 +1603,11 @@ var ProgressBar = require('./ProgressBar');
         setTimer = setTimeout,
         clearTimer = clearTimeout;
       }
-      if (typeVal(timerId, 'str')) {
+      if (isUdf(timerId) || isNul(timerId)) {
+        return { id: null,  stop: F, clear: F };
+      } else if (typeVal(timerId, 'str')) {
         if (isUdf(duration)) {
-          return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+          return { id: timers[timerId], stop: invokeClear, clear: invokeClear };
         } else if (contains([null, false], duration)) {
           invokeClear();
           return timers[timerId] = null;

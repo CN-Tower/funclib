@@ -16,8 +16,8 @@ fn.wt(confPath, configStr);
 
 const confStr = configStr.split('/**@config*/')[1];
 const newLine = '\r\n\r\n';
-const ptn4ClientConf = /[\r\n]?\/\*\*\@conf\-client\*\/((.|\r|\n)*)\/\*\*\@conf\-client\*\/[\r\n]?/;
-const ptn4ServerConf = /[\r\n]{0,2}\/\*\*\@conf\-server\*\/((.|\r|\n)*)\/\*\*\@conf\-server\*\/[\r\n]?/;
+const ptn4ClientConf = /\/\*\*\@conf\-client\*\/((.|\r|\n)*)\/\*\*\@conf\-client\*\/[\r\n]?/;
+const ptn4ServerConf = /[\r\n]?\/\*\*\@conf\-server\*\/((.|\r|\n)*)\/\*\*\@conf\-server\*\/[\r\n]?/;
 
 asyncMethodToJs(coreJsPath, 'core');
 asyncMethodToJs(clientJsPath, 'client');

@@ -18,9 +18,10 @@ var version = require('./_config').version;
  * @param configs : object [?]
  * title: string
  * width: number = 66 [30-100]
+ * breakPre: boolean = false,
+ * breakEnd: boolean = false,
  * isFmt: boolean = true
  * isShowTime: boolean = true
- * isSplit: boolean = true,
  */
 function log(value, title, configs) {
   var isFmt;
@@ -65,21 +66,22 @@ function log(value, title, configs) {
   else if (isFmt) {
     title = array((width - originTtLength) / 2, ' ').join('') + title;
   }
-  var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
+  var isBreakPre = get(configs, 'breakPre', 'bol');
+  var isBreakEnd = get(configs, 'breakEnd', 'bol');
   if (!isFmt) {
-    if (isSplit) console.log('');
+    if (isBreakPre) console.log('');
     console.log(title + ':');
     try {
       console.log(pretty(value));
     } catch (e) {
       console.log(value);
     }
-    if (isSplit) console.log('');
+    if (isBreakEnd) console.log('');
   }
   else {
     var dbLine_1 = '', sgLine_1 = '';
     for(var i = 0; i < width; i ++ ) dbLine_1 += '=', sgLine_1 += '-';
-    if (isSplit) console.log('');
+    if (isBreakPre) console.log('');
     console.log(dbLine_1 + '\n' + title + '\n' + sgLine_1);
     try {
       console.log(pretty(value));
@@ -87,7 +89,7 @@ function log(value, title, configs) {
       console.log(value);
     }
     console.log(dbLine_1);
-    if (isSplit) console.log('');
+    if (isBreakEnd) console.log('');
   }
 }
 

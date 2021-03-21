@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v5.1.1 <https://www.funclib.net>
+ * Funclib v5.1.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -124,35 +124,43 @@ declare namespace fn {
 
   type Any = any;
 
-  type Type = 'arr' | 'obj' | 'fun' | 'str' | 'num' | 'bol' | 'udf'
-            | 'nul' | 'err' | 'reg' | 'dat' | string | string[];
+  type Type = 'arr' | 'obj' | 'fun' 
+            | 'str' | 'num' | 'bol' | 'udf'
+            | 'nul' | 'err' | 'reg' | 'dat' 
+            | string | string[];
 
-  type Color = 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow';
+  type Color = 'grey' | 'blue' | 'cyan' 
+             | 'green' | 'magenta' | 'red' | 'yellow';
 
-  type Pattern = 'cnChar' | 'dbChar' | 'email' | 'mobPhone' | 'telPhone' | 'idCard' | 'uuid'
-               | 'base64Code' | 'domain' | 'port' | 'ip' | 'ipUrl' | 'domainUrl' | 'url' | string
+  type Pattern = 'cnChar' | 'dbChar' | 'email'
+               | 'mobPhone' | 'telPhone' | 'idCard' | 'uuid'
+               | 'base64Code' | 'domain' | 'port' | 'ip'
+               | 'ipUrl' | 'domainUrl' | 'url' | string;
 
+  /**
+   * [fn.progress] 进度显示工具
+   * @param title: string
+   * @param options: object [?]
+   * title: string
+   * width: number = 40
+   * type : 'bar'|'spi' = 'bar'
+   * isClear : boolean = false
+   * isBreak : boolean = true
+   */
   interface Progress {
-    /**
-     * [fn.progress] 进度显示工具
-     * @param title: string
-     * @param options: object [?]
-     * title: string
-     * width: number = 40
-     * type : 'bar'|'spi' = 'bar'
-     */
-    (title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi' }): void;
+    
+    (title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi', isClear: boolean, isBreak: boolean }): void;
 
     /**
-     * [fn.progress.start] 进度显示工具
-     * @param title: string
-     * @param options: object [?]
-     * title: string
-     * width: number = 40
-     * type : 'bar'|'spi' = 'bar'
+     * [fn.progress.start] 暂停进度
      */
-    start(title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi' }): void;
+    pause(): void;
 
+    /**
+     * [fn.progress.start] 开始进度
+     */
+    start(): void;
+    
     /**
      * [fn.progress.stop] 结束进度条，结束后触发回调
      * @param onStopped : function [?]
@@ -197,10 +205,16 @@ declare namespace fn {
   }
 
   interface LogConfig {
-    title?: string, width?: number, isFmt?: boolean, isShowTime?: boolean,
-    pre?: boolean, end?: boolean,
+    title?: string,
+    width?: number,
+    pre?: boolean,
+    end?: boolean,
+    breakPre: boolean,
+    breakEnd: boolean,
+    isFmt?: boolean,
+    isShowTime?: boolean,
+    color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
     ttColor?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
-    color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow'
   }
 
   interface Funclib extends Any {
@@ -544,8 +558,10 @@ declare namespace fn {
     /**
      * [fn.gid] 返回一个指定长度的随机ID
      * @param length : number = 12
+     * @param charSet: string?
+     * charSet presets: [pwd] | [0-9] | [a-z] | [A-A] | [0-9a-z]... | string.
      */
-    gid(length?: number): string;
+    gid(length?: number, charSet?: string): string;
 
     /**
      * [fn.gcolor] 返回一个随机颜色色值
@@ -799,11 +815,12 @@ declare namespace fn {
      * @param configs : object [?]
      * title: string,
      * width: number = 66 [30-100],
-     * isFmt:      boolean = true
-     * isShowTime: boolean = true
-     * isSplit:    boolean = true,
      * pre:   boolean = false,
      * end:   boolean = false,
+     * breakPre: boolean = false,
+     * breakEnd: boolean = false,
+     * isFmt:      boolean = true
+     * isShowTime: boolean = true
      * ttColor: 'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow'
      * color:   'grey'|'blue'|'cyan'|'green'|'magenta'|'red'|'yellow' = 'cyan'
      */

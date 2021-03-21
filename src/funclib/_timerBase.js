@@ -4,9 +4,11 @@ var isNum = require('./isNum');
 var contains = require('./contains');
 var typeVal = require('./typeVal');
 var config = require('./_config');
+const isNul = require('./isNul');
 
 var intervalTimers = config.intervalTimers
-  , timeoutTimers  = config.timeoutTimers;
+  , timeoutTimers  = config.timeoutTimers
+  , F = config.F;
 
 /**@function*/
 
@@ -24,9 +26,11 @@ function timerBase(timerId, duration, callback, leading, type_) {
     setTimer = setTimeout,
     clearTimer = clearTimeout;
   }
-  if (typeVal(timerId, 'str')) {
+  if (isUdf(timerId) || isNul(timerId)) {
+    return { id: null,  stop: F, clear: F };
+  } else if (typeVal(timerId, 'str')) {
     if (isUdf(duration)) {
-      return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+      return { id: timers[timerId], stop: invokeClear, clear: invokeClear };
     } else if (contains([null, false], duration)) {
       invokeClear();
       return timers[timerId] = null;

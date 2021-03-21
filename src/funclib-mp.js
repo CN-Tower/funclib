@@ -1,14 +1,14 @@
 /**
  * @license
- * Funclib v5.1.1 <https://www.funclib.net>
+ * Funclib v5.1.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '5.1.1';
+  var version = '5.1.2';
   
-  var undefined, UDF = undefined
+  var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
     , _self = typeof self == 'object' && self && self.Object === Object && self
     , _exports = typeof exports == 'object' && exports && !exports.nodeType && exports
@@ -54,6 +54,14 @@
    */
   var intervalTimers = {}
     , timeoutTimers  = {};
+  
+  /**
+   * Char sets
+   */
+  var charNb = '0123456789'
+    , charLower = 'abcdefghijklmnopqrstuvwxyz'
+    , charUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    , charPwd = '~!@#$%^&*_';
 
   /**
    * Funclib definition closure.
@@ -627,12 +635,29 @@
     /**
      * [fn.gid] 返回一个指定长度的随机ID
      * @param length : number = 12
+     * @param charSet: string?
+     * charSet presets: [pwd] | [0-9] | [a-z] | [A-A] | [0-9a-z]... | string.
      */
-    function gid(length) {
+    function gid(length, charSet) {
       if (isUdf(length)) length = 12;
-      var charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', id = '', i = -1;
-      while (++i< length) id += charSet[random(charSet.length)];
-      return id;
+      if (!charSet || !isStr(charSet)) {
+        charSet = charNb + charUpper;
+      } else {
+        if (charSet.match(/^\[.*\]$/)) {
+          var chars = '';
+          if (charSet === '[pwd]') {
+            chars = charUpper + charLower + charNb + charPwd;
+          } else {
+            if (charSet.match(/0-9/)) chars += charNb;
+            if (charSet.match(/a-z/)) chars += charLower;
+            if (charSet.match(/A-Z/)) chars += charUpper;
+          }
+          if (chars) charSet = chars;
+        }
+      }
+      var str = '', i = -1;
+      while (++i< length) str += charSet[random(charSet.length)];
+      return str;
     }
 
     /**
@@ -1055,9 +1080,10 @@
      * @param configs : object [?]
      * title: string
      * width: number = 66 [30-100]
+     * breakPre: boolean = false,
+     * breakEnd: boolean = false,
      * isFmt: boolean = true
      * isShowTime: boolean = true
-     * isSplit: boolean = true,
      */
     function log(value, title, configs) {
       var isFmt;
@@ -1102,21 +1128,22 @@
       else if (isFmt) {
         title = array((width - originTtLength) / 2, ' ').join('') + title;
       }
-      var isSplit = has(configs, 'isSplit', 'bol') ? configs.isSplit : true;
+      var isBreakPre = get(configs, 'breakPre', 'bol');
+      var isBreakEnd = get(configs, 'breakEnd', 'bol');
       if (!isFmt) {
-        if (isSplit) console.log('');
+        if (isBreakPre) console.log('');
         console.log(title + ':');
         try {
           console.log(pretty(value));
         } catch (e) {
           console.log(value);
         }
-        if (isSplit) console.log('');
+        if (isBreakEnd) console.log('');
       }
       else {
         var dbLine_1 = '', sgLine_1 = '';
         for(var i = 0; i < width; i ++ ) dbLine_1 += '=', sgLine_1 += '-';
-        if (isSplit) console.log('');
+        if (isBreakPre) console.log('');
         console.log(dbLine_1 + '\n' + title + '\n' + sgLine_1);
         try {
           console.log(pretty(value));
@@ -1124,7 +1151,7 @@
           console.log(value);
         }
         console.log(dbLine_1);
-        if (isSplit) console.log('');
+        if (isBreakEnd) console.log('');
       }
     }
 
@@ -1241,9 +1268,11 @@
         setTimer = setTimeout,
         clearTimer = clearTimeout;
       }
-      if (typeVal(timerId, 'str')) {
+      if (isUdf(timerId) || isNul(timerId)) {
+        return { id: null,  stop: F, clear: F };
+      } else if (typeVal(timerId, 'str')) {
         if (isUdf(duration)) {
-          return { 'id': timers[timerId], 'stop': invokeClear, 'clear': invokeClear };
+          return { id: timers[timerId], stop: invokeClear, clear: invokeClear };
         } else if (contains([null, false], duration)) {
           invokeClear();
           return timers[timerId] = null;

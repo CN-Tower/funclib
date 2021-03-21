@@ -29,6 +29,12 @@
       it(`fn.gid(6) should return an random ID with a length of 6.`, function () {
         assert(/^[0-9A-Z]{6}$/.test(fn.gid(6)));
       });
+      it(`fn.gid(6, '~!@#$%^&*_') should return an random ID with a length of 6.`, function () {
+        assert(/^[~!@#$%^&*_]{6}$/.test(fn.gid(6, '~!@#$%^&*_')));
+      });
+      it(`fn.gid(6, '[0-9a-z]') should return an random ID with a length of 6.`, function () {
+        assert(/^[0-9a-z]{6}$/.test(fn.gid(6, '[0-9a-z]')));
+      });
     });
     describe('#fn.gcolor()', function () {
       it(`fn.gcolor() should return an random color.`, function () {

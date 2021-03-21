@@ -2,16 +2,13 @@ var isObj = require('./isObj');
 var isFun = require('./isFun');
 var has = require('./has');
 var get = require('./get');
-var contains = require('./contains');
 var typeVal = require('./typeVal');
 var timeout = require('./timeout');
 var interval = require('./interval');
 var ProgressBar = require('./ProgressBar');
+var ProgressSpi = require('./ProgressSpi');
 
 /**@function*/
-
-var pgBarId = '#FN_PG_BAR', pgSpiId = '#FN_PG_SPI';
-
 /**
  * [fn.progress] 进度显示工具
  * @param title: string
@@ -19,56 +16,85 @@ var pgBarId = '#FN_PG_BAR', pgSpiId = '#FN_PG_SPI';
  * title: string
  * width: number = 40
  * type : 'bar'|'spi' = 'bar'
- * split: boolean = true
+ * isClear: boolean = true
+ * isBreak: boolean = true
  */
 function progress(title, options) {
-  timeout(pgBarId).stop(), interval(pgSpiId).stop();
-  var progressBar, duration, pgType;
+  var progressInstance, duration, pgType, flag
+    , isStoped = false
+    , progressTimerId = 'FN_PROGRESS_TIMER'
+    , isClear = get(options, 'isClear', 'bol');
   if (isObj(title)) {
     options = title, title = UDF;
   }
   if (!options) options = {};
-  title = typeVal(title, 'str') || get(options, '/title', 'str') || 'funclib ' + version;
-  options.title = title;
-  pgType = get(options, '/type', 'str');
-  if (has(options, 'isSplit', 'bol') ? options.isSplit : true) console.log('');
-  if (pgType === 'bar' || !contains(['bar', 'spi'], pgType)) {
-    var prog = (options.title || '[fn.progress]') + ' [:bar] :percent';
+  title = typeVal(title, 'str') || get(options, 'title', 'str') || 'funclib ' + version;
+  pgType = get(options, 'type', 'str');
+  pgType = pgType === 'spi' ? pgType : 'bar';
+  if (has(options, 'isBreak', 'bol') ? options.isBreak : true) console.log('');
+  if (pgType === 'bar') {
+    timeout(progressTimerId).clear();
     pgType = 'bar';
     duration = 250;
-    progressBar = new ProgressBar(prog, {
-      complete: '=', incomplete: ' ',
+    progressInstance = new ProgressBar((title || '[fn.progress]') + ' [:bar] :percent', {
+      clear: isClear,
+      complete: '=',
+      incomplete: ' ',
       width: options['width'] || 40,
-      total: options['total'] || 20
+      total: options['total'] || 20,
     });
-    tick('+');
+  } else {
+    interval(progressTimerId).clear();
+    progressInstance = new ProgressSpi(title);
   }
-  else {
-    var stream = process.stderr;
-    var flag = '/';
-    interval(pgSpiId, 180, function () {
-      stream.clearLine();
-      stream.cursorTo(0);
-      stream.write(chalk(flag, 'cyan') + ' ' + title);
-      flag = match(flag, { '/': '-', '-': '\\', '\\': '|', '|': '/', '@dft': '-' });
-    });
+  start();
+
+  /**
+   * [fn.progress.pause] 暂停进度
+   */
+  function pause() {
+    if (pgType === 'bar') {
+      timeout(progressTimerId).clear();
+    } else {
+      flag = progressInstance.flag;
+      interval(progressTimerId).clear();
+    }
   }
 
   /**
-   * [fn.progress.stop] 结束进度条，结束后触发回调
+   * [fn.progress.start] 开始进度
+   */
+  function start() {
+    if (pgType === 'bar') {
+      tick(isStoped ? '-' : '+');
+    } else {
+      interval(progressTimerId, 180, function () {
+        if (flag) {
+          progressInstance.flag = flag;
+          flag = '';
+        }
+        progressInstance.tick();
+      });
+    }
+  }
+
+  /**
+   * [fn.progress.stop] 结束进度
    * @param onStopped : function [?]
    */
-  progress.stop = function (onStopped) {
+  function stop(onStopped) {
+    isStoped = true;
     if (pgType === 'bar') {
       duration = 600;
       tick('-', function () {
         pgType = null;
+        progressInstance.terminate();
         if (isFun(onStopped)) onStopped();
       });
-    }
-    else {
-      interval(pgSpiId).stop();
+    } else {
+      interval(progressTimerId).clear();
       pgType = null;
+      progressInstance.terminate(isClear);
       if (isFun(onStopped)) onStopped();
     }
   }
@@ -76,29 +102,30 @@ function progress(title, options) {
   /**
    * [fn.progress.clear] 立即结束进度条，并触发回调
    * @param onStopped : function [?]
+   * @param isBrk : function [?]
    */
-  progress.clear = function (onStopped) {
+  function clear(onStopped) {
     if (pgType === 'bar') {
-      pgType = null;
-      progressBar.complete = true;
-      timeout(pgBarId).stop();
+      progressInstance.complete = true;
+      timeout(progressTimerId).clear();
+      progressInstance.terminate();
+    } else {
+      interval(progressTimerId).clear();
+      progressInstance.terminate(isClear);
     }
-    else {
-      pgType = null;
-      interval(pgSpiId).stop();
-    }
+    pgType = null;
     if (isFun(onStopped)) onStopped();
   }
 
   function tick(tickType, onStopped, limited) {
-    timeout(pgBarId, duration, function () {
-      if (!limited) progressBar.tick();
+    timeout(progressTimerId, duration, function () {
+      if (!limited) progressInstance.tick();
       switch (tickType) {
         case '+': duration += 300; break;
         case '-': duration -= duration * 0.2; break;
       };
-      if (!progressBar.complete) {
-        var isLimit = tickType === '+' && progressBar.curr === progressBar.total -1;
+      if (!progressInstance.complete) {
+        var isLimit = tickType === '+' && progressInstance.curr === progressInstance.total -1;
         tick(tickType, onStopped, isLimit);
       }
       else if (onStopped) {
@@ -106,6 +133,11 @@ function progress(title, options) {
       }
     });
   }
+
+  progress.pause = pause;
+  progress.start = start;
+  progress.stop = stop;
+  progress.clear = clear;
 }
 
 /**@function*/

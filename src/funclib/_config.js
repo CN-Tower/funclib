@@ -1,8 +1,8 @@
 /**@config*/
 
-var version = '5.1.1';
+var version = '5.1.2';
 
-var undefined, UDF = undefined
+var undefined, UDF = undefined, F = function() {}
   , _global = typeof global == 'object' && global && global.Object === Object && global
   , _self = typeof self == 'object' && self && self.Object === Object && self
   , _exports = typeof exports == 'object' && exports && !exports.nodeType && exports
@@ -49,6 +49,14 @@ patterns['url'] = new RegExp('http(s)?://(' + patterns.ip.source + '|' + pattern
 var intervalTimers = {}
   , timeoutTimers  = {};
 
+/**
+ * Char sets
+ */
+var charNb = '0123456789'
+  , charLower = 'abcdefghijklmnopqrstuvwxyz'
+  , charUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  , charPwd = '~!@#$%^&*_';
+
 /**@conf-client*/
 /**
  * Full screen events.
@@ -80,8 +88,13 @@ var colorList = {
 module.exports = {
   version: version,
   UDF: UDF,
+  F: F,
   root: root,
   oldFn: oldFn,
+  charNb: charNb,
+  charLower: charLower,
+  charUpper: charUpper,
+  charPwd: charPwd,
   deCodes: deCodes,
   enCodes: enCodes,
   patterns: patterns,

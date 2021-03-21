@@ -11,3 +11,5 @@ coverage/*
 .vscode
 .idea
 package-lock.json
+
+!.vscode/settings.json
