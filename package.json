@@ -1,13 +1,12 @@
 {
   "name": "funclib.js",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run usage",
-    "build": "node ./scripts/build-pre.js && npm run uglify && node ./scripts/build.js && npm run uglify:mp && node ./scripts/print.js",
+    "build": "node ./scripts/build-pre.js && npm run uglify && node ./scripts/build.js && node ./scripts/print.js",
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
-    "uglify:mp": "uglifyjs ./src/funclib-mp.js -m -o ./funclib-mp/index.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",
     "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",

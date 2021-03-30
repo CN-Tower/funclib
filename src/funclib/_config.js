@@ -1,6 +1,6 @@
 /**@config*/
 
-var version = '5.1.2';
+var version = '5.1.3';
 
 var undefined, UDF = undefined, F = function() {}
   , _global = typeof global == 'object' && global && global.Object === Object && global

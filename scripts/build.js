@@ -48,8 +48,8 @@ fn.timeout(1000, () => {
   fn.cp(path.join(root, 'src/index.d.ts'), fnMp);
   fn.cp(path.join(root, 'README.md'), fnMp);
   fn.cp(path.join(root, 'README_en_US.md'), fnMp);
-  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMp, 'funclib.js'));
-  fn.wt(path.join(root, 'funclib-mp/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
+  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMp, 'index.js'));
+  fn.wt(path.join(fnMp, 'package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
 
   fn.progress.stop();
 });
