@@ -12,13 +12,19 @@ var forEach = require('./forEach');
  */
 function chain(value) {
   var chainedFn = { 'value': value };
-  chainedFn.val = function () { return chainedFn.value; };
+  chainedFn.val = function () {
+    return chainedFn.value;
+  };
   forEach(keys(funclib), function (method) {
     if (method === 'match') {
-      chainedFn[method] = function () { strProto[method].call(arguments); }
+      chainedFn[method] = function () {
+        strProto[method].call(arguments);
+      }
     } else {
       chainedFn[method] = rest(function (args) {
-        if (!isUdf(chainedFn.value)) args = [chainedFn.value].concat(args);
+        if (!isUdf(chainedFn.value)) {
+          args = [chainedFn.value].concat(args);
+        }
         return chain(isFun(fn[method]) ? fn[method].apply(void 0, args) : fn[method]);
       });
     }

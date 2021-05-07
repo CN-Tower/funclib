@@ -12,7 +12,9 @@ function drop(srcArr, isDrop0) {
   var tmpArr = [];
   forEach(srcArr, function (val) {
     var isLen0 = typeOf(val, 'arr', 'obj') && len(val) === 0;
-    if ((val && !isLen0) || (!isDrop0 && val === 0)) tmpArr.push(val);
+    if ((val && !isLen0) || (!isDrop0 && val === 0)) {
+      tmpArr.push(val);
+    }
   });
   return tmpArr;
 }

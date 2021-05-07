@@ -12,9 +12,9 @@ function filterBase(srcArr, predicate, isFilter) {
   var fts = [], rjs = [];
   forEach(srcArr, function (item) {
     if (isObj(predicate)) {
-      keys(predicate).every(
-        function (key) { return predicate[key] === item[key]; }
-      ) ? fts.push(item) : rjs.push(item);
+      keys(predicate).every(function (key) {
+        return predicate[key] === item[key];
+      }) ? fts.push(item) : rjs.push(item);
     }
     else if (isFun(predicate)) {
       predicate(item) ? fts.push(item) : rjs.push(item);

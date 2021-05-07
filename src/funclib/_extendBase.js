@@ -17,8 +17,8 @@ var contains = require('./contains');
 function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
   if (!isObj(srcObj)) return tarObj;
   propList = flatten(propList);
-  var isPdtObj = isObj(predicate);
-  var srcKs = keys(srcObj);
+  var isPdtObj = isObj(predicate)
+    , srcKs = keys(srcObj);
   function traversal(tarObj, srcObj, propList) {
     forEach(propList, function (prop) {
       if (has(srcObj, prop)) {
@@ -30,13 +30,18 @@ function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
   }
   if (typeOf(predicate, 'str', 'arr', 'obj')) {
     var props = isPdtObj ? propList : toArr(predicate).concat(propList);
-    if (isOmit) props = srcKs.filter(function(key) { return !contains(props, key); });
+    if (isOmit) {
+      props = srcKs.filter(function (key) {
+        return !contains(props, key);
+      });
+    }
     traversal(tarObj, srcObj, props);
-  }
-  else if (isFun(predicate)) {
+  } else if (isFun(predicate)) {
     forIn(srcObj, function (key, val) {
       var isPred = predicate(key, val);
-      if ((isPred && !isOmit ) || (!isPred && isOmit)) tarObj[key] = val;
+      if ((isPred && !isOmit ) || (!isPred && isOmit)) {
+        tarObj[key] = val;
+      }
     });
   }
   else if (isTraDft) {

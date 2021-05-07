@@ -8,9 +8,11 @@ var getTimeObj = require('./_getTimeObj');
  * Basic methods of date formation.
  */
 function fmtDateBase(fmtStr, time, isUtc) {
-  var date = dateBase(time);
-  var dateTime = date.getTime();
-  if (!dateTime && dateTime !== 0) return '';
+  var date = dateBase(time)
+    , dateTime = date.getTime();
+  if (!dateTime && dateTime !== 0) {
+    return '';
+  }
   var timeObj = getTimeObj(date, isUtc);
   forIn(timeObj, function (k) {
     if (new RegExp('(' + k + ')').test(fmtStr)) {

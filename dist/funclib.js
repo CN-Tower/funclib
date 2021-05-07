@@ -1,12 +1,12 @@
 /**
  * @license
- * Funclib v5.1.3 <https://www.funclib.net>
+ * Funclib v5.1.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '5.1.3';
+  var version = '5.1.4';
   
   var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -343,7 +343,9 @@
       var tmpArr = [];
       forEach(srcArr, function (val) {
         var isLen0 = typeOf(val, 'arr', 'obj') && len(val) === 0;
-        if ((val && !isLen0) || (!isDrop0 && val === 0)) tmpArr.push(val);
+        if ((val && !isLen0) || (!isDrop0 && val === 0)) {
+          tmpArr.push(val);
+        }
       });
       return tmpArr;
     }
@@ -557,7 +559,9 @@
      */
     function forIn(srcObj, iteratee) {
       if (!isFun(iteratee)) throwErr('fun');
-      return forEach(srcObj, function (val, key) { iteratee(key, val); });
+      return forEach(srcObj, function (val, key) {
+        iteratee(key, val);
+      });
     }
 
     /**
@@ -565,21 +569,28 @@
      * @param srcObj : object
      */
     function deepCopy(srcObj) {
-      var tmpObj;
-      if (isArr(srcObj)) {
-        tmpObj = [];
-        for (var i = 0; i < srcObj.length; i++) {
-          tmpObj.push(deepCopy(srcObj[i]));
+      var objStack = [];
+      function copyObj(obj) {
+        var tmpObj = obj;
+        if (isArr(obj)) {
+          tmpObj = [];
+          for (var i = 0; i < obj.length; i++) {
+            tmpObj.push(copyObj(obj[i]));
+          }
+        } else if (isObj(obj)) {
+          if (objStack.indexOf(obj) > -1) {
+            tmpObj = obj.constructor && obj.constructor.name;
+          } else {
+            objStack.push(obj);
+            tmpObj = {};
+            for (var key in obj) {
+              if (has(obj, key)) tmpObj[key] = copyObj(obj[key]);
+            }
+          }
         }
-      } else if (isObj(srcObj)) {
-        tmpObj = {};
-        for (var key in srcObj) {
-          if (has(srcObj, key)) tmpObj[key] = deepCopy(srcObj[key]);
-        }
-      } else {
-        tmpObj = srcObj;
+        return tmpObj;
       }
-      return tmpObj;
+      return copyObj(srcObj);
     }
 
     /**
@@ -595,26 +606,36 @@
      * @param isStrict : boolean = false
      */
     function isDeepEqual(obj1, obj2, isStrict) {
-      if (typeof obj1 !== typeof obj2) return false;
+      if (typeof obj1 !== typeof obj2) {
+        return false;
+      }
       if (isArr(obj1) && isArr(obj2)) {
-        if (obj1.length !== obj2.length) return false;
+        if (obj1.length !== obj2.length) {
+          return false;
+        }
         for (var i = 0; i < obj1.length; i++) {
-          if (!isDeepEqual(obj1[i], obj2[i], isStrict)) return false;
+          if (!isDeepEqual(obj1[i], obj2[i]), isStrict) {
+            return false;
+          }
         }
         return true;
-      }
-      else if (isObj(obj1) && isObj(obj2)) {
-        if (len(obj1) !== len(obj2)) return false;
+      } else if (isObj(obj1) && isObj(obj2)) {
+        if (len(obj1) !== len(obj2)) {
+          return false;
+        }
         var ks = keys(obj1);
-        if (isStrict && !isDeepEqual(ks, keys(obj2))) return false;
+        if (isStrict && !isDeepEqual(ks, keys(obj2))) {
+          return false;
+        }
         for (var i = 0; i < ks.length; i++) {
-          if (
-            !has(obj2, ks[i]) || !isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)
-          ) return false;
+          if (!has(obj2, ks[i]) || !isDeepEqual(obj1[ks[i]], obj2[ks[i]], isStrict)) {
+            return false;
+          }
         }
         return true;
+      } else {
+        return obj1 === obj2;
       }
-      else return obj1 === obj2;
     }
 
     /**
@@ -1170,9 +1191,10 @@
     function fullScreen(el, didFull) {
       if (typeof el === 'string') el = document.querySelector(el);
       if (el && el.tagName) {
-        var rfs = el.requestFullScreen || el.webkitRequestFullScreen
+        var requestFullScreen = el.requestFullScreen
+          || el.webkitRequestFullScreen
           || el.mozRequestFullScreen || el.msRequestFullScreen;
-        rfs ? rfs.call(el) : sendF11();
+        requestFullScreen ? requestFullScreen.call(el) : sendF11();
         if (isFun(didFull)) {
           var timer = interval(100, function () {
             if (isFullScreen()) clearInterval(timer), defer(didFull);
@@ -1186,12 +1208,16 @@
      * @param didExit : function [?]
      */
     function exitFullScreen(didExit) {
-      var cfs = document.cancelFullScreen || document.webkitCancelFullScreen
+      var cancelFullScreen = document.cancelFullScreen
+        || document.webkitCancelFullScreen
         || document.mozCancelFullScreen || document.exitFullScreen;
-      cfs ? cfs.call(document) : sendF11();
+      cancelFullScreen ? cancelFullScreen.call(document) : sendF11();
       if (isFun(didExit)) {
         var timer = interval(100, function () {
-          if (!isFullScreen()) clearInterval(timer), defer(didExit);
+          if (!isFullScreen()) {
+            clearInterval(timer);
+            defer(didExit);
+          }
         });
       }
     }
@@ -1200,8 +1226,10 @@
      * [fn.isFullScreen] 检测是否全屏状态
      */
     function isFullScreen() {
-      return !!(document.fullscreenElement || document.msFullscreenElement ||
-        document.mozFullScreenElement || document.webkitFullscreenElement);
+      return !!(
+        document.fullscreenElement || document.msFullscreenElement ||
+        document.mozFullScreenElement || document.webkitFullscreenElement
+      );
     }
 
     /**
@@ -1255,13 +1283,19 @@
      */
     function chain(value) {
       var chainedFn = { 'value': value };
-      chainedFn.val = function () { return chainedFn.value; };
+      chainedFn.val = function () {
+        return chainedFn.value;
+      };
       forEach(keys(funclib), function (method) {
         if (method === 'match') {
-          chainedFn[method] = function () { strProto[method].call(arguments); }
+          chainedFn[method] = function () {
+            strProto[method].call(arguments);
+          }
         } else {
           chainedFn[method] = rest(function (args) {
-            if (!isUdf(chainedFn.value)) args = [chainedFn.value].concat(args);
+            if (!isUdf(chainedFn.value)) {
+              args = [chainedFn.value].concat(args);
+            }
             return chain(isFun(fn[method]) ? fn[method].apply(void 0, args) : fn[method]);
           });
         }
@@ -1296,9 +1330,9 @@
       var fts = [], rjs = [];
       forEach(srcArr, function (item) {
         if (isObj(predicate)) {
-          keys(predicate).every(
-            function (key) { return predicate[key] === item[key]; }
-          ) ? fts.push(item) : rjs.push(item);
+          keys(predicate).every(function (key) {
+            return predicate[key] === item[key];
+          }) ? fts.push(item) : rjs.push(item);
         }
         else if (isFun(predicate)) {
           predicate(item) ? fts.push(item) : rjs.push(item);
@@ -1313,8 +1347,8 @@
     function extendBase(tarObj, srcObj, predicate, propList, isTraDft, isOmit) {
       if (!isObj(srcObj)) return tarObj;
       propList = flatten(propList);
-      var isPdtObj = isObj(predicate);
-      var srcKs = keys(srcObj);
+      var isPdtObj = isObj(predicate)
+        , srcKs = keys(srcObj);
       function traversal(tarObj, srcObj, propList) {
         forEach(propList, function (prop) {
           if (has(srcObj, prop)) {
@@ -1326,13 +1360,18 @@
       }
       if (typeOf(predicate, 'str', 'arr', 'obj')) {
         var props = isPdtObj ? propList : toArr(predicate).concat(propList);
-        if (isOmit) props = srcKs.filter(function(key) { return !contains(props, key); });
+        if (isOmit) {
+          props = srcKs.filter(function (key) {
+            return !contains(props, key);
+          });
+        }
         traversal(tarObj, srcObj, props);
-      }
-      else if (isFun(predicate)) {
+      } else if (isFun(predicate)) {
         forIn(srcObj, function (key, val) {
           var isPred = predicate(key, val);
-          if ((isPred && !isOmit ) || (!isPred && isOmit)) tarObj[key] = val;
+          if ((isPred && !isOmit ) || (!isPred && isOmit)) {
+            tarObj[key] = val;
+          }
         });
       }
       else if (isTraDft) {
@@ -1442,9 +1481,11 @@
      * Basic methods of date formation.
      */
     function fmtDateBase(fmtStr, time, isUtc) {
-      var date = dateBase(time);
-      var dateTime = date.getTime();
-      if (!dateTime && dateTime !== 0) return '';
+      var date = dateBase(time)
+        , dateTime = date.getTime();
+      if (!dateTime && dateTime !== 0) {
+        return '';
+      }
       var timeObj = getTimeObj(date, isUtc);
       forIn(timeObj, function (k) {
         if (new RegExp('(' + k + ')').test(fmtStr)) {
@@ -1464,14 +1505,18 @@
      * Basic methods of patterns match.
      */
     function patternBase(srcStr, types, isTest) {
-      var limit = true, ttRst = false, mtRst = null;
+      var limit = true
+        , ttRst =false
+        , mtRst = null;
       if (types.length && typeOf(types[types.length - 1], 'bol')) {
         limit = types.pop();
       }
       for (var i = 0; i < types.length; i++) {
         var pattern = getPattern(types[i], limit);
         if (pattern) {
-          isTest ? ttRst = pattern.test(srcStr) : mtRst = srcStr.match(pattern);
+          isTest
+            ? ttRst = pattern.test(srcStr)
+            : mtRst = srcStr.match(pattern);
           if (ttRst || mtRst) break;
         }
       }

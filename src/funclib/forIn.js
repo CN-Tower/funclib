@@ -11,7 +11,9 @@ var throwErr = require('./_throwErr');
  */
 function forIn(srcObj, iteratee) {
   if (!isFun(iteratee)) throwErr('fun');
-  return forEach(srcObj, function (val, key) { iteratee(key, val); });
+  return forEach(srcObj, function (val, key) {
+    iteratee(key, val);
+  });
 }
 
 /**@function*/

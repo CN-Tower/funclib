@@ -7,14 +7,18 @@ var getPattern = require('./getPattern');
  * Basic methods of patterns match.
  */
 function patternBase(srcStr, types, isTest) {
-  var limit = true, ttRst = false, mtRst = null;
+  var limit = true
+    , ttRst =false
+    , mtRst = null;
   if (types.length && typeOf(types[types.length - 1], 'bol')) {
     limit = types.pop();
   }
   for (var i = 0; i < types.length; i++) {
     var pattern = getPattern(types[i], limit);
     if (pattern) {
-      isTest ? ttRst = pattern.test(srcStr) : mtRst = srcStr.match(pattern);
+      isTest
+        ? ttRst = pattern.test(srcStr)
+        : mtRst = srcStr.match(pattern);
       if (ttRst || mtRst) break;
     }
   }

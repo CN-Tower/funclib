@@ -1,3 +1,9 @@
+var isArr = require('./isArr');
+var isFun = require('./isFun');
+var isErr = require('./isErr');
+var isDat = require('./isDat');
+var isReg = require('./isReg');
+
 /**@function*/
 
 /**

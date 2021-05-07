@@ -9,21 +9,28 @@ var has = require('./has');
  * @param srcObj : object
  */
 function deepCopy(srcObj) {
-  var tmpObj;
-  if (isArr(srcObj)) {
-    tmpObj = [];
-    for (var i = 0; i < srcObj.length; i++) {
-      tmpObj.push(deepCopy(srcObj[i]));
+  var objStack = [];
+  function copyObj(obj) {
+    var tmpObj = obj;
+    if (isArr(obj)) {
+      tmpObj = [];
+      for (var i = 0; i < obj.length; i++) {
+        tmpObj.push(copyObj(obj[i]));
+      }
+    } else if (isObj(obj)) {
+      if (objStack.indexOf(obj) > -1) {
+        tmpObj = obj.constructor && obj.constructor.name;
+      } else {
+        objStack.push(obj);
+        tmpObj = {};
+        for (var key in obj) {
+          if (has(obj, key)) tmpObj[key] = copyObj(obj[key]);
+        }
+      }
     }
-  } else if (isObj(srcObj)) {
-    tmpObj = {};
-    for (var key in srcObj) {
-      if (has(srcObj, key)) tmpObj[key] = deepCopy(srcObj[key]);
-    }
-  } else {
-    tmpObj = srcObj;
+    return tmpObj;
   }
-  return tmpObj;
+  return copyObj(srcObj);
 }
 
 /**@function*/

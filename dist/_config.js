@@ -1,6 +1,6 @@
 /**@config*/
 
-var version = '5.1.3';
+var version = '5.1.4';
 
 var undefined, UDF = undefined, F = function() {}
   , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -65,7 +65,6 @@ var fsChangeEvents = {}
   , fsEvent = 'fullscreenchange'
   , fsEvents = [fsEvent, 'webkit' + fsEvent, 'moz' + fsEvent, 'MS' + fsEvent];
 /**@conf-client*/
-
 /**@conf-server*/
 /**
  * Color string of console display.
