@@ -16,7 +16,7 @@ const specs = [
   './core-methods/type.spec',
   './server-methods/fileSys.spec',
   './server-methods/progress.spec',
-  './server-methods/logs.spec'
+  './server-methods/logs.spec',
 ];
 
 specs.forEach(spec => {

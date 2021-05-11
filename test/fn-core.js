@@ -13,7 +13,7 @@ const specs = [
   './core-methods/pattern.spec',
   './core-methods/string.spec',
   './core-methods/time.spec',
-  './core-methods/type.spec'
+  './core-methods/type.spec',
 ];
 
 specs.forEach(spec => {

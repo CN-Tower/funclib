@@ -142,8 +142,8 @@ $ npm run test
  * fn.isDeepEqual           [-] 判断数组或对象是否相等
  ## Math
  * fn.random                [-] 返回指定范围的随机数
- * fn.gid                   [-] 返回指定长度的随机ID
- * fn.gcolor                [-] 返回一个随机色值
+ * fn.randomId                   [-] 返回指定长度的随机ID
+ * fn.randomColor                [-] 返回一个随机色值
  ## Time
  * fn.interval              [-] 循环定时器
  * fn.timeout               [-] 延时定时器
@@ -179,11 +179,6 @@ $ npm run test
  * fn.chalk                 [s] 返回带颜色的字符串
  * fn.print              [c][s] 在控制台打印值
  * fn.log                [c][s] 在控制台打印格式化的值
- ## Element
- * fn.fullScreen            [c] 全屏显示一个HTML元素
- * fn.exitFullScreen        [c] 退出全屏显示
- * fn.checkIsFullScreen     [c] 检测是否处理全屏状态
- * fn.fullScreenChange      [c] 检测是否全屏状态
  ## Tools
  * fn.rd                    [s] 读文件
  * fn.wt                    [s] 写文件

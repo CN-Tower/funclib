@@ -22,23 +22,23 @@
         assert(fn.typeOf(rdnum, 'num') && 5 < rdnum && rdnum <= 10);
       });
     });
-    describe('#fn.gid()', function () {
-      it(`fn.gid() should return an random ID with a length of 12.`, function () {
-        assert(/^[0-9A-Z]{12}$/.test(fn.gid()));
+    describe('#fn.randomId()', function () {
+      it(`fn.randomId() should return an random ID with a length of 12.`, function () {
+        assert(/^[0-9A-Z]{12}$/.test(fn.randomId()));
       });
-      it(`fn.gid(6) should return an random ID with a length of 6.`, function () {
-        assert(/^[0-9A-Z]{6}$/.test(fn.gid(6)));
+      it(`fn.randomId(6) should return an random ID with a length of 6.`, function () {
+        assert(/^[0-9A-Z]{6}$/.test(fn.randomId(6)));
       });
-      it(`fn.gid(6, '~!@#$%^&*_') should return an random ID with a length of 6.`, function () {
-        assert(/^[~!@#$%^&*_]{6}$/.test(fn.gid(6, '~!@#$%^&*_')));
+      it(`fn.randomId(6, '~!@#$%^&*_') should return an random ID with a length of 6.`, function () {
+        assert(/^[~!@#$%^&*_]{6}$/.test(fn.randomId(6, '~!@#$%^&*_')));
       });
-      it(`fn.gid(6, '[0-9a-z]') should return an random ID with a length of 6.`, function () {
-        assert(/^[0-9a-z]{6}$/.test(fn.gid(6, '[0-9a-z]')));
+      it(`fn.randomId(6, '[0-9a-z]') should return an random ID with a length of 6.`, function () {
+        assert(/^[0-9a-z]{6}$/.test(fn.randomId(6, '[0-9a-z]')));
       });
     });
-    describe('#fn.gcolor()', function () {
-      it(`fn.gcolor() should return an random color.`, function () {
-        assert(/^#[0-9a-fA-F]{6}$/.test(fn.gcolor()));
+    describe('#fn.randomColor()', function () {
+      it(`fn.randomColor() should return an random color.`, function () {
+        assert(/^#[0-9a-fA-F]{6}$/.test(fn.randomColor()));
       });
     });
   });

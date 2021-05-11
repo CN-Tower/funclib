@@ -1,4 +1,4 @@
-exports.ALL_MODULES = [
+const ALL_MODULES = [
   'rest',
   'typeOf',
   'typeVal',
@@ -40,8 +40,8 @@ exports.ALL_MODULES = [
   'isEmpty',
   'isDeepEqual',
   'random',
-  'gid',
-  'gcolor',
+  'randomId',
+  'randomColor',
   'interval',
   'timeout',
   'defer',
@@ -69,10 +69,6 @@ exports.ALL_MODULES = [
   'debounce',
   'printC',
   'logC',
-  'fullScreen',
-  'exitFullScreen',
-  'isFullScreen',
-  'fullScreenChange',
   'copyText',
   'chalk',
   'printS',
@@ -97,16 +93,11 @@ exports.ALL_MODULES = [
   '_dateBase',
   '_fmtDateBase',
   '_patternBase',
-  '_sendF11',
 ];
 
-exports.CORE_IGNORE = [
+const CORE_IGNORE = [
   'printC',
   'logC',
-  'fullScreen',
-  'exitFullScreen',
-  'isFullScreen',
-  'fullScreenChange',
   'copyText',
   'chalk',
   'printS',
@@ -120,10 +111,9 @@ exports.CORE_IGNORE = [
   'size',
   'clear',
   'progress',
-  '_sendF11',
 ];
 
-exports.CLIENT_IGNORE = [
+const CLIENT_IGNORE = [
   'chalk',
   'printS',
   'logS',
@@ -138,35 +128,21 @@ exports.CLIENT_IGNORE = [
   'progress',
 ];
 
-exports.SERVER_IGNORE = [
+const SERVER_IGNORE = [
   'printC',
   'logC',
-  'fullScreen',
-  'exitFullScreen',
-  'isFullScreen',
-  'fullScreenChange',
   'copyText',
-  '_sendF11',
 ];
 
-exports.MINI_IGNORE = [
-  'chalk',
-  'printS',
-  'logS',
-  'rd',
-  'wt',
-  'cp',
-  'mv',
-  'rm',
-  'mk',
-  'size',
-  'clear',
-  'progress',
-  'fullScreen',
-  'exitFullScreen',
-  'isFullScreen',
-  'fullScreenChange',
+const MINI_IGNORE = [
   'copyText',
-  '_sendF11',
+  ...CLIENT_IGNORE,
 ];
 
+module.exports = {
+  ALL_MODULES,
+  CORE_IGNORE,
+  CLIENT_IGNORE,
+  SERVER_IGNORE,
+  MINI_IGNORE,
+};

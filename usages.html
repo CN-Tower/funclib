@@ -8,7 +8,6 @@
 </head>
 <body>
     <div id="myDiv" style="width: 100px; height: 100px; background: red;"></div>
-    <button onclick="fullScreen()">放大</button>
     <input type="text" id="ipt" oninput="onIptChange()">
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./src/funclib.js"></script>
@@ -39,17 +38,6 @@
         // $(document).mousemove(function(e) {
         //     showClientTop(e);
         // });
-
-        function fullScreen() {
-            fn.fullScreen('#myDiv', function() {
-                var fsChangeEvent = fn.fullScreenChange(function() {
-                    fn.log(111);
-                    fn.exitFullScreen();
-                    fsChangeEvent.remove();
-                    // fn.fullScreenChange.removeAll();
-                });
-            });
-        }
     </script>
 </body>
 </html>

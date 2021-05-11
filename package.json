@@ -1,6 +1,6 @@
 {
   "name": "funclib.js",
-  "version": "5.1.4",
+  "version": "6.0.0",
   "description": "A powerful javascript functions library!",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,13 @@
     "uglify": "uglifyjs ./src/funclib.js -m -o ./src/funclib.min.js",
     "usage": "node usages.js",
     "test": "npm run test:server && npm run test:client",
-    "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js",
-    "test:client": "node scripts/test.js -c && npm run karma:fun && npm run karma:min && npm run karma:core",
+    "test:server": "node scripts/test.js -s && mocha test/fn-index.js && mocha test/fn-core.js && mocha test/fn-lib.js",
+    "test:client": "node scripts/test.js -c && npm run karma:fun && npm run karma:min && npm run karma:core && npm run karma:mp",
+    "test:lib": "mocha test/fn-lib.js",
     "karma:fun": "karma start scripts/karma.conf.js fun",
     "karma:min": "karma start scripts/karma.conf.js min",
-    "karma:core": "karma start scripts/karma.conf.js core"
+    "karma:core": "karma start scripts/karma.conf.js core",
+    "karma:mp": "karma start scripts/karma.conf.js mp"
   },
   "repository": {
     "type": "git",

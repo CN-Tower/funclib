@@ -4,7 +4,7 @@ const pkg = require('../package.json');
 const { ALL_MODULES, CORE_IGNORE, CLIENT_IGNORE, SERVER_IGNORE, MINI_IGNORE } = require('./config');
 
 const rootPath = path.dirname(__dirname);
-const confPath = path.join(rootPath, 'src/funclib/_config.js');
+const confPath = path.join(rootPath, 'src/lib/_config.js');
 const coreJsPath = path.join(rootPath, 'src/funclib.core.js');
 const clientJsPath = path.join(rootPath, 'src/funclib.js');
 const serverJsPath = path.join(rootPath, 'src/index.js');
@@ -59,7 +59,7 @@ function asyncMethodToJs(jsPath, type_) {
   jsConf = `; (function () {${newLine}${trimJsStr(jsConf)}  /**\r\n   * Funclib definition closure.\r\n   */\r\n  var fn = (function () {`;
 
   modules.forEach(md => {
-    const mdPath = path.join(rootPath, `src/funclib/${md}.js`);
+    const mdPath = path.join(rootPath, `src/lib/${md}.js`);
     tempStr += trimJsStr(fn.rd(mdPath).split('/**@function*/')[1], '    ');
   });
   tempStr = `var fn = (function () {${newLine}${tempStr}    /**@funclib`;

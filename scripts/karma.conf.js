@@ -41,6 +41,19 @@ fn.match(process.argv[4], {
     };
     reporters = ['mocha', 'coverage'];
   },
+  'mp': () => {
+    fn.log('Testing funclib-mp.js', 'Client Test');
+    files = [
+      'funclib-mp/index.js',
+      'test/**/*.spec.js'
+    ];
+    exclude = [
+      'test/client-methods/*.spec.js',
+      'test/server-methods/*.spec.js'
+    ];
+    preprocessors = {};
+    reporters = ['mocha'];
+  },
 });
 
 module.exports = function (config) {

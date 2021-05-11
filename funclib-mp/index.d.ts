@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v5.1.4 <https://www.funclib.net>
+ * Funclib v6.0.0 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -54,8 +54,8 @@
  * fn.isDeepEqual           [-] 判断数组或对象是否相等
  ## Math
  * fn.random                [-] 返回指定范围的随机数
- * fn.gid                   [-] 返回指定长度的随机ID
- * fn.gcolor                [-] 返回一个随机色值
+ * fn.randomId              [-] 返回指定长度的随机ID
+ * fn.randomColor           [-] 返回一个随机色值
  ## Time
  * fn.interval              [-] 循环定时器
  * fn.timeout               [-] 延时定时器
@@ -91,11 +91,6 @@
  * fn.chalk                 [s] 返回带颜色的字符串
  * fn.print              [c][s] 在控制台打印值
  * fn.log                [c][s] 在控制台打印格式化的值
- ## Element
- * fn.fullScreen            [c] 全屏显示一个HTML元素
- * fn.exitFullScreen        [c] 退出全屏显示
- * fn.checkIsFullScreen     [c] 检测是否处理全屏状态
- * fn.fullScreenChange      [c] 检测是否全屏状态
  ## Tools
  * fn.rd                    [s] 读文件
  * fn.wt                    [s] 写文件
@@ -109,7 +104,7 @@
  ## Progress
  * fn.progress              [s] 进度显示工具
  * fn.progress.stop         [s] 停止进度，结束后触发回调
- ## Tricks
+ ## Utility
  * fn.chain                 [-] 返回链接调用对象
  * fn().method              [-] 返回链接调用对象
  * fn.noConflict            [-] 释放fn变量占用权
@@ -189,19 +184,6 @@ declare namespace fn {
      * 关闭定时器
      */
     clear: () => any;
-  }
-
-  interface FullScreenChange {
-    /**
-     * [fn.fullScreenChange] 全屏状态变化事件
-     * @param callback function
-     */
-    (callback: Function): { remove: () => void };
-
-    /**
-     * [fn.fullScreenChange.removeAll] 清除所有全屏状态变化事件
-     */
-    removeAll: () => void;
   }
 
   interface LogConfig {
@@ -556,17 +538,17 @@ declare namespace fn {
     random(start?: number, end?: number, isInt?: boolean): number;
 
     /**
-     * [fn.gid] 返回一个指定长度的随机ID
+     * [fn.randomId] 返回一个指定长度的随机ID
      * @param length : number = 12
      * @param charSet: string?
      * charSet presets: [pwd] | [0-9] | [a-z] | [A-A] | [0-9a-z]... | string.
      */
-    gid(length?: number, charSet?: string): string;
+    randomId(length?: number, charSet?: string): string;
 
     /**
-     * [fn.gcolor] 返回一个随机颜色色值
+     * [fn.randomColor] 返回一个随机颜色色值
      */
-    gcolor(): string;
+    randomColor(): string;
 
     /**
      * [fn.interval] 循环定时器
@@ -769,24 +751,6 @@ declare namespace fn {
     debounce(func: Function, wait: number, options?: boolean | {
       leading?: boolean, trailing?: boolean, maxing?: boolean, maxWait?: number
     }): Function;
-
-    /**
-     * [fn.fullScreen] 全屏显示HTML元素
-     * @param el      : HTMLElement|selector
-     * @param didFull : function [?]
-     */
-    fullScreen(el: any, didFull?: Function): void;
-
-    /**
-     * [fn.exitFullScreen] 退出全屏显示
-     * @param didExit : function [?]
-     */
-    exitFullScreen(didExit?: Function): void;
-
-    /**
-     * [fn.isFullScreen] 检测是否全屏状态
-     */
-    isFullScreen(): boolean;
 
     /**
      * [fn.copyText] 复制文本到粘贴板

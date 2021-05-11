@@ -1,12 +1,12 @@
 /**
  * @license
- * Funclib v5.1.4 <https://www.funclib.net>
+ * Funclib v6.0.0 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '5.1.4';
+  var version = '6.0.0';
   
   var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -447,7 +447,7 @@
       if (isObj(srcObj)) {
         return keys(srcObj).length;
       }
-      else if (typeOf(srcObj, 'str', 'arr', 'fun') || get(srcObj, 'length', 'num')) {
+      else if (typeOf(srcObj, 'str', 'arr', 'fun') || (srcObj && srcObj.length)) {
         return srcObj.length;
       }
       else return -1;
@@ -654,12 +654,12 @@
     }
 
     /**
-     * [fn.gid] 返回一个指定长度的随机ID
+     * [fn.randomId] 返回一个指定长度的随机ID
      * @param length : number = 12
      * @param charSet: string?
      * charSet presets: [pwd] | [0-9] | [a-z] | [A-A] | [0-9a-z]... | string.
      */
-    function gid(length, charSet) {
+    function randomId(length, charSet) {
       if (isUdf(length)) length = 12;
       if (!charSet || !isStr(charSet)) {
         charSet = charNb + charUpper;
@@ -682,9 +682,9 @@
     }
 
     /**
-     * [fn.gcolor] 返回一个随机颜色色值
+     * [fn.randomColor] 返回一个随机颜色色值
      */
-    function gcolor() {
+    function randomColor() {
       return '#' + ('00000' + (random(0x1000000) << 0).toString(16)).slice(-6);
     }
 
@@ -1384,8 +1384,8 @@
     funclib.isDeepEqual = isDeepEqual;
 
     funclib.random = random;
-    funclib.gid = gid;
-    funclib.gcolor = gcolor;
+    funclib.randomId = randomId;
+    funclib.randomColor = randomColor;
 
     funclib.interval = interval;
     funclib.timeout = timeout;

@@ -1,18 +1,13 @@
-// const fn = require('funclib');
-// const fn = require('../src/index');
-const fn = require('../dist/index');
-
-const fs = require('fs');
+const fn = require('../src');
 const path = require('path');
-const glob = require('glob');
 
 const root = path.dirname(__dirname);
 const rdmSrc = path.join(root, 'src/README.md');
 const fnJs = path.join(root, 'src/funclib.js');
 const fnDefTs = path.join(root, 'src/index.d.ts');
 const fnMinJs = path.join(root, 'src/funclib.min.js');
-const fnIdxJs = path.join(root, 'dist/index.js');
-const fnMp = path.join(root, 'funclib-mp/');
+const distPath = path.join(root, 'dist/');
+const fnMpPath = path.join(root, 'funclib-mp/');
 
 fn.progress('Building FuncLib', { width: 42 });
 fn.rm(rdmSrc)
@@ -34,22 +29,17 @@ fn.timeout(1000, () => {
     .replace(/(#readme"),(\r|\n|\s)*"devDependencies": {(.|\r|\n)*((\r|\n)}(\r|\n)?)/, '$1$4');
 
   fn.mk('dist');
-  const fnFis = glob.sync('src/**/*');
-  fnFis.forEach(fi => {
-    const stat = fs.statSync(fi);
-    if (stat.isFile()) fn.cp(fi, path.join(root, `dist/${path.basename(fi)}`));
-  });
-  fn.cp(path.join(root, 'README.md'), path.join(root, 'dist/'));
-  fn.cp(path.join(root, 'README_en_US.md'), path.join(root, 'dist/'));
+  fn.cp(path.join(root, 'src'), distPath, true);
+  fn.cp(path.join(root, 'README.md'), distPath);
+  fn.cp(path.join(root, 'README_en_US.md'), distPath);
   fn.wt(path.join(root, 'dist/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib"'));
-  fn.timeout(800, () => fn.wt(fnIdxJs, fn.rd(fnIdxJs).replace(/require\('\.\/funclib\//mg, `require('./`)));
 
   fn.mk('funclib-mp');
-  fn.cp(path.join(root, 'src/index.d.ts'), fnMp);
-  fn.cp(path.join(root, 'README.md'), fnMp);
-  fn.cp(path.join(root, 'README_en_US.md'), fnMp);
-  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMp, 'index.js'));
-  fn.wt(path.join(fnMp, 'package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
+  fn.cp(path.join(root, 'README.md'), fnMpPath);
+  fn.cp(path.join(root, 'README_en_US.md'), fnMpPath);
+  fn.cp(path.join(root, 'src/index.d.ts'), fnMpPath);
+  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMpPath, 'index.js'));
+  fn.wt(path.join(fnMpPath, 'package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
 
   fn.progress.stop();
 });

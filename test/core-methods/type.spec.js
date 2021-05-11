@@ -95,6 +95,7 @@
     });
     describe('#fn.isUdf()', function () {
       it(`fn.isUdf(undefined) should return true.`, function () {
+        console.log(fn)
         assert(fn.isUdf(undefined));
       });
       it(`fn.isUdf(123) should return false.`, function () {
