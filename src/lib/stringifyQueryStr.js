@@ -1,5 +1,6 @@
 var typeOf = require('./typeOf');
 var forIn = require('./forIn');
+var len = require('./len');
 
 /**@function*/
 
@@ -10,6 +11,7 @@ var forIn = require('./forIn');
 function stringifyQueryStr(obj) {
   if (!typeOf(obj, 'obj', 'arr')) return '';
   obj = JSON.parse(JSON.stringify(obj));
+  if (!len(obj)) return '';
   var pairs = [];
   forIn(obj, function (key, value) {
     var encode = encodeURIComponent;

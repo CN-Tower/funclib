@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v6.0.0 <https://www.funclib.net>
+ * Funclib v6.0.1 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -128,7 +128,7 @@ declare namespace fn {
              | 'green' | 'magenta' | 'red' | 'yellow';
 
   type Pattern = 'cnChar' | 'dbChar' | 'email'
-               | 'mobPhone' | 'telPhone' | 'idCard' | 'uuid'
+               | 'phone' | 'telephone' | 'idCard' | 'uuid'
                | 'base64Code' | 'domain' | 'port' | 'ip'
                | 'ipUrl' | 'domainUrl' | 'url' | string;
 
@@ -210,11 +210,6 @@ declare namespace fn {
      * [fn.progress] 进度显示工具
      */
     progress: Progress;
-
-    /**
-     * [fn.fullScreenChange] 全屏状态变化事件
-     */
-    fullScreenChange: FullScreenChange;
 
     /**
      * [fn().method] 使用OOP风格的调用
@@ -705,7 +700,7 @@ declare namespace fn {
     /**
      * [fn.testPattern]用一个或几个通用正则测试
      * @param srcStr : string
-     * @param type_  : 'cnChar'|'dbChar'|'email'|'mobPhone'|'telPhone'|'idCard'|'uuid'|'base64Code'|'domain'|
+     * @param type_  : 'cnChar'|'dbChar'|'email'|'phone'|'telephone'|'idCard'|'uuid'|'base64Code'|'domain'|
      * 'port'|'ip'|'ipUrl'|'domainUrl'|'url'|'ipWithPortUrl'|'domainWithPortUrl'|'withPortUrl'
      * @param types  : ...string[]
      * @param limit  : boolean = true

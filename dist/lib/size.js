@@ -1,5 +1,6 @@
 var fs = require('fs');
 var isNum = require('./isNum');
+var match = require('./match');
 
 /**@function*/
 

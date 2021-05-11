@@ -1,6 +1,6 @@
 const assert = require('power-assert');
 const fn = require('funclib');
-const _fn = require('../src/lib');
+const _fn = require('../dist/lib');
 
 
 fn.log('Testing lib methods', 'Server Test');

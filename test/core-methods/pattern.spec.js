@@ -31,11 +31,11 @@
         const email = 'cntower@yahoo.com';
         assert(fn.matchPattern(email, 'email')[0] === email);
       });
-      it(`fn.matchPattern(email, 'mobPhone', 'email') should return true.`, function () {
+      it(`fn.matchPattern(email, 'phone', 'email') should return true.`, function () {
         const email = 'cntower@yahoo.com';
-        assert(fn.matchPattern(email, 'mobPhone', 'email'));
+        assert(fn.matchPattern(email, 'phone', 'email'));
       });
-      it(`fn.matchPattern(mobPhone, 'email') should return false.`, function () {
+      it(`fn.matchPattern(phone, 'email') should return false.`, function () {
         const mobPhone = '18770347138';
         const email = 'cntower@yahoo.com';
         assert(!fn.matchPattern(mobPhone, 'email'));

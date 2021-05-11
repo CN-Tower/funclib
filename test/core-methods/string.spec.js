@@ -103,12 +103,12 @@
             a: '123',
             b: '&'
         }' should return true`, function () {
-          let url = 'www.baidu.com?a=123&b=%26'
-          assert.deepEqual(fn.parseQueryStr(url), {
-            a: '123',
-            b: '&'
-          });
+        let url = 'www.baidu.com?a=123&b=%26'
+        assert.deepEqual(fn.parseQueryStr(url), {
+          a: '123',
+          b: '&'
         });
+      });
       it(`fn.parseQueryStr('') deepEqual '{}' should return true`, function () {
         let url = ''
         assert.deepEqual(fn.parseQueryStr(url), {})
@@ -116,15 +116,18 @@
     });
     describe('#fn.stringifyQueryStr()', function () {
       it(`fn.stringifyQueryStr({
-            wd: '百度',
-            rsv_spt: '10'
-        }) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10'  should return true`, function () {
-          let param = {
-            wd: '百度',
-            rsv_spt: '10'
-          }
-          assert(fn.stringifyQueryStr(param) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10')
-        });
+          wd: '百度',
+          rsv_spt: '10'
+      }) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10'  should return true`, function () {
+        let param = {
+          wd: '百度',
+          rsv_spt: '10'
+        }
+        assert(fn.stringifyQueryStr(param) === '?wd=%E7%99%BE%E5%BA%A6&rsv_spt=10')
+      });
+      it(`fn.stringifyQueryStr({}) should return ''`, function () {
+        assert(fn.stringifyQueryStr({}) === '');
+      });
     });
   });
 /**@server+*//* } /**@server=|*/
