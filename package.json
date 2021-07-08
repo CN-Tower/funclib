@@ -14,7 +14,9 @@
     "karma:fun": "karma start scripts/karma.conf.js fun",
     "karma:min": "karma start scripts/karma.conf.js min",
     "karma:core": "karma start scripts/karma.conf.js core",
-    "karma:mp": "karma start scripts/karma.conf.js mp"
+    "karma:mp": "karma start scripts/karma.conf.js mp",
+    "v:beta": "npm version prerelease --preid=beta",
+    "v:patch": "npm version patch"
   },
   "repository": {
     "type": "git",
