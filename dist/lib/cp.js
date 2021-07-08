@@ -15,14 +15,16 @@ function cp(src, dist, isInner) {
     if (fs.existsSync(src_)) {
       var stat = fs.statSync(src_);
       if (stat.isFile()) {
-        if (!path.extname(dst_)) {
+        if (!path.extname(dst_) && (path.extname(src_) || path.basename(src_) !== path.basename(dst_))) {
           mk(dst_);
           dst_ = path.join(dst_, path.basename(src_));
         }
         fs.createReadStream(src_).pipe(fs.createWriteStream(dst_));
       }
       else if (stat.isDirectory()) {
-        if (isOnInit && !isInner) dst_ = path.join(dst_, path.basename(src_));
+        if (isOnInit && !isInner) {
+          dst_ = path.join(dst_, path.basename(src_));
+        }
         mk(dst_);
         var subSrcs = fs.readdirSync(src_);
         subSrcs.forEach(function (file) {

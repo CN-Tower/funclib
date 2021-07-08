@@ -16,7 +16,8 @@
     "karma:core": "karma start scripts/karma.conf.js core",
     "karma:mp": "karma start scripts/karma.conf.js mp",
     "v:beta": "npm version prerelease --preid=beta",
-    "v:patch": "npm version patch"
+    "v:patch": "npm version patch",
+    "publish": "node scripts/publish.js"
   },
   "repository": {
     "type": "git",

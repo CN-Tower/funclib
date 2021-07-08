@@ -6,13 +6,13 @@ var ProgressSpi = require('./lib/ProgressSpi');
 
 /**
  * @license
- * Funclib v6.0.1 <https://www.funclib.net>
+ * Funclib v6.0.2 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '6.0.1';
+  var version = '6.0.2';
   
   var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -67,9 +67,7 @@ var ProgressSpi = require('./lib/ProgressSpi');
   var charNb = '0123456789'
     , charLower = 'abcdefghijklmnopqrstuvwxyz'
     , charUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    , charPwd = '~!@#$%^&*_';
-  
-  /**
+    , charPwd = '~!@#$%^&*_';/**
    * Color string of console display.
    */
   var colorPre = '\x1B[';
@@ -1261,14 +1259,16 @@ var ProgressSpi = require('./lib/ProgressSpi');
         if (fs.existsSync(src_)) {
           var stat = fs.statSync(src_);
           if (stat.isFile()) {
-            if (!path.extname(dst_)) {
+            if (!path.extname(dst_) && (path.extname(src_) || path.basename(src_) !== path.basename(dst_))) {
               mk(dst_);
               dst_ = path.join(dst_, path.basename(src_));
             }
             fs.createReadStream(src_).pipe(fs.createWriteStream(dst_));
           }
           else if (stat.isDirectory()) {
-            if (isOnInit && !isInner) dst_ = path.join(dst_, path.basename(src_));
+            if (isOnInit && !isInner) {
+              dst_ = path.join(dst_, path.basename(src_));
+            }
             mk(dst_);
             var subSrcs = fs.readdirSync(src_);
             subSrcs.forEach(function (file) {
