@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v6.0.2 <https://www.funclib.net>
+ * Funclib v6.0.3 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -836,9 +836,8 @@ declare namespace fn {
 
     /**
      * [fn.clear] 命令行清屏
-     * @param isForce : boolean
      */
-    clear(isForce?: boolean): void;
+    clear(): void;
 
     /**
      * [fn.chain] 释放fn变量占用权

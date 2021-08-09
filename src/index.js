@@ -6,13 +6,13 @@ var ProgressSpi = require('./lib/ProgressSpi');
 
 /**
  * @license
- * Funclib v6.0.2 <https://www.funclib.net>
+ * Funclib v6.0.3 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '6.0.2';
+  var version = '6.0.3';
   
   var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -1371,14 +1371,9 @@ var ProgressSpi = require('./lib/ProgressSpi');
 
     /**
      * [fn.clear] 命令行清屏
-     * @param isForce : boolean
      */
-    function clear(isForce) {
-      if (isForce) {
-        process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
-      } else {
-        process.platform === 'win32' ? execSync('cls') : execSync('clear');
-      }
+    function clear() {
+      process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
     }
 
     /**
