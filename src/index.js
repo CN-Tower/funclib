@@ -1316,14 +1316,12 @@ var ProgressSpi = require('./lib/ProgressSpi');
           try {
             fs.rmdirSync(src);
           } catch (e) {
-            timeout(500, function () {
-              if (/win/.test(process.platform)) {
-                var absSrc = path.resolve(src);
-                execSync('rd /s /q ' + absSrc);
-              } else {
-                execSync('rm -rf ' + src);
-              }
-            });
+            if (/^win/.test(process.platform)) {
+              var absSrc = path.resolve(src);
+              execSync('rd /s /q ' + absSrc);
+            } else {
+              execSync('rm -rf ' + src);
+            }
           }
         }
       }
