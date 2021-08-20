@@ -6,13 +6,13 @@ var ProgressSpi = require('./lib/ProgressSpi');
 
 /**
  * @license
- * Funclib v6.0.3 <https://www.funclib.net>
+ * Funclib v6.0.4 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
 ; (function () {
 
-  var version = '6.0.3';
+  var version = '6.0.4';
   
   var undefined, UDF = undefined, F = function() {}
     , _global = typeof global == 'object' && global && global.Object === Object && global
@@ -1316,12 +1316,14 @@ var ProgressSpi = require('./lib/ProgressSpi');
           try {
             fs.rmdirSync(src);
           } catch (e) {
-            if (/^win/.test(process.platform)) {
-              var absSrc = path.resolve(src);
-              execSync('rd /s /q ' + absSrc);
-            } else {
-              execSync('rm -rf ' + src);
-            }
+            defer(function() {
+              if (/^win/.test(process.platform)) {
+                var absSrc = path.resolve(src);
+                execSync('rd /s /q ' + absSrc);
+              } else {
+                execSync('rm -rf ' + src);
+              }
+            })
           }
         }
       }

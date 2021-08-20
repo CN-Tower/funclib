@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var execSync = require('child_process').execSync
 var forEach = require('./forEach');
+var defer = require('./defer');
 
 /**@function*/
 
@@ -24,12 +25,14 @@ function rm(src) {
       try {
         fs.rmdirSync(src);
       } catch (e) {
-        if (/^win/.test(process.platform)) {
-          var absSrc = path.resolve(src);
-          execSync('rd /s /q ' + absSrc);
-        } else {
-          execSync('rm -rf ' + src);
-        }
+        defer(function() {
+          if (/^win/.test(process.platform)) {
+            var absSrc = path.resolve(src);
+            execSync('rd /s /q ' + absSrc);
+          } else {
+            execSync('rm -rf ' + src);
+          }
+        })
       }
     }
   }
