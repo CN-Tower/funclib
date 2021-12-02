@@ -1,6 +1,6 @@
 /**
  * @license
- * Funclib v6.0.5 <https://www.funclib.net>
+ * Funclib v6.0.6 <https://www.funclib.net>
  * GitHub Repository <https://github.com/CN-Tower/funclib.js>
  * Released under MIT license <https://github.com/CN-Tower/funclib.js/blob/master/LICENSE>
  */
@@ -116,88 +116,6 @@ export as namespace fn;
 declare var fn: fn.Funclib;
 
 declare namespace fn {
-
-  type Any = any;
-
-  type Type = 'arr' | 'obj' | 'fun' 
-            | 'str' | 'num' | 'bol' | 'udf'
-            | 'nul' | 'err' | 'reg' | 'dat' 
-            | string | string[];
-
-  type Color = 'grey' | 'blue' | 'cyan' 
-             | 'green' | 'magenta' | 'red' | 'yellow';
-
-  type Pattern = 'cnChar' | 'dbChar' | 'email'
-               | 'phone' | 'telephone' | 'idCard' | 'uuid'
-               | 'base64Code' | 'domain' | 'port' | 'ip'
-               | 'ipUrl' | 'domainUrl' | 'url' | string;
-
-  /**
-   * [fn.progress] 进度显示工具
-   * @param title: string
-   * @param options: object [?]
-   * title: string
-   * width: number = 40
-   * type : 'bar'|'spi' = 'bar'
-   * isClear : boolean = false
-   * isBreak : boolean = true
-   */
-  interface Progress {
-    
-    (title: string, options?: { title?: string, width?: number, type?: 'bar' | 'spi', isClear: boolean, isBreak: boolean }): void;
-
-    /**
-     * [fn.progress.start] 暂停进度
-     */
-    pause(): void;
-
-    /**
-     * [fn.progress.start] 开始进度
-     */
-    start(): void;
-    
-    /**
-     * [fn.progress.stop] 结束进度条，结束后触发回调
-     * @param onStopped : function [?]
-     */
-    stop(onStopped?: Function): void;
-
-    /**
-     * [fn.progress.stop] 立即结束进度条，并触发回调
-     * @param onStopped : function [?]
-     */
-    clear(onStopped?: Function): void;
-  }
-
-  interface Timer extends Any {
-    /**
-     * 定时器ID
-     */
-    id: any;
-
-    /**
-     * 关闭定时器
-     */
-    stop: () => any;
-
-    /**
-     * 关闭定时器
-     */
-    clear: () => any;
-  }
-
-  interface LogConfig {
-    title?: string,
-    width?: number,
-    pre?: boolean,
-    end?: boolean,
-    breakPre: boolean,
-    breakEnd: boolean,
-    isFmt?: boolean,
-    isShowTime?: boolean,
-    color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
-    ttColor?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
-  }
 
   interface Funclib extends Any {
 
@@ -848,5 +766,103 @@ declare namespace fn {
      * [fn.noConflict] 释放fn变量占用权
      */
     noConflict(): void;
+  }
+
+  type Any = any;
+
+  /**
+   * 变量类型
+   */
+  type Type = 'arr' | 'obj' | 'fun' 
+            | 'str' | 'num' | 'bol' | 'udf'
+            | 'nul' | 'err' | 'reg' | 'dat' 
+            | string | string[];
+
+  /**
+   * 颜色类型
+   */
+  type Color = 'grey' | 'blue' | 'cyan' 
+             | 'green' | 'magenta' | 'red' | 'yellow';
+
+  /**
+   * 正则类型
+   */
+  type Pattern = 'cnChar' | 'dbChar' | 'email'
+               | 'phone' | 'telephone' | 'idCard' | 'uuid'
+               | 'base64Code' | 'domain' | 'port' | 'ip'
+               | 'ipUrl' | 'domainUrl' | 'url' | string;
+
+  /**
+   * [fn.progress] 进度显示工具
+   * @param title: string
+   * @param options: object [?]
+   * title: string
+   * width: number = 40
+   * type : 'bar'|'spi' = 'bar'
+   * isClear : boolean = false
+   * isBreak : boolean = true
+   */
+  interface Progress {
+    
+    (options: { title?: string, width?: number, type?: 'bar' | 'spi', isClear?: boolean, isBreak?: boolean }): void;
+    (title: string, options?: { width?: number, type?: 'bar' | 'spi', isClear?: boolean, isBreak?: boolean }): void;
+
+    /**
+     * [fn.progress.start] 暂停进度
+     */
+    pause(): void;
+
+    /**
+     * [fn.progress.start] 开始进度
+     */
+    start(): void;
+    
+    /**
+     * [fn.progress.stop] 结束进度条，结束后触发回调
+     * @param onStopped : function [?]
+     */
+    stop(onStopped?: Function): void;
+
+    /**
+     * [fn.progress.stop] 立即结束进度条，并触发回调
+     * @param onStopped : function [?]
+     */
+    clear(onStopped?: Function): void;
+  }
+
+  /**
+   * 定时器
+   */
+  interface Timer extends Any {
+    /**
+     * 定时器ID
+     */
+    id: any;
+
+    /**
+     * 关闭定时器
+     */
+    stop: () => any;
+
+    /**
+     * 关闭定时器
+     */
+    clear: () => any;
+  }
+
+  /**
+   * 打印配置
+   */
+  interface LogConfig {
+    title?: string,
+    width?: number,
+    pre?: boolean,
+    end?: boolean,
+    breakPre: boolean,
+    breakEnd: boolean,
+    isFmt?: boolean,
+    isShowTime?: boolean,
+    color?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
+    ttColor?: 'grey' | 'blue' | 'cyan' | 'green' | 'magenta' | 'red' | 'yellow',
   }
 }
