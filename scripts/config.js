@@ -1,148 +1,51 @@
-const ALL_MODULES = [
-  'rest',
-  'typeOf',
-  'typeVal',
-  'isStr',
-  'isNum',
-  'isBol',
-  'isFun',
-  'isNul',
-  'isUdf',
-  'isErr',
-  'isDat',
-  'isReg',
-  'isArr',
-  'isObj',
-  'array',
-  'range',
-  'toArr',
-  'indexOf',
-  'find',
-  'filter',
-  'reject',
-  'contains',
-  'drop',
-  'flatten',
-  'pluck',
-  'uniq',
-  'forEach',
-  'sortBy',
-  'len',
-  'has',
-  'get',
-  'set',
-  'keys',
-  'pick',
-  'omit',
-  'extend',
-  'forIn',
-  'deepCopy',
-  'isEmpty',
-  'isDeepEqual',
-  'random',
-  'randomId',
-  'randomColor',
-  'interval',
-  'timeout',
-  'defer',
-  'timestamp',
-  'asUtcTime',
-  'asXyzTime',
-  'fmtDate',
-  'fmtUtcDate',
-  'fmtXyzDate',
-  'match',
-  'pretty',
-  'escape',
-  'unescape',
-  'capitalize',
-  'fmtCurrency',
-  'maskString',
-  'cutString',
-  'parseQueryStr',
-  'stringifyQueryStr',
-  'setPattern',
-  'getPattern',
-  'testPattern',
-  'matchPattern',
-  'throttle',
-  'debounce',
-  'printC',
-  'logC',
-  'copyText',
-  'chalk',
-  'printS',
-  'logS',
-  'rd',
-  'wt',
-  'cp',
-  'mv',
-  'rm',
-  'mk',
-  'size',
-  'clear',
-  'progress',
-  'chain',
-  'noConflict',
-  '_throwErr',
-  '_filterBase',
-  '_extendBase',
-  '_getPaths',
-  '_timerBase',
-  '_getTimeObj',
-  '_dateBase',
-  '_fmtDateBase',
-  '_patternBase',
-];
+const fn = require('funclib');
+const path = require('path');
+const pkg = require('../package.json');
 
-const CORE_IGNORE = [
-  'printC',
-  'logC',
-  'copyText',
-  'chalk',
-  'printS',
-  'logS',
-  'rd',
-  'wt',
-  'cp',
-  'mv',
-  'rm',
-  'mk',
-  'size',
-  'clear',
-  'progress',
-];
+/**
+ * 路径解析
+ */
+const resolve = (...p) => path.resolve(__dirname, '../', ...p);
 
-const CLIENT_IGNORE = [
-  'chalk',
-  'printS',
-  'logS',
-  'rd',
-  'wt',
-  'cp',
-  'mv',
-  'rm',
-  'mk',
-  'size',
-  'clear',
-  'progress',
-];
+/**
+ * 文件头注释
+ */
+const getBanner = fileName => `\
+/*!
+ * funclib (v${pkg.version})
+ * @file: ${fileName}
+ * funclib is a practical and powerful JavaScript library
+ */`;
 
-const SERVER_IGNORE = [
-  'printC',
-  'logC',
-  'copyText',
-];
+/**
+ * 根据字符判断文件大小
+ */
+const getFileSizeByCode = code => `${(code.length / 1024).toFixed(2)}kb`;
 
-const MINI_IGNORE = [
-  'copyText',
-  ...CLIENT_IGNORE,
-];
+/**
+ * 打印错误信息
+ */
+const loggerError = err => {
+  let errMessage = '';
+  if (typeof err === 'string') {
+    errMessage = err;
+  } else if (err && err.message) {
+    errMessage = err.message;
+  }
+  if (errMessage) {
+    console.log(fn.chalk(errMessage, 'red'));
+  }
+};
+
+/**
+ * 构建信息暂存文件
+ */
+bdInfoPath = resolve('node_modules/.temp/build-info.txt');
 
 module.exports = {
-  ALL_MODULES,
-  CORE_IGNORE,
-  CLIENT_IGNORE,
-  SERVER_IGNORE,
-  MINI_IGNORE,
+  getBanner,
+  resolve,
+  getFileSizeByCode,
+  loggerError,
+  bdInfoPath,
 };

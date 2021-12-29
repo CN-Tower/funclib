@@ -1,45 +1,104 @@
-const fn = require('../src');
+/**
+ * 使用Rollup打包b-utils单函数
+ */
+const fs = require('fs');
+const fn = require('funclib');
 const path = require('path');
+const glob = require('glob');
+const nresolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const babel = require('rollup-plugin-babel');
+const formatter = require('rollup-plugin-formatter');
+const { rollup } = require('rollup');
+const { resolve, getFileSizeByCode, loggerError, bdInfoPath } = require('./config_');
 
-const root = path.dirname(__dirname);
-const rdmSrc = path.join(root, 'src/README.md');
-const fnJs = path.join(root, 'src/funclib.js');
-const fnDefTs = path.join(root, 'src/index.d.ts');
-const fnMinJs = path.join(root, 'src/funclib.min.js');
-const distPath = path.join(root, 'dist/');
-const fnMpPath = path.join(root, 'funclib-mp/');
+console.log(fn.chalk('开始构建单函数...'));
 
-fn.progress('Building FuncLib', { width: 42 });
-fn.rm(rdmSrc)
+const dests = { es: 'es', cjs: 'lib' };
+const esPath = resolve('es');
+const libPath = resolve('lib');
+if (!fs.existsSync(esPath)) fs.mkdirSync(esPath);
+if (!fs.existsSync(libPath)) fs.mkdirSync(libPath);
+const srcTsList = glob.sync(resolve('src/*.ts'));
+const srcJsList = glob.sync(resolve('src/*.js'));
+let buildInfo = '';
 
-// 给funclib.d.ts和funclib.min.js增加licence信息
-const liscence = fn.rd(fnJs).split('; (function () {')[0];
-const fnDefTsStr = fn.rd(fnDefTs);
-const fnMinJsStr = fn.rd(fnMinJs);
-const spliter = '/**================================================================';
-fn.wt(fnDefTs, liscence + spliter + fnDefTsStr.split(spliter)[1]);
-fn.wt(fnMinJs, liscence + ';' + fnMinJsStr);
+/**
+ * 执行单函数构建
+ */
+(async () => {
+  // 复制src下的*.d.ts到es和lib目录下
+  srcTsList.forEach(tsPath => {
+    fs.copyFileSync(tsPath, resolve('es', path.basename(tsPath)));
+    fs.copyFileSync(tsPath, resolve('lib', path.basename(tsPath)));
+  });
+  // 构建单函数
+  await Promise.all(
+    srcJsList.map(async jsPath => {
+      try {
+        await buildSingleFunByRollup(jsPath, 'es');
+        await buildSingleFunByRollup(jsPath, 'cjs');
+      } catch (err) {
+        loggerError(err);
+      }
+      return;
+    })
+  );
+  const bdInfoDir = path.dirname(bdInfoPath);
+  if (!fs.existsSync(bdInfoDir)) {
+    fs.mkdirSync(bdInfoDir, { recursive: true });
+  }
+  fs.writeFileSync(bdInfoPath, buildInfo);
+  console.log(fn.chalk('单函数构建完成！', 'green'));
+})();
 
-fn.rm('dist');
-fn.rm('funclib-mp');
+/**
+ * 使用rollup构建单函数
+ */
+async function buildSingleFunByRollup(jsPath, format) {
+  const jsName = path.basename(jsPath);
+  const file = resolve(dests[format], jsName);
+  const rollupConfig = {
+    input: jsPath,
+    plugins: [nresolve(), commonjs(), babel(), formatter()],
+    external: ['./_shared', './consts', ...new Set(srcJsList.map(p => `./${path.parse(p).name}`))],
+    output: {
+      file,
+      format,
+      exports: jsName === 'index.js' ? 'named' : 'auto',
+    },
+    onwarn(warning, warn) {
+      if (warning.code !== 'EVAL') warn(warning);
+    },
+  };
+  const bundle = await rollup(rollupConfig);
+  const {
+    output: [{ code }],
+  } = await bundle.generate(rollupConfig.output);
+  try {
+    fs.writeFileSync(file, code);
+    buildInfo += `${fn.chalk(path.relative(process.cwd(), file), 'blue')} ${getFileSizeByCode(code)}\n`;
+    buildSingleFunctionDts(jsPath, dests[format]);
+  } catch (err) {
+    loggerError(err);
+  }
+  return;
+}
 
-fn.timeout(1000, () => {
-  const packageJson = fn.rd(path.join(root, 'package.json'))
-    .replace(/"scripts":\s\{(.|\r|\n)*\},(.|\r|\n)*(\s*"repository": {)/, '$3')
-    .replace(/(#readme"),(\r|\n|\s)*"devDependencies": {(.|\r|\n)*((\r|\n)}(\r|\n)?)/, '$1$4');
-
-  fn.mk('dist');
-  fn.cp(path.join(root, 'src'), distPath, true);
-  fn.cp(path.join(root, 'README.md'), distPath);
-  fn.cp(path.join(root, 'README_en_US.md'), distPath);
-  fn.wt(path.join(root, 'dist/package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib"'));
-
-  fn.mk('funclib-mp');
-  fn.cp(path.join(root, 'README.md'), fnMpPath);
-  fn.cp(path.join(root, 'README_en_US.md'), fnMpPath);
-  fn.cp(path.join(root, 'src/index.d.ts'), fnMpPath);
-  fn.cp(path.join(root, 'src/funclib-mp.js'), path.join(fnMpPath, 'index.js'));
-  fn.wt(path.join(fnMpPath, 'package.json'), packageJson.replace('"name": "funclib.js"', '"name": "funclib-mp"'));
-
-  fn.progress.stop();
-});
+/**
+ * 生成单函数的ts类型定义
+ */
+function buildSingleFunctionDts(jsPath, dest) {
+  const excludes = ['_shared', 'consts', 'index'];
+  const fnName = path.parse(jsPath).name;
+  if (fnName && !excludes.includes(fnName)) {
+    const dtsPath = resolve(`${dest}/${fnName}.d.ts`);
+    fs.writeFileSync(
+      dtsPath,
+      `\
+import { ${fnName} } from '../';
+export = ${fnName};
+`
+    );
+  }
+}
